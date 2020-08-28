@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\PanelAdmin\Auth;
+namespace App\Http\Controllers\Panel\Auth;
 
 use App\PanelAdmin;
 use App\Http\Controllers\Controller;

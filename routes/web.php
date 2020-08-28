@@ -22,20 +22,20 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
 Route::group(['prefix' => 'admin'], function () {
     // Authentication Routes...
-    Route::get('/', 'PanelAdmin\Auth\LoginController@showLoginForm')->name('panel.login');
-    Route::post('/', 'PanelAdmin\Auth\LoginController@login');
-    Route::post('logout', 'PanelAdmin\Auth\LoginController@logout')->name('panel.logout');
+    Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
+    Route::post('/', 'Panel\Auth\LoginController@login');
+    Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
 
-    Route::get('/register', 'PanelAdmin\Auth\RegisterController@showRegistrationForm')->name('panel.register');
-    Route::post('/register', 'PanelAdmin\Auth\RegisterController@register');
+    Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
+    Route::post('/register', 'Panel\Auth\RegisterController@register');
 
     // Password Reset Routes...
-    Route::post('password/email', 'PanelAdmin\Auth\ForgotPasswordController@sendResetLinkEmail')->name('panel.password.email');
-    Route::get('password/reset', 'PanelAdmin\Auth\ForgotPasswordController@showLinkRequestForm')->name('panel.password.request');
-    Route::post('password/reset', 'PanelAdmin\Auth\ResetPasswordController@reset')->name('panel.password.update');
-    Route::get('password/reset/{token}', 'PanelAdmin\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
+    Route::post('password/email', 'Panel\Auth\ForgotPasswordController@sendResetLinkEmail')->name('panel.password.email');
+    Route::get('password/reset', 'Panel\Auth\ForgotPasswordController@showLinkRequestForm')->name('panel.password.request');
+    Route::post('password/reset', 'Panel\Auth\ResetPasswordController@reset')->name('panel.password.update');
+    Route::get('password/reset/{token}', 'Panel\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
 
     Route::group(['middleware' => 'auth:panelAdmin'], function () {
-        Route::get('dashboard', 'PanelAdmin\DashboardController@index')->name('panel.dashboard');
+        Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
     });
 });
