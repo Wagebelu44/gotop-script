@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
     @yield('styles')
 </head>
 
@@ -41,20 +42,88 @@
             <div class="scroll-sidebar">
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
-                        <li class="sidebar-item">
+                        {{--<li class="sidebar-item">
                             <a class="sidebar-link" href="javascript:void(0)"><span class="hide-menu">Dashboards </span></a>
                             <ul class="collapse first-level">
                                 <li class="sidebar-item"><a href="#" class="sidebar-link"><span class="hide-menu"> Dashboard 1</span></a></li>
                                 <li class="sidebar-item"><a href="#" class="sidebar-link"><span class="hide-menu"> Dashboard 2</span></a></li>
                             </ul>
+                        </li>--}}
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.users*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.users*') ? 'active':'' }}" href="{{ route('admin.users.index') }}">
+                                <span class="hide-menu">Users</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.orders*') ? 'active':'' }}" href="{{ route('admin.orders.index') }}">
+                                <span class="hide-menu">Orders</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.drip-feed*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.drip-feed*') ? 'active':'' }}" href="{{ route('admin.drip-feed.index') }}">
+                                <span class="hide-menu">Drip-Feed</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.tasks*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.tasks*') ? 'active':'' }}" href="{{ route('admin.tasks.index') }}">
+                                <span class="hide-menu">Tasks</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.services*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.services*') ? 'active':'' }}" href="{{ route('admin.services.index') }}">
+                                <span class="hide-menu">Services</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.payments*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.payments*') ? 'active':'' }}" href="{{ route('admin.payments.index') }}">
+                                <span class="hide-menu">Payments</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.tickets*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.tickets*') ? 'active':'' }}" href="{{ route('admin.tickets.index') }}">
+                                <span class="hide-menu">Tickets</span>
+                            </a>
                         </li>
 
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="#"><span class="hide-menu">Widgets</span></a>
+                            <a class="sidebar-link" href="javascript:void(0)"><span class="hide-menu">Affiliates</span></a>
                         </li>
 
-                        <li class="sidebar-item sidebar-item-right">
-                            <a class="sidebar-link" href="#"><span class="hide-menu">Account</span></a>
+                        <li class="sidebar-item {{ Request::routeIs('admin.reports*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.reports*') ? 'active':'' }}" href="{{ route('admin.reports.index') }}">
+                                <span class="hide-menu">Reports</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.appearance*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.appearance*') ? 'active':'' }}" href="{{ route('admin.appearance.index') }}">
+                                <span class="hide-menu">Appearance</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.blog*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.blog*') ? 'active':'' }}" href="{{ route('admin.blog.index') }}">
+                                <span class="hide-menu">Blog</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.setting*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.setting*') ? 'active':'' }}" href="{{ route('admin.setting.general') }}">
+                                <span class="hide-menu">Settings</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item sidebar-item-right {{ Request::routeIs('admin.profile*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.profile*') ? 'active':'' }}" href="{{ route('admin.profile') }}">
+                                <span class="hide-menu">Account</span>
+                            </a>
                         </li>
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><span class="hide-menu">Logout</span></a>
@@ -90,5 +159,14 @@
     <script src="{{ asset('panel-assets/libs/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('panel-assets/js/sidebarmenu.js') }}"></script>
     <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
+
+    <script src="{{ asset('panel-assets/libs/toastr.min.js') }}"></script>
+    <script>
+        @if (session('success'))
+            toastr["success"]('{{ session('success') }}');
+        @elseif(session('error'))
+            toastr["error"]('{{ session('error') }}');
+        @endif
+    </script>
     @yield('scripts')
 </html>
