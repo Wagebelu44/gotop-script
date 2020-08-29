@@ -21,13 +21,13 @@ class ProfileController extends Controller
         ]);
 
         try {
-            $authId = Auth::guard('admin')->id();
+            $authId = Auth::guard('panelAdmin')->id();
             $admin = PanelAdmin::find($authId);
             if (!Hash::check($request->password, $admin->password)) {
                 return redirect()->back()->withErrors(['password' => 'Current password does not match!']);
             }
             $data['password'] = Hash::make($request->password);
-            Admin::find($authId)->update($data);
+            PanelAdmin::find($authId)->update($data);
 
             return redirect()->back()->withSuccess('Password updated successfully.');
         } catch (\Exception $e) {
