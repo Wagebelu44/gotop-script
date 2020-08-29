@@ -5,7 +5,6 @@
     min-height: calc(100vh - 101px);
 }
 
-
 /*All Setting pages*/
 .setting-switch .switch{position:relative;display:inline-block;width:34px;height:18px;margin-bottom:0;padding-bottom:0}
 .setting-switch .switch input{display:none}
