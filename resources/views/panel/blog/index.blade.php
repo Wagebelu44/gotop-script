@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('content')
-    <div class="container">
+    <div class="container all-mt-30">
         <div class="row">
             <!--navbar-->
             @include('panel.blog.nav')

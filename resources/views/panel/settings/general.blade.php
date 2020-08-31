@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('content')
-<div class="row">
+<div class="row all-mt-30">
     @include('panel.settings.navbar')
 
     <div class="col-md-8">
