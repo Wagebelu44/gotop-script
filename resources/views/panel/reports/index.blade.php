@@ -60,7 +60,7 @@
                             <table class="table table-striped border table-hover">
                                 <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>SN</th>
                                     <th>January</th>
                                     <th>February</th>
                                     <th>March</th>
@@ -77,36 +77,36 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>0</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                 <tr>
                                     <th>Total</th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
+                                    <th>100</th>
                                 </tr>
                                 </tfoot>
                             </table>
