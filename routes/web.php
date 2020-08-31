@@ -76,7 +76,7 @@ Route::group(['prefix' => 'admin'], function () {
         #Settings...
         Route::group(['prefix' => 'setting'], function () {
             Route::get('general', 'Panel\Setting\GeneralController@index')->name('admin.setting.general');
-            Route::put('general-update', 'Panel\Setting\GeneralController@generalUpdate')->name('admin.setting.generalUpdate');
+            Route::post('general-update', 'Panel\Setting\GeneralController@generalUpdate')->name('admin.setting.generalUpdate');
             Route::resource('faq', 'Panel\Setting\FaqController', ["as"=>"admin.setting"]);
             Route::resource('provider', 'Panel\Setting\ProviderController', ["as"=>"admin.setting"]);
             Route::resource('payment', 'Panel\Setting\PaymentController', ["as"=>"admin.setting"]);

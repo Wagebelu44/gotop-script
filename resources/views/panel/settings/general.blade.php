@@ -9,8 +9,6 @@
             <div class="card-body">
                 <form action="{{ route('admin.setting.generalUpdate') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
-
                     <div class="relative">
 
                         <div class="form-group">
@@ -28,6 +26,9 @@
                                 </div>
                                 <div class="col-md-2">
                                     <img style="display: none; width: 200px" id="logoPreview" class="img-thumbnail" src="">
+                                    @if($general->logo)
+                                        <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/setting/'.$general->logo) }}">
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -45,86 +46,124 @@
                                 </div>
                                 <div class="col-md-2">
                                     <img style="display: none; width: 50px" id="iconPreview" class="img-thumbnail" src="">
+                                    @if($general->favicon)
+                                        <img style="width: 50px" id="savedFavicon" class="img-thumbnail" src="{{ asset('./storage/images/setting/'.$general->favicon) }}">
+                                    @endif
                                 </div>
                             </div>
                         </div>
                         <hr>
+
                         <div class="form-group">
-                            <label class="control-label" for="panel_name">Panel name</label>
-                            <input type="text" id="panel_name" class="form-control" name="general[0][post_value]" value="" required>
-                            <input type="hidden" name="general[0][key]" value="panel_name">
-                            @error('panel_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong></strong>
-                            </span>
-                            @enderror
+                            <label class="control-label" for="timezone">Timezone</label>
+                            <select class="form-control" name="timezone" id="timezone">
+                                @foreach(getTimezone() as $key => $timezone)
+                                    <option value="{{ $key }}" {{ isset($general) && $general->timezone == $key ? 'selected':'' }} >{{ $timezone }}</option>
+                                @endforeach
+                            </select>
                         </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="currency_format">Currency Format</label>
+                            <select class="form-control" name="currency_format" id="currency_format">
+                                @foreach(getCurrencyFormat() as $currency)
+                                <option value="{{ $currency }}" {{ isset($general) && $general->currency_format == $currency ? 'selected':'' }}>{{ $currency }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="rates_rounding">Rates Rounding</label>
+                            <select class="form-control" name="rates_rounding" id="rates_rounding">
+                                @foreach(getRateFormat() as $rate)
+                                <option value="{{ $rate }}" {{ isset($general) && $general->rates_rounding == $rate ? 'selected':'' }}>{{ $rate }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label class="control-label" for="ticket_system">Ticket system</label>
-                            <select class="form-control" name="general[4][post_value]" id="ticket_system">
-                                <option>Ticket system</option>
+                            <select class="form-control" name="ticket_system" id="ticket_system">
+                                <option value="1" {{ isset($general) && $general->ticket_system == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->ticket_system == 0 ? 'selected':'' }}>Disabled</option>
                             </select>
-                            <input type="hidden" name="general[4][key]" value="ticket_system">
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="tickets_per_user">Max pending tickets per user</label>
-                            <select class="form-control" name="general[5][post_value]" id="tickets_per_user">
-                                <option value="">Select Max pending tickets per user</option>
+                            <select class="form-control" name="tickets_per_user" id="tickets_per_user">
+                                @foreach(getTicketPerUser() as $ticketUser)
+                                <option value="{{ $ticketUser }}" {{ isset($general) && $general->tickets_per_user == $ticketUser ? 'selected':'' }}>{{ $ticketUser }}</option>
+                                @endforeach
                             </select>
-                            <input type="hidden" name="general[5][key]" value="tickets_per_user">
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label" for="signup_page">Signup page</label>
-                            <select class="form-control" name="general[6][post_value]" id="signup_page">
-                                <option>Signup page</option>
+                            <label class="control-label" for="signup_page">Signup Page</label>
+                            <select class="form-control" name="signup_page" id="signup_page">
+                                <option value="1" {{ isset($general) && $general->signup_page == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->signup_page == 0 ? 'selected':'' }}>Disabled</option>
                             </select>
-                            <input type="hidden" name="general[6][key]" value="signup">
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label" for="skype">Skype field</label>
-                            <select class="form-control" name="general[7][post_value]" id="skype">
-                                <option>Skype field</option>
+                            <label class="control-label" for="email_confirmation">Email Confirmation</label>
+                            <select class="form-control" name="email_confirmation" id="email_confirmation">
+                                <option value="1" {{ isset($general) && $general->email_confirmation == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->email_confirmation == 0 ? 'selected':'' }}>Disabled</option>
                             </select>
-                            <input type="hidden" name="general[7][key]" value="skype">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="skype_field">Skype field</label>
+                            <select class="form-control" name="skype_field" id="skype_field">
+                                <option value="1" {{ isset($general) && $general->skype_field == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->skype_field == 0 ? 'selected':'' }}>Disabled</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="name_fields">Name fields</label>
-                            <select class="form-control" name="general[8][post_value]" id="name_fields">
-                                <option>Name fields</option>
+                            <select class="form-control" name="name_fields" id="name_fields">
+                                <option value="1" {{ isset($general) && $general->name_fields == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->name_fields == 0 ? 'selected':'' }}>Disabled</option>
                             </select>
-                            <input type="hidden" name="general[8][key]" value="name_fields">
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="terms_checkbox">Terms checkbox</label>
-                            <select class="form-control" name="general[9][post_value]" id="terms_checkbox">
-                                <option>Terms checkbox</option>
+                            <select class="form-control" name="terms_checkbox" id="terms_checkbox">
+                                <option value="1" {{ isset($general) && $general->terms_checkbox == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->terms_checkbox == 0 ? 'selected':'' }}>Disabled</option>
                             </select>
-                            <input type="hidden" name="general[9][key]" value="terms_checkbox">
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label" for="forgot_password">Forgot password</label>
-                            <select class="form-control" name="general[10][post_value]" id="forgot_password">
-                                <option>Forgot password</option>
+                            <label class="control-label" for="reset_password">Reset Password</label>
+                            <select class="form-control" name="reset_password" id="reset_password">
+                                <option value="1" {{ isset($general) && $general->reset_password == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->reset_password == 0 ? 'selected':'' }}>Disabled</option>
                             </select>
-                            <input type="hidden" name="general[10][key]" value="forgot_password">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="average_time">Average Time</label>
+                            <select class="form-control" name="average_time" id="average_time">
+                                <option value="1" {{ isset($general) && $general->average_time == 1 ? 'selected':'' }}>Enabled</option>
+                                <option value="0" {{ isset($general) && $general->average_time == 0 ? 'selected':'' }}>Disabled</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="drip_feed_interval">Minimum drip-feed interval </label>
+                            <input type="text" class="form-control" value="{{ old('drip_feed_interval', $general->drip_feed_interval) }}" name="drip_feed_interval">
                         </div>
                     </div>
                     <hr>
                     <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                     <a class="btn btn-default" href="">Cancel</a>
-
                 </form>
-                {{--<form id="delete-form-image" action="#" method="POST" style="display:none">
-                    @csrf
-                    @method('DELETE')
-                    <input type="hidden" name="type" id="type" value=""/>
-                </form>--}}
+
             </div>
         </div>
     </div>
@@ -150,11 +189,13 @@
         }
         $("#logo").change(function() {
             readURL(this, 'logo');
+            $('#savedLogo').hide();
             $('#logoPreview').show(200);
         });
 
         $("#favicon").change(function() {
             readURL(this, 'icon');
+            $('#savedFavicon').hide();
             $('#iconPreview').show(200);
         });
 
