@@ -136,18 +136,15 @@ class ProviderController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        try{
-            $pro = SettingProvider::find($request->provider_domain_del_id);
-            if ($pro != null) {
-                $pro->delete();
-            }
-            return redirect()->back()->withSuccess('Provider Deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        try {
+            SettingProvider::destroy($id);
+            return redirect()->back()->with('success', 'Provider delete successfully !!');
+        }catch (\Exception $exception){
+            return redirect()->back()->with('error', $exception->getMessage());
         }
     }
 }
