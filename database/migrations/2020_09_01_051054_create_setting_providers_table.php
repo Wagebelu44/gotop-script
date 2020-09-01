@@ -20,8 +20,8 @@ class CreateSettingProvidersTable extends Migration
             $table->string('api_url')->nullable();
             $table->string('api_key')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }
