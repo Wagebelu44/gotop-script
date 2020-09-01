@@ -1,6 +1,10 @@
 @extends('layouts.panel')
 
 @section('content')
+    @php
+        $resource = 'admin.setting.provider.';
+    @endphp
+
     <div class="row all-mt-30">
         @include('panel.settings.navbar')
 
@@ -19,7 +23,7 @@
                             </tr>
                             </thead>
                             <tbody class="payment-method-list ui-sortable-handle">
-                            @foreach($providers as $provider)
+                            @foreach($data as $provider)
                                 <tr id="">
                                     @if(isset($provider->domain))
                                         <td class="p-l">{{ $provider->domain }}</td>
@@ -35,9 +39,10 @@
                                     @endif
                                     <td class="p-r text-right">
 {{--                                        <a class="btn btn-default btn-xs" href="javascript:void(0)" onclick="editProvider(this)" data-id="{{ $provider->id }}" data-toggle="modal" data-target="#cmsPaymentMethodEditPopUp">Edit</a>--}}
-                                        <button href="{{ url('admin/setting/provider/'.$provider->id.'/edit') }}" data-id="{!! $provider->id !!}" class="edit btn btn-default m-t-20">
+                                        <button data-url="{{ route($resource.'edit', $provider->id) }}" data-id="{!! $provider->id !!}" class="edit btn btn-default m-t-20">
                                             Edit
                                         </button>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -51,7 +56,7 @@
     <div class="modal fade in" id="cmsPaymentMethodAddPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form class="form-material" id="moduleEditForm" method="post" action="{{ route('admin.setting.provider.store') }}" enctype="multipart/form-data">
+                <form class="form-material" id="moduleEditForm" method="post" action="{{ route($resource.'store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
                         <h4 class="modal-title" id="ModalLabel">Add Provider</h4>
@@ -61,10 +66,10 @@
                     <div class="modal-body" id="modalBody">
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="domain">Domain </label>
-                            <input type="text" class="form-control" name="domain" id="domain">
+                            <input type="text" class="form-control" name="domain" id="domain" required>
                             @error('domain')
-                            <span role="alert">
-                                    <strong></strong>
+                                <span role="alert">
+                                    <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
                         </div>
@@ -105,10 +110,9 @@
     <div class="modal fade in" id="cmsPaymentMethodEditPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
-                <form class="form-material" id="moduleEditForm" method="post" action="{{ route('provider.update') }}">
+                <form class="form-material" id="editFormPro" method="post" action="">
                     @method('put')
                     @csrf
-                    <input type="hidden" name="provider_domain_id" id="provider_domain_id">
                     <div class="modal-header">
                         <h4 class="modal-title" id="ModalEditLabel">Update Provider</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -117,28 +121,28 @@
                     <div class="modal-body" id="modalBody">
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="edit_domain">Domain </label>
-                            <input type="text" class="form-control" name="edit_domain" id="edit_domain">
+                            <input type="text" class="form-control" name="domain" id="edit_domain">
                         </div>
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="edit_url">URL </label>
-                            <input type="text" class="form-control" name="edit_url" id="edit_url">
+                            <input type="text" class="form-control" name="url" id="edit_url">
                         </div>
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="edit_api_key">API Key </label>
-                            <input type="text" class="form-control" name="edit_api_key" id="edit_api_key">
+                            <input type="text" class="form-control" name="api_key" id="edit_api_key">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <div class="col-md-10 submit-update-section">
                             <div class="form-actions pull-right">
-                                <button type="submit" class="btn btn-primary"> <i class="fa fa-check"></i> Update Provider</button>
+                                <button type="button" onclick="document.getElementById('editFormPro').submit();" class="btn btn-primary"> <i class="fa fa-check"></i> Update Provider</button>
                                 <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" >Cancel</button>
-                                <form method="post" action="{{ route('provider.delete') }}">
+                                {{--<form method="post" action="">
                                     @method('DELETE')
                                     @csrf
                                     <input type="hidden" name="provider_domain_del_id" id="provider_domain_del_id">
                                     <button type="submit" class="btn btn-secondary waves-effect text-right">Delete</button>
-                                </form>
+                                </form>--}}
                             </div>
                         </div>
                     </div>
@@ -148,27 +152,28 @@
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-    </div>
 @endsection
 @section('scripts')
 <script>
-    $(document).on('click', '.edit', function (e) {
-        e.preventDefault()
-        let url = $(this).attr('href')
-        console.log(url)
 
+    $(document).on('click', '.edit', function (e) {
+        e.preventDefault();
+        let url = $(this).attr('data-url');
+        let id = $(this).attr('data-id');
         $.ajax({
             url:url,
             type:"GET",
             dataType:"JSON",
             success(response) {
-                console.log(response)
-                $('#cmsPaymentMethodEditPopUp').modal('show')
-                $("#edit_domain").val(response.domain);
-                $("#edit_url").val(response.api_url);
-                $("#edit_api_key").val(response.api_key);
-                $('#provider_domain_id').val(response.id);
-                $('#provider_domain_del_id').val(response.id);
+                if (response.status === 'success'){
+                    $('#cmsPaymentMethodEditPopUp').modal('show');
+                    $("#edit_domain").val(response.data.domain);
+                    $("#edit_url").val(response.data.api_url);
+                    $("#edit_api_key").val(response.data.api_key);
+                    let updateUrl = "{{ url('admin/setting/provider') }}/"+id;
+                    $('#editFormPro').attr('action', updateUrl);
+                }
+
             }
         })
     })

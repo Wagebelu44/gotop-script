@@ -82,8 +82,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('faq-sortable', 'Panel\Setting\FaqController@sortable')->name('admin.setting.faq.sortable');
 
             Route::resource('provider', 'Panel\Setting\ProviderController', ["as"=>"admin.setting"]);
-            Route::put('provider-update', 'Panel\Setting\ProviderController@update')->name('provider.update');
-            Route::delete('provider-delete', 'Panel\Setting\ProviderController@destroy')->name('provider.delete');
+
             Route::resource('payment', 'Panel\Setting\PaymentController', ["as"=>"admin.setting"]);
             Route::get('module', 'Panel\Setting\ModuleController@index')->name('admin.setting.module');
             Route::get('notification', 'Panel\Setting\NotificationController@index')->name('admin.setting.notification');

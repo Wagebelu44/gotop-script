@@ -5,18 +5,19 @@ namespace App\Http\Controllers\Panel\Setting;
 use App\Http\Controllers\Controller;
 use App\Models\SettingProvider;
 use Illuminate\Http\Request;
+use Validator;
 
 class ProviderController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $providers = SettingProvider::get();
-        return view('panel.settings.providers', compact('providers'));
+        $data = SettingProvider::get();
+        return view('panel.settings.providers', compact('data'));
     }
 
     /**
@@ -33,24 +34,32 @@ class ProviderController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'domain' => 'required',
-        ]);
 
         try {
             $panelId = 1;
-            $provider = new SettingProvider();
-            $provider->panel_id = $panelId;
-            $provider->domain = $request->domain;
-            $provider->api_url = $request->url;
-            $provider->api_key = $request->api_key;
-            $provider->created_by = auth()->guard('panelAdmin')->id();
-            $provider->save();
-            return redirect()->back()->with('success', 'Provider Added successfully!');
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'domain' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            SettingProvider::create([
+                'panel_id'      => $panelId,
+                'domain'        => $data['domain'],
+                'api_url'       => $data['url'],
+                'api_key'       => $data['api_key'],
+                'created_by'    => auth()->guard('panelAdmin')->id(),
+            ]);
+
+            return redirect()->back()->with('success', 'Provider save successfully!');
         }catch (\Exception $exception) {
             return redirect()->back()->with('error', $exception->getMessage());
         }
@@ -71,12 +80,22 @@ class ProviderController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function edit($id)
     {
-        $editProvider = SettingProvider::where('id',$id)->first();
-        return $editProvider;
+        try {
+            $editProvider = SettingProvider::where('id',$id)->first();
+            return response()->json([
+                'status' => 'success',
+                'data' => $editProvider,
+            ], 200);
+        }catch (\Exception $exception){
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -84,24 +103,30 @@ class ProviderController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'edit_domain' => 'required',
-        ]);
-
         try{
             $panelId = 1;
-            SettingProvider::where('id', $request->provider_domain_id)->update([
-                'panel_id' => $panelId,
-                'domain'=> $request->edit_domain,
-                'api_url'=> $request->edit_url,
-                'api_key'=> $request->edit_api_key,
-                'updated_by' => auth()->guard('panelAdmin')->id()
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'domain' => 'required',
             ]);
-            return redirect()->back()->withSuccess('Provider updated successfully.');
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            SettingProvider::find($id)->update([
+                'domain'        => $data['domain'],
+                'api_url'       => $data['url'],
+                'api_key'       => $data['api_key'],
+                'updated_by'    => auth()->guard('panelAdmin')->id(),
+            ]);
+
+            return redirect()->back()->with('success', 'Provider save successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
