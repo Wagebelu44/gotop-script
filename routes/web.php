@@ -77,7 +77,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::group(['prefix' => 'setting'], function () {
             Route::get('general', 'Panel\Setting\GeneralController@index')->name('admin.setting.general');
             Route::post('general-update', 'Panel\Setting\GeneralController@generalUpdate')->name('admin.setting.generalUpdate');
+
             Route::resource('faq', 'Panel\Setting\FaqController', ["as"=>"admin.setting"]);
+            Route::post('faq-sortable', 'Panel\Setting\FaqController@sortable')->name('admin.setting.faq.sortable');
+
             Route::resource('provider', 'Panel\Setting\ProviderController', ["as"=>"admin.setting"]);
             Route::resource('payment', 'Panel\Setting\PaymentController', ["as"=>"admin.setting"]);
             Route::get('module', 'Panel\Setting\ModuleController@index')->name('admin.setting.module');

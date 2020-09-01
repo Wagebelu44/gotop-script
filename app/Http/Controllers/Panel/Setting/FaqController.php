@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Panel\Setting;
 
 use App\Http\Controllers\Controller;
+use App\Models\SettingFaq;
 use Illuminate\Http\Request;
+use Validator;
 
 class FaqController extends Controller
 {
@@ -14,7 +16,10 @@ class FaqController extends Controller
      */
     public function index()
     {
-        return view('panel.settings.faq');
+        $panelId = 1;
+        $data = SettingFaq::where('panel_id', $panelId)->orderBy('sort', 'asc')->get();
+        $page = 'index';
+        return view('panel.settings.faq', compact('data', 'page'));
     }
 
     /**
@@ -24,7 +29,9 @@ class FaqController extends Controller
      */
     public function create()
     {
-        //
+        $data = null;
+        $page = 'create';
+        return view('panel.settings.faq', compact('data', 'page'));
     }
 
     /**
@@ -35,7 +42,34 @@ class FaqController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $panelId = 1;
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'question' => 'required',
+                'answer'   => 'required',
+                'status'   => 'required'
+            ]);
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            SettingFaq::create([
+                'panel_id'      => $panelId,
+                'question'      => $data['question'],
+                'answer'        => $data['answer'],
+                'status'        => $data['status'],
+                'created_by'    =>  auth()->guard('panelAdmin')->id(),
+            ]);
+
+            return redirect()->back()->with('success', 'Faq save successfully !!');
+
+        }catch (\Exception $exception){
+            return redirect()->back()->with('error', $exception->getMessage());
+        }
+
     }
 
     /**
@@ -57,7 +91,10 @@ class FaqController extends Controller
      */
     public function edit($id)
     {
-        //
+
+        $data = SettingFaq::find($id);
+        $page = 'edit';
+        return view('panel.settings.faq', compact('data', 'page'));
     }
 
     /**
@@ -69,7 +106,33 @@ class FaqController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $panelId = 1;
+            $data = $request->all();
+            $validator = Validator::make($data, [
+                'question' => 'required',
+                'answer'   => 'required',
+                'status'   => 'required'
+            ]);
+            if ($validator->fails()) {
+                return redirect()->back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            SettingFaq::find($id)->update([
+                'panel_id'      => $panelId,
+                'question'      => $data['question'],
+                'answer'        => $data['answer'],
+                'status'        => $data['status'],
+                'updated_by'    =>  auth()->guard('panelAdmin')->id(),
+            ]);
+
+            return redirect()->back()->with('success', 'Faq update successfully !!');
+
+        }catch (\Exception $exception){
+            return redirect()->back()->with('error', $exception->getMessage());
+        }
     }
 
     /**
@@ -80,6 +143,37 @@ class FaqController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            SettingFaq::destroy($id);
+            return redirect(route('admin.setting.faq.index'))->with('success', 'Faq delete successfully !!');
+        }catch (\Exception $exception){
+            return redirect()->back()->with('error', $exception->getMessage());
+        }
+    }
+
+    public function sortable(Request $request){
+        try {
+            $panelId = 1;
+            $data = SettingFaq::where('panel_id', $panelId)->get();
+            foreach ($data as $faq) {
+                $faq->timestamps = false; // To disable update_at field updation
+                $id = $faq->id;
+                foreach ($request->order as $order) {
+                    if ($order['id'] == $id) {
+                        $faq->update(['sort' => $order['position']]);
+                    }
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update successfully',
+            ], 200);
+        }catch (\Exception $exception){
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ], 500);
+        }
     }
 }

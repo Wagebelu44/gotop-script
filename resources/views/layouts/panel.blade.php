@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
     @yield('styles')
 </head>
 
@@ -150,6 +151,7 @@
     <script src="{{ asset('panel-assets/libs/jquery.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/popper.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
 
     <!-- apps -->
     <script src="{{ asset('panel-assets/js/app.min.js') }}"></script>
@@ -161,12 +163,29 @@
     <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
 
     <script src="{{ asset('panel-assets/libs/toastr.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
+
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');
         @elseif(session('error'))
             toastr["error"]('{{ session('error') }}');
         @endif
+
+        $('.summernote').summernote({
+            height: 200, // set editor height
+            minHeight: null, // set minimum height of editor
+            maxHeight: null, // set maximum height of editor
+            focus: false, // set focus to editable area after initializing summernote
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']]
+            ]
+        });
     </script>
     @yield('scripts')
+</body>
 </html>
