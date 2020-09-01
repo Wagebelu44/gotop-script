@@ -79,6 +79,8 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('general-update', 'Panel\Setting\GeneralController@generalUpdate')->name('admin.setting.generalUpdate');
             Route::resource('faq', 'Panel\Setting\FaqController', ["as"=>"admin.setting"]);
             Route::resource('provider', 'Panel\Setting\ProviderController', ["as"=>"admin.setting"]);
+            Route::put('provider-update', 'Panel\Setting\ProviderController@update')->name('provider.update');
+            Route::delete('provider-delete', 'Panel\Setting\ProviderController@destroy')->name('provider.delete');
             Route::resource('payment', 'Panel\Setting\PaymentController', ["as"=>"admin.setting"]);
             Route::get('module', 'Panel\Setting\ModuleController@index')->name('admin.setting.module');
             Route::get('notification', 'Panel\Setting\NotificationController@index')->name('admin.setting.notification');
