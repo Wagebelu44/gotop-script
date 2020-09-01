@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('content')
-    <div class="container">
+    <div class="container all-mt-30">
         <div class="row">
             @include('panel.appearance.nav')
             <div class="col-md-8">
