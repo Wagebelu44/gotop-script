@@ -35,6 +35,7 @@ class CreateSettingGeneralsTable extends Migration
             $table->longText('custom_header_code')->nullable();
             $table->longText('custom_footer_code')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

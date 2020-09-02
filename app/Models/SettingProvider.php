@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\Contracts\Activity;
 
 class SettingProvider extends Model
 {
@@ -27,5 +28,9 @@ class SettingProvider extends Model
         return self::$logName. " {$eventName}";
     }
 
-
+    public function tapActivity(Activity $activity)
+    {
+        $activity->ip = \request()->ip();
+        $activity->panel_id = auth()->user()->panel_id;
+    }
 }
