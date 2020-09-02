@@ -17,15 +17,15 @@ class ModuleController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
-        $panelId = 1;
+        $panelId = Auth::user()->panel_id;
         if ($request->type === 'affiliate') {
             SettingModule::updateOrCreate(
                 ['panel_id' => $panelId, 'type' => 'affiliate'],
                 [
-                    'commission_rate' => $data['commission_rate'],
-                    'amount'          => $data['amount'],
-                    'approve_payout'  => $data['approve_payout'],
-                    'updated_by'      => auth()->guard('panelAdmin')->id(),
+                    'commission_rate' => $request->commission_rate,
+                    'amount'          => $request->amount,
+                    'approve_payout'  => $request->approve_payout,
+                    'updated_by'      => Auth::user()->id,
                 ]
             );
             return redirect()->back()->with('success', 'Affiliate Setting update successfully!');
@@ -35,8 +35,8 @@ class ModuleController extends Controller
             SettingModule::updateOrCreate(
                 ['panel_id' => $panelId, 'type' => 'child_panels'],
                 [
-                    'amount'          => $data['amount'],
-                    'updated_by'      => auth()->guard('panelAdmin')->id(),
+                    'amount'          => $request->amount,
+                    'updated_by'      => Auth::user()->id,
                 ]
             );
             return redirect()->back()->with('success', 'Child panels Setting update successfully!');
@@ -45,8 +45,8 @@ class ModuleController extends Controller
             SettingModule::updateOrCreate(
                 ['panel_id' => $panelId, 'type' => 'free_balance'],
                 [
-                    'amount'          => $data['amount'],
-                    'updated_by'      => auth()->guard('panelAdmin')->id(),
+                    'amount'          => $request->amount,
+                    'updated_by'      => Auth::user()->id,
                 ]
             );
             return redirect()->back()->with('success', 'Free balance Setting update successfully!');
