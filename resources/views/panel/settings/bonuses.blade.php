@@ -211,6 +211,7 @@
     </div>
     <!--End:Edit Modal-->
 @endsection
+
 @section('scripts')
     <script>
 

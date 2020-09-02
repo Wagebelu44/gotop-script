@@ -12,46 +12,45 @@
             <div class="card panel-default">
                 <div class="card-body">
                     <button type="button" class="btn btn-default m-b add-page"  data-toggle="modal" data-target="#cmsPaymentMethodAddPopUp">Add Provider</button>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th class="p-l">Domain</th>
-                                <th>Api Key</th>
-                                <th>Api Url</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="p-l">Domain</th>
+                            <th>Api Key</th>
+                            <th>Api Url</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody class="payment-method-list ui-sortable-handle">
+                        @foreach($data as $provider)
+                            <tr id="">
+                                @if(isset($provider->domain))
+                                    <td class="p-l">{{ $provider->domain }}</td>
+                                @endif
+                                @if(isset($provider->api_key))
+                                    <td>{{ $provider->api_key }}</td>
+                                @endif
+                                @if(isset($provider->api_url))
+                                    <td>{{ $provider->api_url }}</td>
+                                @endif
+                                @if(isset($provider->status))
+                                    <td>{{ $provider->status }}</td>
+                                @endif
+                                <td class="p-r text-right">
+                                    <button data-url="{{ route($resource.'edit', $provider->id) }}" data-id="{!! $provider->id !!}" class="edit btn btn-default m-t-20">
+                                        Edit
+                                    </button>
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody class="payment-method-list ui-sortable-handle">
-                            @foreach($data as $provider)
-                                <tr id="">
-                                    @if(isset($provider->domain))
-                                        <td class="p-l">{{ $provider->domain }}</td>
-                                    @endif
-                                    @if(isset($provider->api_key))
-                                        <td>{{ $provider->api_key }}</td>
-                                    @endif
-                                    @if(isset($provider->api_url))
-                                        <td>{{ $provider->api_url }}</td>
-                                    @endif
-                                    @if(isset($provider->status))
-                                        <td>{{ $provider->status }}</td>
-                                    @endif
-                                    <td class="p-r text-right">
-{{--                                        <a class="btn btn-default btn-xs" href="javascript:void(0)" onclick="editProvider(this)" data-id="{{ $provider->id }}" data-toggle="modal" data-target="#cmsPaymentMethodEditPopUp">Edit</a>--}}
-                                        <button data-url="{{ route($resource.'edit', $provider->id) }}" data-id="{!! $provider->id !!}" class="edit btn btn-default m-t-20">
-                                            Edit
-                                        </button>
-
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+
     <!--Start:Create Modal-->
     <div class="modal fade in" id="cmsPaymentMethodAddPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -102,11 +101,10 @@
                     </div>
                 </form>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
     <!--End:Create Modal-->
+
     <div class="modal fade in" id="cmsPaymentMethodEditPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
@@ -149,10 +147,9 @@
 
             </div>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 @endsection
+
 @section('scripts')
 <script>
     $(document).on('click', '.edit', function (e) {

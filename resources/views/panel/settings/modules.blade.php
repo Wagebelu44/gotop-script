@@ -117,9 +117,7 @@
                     </div>
                 </form>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
 
     <!--Edit Child panel modal-->
@@ -155,9 +153,7 @@
                     </div>
                 </form>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
 
     <!---Free balance modal--->
@@ -194,11 +190,10 @@
                     </div>
                 </form>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
 @endsection
+
 @section('scripts')
 <script>
     function getModuleData(type) {
