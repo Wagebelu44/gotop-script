@@ -108,7 +108,7 @@ class BonusesController extends Controller
      */
     public function update(Request $request, $id)
     {
-
+        try {
             $panelId = 1;
             $data = $request->all();
             $validator = Validator::make($data, [
@@ -131,6 +131,9 @@ class BonusesController extends Controller
                 'updated_by'               => auth()->guard('panelAdmin')->id(),
             ]);
             return redirect()->back()->with('success', 'Bonuses has been successfully updated');
+        }catch (\Exception $exception) {
+            return redirect()->back()->with('error', $exception->getMessage());
+        }
     }
 
     /**
