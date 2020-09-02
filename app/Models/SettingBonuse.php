@@ -25,7 +25,7 @@ class SettingBonuse extends Model
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'bonuses'; //custom_log_name_for_this_model
+    protected static $logName = 'Bonus'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

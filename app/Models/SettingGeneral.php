@@ -21,7 +21,7 @@ class SettingGeneral extends Model
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'general'; //custom_log_name_for_this_model
+    protected static $logName = 'General Setting'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

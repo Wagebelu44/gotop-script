@@ -25,7 +25,7 @@ class GlobalPaymentMethod extends Model
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'payment'; //custom_log_name_for_this_model
+    protected static $logName = 'Payment'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

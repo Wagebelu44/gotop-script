@@ -20,7 +20,7 @@ class SettingFaq extends Model
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'faq'; //custom_log_name_for_this_model
+    protected static $logName = 'Faq'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
