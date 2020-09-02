@@ -15,23 +15,19 @@ class ProfileController extends Controller
     }
 
     public function passwordUpdate(Request $request){
-        $request->validate([
+        $this->validate($request, [
             'password' => 'required|string|min:8',
             'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        try {
-            $authId = Auth::guard('panelAdmin')->id();
-            $admin = PanelAdmin::find($authId);
-            if (!Hash::check($request->password, $admin->password)) {
-                return redirect()->back()->withErrors(['password' => 'Current password does not match!']);
-            }
-            $data['password'] = Hash::make($request->password);
-            PanelAdmin::find($authId)->update($data);
-
-            return redirect()->back()->withSuccess('Password updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        $authId = Auth::guard('panelAdmin')->id();
+        $admin = PanelAdmin::find($authId);
+        if (!Hash::check($request->password, $admin->password)) {
+            return redirect()->back()->withErrors(['password' => 'Current password does not match!']);
         }
+        $data['password'] = Hash::make($request->password);
+        PanelAdmin::find($authId)->update($data);
+
+        return redirect()->back()->withSuccess('Password updated successfully.');
     }
 }

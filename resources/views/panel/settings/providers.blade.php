@@ -110,15 +110,15 @@
     <div class="modal fade in" id="cmsPaymentMethodEditPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="ModalEditLabel">Update Provider</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>
                 <form class="form-material" id="editFormPro" method="post" action="">
-                    @method('put')
+                    @method('PUT')
                     @csrf
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="ModalEditLabel">Update Provider</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    </div>
-
                     <div class="modal-body" id="modalBody">
+
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="edit_domain">Domain </label>
                             <input type="text" class="form-control" name="domain" id="edit_domain">
@@ -132,20 +132,21 @@
                             <input type="text" class="form-control" name="api_key" id="edit_api_key">
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <div class="col-md-10 submit-update-section">
-                            <div class="form-actions pull-right">
+                </form>
+                <div class="modal-footer">
+                    <div class="col-md-10 submit-update-section">
+                        <div class="form-actions pull-right">
+                            <form id="deleteFormPro" method="post" action="">
+                                @method('DELETE')
+                                @csrf
                                 <button type="button" onclick="document.getElementById('editFormPro').submit();" class="btn btn-primary"> <i class="fa fa-check"></i> Update Provider</button>
                                 <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" >Cancel</button>
-                                <form id="deleteFormPro" method="post" action="">
-                                    @method('DELETE')
-                                    @csrf
-                                    <button type="submit" onclick="return confirm('Are you sure...?')" class="btn btn-secondary waves-effect text-right">Delete</button>
-                                </form>
-                            </div>
+                                <button type="submit" onclick="return confirm('Are you sure...?')" class="btn btn-secondary waves-effect text-right">Delete</button>
+                            </form>
                         </div>
                     </div>
-                </form>
+                </div>
+
             </div>
         </div>
         <!-- /.modal-content -->
