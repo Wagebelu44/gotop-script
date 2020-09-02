@@ -33,16 +33,8 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($bonuse->global_payment_method_id === 1)
-                                        Paypal
-                                    @elseif($bonuse->global_payment_method_id === 2)
-                                        PayoP
-                                    @elseif($bonuse->global_payment_method_id === 3)
-                                        Coinbase
-                                    @elseif($bonuse->global_payment_method_id === 4)
-                                        Bank/Other
-                                    @else
-                                        Payoneer
+                                    @if(isset($bonuse->globalPaymentMethod->name))
+                                        {{ $bonuse->globalPaymentMethod->name }}
                                     @endif
                                 </td>
                                 <td>
@@ -99,11 +91,9 @@
                                 <label for="menu_link" class="control-label" for="payment_method_id">For method</label>
                                 <select class="form-control" id="payment_method_id" name="global_payment_method_id" aria-required="true">
                                     <option value="">Select payment method</option>
-                                    <option value="1">Paypal</option>
-                                    <option value="2">PayoP</option>
-                                    <option value="3">Coinbase</option>
-                                    <option value="4">Bank/Other</option>
-                                    <option value="5">Payoneer</option>
+                                    @foreach($methodsName as $method)
+                                        <option value="{{ $method->id }}">{{ $method->name }}</option>
+                                    @endforeach
                                 </select>
                                 @error('payment_method_id')
                                 <span role="alert">
@@ -179,12 +169,9 @@
                             <div class="form-group">
                                 <label for="menu_link" class="control-label" for="edit_payment_method_id">For method</label>
                                 <select class="form-control" id="edit_payment_method_id" name="global_payment_method_id" aria-required="true">
-                                    <option value="">Select payment method</option>
-                                    <option value="1">Paypal</option>
-                                    <option value="2">PayoP</option>
-                                    <option value="3">Coinbase</option>
-                                    <option value="4">Bank/Other</option>
-                                    <option value="5">Payoneer</option>
+                                    @foreach($methodsName as $method)
+                                        <option value="{{ $method->id }}">{{ $method->name }}</option>
+                                    @endforeach
                                 </select>
                                 <span role="alert">
                                 <strong id="error_edit_payment_method_id"></strong>

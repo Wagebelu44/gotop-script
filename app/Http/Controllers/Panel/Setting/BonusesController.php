@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel\Setting;
 
 use App\Http\Controllers\Controller;
+use App\Models\GlobalPaymentMethod;
 use App\Models\SettingBonuse;
 use Illuminate\Http\Request;
 use Validator;
@@ -16,8 +17,9 @@ class BonusesController extends Controller
      */
     public function index()
     {
-        $bonuses = SettingBonuse::all();
-        return view('panel.settings.bonuses', compact('bonuses'));
+        $bonuses = SettingBonuse::with('globalPaymentMethod')->get();
+        $methodsName = GlobalPaymentMethod::get();
+        return view('panel.settings.bonuses', compact('bonuses', 'methodsName'));
     }
 
     /**

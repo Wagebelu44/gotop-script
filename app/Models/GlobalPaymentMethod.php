@@ -14,4 +14,8 @@ class GlobalPaymentMethod extends Model
     protected $fillable = [
         'name', 'fields', 'status'
     ];
+
+    public function settingBonus() {
+        return $this->belongsTo(SettingBonuse::class);
+    }
 }
