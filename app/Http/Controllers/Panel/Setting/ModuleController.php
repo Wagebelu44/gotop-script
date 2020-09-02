@@ -16,7 +16,6 @@ class ModuleController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->all();
         $panelId = Auth::user()->panel_id;
         if ($request->type === 'affiliate') {
             SettingModule::updateOrCreate(
@@ -41,6 +40,7 @@ class ModuleController extends Controller
             );
             return redirect()->back()->with('success', 'Child panels Setting update successfully!');
         }
+        
         if ($request->type === 'free_balance') {
             SettingModule::updateOrCreate(
                 ['panel_id' => $panelId, 'type' => 'free_balance'],

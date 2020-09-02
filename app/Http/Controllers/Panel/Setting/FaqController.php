@@ -9,7 +9,6 @@ use Auth;
 
 class FaqController extends Controller
 {
-
     public function index()
     {
         $data = SettingFaq::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
@@ -101,6 +100,4 @@ class FaqController extends Controller
             'message' => 'Update successfully',
         ], 200);
     }
-
-
 }

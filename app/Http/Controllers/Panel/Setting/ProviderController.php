@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Panel\Setting;
 use App\Http\Controllers\Controller;
 use App\Models\SettingProvider;
 use Illuminate\Http\Request;
-use Validator;
 use Auth;
 
 class ProviderController extends Controller

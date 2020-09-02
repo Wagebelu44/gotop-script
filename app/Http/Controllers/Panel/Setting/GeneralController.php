@@ -12,12 +12,14 @@ use Auth;
 
 class GeneralController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $general = SettingGeneral::where('panel_id', Auth::user()->panel_id)->first();
         return view('panel.settings.general', compact('general'));
     }
 
-    public function generalUpdate(Request $request){
+    public function generalUpdate(Request $request)
+    {
         $this->validate($request, [
             'logo'    => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000',
             'favicon' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000'
@@ -25,7 +27,7 @@ class GeneralController extends Controller
 
         $checkLogoFavicon = SettingGeneral::select('logo', 'favicon')->where('panel_id', Auth::user()->panel_id)->first();
         if ($request->hasFile('logo')) {
-            if (!empty($checkLogoFavicon->logo)){
+            if (!empty($checkLogoFavicon->logo)) {
                 deleteFile('./storage/images/setting/', $checkLogoFavicon->logo);
             }
             $logo = $request->file('logo');
@@ -36,7 +38,7 @@ class GeneralController extends Controller
         }
 
         if ($request->hasFile('favicon')) {
-            if (!empty($checkLogoFavicon->favicon)){
+            if (!empty($checkLogoFavicon->favicon)) {
                 deleteFile('./storage/images/setting/', $checkLogoFavicon->favicon);
             }
             $favicon = $request->file('favicon');
@@ -46,15 +48,15 @@ class GeneralController extends Controller
             Storage::disk('public')->put("images/setting/".$faviconName, (string) $favicon->encode());
         }
 
-        if (isset($logoName)){
+        if (isset($logoName)) {
             $logo =  $logoName;
-        }else{
+        } else {
             $logo = isset($checkLogoFavicon->logo) ? $checkLogoFavicon->logo:null;
         }
 
-        if (isset($faviconName)){
+        if (isset($faviconName)) {
             $favicon = $faviconName;
-        }else{
+        } else {
             $favicon = isset($checkLogoFavicon->favicon) ? $checkLogoFavicon->favicon:null;
         }
 
