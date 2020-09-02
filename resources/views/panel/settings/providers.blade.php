@@ -137,12 +137,11 @@
                             <div class="form-actions pull-right">
                                 <button type="button" onclick="document.getElementById('editFormPro').submit();" class="btn btn-primary"> <i class="fa fa-check"></i> Update Provider</button>
                                 <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" >Cancel</button>
-                                {{--<form method="post" action="">
+                                <form id="deleteFormPro" method="post" action="">
                                     @method('DELETE')
                                     @csrf
-                                    <input type="hidden" name="provider_domain_del_id" id="provider_domain_del_id">
-                                    <button type="submit" class="btn btn-secondary waves-effect text-right">Delete</button>
-                                </form>--}}
+                                    <button type="submit" onclick="return confirm('Are you sure...?')" class="btn btn-secondary waves-effect text-right">Delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -155,7 +154,6 @@
 @endsection
 @section('scripts')
 <script>
-
     $(document).on('click', '.edit', function (e) {
         e.preventDefault();
         let url = $(this).attr('data-url');
@@ -172,6 +170,7 @@
                     $("#edit_api_key").val(response.data.api_key);
                     let updateUrl = "{{ url('admin/setting/provider') }}/"+id;
                     $('#editFormPro').attr('action', updateUrl);
+                    $('#deleteFormPro').attr('action', updateUrl);
                 }
 
             }
