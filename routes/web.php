@@ -37,5 +37,60 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['middleware' => 'auth:panelAdmin'], function () {
         Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
+
+        #Users...
+        Route::resource('users', 'Panel\UserController', ["as"=>"admin"]);
+
+        #Orders...
+        Route::resource('orders', 'Panel\OrderController', ["as"=>"admin"]);
+
+        #Drip-feed...
+        Route::resource('drip-feed', 'Panel\DripFeedController', ["as"=>"admin"]);
+
+        #Tasks...
+        Route::resource('tasks', 'Panel\TaskController', ["as"=>"admin"]);
+
+        #Services...
+        Route::resource('services', 'Panel\ServiceController', ["as"=>"admin"]);
+
+        #Payments...
+        Route::resource('payments', 'Panel\PaymentController', ["as"=>"admin"]);
+
+        #Tickets...
+        Route::resource('tickets', 'Panel\TicketController', ["as"=>"admin"]);
+
+        #Tickets...
+        Route::resource('reports', 'Panel\ReportController', ["as"=>"admin"]);
+
+        #Rppearance...
+        Route::resource('appearance', 'Panel\AppearanceController', ["as"=>"admin"]);
+
+        #Blog...
+        Route::resource('blog', 'Panel\BlogController', ["as"=>"admin"]);
+
+
+        #Profile...
+        Route::get('profile', 'Panel\ProfileController@profile')->name('admin.profile');
+        Route::put('password/update', 'Panel\ProfileController@passwordUpdate')->name('admin.password.update');
+
+        #Settings...
+        Route::group(['prefix' => 'setting'], function () {
+            Route::get('general', 'Panel\Setting\GeneralController@index')->name('admin.setting.general');
+            Route::post('general-update', 'Panel\Setting\GeneralController@generalUpdate')->name('admin.setting.generalUpdate');
+
+            Route::resource('faq', 'Panel\Setting\FaqController', ["as"=>"admin.setting"]);
+            Route::post('faq-sortable', 'Panel\Setting\FaqController@sortable')->name('admin.setting.faq.sortable');
+
+            Route::resource('provider', 'Panel\Setting\ProviderController', ["as"=>"admin.setting"]);
+
+            Route::resource('payment', 'Panel\Setting\PaymentController', ["as"=>"admin.setting"]);
+            Route::get('module', 'Panel\Setting\ModuleController@index')->name('admin.setting.module');
+            Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('admin.setting.module.update');
+            Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('admin.setting.module.edit');
+            Route::get('notification', 'Panel\Setting\NotificationController@index')->name('admin.setting.notification');
+            Route::resource('bonuses', 'Panel\Setting\BonusesController', ["as"=>"admin.setting"]);
+
+        });
+
     });
 });
