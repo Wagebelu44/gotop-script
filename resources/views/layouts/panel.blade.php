@@ -169,7 +169,7 @@
 
     <script src="{{ asset('panel-assets/libs/toastr.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');
