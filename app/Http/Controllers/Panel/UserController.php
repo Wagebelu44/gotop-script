@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         return response()->json([
             'status' => 200,
-            'data' => User::paginate(10),
+            'data' => User::orderBy('id', 'DESC')->paginate(10),
         ]);
     }
 

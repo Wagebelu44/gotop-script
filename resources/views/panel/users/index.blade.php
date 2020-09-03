@@ -68,34 +68,26 @@
                                             </div>
                                         </div>
                                     </th>
-                                    <th>
-                                        Created
-                                    </th>
-                                    <th>
-                                        Last auth
-                                    </th>
-                                    <th>
-                                        Rates
-                                    </th>
-                                    <th>
-                                        Actions
-                                    </th>
+                                    <th>Created</th>
+                                    <th>Last auth</th>
+                                    <th>Rates</th>
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbody_ss">
-                                <tr>
+                                <tr v-for="(user, index) in users">
                                     <td>
                                         <input type="checkbox" name="users[]" value="" class="user_check">
                                     </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>@{{user.id}}</td>
+                                    <td>@{{user.username}}</td>
+                                    <td>@{{user.email}}</td>
+                                    <td>@{{user.skype_name}}</td>
+                                    <td>$@{{user.balance}}</td>
+                                    <td>$14</td>
+                                    <td>@{{user.status}}</td>
+                                    <td>@{{user.created_at}}</td>
+                                    <td>@{{user.last_login_at}}</td>
                                     <td>
                                         <a href="javascript:void(0)" class="btn custom-dropdown-button" title="Services custom rates">custom rates 2</a>
                                     </td>
@@ -391,70 +383,6 @@
     </div>
 @endsection
 @section('scripts')
- <script>
-     Vue.component('data-pagination', {
-        props:['pagination', 'offset'],
-        data: function () {
-            return {
-                count: 0
-            }
-        },
-        methods: {
-        isCurrentPage(page)
-        {
-            return this.pagination.current_page === page
-        },
-        changePage(page) 
-        {
-            if (page > this.pagination.last_page) {
-                page = this.pagination.last_page;
-            }
-            this.pagination.current_page = page;
-            this.$emit('paginate');
-        }
-    },
-    computed: {
-        pages() {
-            let pages = []
-            let from = this.pagination.current_page - Math.floor(this.offset / 2)
-            if (from < 1) {
-                from = 1
-            }
-            let to = from + this.offset -1
-            if (to > this.pagination.last_page) {
-                to = this.pagination.last_page
-            }
-            while (from <= to) {
-                pages.push(from)
-                from++
-            }
-            return pages
-        }
-    },
-    template: ` <nav aria-label="...">
-                        <ul class="pagination justify-content-center">
-                        <li class="page-item" :class="{ disabled: pagination.current_page <= 1 }">
-                            <a class="page-link" @click.prevent="changePage(1)"  >First page</a>
-                        </li>
-                        <li class="page-item" :class="{ disabled: pagination.current_page <= 1 }">
-                            <a class="page-link" @click.prevent="changePage(pagination.current_page - 1)">Previous</a>
-                        </li>
-
-                        <li class="page-item" v-for="page in pages"  :key="page" :class="isCurrentPage(page) ? 'active' : ''">
-                            <a class="page-link" @click.prevent="changePage(page)">@{{ page }}
-                            <span v-if="isCurrentPage(page)" class="sr-only">(current)</span>
-                            </a>
-                        </li>
-
-                        <li class="page-item" :class="{ disabled: pagination.current_page >= pagination.last_page }">
-                            <a class="page-link" @click.prevent="changePage(pagination.current_page + 1)">Next</a>
-                        </li>
-                        <li class="page-item" :class="{ disabled: pagination.current_page >= pagination.last_page }">
-                            <a class="page-link" @click.prevent="changePage(pagination.last_page)">Last page</a>
-                        </li>
-                        </ul>
-                    </nav>`
-    });
- </script>
+<script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/user-vue.js')}}"></script>
 @endsection

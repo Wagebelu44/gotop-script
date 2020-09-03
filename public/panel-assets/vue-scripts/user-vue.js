@@ -13,7 +13,7 @@ new Vue({
     methods: {
         getUsers(page=1)
         {
-             fetch(base_url+'/admin/getusers?&page=' + this.pagination.current_page)
+            fetch(base_url+'/admin/getusers?&page=' + this.pagination.current_page)
             .then(res=>res.json())
             .then(res=>{
                 this.users = res.data.data;
