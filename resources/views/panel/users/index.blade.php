@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('content')
-    <div class="container-fluid all-mt-30">
+    <div class="container-fluid all-mt-30" id="user_panel_module">
         <div class="row">
             <div class="col-12">
                 <div class="material-card card">
@@ -384,4 +384,7 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+<script src="{{asset('/panel-assets/vue-scripts/user-vue.js')}}"></script>
 @endsection
