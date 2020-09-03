@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
 
-    public function index()
+    public function index(Request $r)
     {
         return view('panel.users.index');
+    }
+    public function getUsers(Request $r)
+    {
+        return response()->json([
+            'status' => 200,
+            'data' => User::paginate(10),
+        ]);
     }
 
     public function create()
