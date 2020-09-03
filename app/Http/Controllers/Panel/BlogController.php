@@ -32,14 +32,13 @@ class BlogController extends Controller
 
     public function store(Request $request)
     {
-        //return $request->all();
         $this->validate($request, [
-            'image'     => 'required',
-            'category_id'     => 'required',
-            'title'     => 'required',
-            'blog_content'     => 'required',
-            'type'     => 'required',
-            'status'   => 'required'
+            'image'         => 'required|image',
+            'category_id'   => 'required',
+            'title'         => 'required',
+            'blog_content'  => 'required',
+            'type'          => 'required',
+            'status'        => 'required'
         ]);
 
         $checkBlogPostImage = Blog::where('panel_id', Auth::user()->panel_id)->first();
@@ -61,15 +60,15 @@ class BlogController extends Controller
         }
 
         Blog::create([
-            'panel_id'      => Auth::user()->panel_id,
+            'panel_id'       => Auth::user()->panel_id,
             'title'          => $request->title,
-            'slug'=> $this->createSlug(Str::slug(strtolower($request->title))),
-            'category_id'          => $request->category_id,
-            'content'          => $request->blog_content,
-            'image'             => $image,
-            'status'        => $request->status,
-            'type'          => $request->type,
-            'created_by'    => Auth::user()->id,
+            'slug'           => $this->createSlug(Str::slug(strtolower($request->title))),
+            'category_id'    => $request->category_id,
+            'content'        => $request->blog_content,
+            'image'          => $image,
+            'status'         => $request->status,
+            'type'           => $request->type,
+            'created_by'     => Auth::user()->id,
         ]);
         return redirect()->back()->with('success', 'blog Post save successfully !!');
     }
@@ -93,12 +92,12 @@ class BlogController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'image'     => 'required',
-            'category_id'     => 'required',
-            'title'     => 'required',
-            'blog_content'     => 'required',
-            'type'     => 'required',
-            'status'   => 'required'
+            'image'        => 'sometimes|image',
+            'category_id'  => 'required',
+            'title'        => 'required',
+            'blog_content' => 'required',
+            'type'         => 'required',
+            'status'       => 'required'
         ]);
 
         $checkBlogPostImage = Blog::where('panel_id', Auth::user()->panel_id)->first();
@@ -121,11 +120,12 @@ class BlogController extends Controller
 
         Blog::find($id)->update([
             'panel_id'      => Auth::user()->panel_id,
-            'title'          => $request->title,
-            'slug'=> $this->createSlug(Str::slug(strtolower($request->title))),
-            'category_id'          => $request->category_id,
-            'content'          => $request->blog_content,
-            'image'             => $image,
+            'title'         => $request->title,
+            'slug'          => $this->createSlug(Str::slug(strtolower($request->title))),
+            'category_id'   => $request->category_id,
+            'content'       => $request->blog_content,
+            'image'         => $image,
+            'type'          => $request->type,
             'status'        => $request->status,
             'created_by'    => Auth::user()->id,
         ]);

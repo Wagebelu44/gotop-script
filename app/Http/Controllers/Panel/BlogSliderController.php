@@ -55,19 +55,14 @@ class BlogSliderController extends Controller
 
         BlogSlider::create([
             'panel_id'      => Auth::user()->panel_id,
-            'title'          => $request->title,
-            'read_more'          => $request->read_more,
-            'image'             => $image,
+            'title'         => $request->title,
+            'read_more'     => $request->read_more,
+            'image'         => $image,
             'status'        => $request->status,
             'created_by'    => Auth::user()->id,
         ]);
 
         return redirect()->back()->with('success', 'blog Slider save successfully !!');
-    }
-
-    public function show($id)
-    {
-        //
     }
 
     public function edit($id)
@@ -103,9 +98,9 @@ class BlogSliderController extends Controller
 
         BlogSlider::find($id)->update([
             'panel_id'      => Auth::user()->panel_id,
-            'title'          => $request->title,
-            'read_more'          => $request->read_more,
-            'image'             => $imageName,
+            'title'         => $request->title,
+            'read_more'     => $request->read_more,
+            'image'         => $imageName,
             'status'        => $request->status,
             'updated_by'    => Auth::user()->id,
         ]);

@@ -40,11 +40,6 @@ class BlogCategoryController extends Controller
         return redirect()->back()->with('success', 'blog Category save successfully !!');
     }
 
-    public function show($id)
-    {
-        //
-    }
-
     public function edit($id)
     {
         $data = BlogCategory::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();

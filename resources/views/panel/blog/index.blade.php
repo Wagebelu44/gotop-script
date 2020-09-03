@@ -125,13 +125,13 @@
                                     <label class="control-label" for="createpageform-url">Type</label>
                                     <div class="input-group">
                                         <label class="radio-inline">
-                                            <input type="radio" value="trending_blog" name="type" id="blog_type" {{ old('type', isset($data) ? $data->type : '') == 'trending_blog' ? 'checked' : '' }} required>Trending
+                                            <input type="radio" value="trending_blog" name="type" id="blog_type1" {{ old('type', isset($data) ? $data->type : '') == 'trending_blog' ? 'checked' : '' }} required> Trending
                                         </label>
                                         <label class="radio-inline radio-ml">
-                                            <input type="radio" value="popular_blog" name="type" id="blog_type" {{ old('type', isset($data) ? $data->type : '') == 'popular_blog' ? 'checked' : '' }} required>Popular
+                                            <input type="radio" value="popular_blog" name="type" id="blog_type2" {{ old('type', isset($data) ? $data->type : '') == 'popular_blog' ? 'checked' : '' }} required> Popular
                                         </label>
                                         <label class="radio-inline radio-ml">
-                                            <input type="radio" value="blog" name="type" id="blog_type" {{ old('type', isset($data) ? $data->type : '') == 'blog' ? 'checked' : '' }} required>None
+                                            <input type="radio" value="blog" name="type" id="blog_type3" {{ old('type', isset($data) ? $data->type : '') == 'blog' ? 'checked' : '' }} required> None
                                         </label>
                                     </div>
                                     @error('type')
