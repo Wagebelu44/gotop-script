@@ -87,7 +87,9 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('module', 'Panel\Setting\ModuleController@index')->name('admin.setting.module');
             Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('admin.setting.module.update');
             Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('admin.setting.module.edit');
-            Route::get('notification', 'Panel\Setting\NotificationController@index')->name('admin.setting.notification');
+
+            Route::resource('notification', 'Panel\Setting\NotificationController', ["as"=>"admin.setting"]);
+
             Route::resource('bonuses', 'Panel\Setting\BonusesController', ["as"=>"admin.setting"]);
 
         });
