@@ -120,6 +120,8 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        
                         <div class="row mt-4">
                             <div class="col-md-6">
 
@@ -137,6 +139,9 @@
                             </div>
                         </div>
                         <div class="text-center mt-4">No data available in table</div>
+
+
+                        {{-- modal start from here --}}
                         <div class="modal bs-example-modal-lg" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
