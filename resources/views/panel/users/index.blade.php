@@ -74,45 +74,46 @@
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
-                                <tbody id="tbody_ss">
-                                <tr v-for="(user, index) in users">
-                                    <td>
-                                        <input type="checkbox" name="users[]" value="" class="user_check">
-                                    </td>
-                                    <td>@{{user.id}}</td>
-                                    <td>@{{user.username}}</td>
-                                    <td>@{{user.email}}</td>
-                                    <td>@{{user.skype_name}}</td>
-                                    <td>$@{{user.balance}}</td>
-                                    <td>$14</td>
-                                    <td>@{{user.status}}</td>
-                                    <td>@{{user.created_at}}</td>
-                                    <td>@{{user.last_login_at}}</td>
-                                    <td>
-                                        <a href="javascript:void(0)" class="btn custom-dropdown-button" title="Services custom rates">custom rates 2</a>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Action
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <form class="d-none" action="" method="post" id="suspend-user">
-                                                    @csrf
-                                                    @method('patch')
-                                                </form>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Edit user</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Set password</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">User</a>
+                                <tbody id="tbody_ss" v-if="users!==null">
+                                    <tr v-for="(user, index) in users">
+                                        <td>
+                                            <input type="checkbox" name="users[]" value="" class="user_check">
+                                        </td>
+                                        <td>@{{user.id}}</td>
+                                        <td>@{{user.username}}</td>
+                                        <td>@{{user.email}}</td>
+                                        <td>@{{user.skype_name}}</td>
+                                        <td>$@{{user.balance}}</td>
+                                        <td>$14</td>
+                                        <td>@{{user.status}}</td>
+                                        <td>@{{user.created_at}}</td>
+                                        <td>@{{user.last_login_at}}</td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" title="Services custom rates">custom rates 2</a>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Action
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <form class="d-none" action="" method="post" id="suspend-user">
+                                                        @csrf
+                                                        @method('patch')
+                                                    </form>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Edit user</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Set password</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">User</a>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 </tbody>
+                                <div class="text-center mt-4" v-if="users===null">No data available in table</div>
                             </table>
                         </div>
-
+                        
 
                         <div class="row mt-4">
                             <div class="col-md-6">
@@ -130,7 +131,7 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="text-center mt-4">No data available in table</div>
+                        
 
 
                         {{-- modal start from here --}}

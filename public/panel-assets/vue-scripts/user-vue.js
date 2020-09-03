@@ -6,6 +6,10 @@ new Vue({
     },
     created () {
         console.log('logagdsfsdfasdf', CSRF_TOKEN);
+        let myUrl = new URL (window.location.href);
+        if (myUrl.search.includes('page=')) {
+            this.pagination.current_page = myUrl.search.split('page=')[1];
+        }
     },
     mounted () {
         this.getUsers();
@@ -13,7 +17,15 @@ new Vue({
     methods: {
         getUsers(page=1)
         {
-            fetch(base_url+'/admin/getusers?&page=' + this.pagination.current_page)
+            let page_number = this.pagination.current_page;
+            let page_id = '?&page=' +page_number;
+            if (page_number>1) {
+                const state = { 'page': page_number};
+                const title = '';
+                const url = base_url+'/admin/users'+ page_id;
+                history.pushState(state, title, url)
+            }
+            fetch(base_url+'/admin/getusers'+ page_id)
             .then(res=>res.json())
             .then(res=>{
                 this.users = res.data.data;
