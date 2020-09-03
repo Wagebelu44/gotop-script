@@ -3,24 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-class SettingGeneral extends Model
+class BlogCategory extends Model
 {
-    use LogsActivity;
+    use SoftDeletes, LogsActivity;
 
-    protected $table = 'setting_generals';
+    protected $table = 'blog_categories';
+
     protected $fillable = [
-        'panel_id', 'updated_by', 'logo', 'favicon', 'timezone', 'currency_format', 'rates_rounding', 'ticket_system', 'tickets_per_user',
-        'signup_page', 'email_confirmation', 'skype_field', 'name_fields', 'terms_checkbox', 'reset_password', 'average_time',
-        'drip_feed_interval', 'custom_header_code', 'custom_footer_code'
+        'panel_id', 'name', 'deleted_at'
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'General Setting'; //custom_log_name_for_this_model
+    protected static $logName = 'Blog Category'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
