@@ -86,7 +86,7 @@
                                             <option value="">Select Category</option>
                                             @if (!$get_blog_category->isEmpty())
                                                 @foreach ($get_blog_category as $key => $category)
-                                                    <option value="{{ $category->id }}"  {{ isset($data) ? $data->category_id : '' == $data->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                    <option value="{{ $category->id }}"  {{ old('category_id', isset($data) ? $data->category_id : $category->id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                                 @endforeach
                                             @endif
                                         </select>

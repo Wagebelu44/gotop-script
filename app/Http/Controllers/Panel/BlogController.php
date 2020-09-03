@@ -68,6 +68,7 @@ class BlogController extends Controller
             'content'          => $request->blog_content,
             'image'             => $image,
             'status'        => $request->status,
+            'type'          => $request->type,
             'created_by'    => Auth::user()->id,
         ]);
         return redirect()->back()->with('success', 'blog Post save successfully !!');
