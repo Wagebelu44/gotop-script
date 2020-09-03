@@ -65,8 +65,14 @@ Route::group(['prefix' => 'admin'], function () {
         #Rppearance...
         Route::resource('appearance', 'Panel\AppearanceController', ["as"=>"admin"]);
 
-        #Blog...
+        #blog...
         Route::resource('blog', 'Panel\BlogController', ["as"=>"admin"]);
+
+        #blog Category
+        Route::resource('blog-category', 'Panel\BlogCategoryController', ["as"=>"admin"]);
+
+        #blog Slider
+        Route::resource('blog-slider', 'Panel\BlogSliderController', ["as"=>"admin"]);
 
 
         #Profile...

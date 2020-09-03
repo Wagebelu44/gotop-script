@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
     @yield('styles')
+    <style>
+        .radio-ml{
+            margin-left: 15px;
+        }
+    </style>
 </head>
 
 <body>
