@@ -14,13 +14,13 @@ class BlogCategory extends Model
     protected $table = 'blog_categories';
 
     protected $fillable = [
-        'panel_id', 'name', 'deleted_at'
+        'panel_id', 'name', 'deleted_at', 'status', 'created_by', 'updated_by'
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Blog Category'; //custom_log_name_for_this_model
+    protected static $logName = 'blog Category'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

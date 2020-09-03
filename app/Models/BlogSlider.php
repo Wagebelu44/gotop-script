@@ -14,13 +14,13 @@ class BlogSlider extends Model
     protected $table = 'blog_sliders';
 
     protected $fillable = [
-        'panel_id', 'deleted_at'
+        'panel_id', 'title','read_more','image', 'status', 'deleted_at', 'created_by', 'updated_by'
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Blog Slider'; //custom_log_name_for_this_model
+    protected static $logName = 'blog Slider'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
