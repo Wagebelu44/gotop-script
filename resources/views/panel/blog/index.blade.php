@@ -72,7 +72,7 @@
                                                 @enderror
                                             </div>
                                             <div class="col-md-2">
-                                                <img style="width: 200px" id="preview" class="img-thumbnail" src="">
+                                                <img style="width: 100px" id="preview" src="">
                                                 @if(isset($data->image))
                                                     <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog-post/'.$data->image) }}">
                                                 @endif
@@ -86,7 +86,7 @@
                                             <option value="">Select Category</option>
                                             @if (!$get_blog_category->isEmpty())
                                                 @foreach ($get_blog_category as $key => $category)
-                                                    <option value="{{ $category->id }}"  {{ isset($data) ? $data->category_id : '' == $data->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                                    <option value="{{ $category->id }}"  {{ old('category_id', isset($data) ? $data->category_id : $category->id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                                 @endforeach
                                             @endif
                                         </select>
