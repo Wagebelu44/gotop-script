@@ -18,7 +18,9 @@
                                     <div class="form-group mb-2 mr-0">
                                         <input type="text" name="keyword" class="form-control" placeholder="Search User" value="">
                                     </div>
-                                    <button type="submit" class="btn btn-default mb-2" style="border:1px solid #eeeff0;"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                                    <button type="submit" class="btn btn-default mb-2" style="border:1px solid #eeeff0;"> 
+                                        <i class="fa fa-search" aria-hidden="true"></i> 
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -97,14 +99,10 @@
                                                     Action
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <form class="d-none" action="" method="post" id="suspend-user">
-                                                        @csrf
-                                                        @method('patch')
-                                                    </form>
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editUser(user.id)">Edit user</a>
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Set password</a>
                                                   {{--   <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates</a> --}}
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Suspend User</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="suspendUser(user.id)">Suspend User</a>
                                                 </div>
                                             </div>
                                         </td>

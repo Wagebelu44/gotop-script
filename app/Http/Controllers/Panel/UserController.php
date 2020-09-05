@@ -57,7 +57,7 @@ class UserController extends Controller
             $user = User::create($data);
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
-            return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
+            return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
         }
     }
 
@@ -69,6 +69,27 @@ class UserController extends Controller
     public function edit($id)
     {
         //
+    }
+
+    public function suspend(Request $request)
+    {
+        $credentials = $request->only('user_id');
+        $rules = [
+            'user_id'       => 'required',
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
+        }
+        $user_id = $credentials['user_id'];
+
+        try {
+            $user = User::where('id', $user_id)->first();
+            $user->update(['status' => $user->status == 'active' ? 'inactive' : 'active']);
+            return response()->json(['status' => true, 'data'=> $user], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
+        }
     }
 
     public function update(Request $request, $id)

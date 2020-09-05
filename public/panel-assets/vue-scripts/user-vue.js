@@ -164,6 +164,54 @@ const userModule = new Vue({
                         }
                 });
             });
+        },
+
+        suspendUser(user_id)
+        {
+            if (confirm('Are you sure?')) 
+            {
+                fetch(base_url+'/admin/suspendUser', {
+                    headers: {
+                        "Accept": "application/json, text/plain, */*'",
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                        "Content-Type": "application/json, text/plain, */*'",
+                    },
+                    credentials: "same-origin",
+                    method: "POST",
+                    body: JSON.stringify({user_id: user_id})
+                }).then(res=> {
+                    if (!res.ok) {
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then(res=>{
+                    this.users = this.users.map(item=>{
+                        if (item.id === res.data.id) {
+                            return res.data;
+                        }
+                        return item;
+                    });
+                    /* if (res.status) 
+                    {
+                        this.users.unshift(res.data);
+                        this.formClear();
+                       
+                    } */
+                })
+                .catch(res=>{
+                    console.log(res);
+                  /*   res.text().then(err=>{
+                            let errMsgs = Object.entries(JSON.parse(err).errors);
+                            for (let i = 0; i < errMsgs.length; i++) {
+                                let obj = {};
+                                obj.name = errMsgs[i][0];
+                                obj.desc = errMsgs[i][1][0];
+                                this.validationErros.push(obj);
+                            }
+                    }); */
+                });
+            }
         }
     }
 
