@@ -18,6 +18,10 @@
         .radio-ml{
             margin-left: 15px;
         }
+        .disable-keystroke {
+            opacity: 0.5;
+            pointer-events: none;
+        }
     </style>
 </head>
 
