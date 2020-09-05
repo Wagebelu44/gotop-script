@@ -67,6 +67,11 @@ class StaffEmailController extends Controller
 
     public function destroy($id)
     {
-        //
+        $data = StaffEmail::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+        if (empty($data)) {
+            return redirect()->back()->with('error', 'Please try again something went wrong !!');
+        }
+        $data->delete();
+        return redirect()->back()->with('success', 'This email delete successfully !!');
     }
 }

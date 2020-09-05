@@ -359,7 +359,6 @@
                                         </div>
 
                                     </div>
-                                    <input type="hidden" name="add_email_popup" value="1"/>
                                 </div>
 
                                 <div class="modal-footer">
@@ -369,7 +368,19 @@
                                             <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" >Cancel</button>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6 submit-update-section">
+                                        <div class="form-actions pull-right">
+                                            <button type="button" onclick="document.getElementById('deleteEmail').submit();" class="btn btn-default"> Deactivate</button>
+                                        </div>
+                                    </div>
                                 </div>
+
+                            </form>
+
+                            <form id="deleteEmail" method="post" action="">
+                                @method('DELETE')
+                                @csrf
 
                             </form>
                         </div>
@@ -480,8 +491,7 @@
 
                     let updateUrl = "{{ url('admin/setting/staff-email') }}/"+responce.data.id;
                     $('#staffEditForm').attr('action', updateUrl);
-
-
+                    $('#deleteEmail').attr('action', updateUrl);
                     $('#cmsStaffEmailEditPopUp').modal("show");
                 }
             });
