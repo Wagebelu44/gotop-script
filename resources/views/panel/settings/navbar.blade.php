@@ -20,7 +20,7 @@
             Modules
         </a>
 
-        <a class="list-group-item  {{ Request::segment(3) == 'notification' ? 'active' : '' }}" href="{{ route('admin.setting.notification') }}">
+        <a class="list-group-item  {{ Request::segment(3) == 'notification' ? 'active' : '' }}" href="{{ route('admin.setting.notification.index') }}">
             Notifications
         </a>
 

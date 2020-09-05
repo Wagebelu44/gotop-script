@@ -65,8 +65,18 @@ Route::group(['prefix' => 'admin'], function () {
         #Rppearance...
         Route::resource('appearance', 'Panel\AppearanceController', ["as"=>"admin"]);
 
-        #Blog...
+        #Rppearance menu...
+        Route::resource('menu', 'Panel\MenuController', ["as"=>"admin"]);
+        Route::post('menu-sortable', 'Panel\MenuController@sortable')->name('admin.menu.sortable');
+
+        #blog...
         Route::resource('blog', 'Panel\BlogController', ["as"=>"admin"]);
+
+        #blog Category
+        Route::resource('blog-category', 'Panel\BlogCategoryController', ["as"=>"admin"]);
+
+        #blog Slider
+        Route::resource('blog-slider', 'Panel\BlogSliderController', ["as"=>"admin"]);
 
 
         #Profile...
@@ -87,7 +97,10 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('module', 'Panel\Setting\ModuleController@index')->name('admin.setting.module');
             Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('admin.setting.module.update');
             Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('admin.setting.module.edit');
-            Route::get('notification', 'Panel\Setting\NotificationController@index')->name('admin.setting.notification');
+
+            Route::resource('notification', 'Panel\Setting\NotificationController', ["as"=>"admin.setting"]);
+            Route::resource('staff-email', 'Panel\Setting\StaffEmailController', ["as"=>"admin.setting"]);
+
             Route::resource('bonuses', 'Panel\Setting\BonusesController', ["as"=>"admin.setting"]);
 
         });
