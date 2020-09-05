@@ -14,6 +14,10 @@ const userModule = new Vue({
             status: '',
             balance: 0.00,
         },
+        filter: {
+            status: "", 
+            search: "",
+        },
         validationErros: [],
         edit_user_id: null,
         formFunc: null,
@@ -38,6 +42,22 @@ const userModule = new Vue({
             if (page_number>1) {
                 const state = { 'page': page_number};
                 const title = '';
+                const url = base_url+'/admin/users'+ page_id;
+                history.pushState(state, title, url)
+            }
+
+            if (this.filter.status!=="") {
+                const state = { 'status': this.filter.status};
+                const title = '';
+                page_id += '&status='+this.filter.status
+                const url = base_url+'/admin/users'+ page_id;
+                history.pushState(state, title, url)
+            }
+
+            if (this.filter.search!=="") {
+                const state = { 'search': this.filter.search};
+                const title = '';
+                page_id += '&status='+this.filter.search;
                 const url = base_url+'/admin/users'+ page_id;
                 history.pushState(state, title, url)
             }
@@ -252,6 +272,15 @@ const userModule = new Vue({
                         }
                 });
             });
+        },
+        statusFilter(txt)
+        {
+            this.filter.status = txt;
+            this.getUsers();
+        }, 
+        searchFilter()
+        {
+            this.getUsers();
         }
     }
 

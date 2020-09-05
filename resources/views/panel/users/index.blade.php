@@ -11,12 +11,12 @@
                                 <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#userModal" >Add User</button>
                             </div>
                             <div class="__right_control_panel">
-                                <form class="d-flex pull-right" id="search-form" method="get" action="">
+                                <form class="d-flex pull-right" id="search-form"  @submit.prevent="searchFilter">
                                     <div><a class="btn btn-link" href="">Export</a></div>
                                     <input type="hidden" name="order_by" value="">
                                     <input type="hidden" name="sort_by" value="">
                                     <div class="form-group mb-2 mr-0">
-                                        <input type="text" name="keyword" class="form-control" placeholder="Search User" value="">
+                                        <input type="text" name="keyword" class="form-control" v-model="filter.search" placeholder="Search User" value="">
                                     </div>
                                     <button type="submit" class="btn btn-default mb-2" style="border:1px solid #eeeff0;"> 
                                         <i class="fa fa-search" aria-hidden="true"></i> 
@@ -63,9 +63,9 @@
                                             <div class="input-group-append">
                                                 <button class="btn  dropdown-toggle  custom-dropdown-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status</button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item type-dropdown-item" href="">All</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Active</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Inactive</a>
+                                                    <a class="dropdown-item type-dropdown-item" @click="statusFilter('')" href="">All</a>
+                                                    <a class="dropdown-item type-dropdown-item" @click="statusFilter('active')" href="javascript:void(0)">Active</a>
+                                                    <a class="dropdown-item type-dropdown-item" @click="statusFilter('inactive')" href="javascript:void(0)">Inactive</a>
                                                 </div>
                                             </div>
                                         </div>

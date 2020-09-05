@@ -17,9 +17,18 @@ class UserController extends Controller
     }
     public function getUsers(Request $r)
     {
+        $users  = User::where(function($q) use($r) {
+                if (isset($r->status) && $r->status!='') {
+                     $q->where('status', $r->status);
+                }
+                if (isset($r->search) && $r->search!='') {
+                     $q->where('username', $r->search);
+                     $q->orWhere('email', $r->search);
+                }
+        })->orderBy('id', 'DESC')->paginate(10);
         return response()->json([
             'status' => 200,
-            'data' => User::orderBy('id', 'DESC')->paginate(10),
+            'data' => $users,
         ]);
     }
 
