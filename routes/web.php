@@ -65,6 +65,10 @@ Route::group(['prefix' => 'admin'], function () {
         #Rppearance...
         Route::resource('appearance', 'Panel\AppearanceController', ["as"=>"admin"]);
 
+        #Rppearance menu...
+        Route::resource('menu', 'Panel\MenuController', ["as"=>"admin"]);
+        Route::post('menu-sortable', 'Panel\MenuController@sortable')->name('admin.menu.sortable');
+
         #blog...
         Route::resource('blog', 'Panel\BlogController', ["as"=>"admin"]);
 
