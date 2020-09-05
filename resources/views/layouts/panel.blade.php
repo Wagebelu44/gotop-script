@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.css') }}">
     @yield('styles')
 </head>
 
