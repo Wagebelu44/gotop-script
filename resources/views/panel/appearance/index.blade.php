@@ -93,6 +93,7 @@
                                 <div class="form-group">
                                     <label class="control-label" for="createpageform-url">URL</label>
                                     <div class="input-group">
+                                        <span class="input-group-addon" for="page_url">{{ URL::to('/') }}</span>
                                         <input type="text" id="page_url" class="form-control" name="page_url" value="{{ old('page_url', isset($data) ? $data->url : '') }}">
                                         @error('page_url')
                                         <span role="alert">
@@ -116,8 +117,9 @@
 
                                         <div class="appearance-seo__block-title">Search engine listing preview</div>
 
-                                        <div class="seo-preview">
+                                        <div class="seo-preview" style="margin-top: 30px;">
                                             <div class="seo-preview__title edit-seo__title"></div>
+                                            <div class="seo-preview-url">{{ URL::to('/') }}<span class="edit-seo__url"></span></div>
                                             <div class="seo-preview__description edit-seo__meta"></div>
                                         </div>
 
@@ -125,7 +127,7 @@
 
                                     <div class="appearance-seo__block-collapse collapse in" id="collapse-languages-seo" aria-expanded="true">
 
-                                        <div class="form-group">
+                                        <div class="form-group" style="margin-top: 20px;">
                                             <label class="control-label" for="seo_title">Page title</label>
                                             <input type="text" id="seo_title" class="form-control" name="seo_title" value="{{ old('seo_title', isset($data) ? $data->page_title : '') }}">
                                         </div>
