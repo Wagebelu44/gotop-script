@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel\Setting;
 
 use App\Http\Controllers\Controller;
 use App\Models\SettingNotification;
+use App\Models\StaffEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,8 @@ class NotificationController extends Controller
             SettingNotification::where('panel_id', Auth::user()->panel_id)->delete();
             SettingNotificationTableSeeder();
         }
-        return view('panel.settings.notifications', compact('data', 'page'));
+        $staffEmails = StaffEmail::where('panel_id', Auth::user()->panel_id)->get();
+        return view('panel.settings.notifications', compact('data', 'page', 'staffEmails'));
     }
 
     public function edit($id){

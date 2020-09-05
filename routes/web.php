@@ -95,6 +95,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('admin.setting.module.edit');
 
             Route::resource('notification', 'Panel\Setting\NotificationController', ["as"=>"admin.setting"]);
+            Route::resource('staff-email', 'Panel\Setting\StaffEmailController', ["as"=>"admin.setting"]);
 
             Route::resource('bonuses', 'Panel\Setting\BonusesController', ["as"=>"admin.setting"]);
 
