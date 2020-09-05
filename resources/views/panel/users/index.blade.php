@@ -138,7 +138,7 @@
                         <div class="modal bs-example-modal-lg" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
-                                    <form  id="user-form" method="post" action="" enctype="multipart/form-data">
+                                    <form  id="user-form" method="post" action="" @submit.prevent="saveUserInfo">
                                         @csrf
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="userModalLabel">Add user</h4>
@@ -146,20 +146,20 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-group">
-                                                <input type="email" name="email" class="form-control custom-form-control @error('email') is-invalid @enderror" placeholder="Email" value="{{ old('email') }}" required data-validation-required-message="This field is required">
+                                                <input type="email" name="email" v-model="formUser.email" class="form-control custom-form-control" placeholder="Email"  required />
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" name="username" class="form-control custom-form-control @error('username') is-invalid @enderror" placeholder="Username" value="{{ old('username') }}">
+                                                <input type="text" name="username" v-model="formUser.username" class="form-control custom-form-control" placeholder="Username" />
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" name="skype_name" class="form-control custom-form-control @error('skype_name') is-invalid @enderror" placeholder="Skype" value="{{ old('skype_name') }}">
+                                                <input type="text" name="skype_name" v-model="formUser.skype_name" class="form-control custom-form-control" placeholder="Skype" />
                                             </div>
                                             <div class="form-group">
-                                                <input type="password" name="password" class="form-control custom-form-control @error('password') is-invalid @enderror" placeholder="Password">
+                                                <input type="password" name="password" v-model="formUser.password" class="form-control custom-form-control" placeholder="Password">
                                             </div>
                                             <div class="form-group">
                                                 <div class="controls">
-                                                    <input type="password" name="password_confirmation" class="form-control custom-form-control " placeholder="Confirm Password">
+                                                    <input type="password" name="password_confirmation" v-model="formUser.password_confirmation" class="form-control custom-form-control " placeholder="Confirm Password">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -168,15 +168,15 @@
                                             </div>
                                             <div class="form-group">
                                                 <div class="custom-control custom-radio custom-control-inline mt-1">
-                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation1" value="pending" required="" {{ old('status') == 'pending' ? 'checked' : '' }}>
+                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation1" v-model="formUser.status"  value="pending" required="" />
                                                     <label class="custom-control-label" for="customControlValidation1">Pending</label>
                                                 </div>
                                                 <div class="custom-control custom-radio custom-control-inline mt-1">
-                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation2" value="active" required="" {{ old('status') == 'active' ? 'checked' : '' }}>
+                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation2"  v-model="formUser.status"  value="active" required="" />
                                                     <label class="custom-control-label" for="customControlValidation2">Active</label>
                                                 </div>
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation3" value="inactive" required="" {{ old('status') == 'inactive' ? 'checked' : '' }}>
+                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation3"  v-model="formUser.status"  value="inactive" required="" />
                                                     <label class="custom-control-label" for="customControlValidation3">Inactive</label>
                                                 </div>
                                             </div>
