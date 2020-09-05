@@ -17,11 +17,6 @@ class MenuController extends Controller
         return view('panel.appearance.menu.index', compact('pages', 'menus'));
     }
 
-    public function create()
-    {
-
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -34,20 +29,15 @@ class MenuController extends Controller
         endif;
 
         Menu::create([
-            'panel_id'=> Auth::user()->panel_id,
-            'menu_name'=> $request->menu_name,
-            'external_link'=> $external_url,
-            'menu_link_id'=> $request->menu_link,
-            'menu_link_type' => $request->menu_type == 1 ? 'YES' : 'NO',
-            'created_at' => Auth::user()->id
+            'panel_id'          => Auth::user()->panel_id,
+            'menu_name'         => $request->menu_name,
+            'external_link'     => $external_url,
+            'menu_link_id'      => $request->menu_link,
+            'menu_link_type'    => $request->menu_type == 1 ? 'YES' : 'NO',
+            'created_at'        => Auth::user()->id
         ]);
 
         return redirect()->back()->with('success', 'Menu save successfully!');
-    }
-
-    public function show($id)
-    {
-
     }
 
     public function edit($id)
@@ -66,27 +56,21 @@ class MenuController extends Controller
         ]);
 
         $external_url = '';
-        if ($request->menu_link == 0) :
+        if ($request->menu_link == 0){
             $external_url = $request->external_url;
-        endif;
+        }
 
         Menu::find($id)->update([
-            'panel_id'=> Auth::user()->panel_id,
-            'menu_name'=> $request->menu_name_edit,
-            'external_link'=> $external_url,
-            'menu_link_id'=> $request->menu_link_edit,
-            'updated_at' => Auth::user()->id
+            'panel_id'       => Auth::user()->panel_id,
+            'menu_name'      => $request->menu_name_edit,
+            'external_link'  => $external_url,
+            'menu_link_id'   => $request->menu_link_edit,
+            'updated_at'     => Auth::user()->id
         ]);
 
         return redirect()->back()->with('success', 'Menu update successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $data = Menu::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();

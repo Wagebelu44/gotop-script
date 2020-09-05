@@ -46,11 +46,6 @@ class AppearanceController extends Controller
         return redirect()->back()->with('success', 'Appearance Post save successfully !!');
     }
 
-    public function show($id)
-    {
-        //
-    }
-
     public function edit($id)
     {
         $data = Page::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
@@ -78,13 +73,9 @@ class AppearanceController extends Controller
             'page_title'        => $request->seo_title,
             'meta_keyword'      => $request->seo_keywords,
             'meta_description'  => $request->seo_description,
-            'created_by'        => Auth::user()->id,
+            'updated_by'        => Auth::user()->id,
         ]);
         return redirect()->back()->with('success', 'Appearance Post update successfully !!');
     }
 
-    public function destroy($id)
-    {
-        //
-    }
 }
