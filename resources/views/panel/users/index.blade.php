@@ -101,10 +101,10 @@
                                                         @csrf
                                                         @method('patch')
                                                     </form>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Edit user</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editUser(user.id)">Edit user</a>
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Set password</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">User</a>
+                                                  {{--   <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates</a> --}}
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Suspend User</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -119,7 +119,7 @@
                             <div class="col-md-6">
                                 <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getUsers()"></data-pagination>
                             </div>
-                            <div class="col-md-6 text-right">
+                            {{-- <div class="col-md-6 text-right">
                                 <span>Record per page</span>
                                 <form action="" id="show_per_page" method="get" class="d-inline">
                                     <select name="page_size" id="page_size">
@@ -129,7 +129,7 @@
                                         <option value="1000">1000</option>
                                     </select>
                                 </form>
-                            </div>
+                            </div> --}}
                         </div>
                         
 
@@ -138,10 +138,10 @@
                         <div class="modal bs-example-modal-lg" id="userModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
-                                    <form  id="user-form" method="post" action="" @submit.prevent="saveUserInfo">
+                                    <form  id="user-form" method="post" @submit.prevent="formFunc">
                                         @csrf
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="userModalLabel">Add user</h4>
+                                        <h4 class="modal-title" id="userModalLabel">Add user</h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
@@ -179,6 +179,13 @@
                                                     <input type="radio" name="status" class="custom-control-input" id="customControlValidation3"  v-model="formUser.status"  value="inactive" required="" />
                                                     <label class="custom-control-label" for="customControlValidation3">Inactive</label>
                                                 </div>
+                                            </div>
+                                            <div v-if="validationErros.length>0" v-for="err in validationErros" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                    <span class="sr-only">Close</span>
+                                                </button>
+                                                <strong>@{{err.name}}</strong> @{{err.desc}}.
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -386,4 +393,11 @@
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/user-vue.js')}}"></script>
+
+<script>
+    $('#userModal').on('hidden.bs.modal', function () {
+        userModule.edit_user_id = null;
+        userModule.formClear();
+    });
+</script>
 @endsection

@@ -1,4 +1,4 @@
-new Vue({
+const userModule = new Vue({
     el: '#user_panel_module',
     data: {
         users: null,
@@ -14,6 +14,9 @@ new Vue({
             status: '',
             balance: 0.00,
         },
+        validationErros: [],
+        edit_user_id: null,
+        formFunc: null,
     },
     created () {
         let myUrl = new URL (window.location.href);
@@ -23,6 +26,9 @@ new Vue({
     },
     mounted () {
         this.getUsers();
+    },
+    updated () {
+        this.formFunc =  this.edit_user_id===null? this.saveUserInfo:this.updateUser;
     },
     methods: {
         getUsers(page=1)
@@ -53,7 +59,12 @@ new Vue({
                 credentials: "same-origin",
                 method: "POST",
                 body: JSON.stringify(this.formUser)
-            }).then(res=>res.json())
+            }).then(res=> {
+                if (!res.ok) {
+                    throw res;
+                }
+                return res.json();
+            })
             .then(res=>{
                 if (res.status) 
                 {
@@ -61,6 +72,17 @@ new Vue({
                     this.formClear();
                     $("#userModal").modal('hide');
                 }
+            })
+            .catch(res=>{
+                res.text().then(err=>{
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                });
             });
         },
         formClear()
@@ -75,6 +97,73 @@ new Vue({
                 password_confirmation: '',
                 status: '',
             };
+        },
+        editUser(id)
+        {
+            fetch(base_url+'/admin/users/'+id).then(res=> {
+                if (!res.ok) {
+                    throw res;
+                }
+                return res.json();
+            })
+            .then(res=>{
+                $("#userModal").modal('show');
+                this.formUser = res;
+                this.edit_user_id = res.id;
+            })
+            .catch(res=>{
+                res.text().then(err=>{
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                });
+            });
+        },
+        updateUser()
+        {
+            fetch(base_url+'/admin/users/'+this.edit_user_id, {
+                headers: {
+                    "Accept": "application/json, text/plain, */*'",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
+                    "Content-Type": "application/json, text/plain, */*'",
+                },
+                credentials: "same-origin",
+                method: "PUT",
+                body: JSON.stringify(this.formUser)
+            }).then(res=> {
+                if (!res.ok) {
+                    throw res;
+                }
+                return res.json();
+            })
+            .then(res=>{
+                if (res.status) 
+                {
+                    this.users = this.users.map(item=>{
+                        if (item.id === res.data.id) {
+                            return res.data;
+                        }
+                        return item;
+                    });
+                    this.formClear();
+                    $("#userModal").modal('hide');
+                }
+            })
+            .catch(res=>{
+                res.text().then(err=>{
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                });
+            });
         }
     }
 
