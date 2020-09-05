@@ -119,4 +119,28 @@ class UserController extends Controller
     {
         //
     }
+
+
+
+    public function updatePassword(Request $request)
+    {
+        $credentials = $request->only('user_id', 'password', 'password_confirmation');
+        $rules = [
+            'user_id'    => 'required',
+            'password'    => 'required|string|min:8|confirmed',
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
+        }
+        try {
+            $user = User::where('id', $credentials['user_id'])->update([
+                'password' => Hash::make($credentials['password'])
+            ]);
+            return response()->json(['status' => true, 'data'=> null], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
+        }
+
+    }
 }

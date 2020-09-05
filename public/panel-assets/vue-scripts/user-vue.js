@@ -192,12 +192,6 @@ const userModule = new Vue({
                         }
                         return item;
                     });
-                    /* if (res.status) 
-                    {
-                        this.users.unshift(res.data);
-                        this.formClear();
-                       
-                    } */
                 })
                 .catch(res=>{
                     console.log(res);
@@ -212,6 +206,52 @@ const userModule = new Vue({
                     }); */
                 });
             }
+        },
+        customeRate()
+        {
+            alert('not yet implemented');
+        },
+
+        resetPassword(user_id)
+        {
+            this.edit_user_id = user_id;
+            $('#passwordUpdateModal').modal('show');
+        },
+        updatePassword()
+        {
+            let formD = new FormData(document.getElementById('password-update-form'));
+            fetch(base_url+'/admin/updatePassword/', {
+                headers: {
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
+                },
+                credentials: "same-origin",
+                method: "POST",
+                body: formD
+            }).then(res=> {
+                if (!res.ok) {
+                    throw res;
+                }
+                return res.json();
+            })
+            .then(res=>{
+                if (res.status) 
+                {
+                    document.getElementById('password-update-form').reset();
+                    $("#passwordUpdateModal").modal('hide');
+                }
+            })
+            .catch(res=>{
+                res.text().then(err=>{
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                });
+            });
         }
     }
 

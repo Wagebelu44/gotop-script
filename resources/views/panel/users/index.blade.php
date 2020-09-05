@@ -91,7 +91,7 @@
                                         <td>@{{user.created_at}}</td>
                                         <td>@{{user.last_login_at}}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" title="Services custom rates">custom rates 2</a>
+                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate" title="Services custom rates">custom rates</a>
                                         </td>
                                         <td>
                                             <div class="btn-group">
@@ -100,7 +100,7 @@
                                                 </button>
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editUser(user.id)">Edit user</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Set password</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="resetPassword(user.id)">Set password</a>
                                                   {{--   <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates</a> --}}
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="suspendUser(user.id)">Suspend User</a>
                                                 </div>
@@ -196,29 +196,38 @@
                             </div>
                             <!-- /.modal-dialog -->
                         </div>
+
+                        {{-- currently not used --}}
                         <div class="modal bs-example-modal-lg" id="passwordUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
-                                    <form  id="password-update-form" method="post" enctype="multipart/form-data" novalidate>
+                                    <form  id="password-update-form" method="post" @submit.prevent="updatePassword">
                                         @csrf
-                                        @method('put')
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="myLargeModalLabel"> <strong>Update password</strong> </h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
+                                            <input type="hidden" name="user_id" v-model="edit_user_id">
                                             <div class="form-group">
-                                                <input type="password" name="password" class="form-control custom-form-control @error('password') is-invalid @enderror" placeholder="Password" required data-validation-required-message="This field is required">
+                                                <input type="password" name="password" class="form-control custom-form-control" placeholder="Password" required />
                                             </div>
                                             <div class="form-group">
-                                                <input type="password" name="password_confirmation" class="form-control custom-form-control" placeholder="Confirm Password" required data-validation-required-message="This field is required">
+                                                <input type="password" name="password_confirmation" class="form-control custom-form-control" placeholder="Confirm Password" required />
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary custom-button"> <i class="fa fa-check"></i> Save</button>
+                                            <button type="submit" class="btn btn-primary custom-button"> <i class="fa fa-check"></i> Change Password</button>
                                             <button type="button" class="btn btn-danger custom-button" data-dismiss="modal">Close</button>
                                         </div>
                                     </form>
+                                    <div v-if="validationErros.length>0" v-for="err in validationErros" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            <span class="sr-only">Close</span>
+                                        </button>
+                                        <strong>@{{err.name}}</strong> @{{err.desc}}.
+                                    </div>
                                 </div>
                                 <!-- /.modal-content -->
                             </div>
@@ -391,11 +400,13 @@
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/user-vue.js')}}"></script>
-
 <script>
     $('#userModal').on('hidden.bs.modal', function () {
         userModule.edit_user_id = null;
         userModule.formClear();
+    });
+    $('#passwordUpdateModal').on('hidden.bs.modal', function () {
+        userModule.edit_user_id = null;
     });
 </script>
 @endsection
