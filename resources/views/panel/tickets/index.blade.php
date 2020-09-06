@@ -41,7 +41,7 @@
                                 <thead>
                                 <tr>
                                     <th><input type="checkbox" name="select_all" onchange="checkAllTicket()"></th>
-                                    <th colspan="7" style="display: none">
+                                    <th colspan="9" style="display: none">
                                         <span id="user-no"></span> tickets selected
                                         <div class="btn-group">
                                             <button type="button" class="btn custom-dropdown-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,7 +70,7 @@
                                             <div class="input-group-append">
                                                 <button class="btn custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status</button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item type-dropdown-item" href="">All</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="{{ route('admin.tickets.index') }}">All</a>
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'pending')">Pending</a>
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'answered')">Answered</a>
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'closed')">Resolved</a>
@@ -88,23 +88,23 @@
                                 <tbody>
                                 @foreach($tickets as $key => $ticket)
                                     <tr>
-                                        <td><input type="checkbox" name="tickets[]" value="{{ $ticket->id }}" class="ticket_check"></td>
+                                        <td><input type="checkbox" name="tickets[]" value="{{ $ticket->id }}" class="ticket_check" onchange="checkTicket()" {{ $ticket->status == 2 ? 'disabled' : '' }}></td>
                                         <td>{{ $ticket->id }}</td>
                                         <td>{{ ucfirst($ticket->subject) }}</td>
                                         <td>{{ ucfirst($ticket->payment_type) }}</td>
                                         <td style="width: 30%">
                                             {!! substr(strip_tags($ticket->description), $limit = 200) !!}
                                             @if (strlen(strip_tags($ticket->description)) > 200)
-                                                <a href="#"
+                                                <a href="{{ route('admin.tickets.show', $ticket->id) }}"
                                                    class="btn btn-link">Read More</a>
                                             @endif
                                         </td>
                                         <td>{{ $ticket->user->name }}</td>
-                                        <td style="width: 15%">
+                                        <td style="width: 10%">
                                             <p style="background-color: {{isset($colors[$ticket->status])?$colors[$ticket->status]['bg']:"#fff"}}; color:#fff; padding: 0px 5px; text-align:center;"> {{ucfirst($ticket->status)}} </p>
                                         </td>
-                                        <td>{{ date('M d, Y h:iA', strtotime($ticket->created_at)) }}</td>
-                                        <td>{{ date('M d, Y h:iA', strtotime($ticket->updated_at)) }}</td>
+                                        <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->created_at)) }}</td>
+                                        <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->updated_at)) }}</td>
                                         <td>
                                             <div class="d-flex">
                                                 <div class="dropdown show goTopDropdown">
@@ -112,16 +112,16 @@
                                                         <i class="fa fa-cog"></i>
                                                     </a>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                        <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
+                                                        <li class="dropdown-submenu" style="cursor: pointer"><a class="dropdown-item dropdown-toggle type-dropdown-item">Change status</a>
                                                             <ul class="dropdown-menu">
-                                                                <li><a href="" class="dropdown-item type-dropdown-item">Pending</a></li>
-                                                                <li><a  href="" class="dropdown-item type-dropdown-item">Answered</a></li>
-                                                                <li><a  href="" class="dropdown-item type-dropdown-item">Closed</a></li>
+                                                                <li><a href="{{route('admin.tickets.status.change', ['status' => 'pending', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Pending</a></li>
+                                                                <li><a  href="{{route('admin.tickets.status.change', ['status' => 'answered', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Answered</a></li>
+                                                                <li><a  href="{{route('admin.tickets.status.change', ['status' => 'closed', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Closed</a></li>
                                                             </ul>
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <a href="" class="btn custom-dropdown-button"><i class="fa fa-eye"></i> </a>
+                                                <a href="{{ route('admin.tickets.show', $ticket->id) }}" class="btn custom-dropdown-button"><i class="fa fa-eye"></i> </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -236,5 +236,89 @@
                 $('#tickets thead > tr').children().eq(1).hide();
             }
         }
+
+        function getCheckedIds()
+        {
+            let allids = [];
+            let cbox = document.querySelectorAll('.ticket_check');
+            for (let index = 0; index < cbox.length; index++) {
+                if (cbox[index].checked) {
+                    allids.push(cbox[index].value);
+                }
+            }
+            return allids;
+        }
+
+        function bulkDelete() {
+            alert('Are you sure you want to delete this ticket?')
+                .then((result) => {
+                if (result.value) {
+                    $('#bulk-delete').append($('.ticket_check')).submit();
+                }
+            });
+        }
+
+
+        function bulkStatusChange(status) {
+
+            const myform = new FormData();
+            myform.append('status', status);
+            myform.append('ids', getCheckedIds());
+            fetch('{{route('admin.tickets.status.changes')}}',
+                {
+                    headers:
+                        {
+                            "Accept": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        },
+                    credentials: "same-origin",
+                    method: "POST",
+                    body: myform,
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw res.json();
+                    }
+                    return res.json();
+                })
+                .then(response => {
+                    alert('Successfully changes status')
+                    setTimeout(()=>{
+                        window.location.reload();
+                    }, 1000);
+
+                }).catch(error => {
+                console.log(error)
+                setTimeout(()=>{
+                    window.location.reload();
+                }, 1000);
+            });
+
+            console.log(allids);
+            //$('#bulk-close').submit();
+        }
+
+        function searchTickets(column, value) {
+            let form = $('#search-form');
+            form.prepend(`<input type="hidden" name="columns[${column}]" value="${value}">`);
+            form.submit();
+        }
+
+        setTimeout(function () {
+            $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
+                if (!$(this).next().hasClass('show')) {
+                    $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
+                }
+                var $subMenu = $(this).next(".dropdown-menu");
+                $subMenu.toggleClass('show');
+
+
+                $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
+                    $('.dropdown-submenu .show').removeClass("show");
+                });
+
+                return false;
+            });
+        }, 5000);
     </script>
 @endsection

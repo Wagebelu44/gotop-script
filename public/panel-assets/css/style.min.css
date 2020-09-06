@@ -94,8 +94,8 @@ ul.list-group {background: none;}
     top: 18px;
 }
 .dropdown-submenu .dropdown-menu {
-    top: -12px;
-    left: 100%;
+    top: -1px;
+    left: -105%;
     margin-left: .1rem;
     margin-right: .1rem;
 }
