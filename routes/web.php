@@ -2,16 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+//Test Route::START
+Route::get('command', function () {
+    \Artisan::call('cache:forget spatie.permission.cache');
+    \Artisan::call('cache:clear');
+    \Artisan::call('config:clear');
+    \Artisan::call('route:clear');
+    dd("All clear!");
+});
+//Test Route::END
 
 Route::get('/', 'Web\PageController@index')->name('home');
 
