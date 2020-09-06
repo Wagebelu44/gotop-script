@@ -1,5 +1,4 @@
 @extends('layouts.panel')
-
 @section('content')
     <div class="container-fluid all-mt-30">
         <div class="row">
@@ -9,11 +8,9 @@
                         <form  id="service_type_filter_form" action=""  method="get" >
                             <input type="hidden" name="serviceTypefilter">
                         </form>
-
                         <form action="" method="get" id="status_type_filter_form">
                             <input type="hidden" name="status">
                         </form>
-
                         <div class="__table-container" id="serviceApp">
                             <div class="overlay-loader">
                                 <div class="loader-holder">
@@ -851,13 +848,9 @@
                                                                 <a class="dropdown-item type-dropdown-item">Edit service</a>
                                                                 <a class="dropdown-item type-dropdown-item">Edit service</a>
                                                             <a class="dropdown-item type-dropdown-item">Edit description</a>
-
                                                             <a class="dropdown-item type-dropdown-item" id="sStatusAction">Active service</a>
-
                                                             <a class="dropdown-item type-dropdown-item">Reset custom rates</a>
-
                                                             <a class="dropdown-item type-dropdown-item" href="">Delete service</a>
-
                                                             <a class="dropdown-item type-dropdown-item">Duplicate</a>
                                                         </div>
                                                     </div>
@@ -873,4 +866,8 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
+    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js')}}"></script>
 @endsection
