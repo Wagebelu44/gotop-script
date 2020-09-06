@@ -44,8 +44,8 @@ class CreateOrdersTable extends Migration
             $table->enum('status', ['awaiting', 'processing', 'inprogress', 'completed', 'pending', 'partial', 'cancelled', 'failed', 'error'])->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

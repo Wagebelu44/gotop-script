@@ -25,7 +25,6 @@ class TicketController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
 
         $this->validate($request, [
             'subject' => 'required',
@@ -33,32 +32,30 @@ class TicketController extends Controller
         ]);
 
         $s_ids = null;
-        if (isset($data['order_ids'])) {
-            $s_ids = $data['order_ids'];
-        }elseif (isset($data['transaction_id'])) {
-            $s_ids = $data['transaction_id'];
+        if (isset($request->order_ids)) {
+            $s_ids = $request->order_ids;
+        }elseif (isset($request->transaction_id)) {
+            $s_ids = $request->transaction_id;
         }
-
         $payment_types = null;
-
-        if (isset($data['order_types'])) {
-            $payment_types = $data['order_types'];
-        }elseif (isset($data['payment_types'])) {
-            $payment_types = $data['payment_types'];
+        if (isset($request->order_types)) {
+            $payment_types = $request->order_types;
+        }elseif (isset($request->payment_types)) {
+            $payment_types = $request->payment_types;
         }
 
         $ticketsData = [];
-        foreach ($data['user_id'] as $key => $user_id) {
+        foreach ($request->user_id as $key => $user_id) {
             $ticketsData[] = [
-                'panel_id'      => Auth::user()->panel_id,
-                'subject' => $data['subject'],
-                'subject_ids' => $s_ids,
-                'payment_type' => $payment_types,
-                'description' => $data['message'],
-                'user_id' => $user_id,
-                'send_by' => Auth::user()->id,
-                'sender_role' => 'reseller',
-                'status' => 'pending',
+                'panel_id'       => Auth::user()->panel_id,
+                'subject'        => $request->subject,
+                'subject_ids'    => $s_ids,
+                'payment_type'   => $payment_types,
+                'description'    => $request->message,
+                'user_id'        => $user_id,
+                'send_by'        => Auth::user()->id,
+                'sender_role'    => 'reseller',
+                'status'         => 'pending',
                 'created_by'     => Auth::user()->id,
             ];
         }
@@ -66,9 +63,7 @@ class TicketController extends Controller
         $s_tickets = Ticket::insert($ticketsData);
         if ($s_tickets) {
             return redirect()->back()->with('success', 'Ticket has been sent');
-        }
-        else
-        {
+        } else {
             return redirect()->back()->with('error', 'There is an error');
         }
     }
