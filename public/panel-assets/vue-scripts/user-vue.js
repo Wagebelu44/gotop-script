@@ -35,18 +35,17 @@ const userModule = new Vue({
         this.formFunc =  this.edit_user_id===null? this.saveUserInfo:this.updateUser;
     },
     methods: {
-        getUsers(page=1)
-        {
+        getUsers(page=1) {
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
-            if (page_number>1) {
+            if (page_number > 1) {
                 const state = { 'page': page_number};
                 const title = '';
                 const url = base_url+'/admin/users'+ page_id;
                 history.pushState(state, title, url)
             }
 
-            if (this.filter.status!=="") {
+            if (this.filter.status !== "") {
                 const state = { 'status': this.filter.status};
                 const title = '';
                 page_id += '&status='+this.filter.status
@@ -54,7 +53,7 @@ const userModule = new Vue({
                 history.pushState(state, title, url)
             }
 
-            if (this.filter.search!=="") {
+            if (this.filter.search !== "") {
                 const state = { 'search': this.filter.search};
                 const title = '';
                 page_id += '&status='+this.filter.search;
@@ -62,14 +61,13 @@ const userModule = new Vue({
                 history.pushState(state, title, url)
             }
             fetch(base_url+'/admin/getusers'+ page_id)
-            .then(res=>res.json())
-            .then(res=>{
-                this.users = res.data.data;
-                this.pagination = res.data;
-            });
+                .then(res => res.json())
+                .then(res => {
+                    this.users = res.data.data;
+                    this.pagination = res.data;
+                });
         },
-        saveUserInfo()
-        {
+        saveUserInfo() {
             fetch(base_url+'/admin/users', {
                 headers: {
                     "Accept": "application/json, text/plain, */*'",
@@ -79,34 +77,32 @@ const userModule = new Vue({
                 credentials: "same-origin",
                 method: "POST",
                 body: JSON.stringify(this.formUser)
-            }).then(res=> {
+            }).then(res => {
                 if (!res.ok) {
                     throw res;
                 }
                 return res.json();
             })
-            .then(res=>{
-                if (res.status) 
-                {
+            .then(res => {
+                if (res.status) {
                     this.users.unshift(res.data);
                     this.formClear();
                     $("#userModal").modal('hide');
                 }
             })
-            .catch(res=>{
-                res.text().then(err=>{
-                        let errMsgs = Object.entries(JSON.parse(err).errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            this.validationErros.push(obj);
-                        }
+            .catch(res => {
+                res.text().then(err => {
+                    let errMsgs = Object.entries(JSON.parse(err).errors);
+                    for (let i = 0; i < errMsgs.length; i++) {
+                        let obj = {};
+                        obj.name = errMsgs[i][0];
+                        obj.desc = errMsgs[i][1][0];
+                        this.validationErros.push(obj);
+                    }
                 });
             });
         },
-        formClear()
-        {
+        formClear() {
             this.formUser = {
                 panel_id: 1,
                 email: '',
@@ -118,33 +114,31 @@ const userModule = new Vue({
                 status: '',
             };
         },
-        editUser(id)
-        {
-            fetch(base_url+'/admin/users/'+id).then(res=> {
+        editUser(id) {
+            fetch(base_url+'/admin/users/'+id).then(res => {
                 if (!res.ok) {
                     throw res;
                 }
                 return res.json();
             })
-            .then(res=>{
+            .then(res => {
                 $("#userModal").modal('show');
                 this.formUser = res;
                 this.edit_user_id = res.id;
             })
-            .catch(res=>{
+            .catch(res => {
                 res.text().then(err=>{
-                        let errMsgs = Object.entries(JSON.parse(err).errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            this.validationErros.push(obj);
-                        }
+                    let errMsgs = Object.entries(JSON.parse(err).errors);
+                    for (let i = 0; i < errMsgs.length; i++) {
+                        let obj = {};
+                        obj.name = errMsgs[i][0];
+                        obj.desc = errMsgs[i][1][0];
+                        this.validationErros.push(obj);
+                    }
                 });
             });
         },
-        updateUser()
-        {
+        updateUser() {
             fetch(base_url+'/admin/users/'+this.edit_user_id, {
                 headers: {
                     "Accept": "application/json, text/plain, */*'",
@@ -154,16 +148,15 @@ const userModule = new Vue({
                 credentials: "same-origin",
                 method: "PUT",
                 body: JSON.stringify(this.formUser)
-            }).then(res=> {
+            }).then(res => {
                 if (!res.ok) {
                     throw res;
                 }
                 return res.json();
             })
-            .then(res=>{
-                if (res.status) 
-                {
-                    this.users = this.users.map(item=>{
+            .then(res => {
+                if (res.status) {
+                    this.users = this.users.map(item => {
                         if (item.id === res.data.id) {
                             return res.data;
                         }
@@ -173,23 +166,20 @@ const userModule = new Vue({
                     $("#userModal").modal('hide');
                 }
             })
-            .catch(res=>{
-                res.text().then(err=>{
-                        let errMsgs = Object.entries(JSON.parse(err).errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            this.validationErros.push(obj);
-                        }
+            .catch(res => {
+                res.text().then(err => {
+                    let errMsgs = Object.entries(JSON.parse(err).errors);
+                    for (let i = 0; i < errMsgs.length; i++) {
+                        let obj = {};
+                        obj.name = errMsgs[i][0];
+                        obj.desc = errMsgs[i][1][0];
+                        this.validationErros.push(obj);
+                    }
                 });
             });
         },
-
-        suspendUser(user_id)
-        {
-            if (confirm('Are you sure?')) 
-            {
+        suspendUser(user_id) {
+            if (confirm('Are you sure?')) {
                 fetch(base_url+'/admin/suspendUser', {
                     headers: {
                         "Accept": "application/json, text/plain, */*'",
@@ -199,46 +189,42 @@ const userModule = new Vue({
                     credentials: "same-origin",
                     method: "POST",
                     body: JSON.stringify({user_id: user_id})
-                }).then(res=> {
+                }).then(res => {
                     if (!res.ok) {
                         throw res;
                     }
                     return res.json();
                 })
-                .then(res=>{
-                    this.users = this.users.map(item=>{
+                .then(res => {
+                    this.users = this.users.map(item => {
                         if (item.id === res.data.id) {
                             return res.data;
                         }
                         return item;
                     });
                 })
-                .catch(res=>{
+                .catch(res => {
                     console.log(res);
-                  /*   res.text().then(err=>{
-                            let errMsgs = Object.entries(JSON.parse(err).errors);
-                            for (let i = 0; i < errMsgs.length; i++) {
-                                let obj = {};
-                                obj.name = errMsgs[i][0];
-                                obj.desc = errMsgs[i][1][0];
-                                this.validationErros.push(obj);
-                            }
-                    }); */
+                    // res.text().then(err => {
+                    //     let errMsgs = Object.entries(JSON.parse(err).errors);
+                    //     for (let i = 0; i < errMsgs.length; i++) {
+                    //         let obj = {};
+                    //         obj.name = errMsgs[i][0];
+                    //         obj.desc = errMsgs[i][1][0];
+                    //         this.validationErros.push(obj);
+                    //     }
+                    // });
                 });
             }
         },
-        customeRate()
-        {
+        customeRate() {
             alert('not yet implemented');
         },
-
-        resetPassword(user_id)
-        {
+        resetPassword(user_id) {
             this.edit_user_id = user_id;
             $('#passwordUpdateModal').modal('show');
         },
-        updatePassword()
-        {
+        updatePassword() {
             let formD = new FormData(document.getElementById('password-update-form'));
             fetch(base_url+'/admin/updatePassword/', {
                 headers: {
@@ -248,40 +234,36 @@ const userModule = new Vue({
                 credentials: "same-origin",
                 method: "POST",
                 body: formD
-            }).then(res=> {
+            }).then(res => {
                 if (!res.ok) {
                     throw res;
                 }
                 return res.json();
             })
-            .then(res=>{
-                if (res.status) 
-                {
+            .then(res => {
+                if (res.status) {
                     document.getElementById('password-update-form').reset();
                     $("#passwordUpdateModal").modal('hide');
                 }
             })
-            .catch(res=>{
-                res.text().then(err=>{
-                        let errMsgs = Object.entries(JSON.parse(err).errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            this.validationErros.push(obj);
-                        }
+            .catch(res => {
+                res.text().then(err => {
+                    let errMsgs = Object.entries(JSON.parse(err).errors);
+                    for (let i = 0; i < errMsgs.length; i++) {
+                        let obj = {};
+                        obj.name = errMsgs[i][0];
+                        obj.desc = errMsgs[i][1][0];
+                        this.validationErros.push(obj);
+                    }
                 });
             });
         },
-        statusFilter(txt)
-        {
+        statusFilter(txt) {
             this.filter.status = txt;
             this.getUsers();
         }, 
-        searchFilter()
-        {
+        searchFilter() {
             this.getUsers();
         }
     }
-
-})
+});

@@ -6,12 +6,10 @@ Vue.component('data-pagination', {
         }
     },
     methods: {
-        isCurrentPage(page)
-        {
+        isCurrentPage(page) {
             return this.pagination.current_page === page
         },
-        changePage(page) 
-        {
+        changePage(page) {
             if (page > this.pagination.last_page) {
                 page = this.pagination.last_page;
             }
@@ -38,24 +36,24 @@ Vue.component('data-pagination', {
         }
     },
     template: ` <nav aria-label="...">
-                    <ul class="pagination justify-content-center">
-                    <li class="page-item" :class="{ disabled: pagination.current_page <= 1 }">
-                        <a class="page-link" @click.prevent="changePage(1)"  >First page</a>
-                    </li>
-                    <li class="page-item" :class="{ disabled: pagination.current_page <= 1 }">
-                        <a class="page-link" @click.prevent="changePage(pagination.current_page - 1)">Previous</a>
-                    </li>
-                    <li class="page-item" v-for="page in pages"  :key="page" :class="isCurrentPage(page) ? 'active' : ''">
-                        <a class="page-link" @click.prevent="changePage(page)">{{ page }}
-                        <span v-if="isCurrentPage(page)" class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    <li class="page-item" :class="{ disabled: pagination.current_page >= pagination.last_page }">
-                        <a class="page-link" @click.prevent="changePage(pagination.current_page + 1)">Next</a>
-                    </li>
-                    <li class="page-item" :class="{ disabled: pagination.current_page >= pagination.last_page }">
-                        <a class="page-link" @click.prevent="changePage(pagination.last_page)">Last page</a>
-                    </li>
-                    </ul>
-                </nav>`
+            <ul class="pagination justify-content-center">
+            <li class="page-item" :class="{ disabled: pagination.current_page <= 1 }">
+                <a class="page-link" @click.prevent="changePage(1)"  >First page</a>
+            </li>
+            <li class="page-item" :class="{ disabled: pagination.current_page <= 1 }">
+                <a class="page-link" @click.prevent="changePage(pagination.current_page - 1)">Previous</a>
+            </li>
+            <li class="page-item" v-for="page in pages"  :key="page" :class="isCurrentPage(page) ? 'active' : ''">
+                <a class="page-link" @click.prevent="changePage(page)">{{ page }}
+                <span v-if="isCurrentPage(page)" class="sr-only">(current)</span>
+                </a>
+            </li>
+            <li class="page-item" :class="{ disabled: pagination.current_page >= pagination.last_page }">
+                <a class="page-link" @click.prevent="changePage(pagination.current_page + 1)">Next</a>
+            </li>
+            <li class="page-item" :class="{ disabled: pagination.current_page >= pagination.last_page }">
+                <a class="page-link" @click.prevent="changePage(pagination.last_page)">Last page</a>
+            </li>
+            </ul>
+        </nav>`
 });

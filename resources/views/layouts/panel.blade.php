@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('panel-assets/images/favicon.png') }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('panel-assets/images/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/weather-icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/bootstrap.min.css') }}">
@@ -72,14 +72,6 @@
             <div class="scroll-sidebar">
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
-                        {{--<li class="sidebar-item">
-                            <a class="sidebar-link" href="javascript:void(0)"><span class="hide-menu">Dashboards </span></a>
-                            <ul class="collapse first-level">
-                                <li class="sidebar-item"><a href="#" class="sidebar-link"><span class="hide-menu"> Dashboard 1</span></a></li>
-                                <li class="sidebar-item"><a href="#" class="sidebar-link"><span class="hide-menu"> Dashboard 2</span></a></li>
-                            </ul>
-                        </li>--}}
-
                         <li class="sidebar-item {{ Request::routeIs('admin.users*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.users*') ? 'active':'' }}" href="{{ route('admin.users.index') }}">
                                 <span class="hide-menu">Users</span>
@@ -202,7 +194,7 @@
         @endif
 
         /* global instances */
-        window.CSRF_TOKEN = '{{csrf_token()}}';
+        window.CSRF_TOKEN = '{{ csrf_token() }}';
         window.base_url = window.location.origin;
         /* end of global instances */
 
