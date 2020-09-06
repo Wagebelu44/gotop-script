@@ -15,14 +15,17 @@ class CreatePanelAdminsTable extends Migration
     {
         Schema::create('panel_admins', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid');
             $table->unsignedBigInteger('panel_id');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['Admin', 'Staff'])->default('Admin');
+            $table->enum('status', ['Active', 'Suspended'])->default('Active');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

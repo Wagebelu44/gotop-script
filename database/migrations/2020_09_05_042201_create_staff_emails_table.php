@@ -24,8 +24,8 @@ class CreateStaffEmailsTable extends Migration
             $table->enum('new_manual_payout', ['0', '1'])->default('0')->comment('0 = Inactive, 1 = Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

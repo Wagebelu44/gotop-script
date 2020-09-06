@@ -27,8 +27,8 @@ class CreatePagesTable extends Migration
             $table->enum('non_editable', ['yes', 'no'])->default('yes');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

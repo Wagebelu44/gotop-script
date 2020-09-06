@@ -5,28 +5,28 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\PanelAdminResetPasswordNotification;
+use Spatie\Permission\Traits\HasRoles;
+use DateTimeInterface;
 
 class PanelAdmin extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    protected $guard_name = 'admin';
+    protected $dateFormat = 'Y-m-d H:i:s';
+
     protected $fillable = [
-        'panel_id', 'name', 'email', 'password', 'role',
+        'uuid', 'panel_id', 'name', 'email', 'password', 'role', 'status',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 
     //Send password reset notification
     public function sendPasswordResetNotification($token)
