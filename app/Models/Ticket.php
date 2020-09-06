@@ -32,4 +32,9 @@ class Ticket extends Model
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id');
+    }
 }
