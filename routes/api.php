@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/post-log-name', 'Panel\ApiController@logName');
 Route::get('/post-active-log', 'Panel\ApiController@postActiveLog');
+Route::post('/post-permissions', 'Panel\ApiController@postPermissions');
+Route::post('/save-admin-user', 'Panel\ApiController@saveAdminUser');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

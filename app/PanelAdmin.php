@@ -16,7 +16,7 @@ class PanelAdmin extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'panel_id', 'name', 'email', 'password', 'role',
+        'panel_id', 'name', 'email', 'password', 'role', 'status',
     ];
 
     /**

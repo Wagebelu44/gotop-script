@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\PanelAdmin;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\Models\Permission;
 
 class ApiController extends Controller
 {
@@ -50,5 +52,26 @@ class ApiController extends Controller
         
         $activities = $sql->paginate($request->paginate);
         return response()->json($activities);
+    }
+
+    public function postPermissions(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $data = Permission::insert($request->permissions);
+        return response()->json($data);
+    }
+
+    public function saveAdminUser(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $user = PanelAdmin::insert($request->user);
+        $user->assignRole('Super Admin');
+        return response()->json($user);
     }
 }
