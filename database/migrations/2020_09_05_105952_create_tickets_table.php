@@ -19,7 +19,7 @@ class CreateTicketsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('send_by');
             $table->string('sender_role')->nullable();
-            $table->unsignedBigInteger('subject');
+            $table->string('subject');
             $table->string('subject_ids')->nullable();
             $table->string('payment_type')->nullable();
             $table->longText('description')->nullable();

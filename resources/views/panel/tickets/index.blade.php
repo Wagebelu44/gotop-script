@@ -1,6 +1,23 @@
 @extends('layouts.panel')
 
 @section('content')
+    @php
+        $colors = [
+               'pending' => [
+                   'bg'=> "#F68331",
+                   'cl'=> "#000",
+               ] ,
+               'closed' =>[
+                   'bg'=> "#ff0000",
+                   'cl'=> "#000",
+               ],
+               'answered' => [
+                   'bg'=> "#008000",
+                   'cl'=> "#000",
+                ],
+           ];
+    @endphp
+
     <div class="container-fluid all-mt-30">
         <div class="row">
             <div class="col-12">
@@ -42,12 +59,13 @@
                                             </div>
                                         </div>
                                     </th>
+
                                     <th>ID</th>
                                     <th>Subject</th>
                                     <th>Request</th>
                                     <th style="width: 30%">Description</th>
-                                    <th>Client name</th>
-                                    <th>
+                                    <th width="15%">Client name</th>
+                                    <th width="15%">
                                         <div class="input-group">
                                             <div class="input-group-append">
                                                 <button class="btn custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status</button>
@@ -68,80 +86,55 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td><input type="checkbox" name="tickets[]" value="" class="ticket_check"></td>
-                                    <td>112</td>
-                                    <td>Bangla</td>
-                                    <td>Bank</td>
-                                    <td style="width: 30%">
-                                        Description Description
-                                        <a href="" class="btn btn-link">Read More</a>
-                                    </td>
-                                    <td>username</td>
-                                    <td>
-                                        <p style="color:#fff; padding: 0px 5px; text-align:center;">style </p>
-                                    </td>
-                                    <td>10:20 PM</td>
-                                    <td>10:20 PM</td>
-                                    <td>
-                                        <div class="d-flex">
-                                            <div class="dropdown show goTopDropdown">
-                                                <a class="btn btn-default dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-cog"></i>
-                                                </a>
-                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                    <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a href="" class="dropdown-item type-dropdown-item">Pending</a></li>
-                                                            <li><a  href="" class="dropdown-item type-dropdown-item">Answered</a></li>
-                                                            <li><a  href="" class="dropdown-item type-dropdown-item">Closed</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
+                                @foreach($tickets as $key => $ticket)
+                                    <tr>
+                                        <td><input type="checkbox" name="tickets[]" value="{{ $ticket->id }}" class="ticket_check"></td>
+                                        <td>{{ $ticket->id }}</td>
+                                        <td>{{ ucfirst($ticket->subject) }}</td>
+                                        <td>{{ ucfirst($ticket->payment_type) }}</td>
+                                        <td style="width: 30%">
+                                            {!! substr(strip_tags($ticket->description), $limit = 200) !!}
+                                            @if (strlen(strip_tags($ticket->description)) > 200)
+                                                <a href="#"
+                                                   class="btn btn-link">Read More</a>
+                                            @endif
+                                        </td>
+                                        <td>{{ $ticket->user->name }}</td>
+                                        <td style="width: 15%">
+                                            <p style="background-color: {{isset($colors[$ticket->status])?$colors[$ticket->status]['bg']:"#fff"}}; color:#fff; padding: 0px 5px; text-align:center;"> {{ucfirst($ticket->status)}} </p>
+                                        </td>
+                                        <td>{{ date('M d, Y h:iA', strtotime($ticket->created_at)) }}</td>
+                                        <td>{{ date('M d, Y h:iA', strtotime($ticket->updated_at)) }}</td>
+                                        <td>
+                                            <div class="d-flex">
+                                                <div class="dropdown show goTopDropdown">
+                                                    <a class="btn btn-default dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-cog"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a href="" class="dropdown-item type-dropdown-item">Pending</a></li>
+                                                                <li><a  href="" class="dropdown-item type-dropdown-item">Answered</a></li>
+                                                                <li><a  href="" class="dropdown-item type-dropdown-item">Closed</a></li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <a href="" class="btn custom-dropdown-button"><i class="fa fa-eye"></i> </a>
                                             </div>
-                                            <a href="" class="btn custom-dropdown-button"><i class="fa fa-eye"></i> </a>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
+                            {{ $tickets->links() }}
                         </div>
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <table class="table table-bordered table-hover">
-                                    <tr class="text-center">
-                                        <td> < </td>
-                                        <td style="background-color: #2cabe3; color: white">1</td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>4</td>
-                                        <td>5</td>
-                                        <td>6</td>
-                                        <td>7</td>
-                                        <td>...</td>
-                                        <td>9</td>
-                                        <td>10</td>
-                                        <td> > </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <span>Record per page</span>
-                                <form action="" id="show_per_page" method="get" class="d-inline">
-                                    <select name="page_size" id="page_size">
-                                        <option value="100">100</option>
-                                        <option value="200">200</option>
-                                        <option value="500">500</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="text-center mt-4">No data available in table</div>
+                        <!--Ticket add modal-->
                         <div class="modal bs-example-modal-lg" id="ticketAddModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog  __modal_dialog_custom">
                                 <div class="modal-content">
-                                    <form  method="post" id="support_admin_ticket" action="" enctype="multipart/form-data" novalidate>
+                                    <form  method="post" id="support_admin_ticket" action="{{ route('admin.tickets.store') }}" enctype="multipart/form-data" novalidate>
                                         @csrf
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="myLargeModalLabel">Add ticket</h4>
@@ -167,8 +160,15 @@
                                                                 class="form-control custom-form-control select2 @error('user_id') is-invalid @enderror"
                                                                 required data-validation-required-message="This field is required"
                                                                 multiple="multiple">
-                                                            <option value="">username</option>
+                                                                @foreach($users as $key => $user)
+                                                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                                @endforeach
                                                         </select>
+                                                        @error('user_id')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                             </div>
@@ -184,7 +184,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <div class="form-actions">
-                                                <button type="button"  onclick="submit_ticket(this)" class="btn btn-sm btn-primary custom-button"> <i class="fa fa-check"></i> Save</button>
+                                                <button type="submit" class="btn btn-sm btn-primary custom-button"> <i class="fa fa-check"></i> Save</button>
                                             </div>
                                             <button type="button" class="btn  btn-sm btn-danger custom-button" data-dismiss="modal">Close</button>
                                         </div>
@@ -200,4 +200,41 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        function checkAllTicket() {
+            if (event.target.checked) {
+                $('.ticket_check').prop('checked', true);
+                $('#tickets thead > tr > th:not(:first-child)').hide();
+                $('#tickets thead > tr').children().eq(1).show();
+                $('#user-no').text($('.ticket_check').length);
+            } else {
+                $('.ticket_check').prop('checked', false);
+                $('#tickets thead > tr > th').show();
+                $('#tickets thead > tr').children().eq(1).hide();
+            }
+        }
+
+        function checkTicket() {
+            let count = 0;
+
+            $('.ticket_check').each(function () {
+                if (this.checked) {
+                    count += 1;
+                }
+            });
+
+            if (count) {
+                $('input[name=select_all]').prop('checked', true);
+                $('#tickets thead > tr > th:not(:first-child)').hide();
+                $('#tickets thead > tr').children().eq(1).show();
+                $('#user-no').text(count);
+            } else {
+                $('input[name=select_all]').prop('checked', false);
+                $('#tickets thead > tr > th').show();
+                $('#tickets thead > tr').children().eq(1).hide();
+            }
+        }
+    </script>
 @endsection
