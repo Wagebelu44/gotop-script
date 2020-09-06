@@ -2,6 +2,7 @@
 
 use App\PanelAdmin;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PanelAdminSeeder extends Seeder
 {
@@ -13,6 +14,7 @@ class PanelAdminSeeder extends Seeder
     public function run()
     {
         PanelAdmin::create([
+            'uuid' => Str::uuid(),
             'panel_id' => 1,
             'name' => 'Test Admin',
             'email' => 'admin@test.com',

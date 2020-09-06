@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('status')->nullable()->comment("['pending', 'active', 'inactive']");
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

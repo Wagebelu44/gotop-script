@@ -20,6 +20,7 @@ class CreateSettingGeneralsTable extends Migration
             $table->string('logo')->nullable();
             $table->string('favicon')->nullable();
             $table->string('timezone')->nullable();
+            $table->string('currency')->nullable();
             $table->string('currency_format')->nullable();
             $table->string('rates_rounding')->nullable();
             $table->unsignedTinyInteger('ticket_system')->nullable()->comment('0 => Disabled, 1 => Enabled');
@@ -34,6 +35,7 @@ class CreateSettingGeneralsTable extends Migration
             $table->string('drip_feed_interval')->nullable();
             $table->longText('custom_header_code')->nullable();
             $table->longText('custom_footer_code')->nullable();
+            $table->enum('status', ['Active', 'Canceled'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -22,8 +22,8 @@ class CreateBlogSlidersTable extends Migration
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
