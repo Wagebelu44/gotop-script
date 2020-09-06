@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Spatie\Activitylog\Models\Activity;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;

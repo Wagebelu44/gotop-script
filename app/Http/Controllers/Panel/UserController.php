@@ -11,19 +11,20 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
 
-    public function index(Request $r)
+    public function index()
     {
         return view('panel.users.index');
     }
-    public function getUsers(Request $r)
+    public function getUsers(Request $request)
     {
-        $users  = User::where(function($q) use($r) {
-                if (isset($r->status) && $r->status!='') {
-                     $q->where('status', $r->status);
+        $users  = User::where('panel_id', auth()->user()->panel_id)
+                ->where(function($q) use($request) {
+                if (isset($request->status) && $request->status!='') {
+                     $q->where('status', $request->status);
                 }
-                if (isset($r->search) && $r->search!='') {
-                     $q->where('username', $r->search);
-                     $q->orWhere('email', $r->search);
+                if (isset($request->search) && $request->search!='') {
+                     $q->where('username', $request->search);
+                     $q->orWhere('email', $request->search);
                 }
         })->orderBy('id', 'DESC')->paginate(10);
         return response()->json([
@@ -72,7 +73,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        return User::find($id);
+        return User::where('panel_id', auth()->user()->panel_id)->where('id', $id)->first();
     }
 
     public function edit($id)
@@ -93,7 +94,7 @@ class UserController extends Controller
         $user_id = $credentials['user_id'];
 
         try {
-            $user = User::where('id', $user_id)->first();
+            $user = User::where('panel_id', auth()->user()->panel_id)->where('id', $user_id)->first();
             $user->update(['status' => $user->status == 'active' ? 'inactive' : 'active']);
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
@@ -117,7 +118,7 @@ class UserController extends Controller
         } */
         try {
             $data = $request->except('email', 'password','password_confirmation', 'created_at', 'updated_at');
-            $user = User::where('id', $id)->update($data);
+            $user = User::where('panel_id', auth()->user()->panel_id)->where('id', $id)->update($data);
             return response()->json(['status' => true, 'data'=> $request->all()], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
@@ -143,7 +144,7 @@ class UserController extends Controller
             return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
         }
         try {
-            $user = User::where('id', $credentials['user_id'])->update([
+            $user = User::where('panel_id', auth()->user()->panel_id)->where('id', $credentials['user_id'])->update([
                 'password' => Hash::make($credentials['password'])
             ]);
             return response()->json(['status' => true, 'data'=> null], 200);
