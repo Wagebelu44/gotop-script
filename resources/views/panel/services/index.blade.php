@@ -1,4 +1,67 @@
 @extends('layouts.panel')
+@section('styles')
+<link rel="stylesheet" href="https://unpkg.com/vue-select@3.10.3/dist/vue-select.css">
+<style>
+    .style-chooser .vs__search::placeholder,
+    .style-chooser .vs__dropdown-toggle,
+    .style-chooser .vs__dropdown-menu {
+        background: #ffffff;
+        border: 1px solid #d3d3d3;
+        color: #000;
+    }
+    .style-chooser .vs__dropdown-menu li{
+        border: 1px solid #d3d3d331;
+        padding: 8px 5px;
+    }
+    .style-chooser .vs__dropdown-menu li:hover{
+        background-color: #337AB7;
+    }
+
+    .style-chooser .vs__clear,
+    .style-chooser .vs__open-indicator {
+        fill: #394066;
+    }
+    .style-chooser .vs__selected-options{
+        flex-wrap: nowrap;
+    }
+    .switch-custom .switch{position:relative;display:inline-block;width:34px;height:18px;margin-bottom:0;padding-bottom:0}
+    .switch-custom .switch input{display:none}
+    .switch-custom .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#e6e6e6;-webkit-transition:.4s;transition:.4s}
+    .switch-custom .slider:before{position:absolute;content:"";height:14px;width:14px;bottom:2px;left:2px;background-color:#fff;-webkit-transition:.4s;transition:.4s;border-radius: 10px}
+    .switch-custom input:checked+.slider{background-color:#3479b7}
+    .switch-custom input:focus+.slider{box-shadow:0 0 1px #3479b7}
+    .switch-custom input:checked+.slider:before{-webkit-transform:translateX(16px);-ms-transform:translateX(16px);transform:translateX(16px)}
+    .switch-custom input:disabled+.slider{opacity:.3;cursor:no-drop}
+    .switch-custom .slider.round{border-radius:34px}
+    .switch-custom__table .switch{vertical-align:-6px}
+    .round { color: #fff; width: 34px !important;height: 18px !important;display: inline-block;text-align: center;line-height: 28px !important;}
+    .dropdown-submenu {
+        position: relative;
+    }
+    .dropdown-submenu a::after {
+        transform: rotate(270deg);
+        position: absolute;
+        top: 18px;
+    }
+    .dropdown-submenu .dropdown-menu {
+        top: -12px;
+        left: 100%;
+        margin-left: .1rem;
+        margin-right: .1rem;
+    }
+    .sub-price{
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.31);
+    }
+
+    @media (min-width: 576px)
+    {
+        #import .__modal_dialog_custom {
+            max-width: 800px!important;
+        }
+    }
+</style>
+@endsection
 @section('content')
     <div class="container-fluid all-mt-30">
         <div class="row">
@@ -318,16 +381,13 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <div class="controls">
                                                                 <label for="name"> <strong>Category</strong>  </label>
                                                                 <select name="category_id" class="form-control">
                                                                     <option value="" selected>Choose category</option>
-                                                                        <option value="">Category-1</option>
-                                                                        <option value="">Category-2</option>
-                                                                        <option value="">Category-3</option>
+                                                                <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -345,33 +405,47 @@
                                                                         <option>Manual</option>
                                                                     </select>
                                                                 </div>
-                                                                <div class="form-group">
+                                                                <div class="form-group" v-if="services.visibility.provider">
                                                                     <label for=""><strong>Provider</strong></label>
-                                                                    <input type="hidden" name="provider_id">
+                                                                    <v-select :options="providers_lists"
+                                                                                v-model="services.form_fields.provider_id"
+                                                                                class="style-chooser"
+                                                                                :reduce="domain => domain.id" label="domain"></v-select>
+                                                                    <input type="hidden" name="provider_id" v-model="services.form_fields.provider_id">
                                                                 </div>
-                                                                <span style="color: red"></span>
-                                                                <div class="form-group">
+                                                                
+                                                                <span style="color: red" v-if="service_mode == 'Auto' && services.validations.provider_service_not_found !==''">@{{services.validations.provider_service_not_found}}</span>
+                                                                <div class="form-group" v-if="services.visibility.service_id_by_provider">
                                                                     <label for=""><strong>Services</strong></label>
-                                                                    <input type="hidden" name="provider_service_id">
+                                                                    <v-select :options="provider_services_computed"
+                                                                                class="style-chooser"
+                                                                                v-model="services.form_fields.provider_service_id"
+                                                                                :reduce="services => services.id" label="display_name"></v-select>
+                                                                    <input type="hidden" name="provider_service_id" v-model="services.form_fields.provider_service_id">
+                                                                  
                                                                 </div>
-                                                                <input type="hidden" name="service_type">
-                                                                <input type="hidden" name="provider_selected_service_data">
-                                                                <div class="form-group">
+                                                                <input type="hidden" name="service_type"  v-if="!services.visibility.service_type" v-model="service_type_selected">
+                                                                <input type="hidden" name="provider_selected_service_data" :value="JSON.stringify(this.provider_service_selected)">
+                                                                <div class="form-group" v-if="services.visibility.service_type">
                                                                     <label for=""><strong>Service Type</strong></label>
-                                                                    <select name="service_type" id="service_type" class="form-control">
-                                                                        <option>dfdfdff</option>
+                                                                    <select name="service_type" id="service_type"
+                                                                            class="form-control" v-model="service_type_selected">
+                                                                        <option v-for="st in service_type">@{{ st }}</option>
                                                                     </select>
                                                                 </div>
-                                                                <div class="form-group">
+                                                                <div class="form-group" v-if="services.visibility.drip_feed">
                                                                     <label for=""><strong>Drip Feed</strong></label>
-                                                                    <select name="drip_feed_status" id="drip_feed_status" class="form-control">
+                                                                    <select name="drip_feed_status" id="drip_feed_status"
+                                                                            class="form-control"
+                                                                            v-model="services.form_fields.drip_feed_status">
                                                                         <option>Allow</option>
                                                                         <option>Disallow</option>
                                                                     </select>
                                                                 </div>
-                                                                <div class="form-group">
+                                                                <div class="form-group" v-if="services.visibility.re_fill">
                                                                     <label for=""><strong>Re-Fill</strong></label>
-                                                                    <select name="refill_status" id="refill_status" class="form-control">
+                                                                    <select name="refill_status" id="refill_status" class="form-control"
+                                                                            v-model="services.form_fields.refill_status">
                                                                         <option>Allow</option>
                                                                         <option>Disallow</option>
                                                                     </select>
@@ -381,8 +455,8 @@
                                                     </div>
                                                 </div>
                                                 <label for=""> <strong>Rate Per 1000</strong></label>
-                                                <div class="row auto-mode-input-field">
-                                                    <div class="col-11 d-flex">
+                                                <div class="row auto-mode-input-field" v-if="service_mode == 'Auto'  && services.form_fields.provider_service_id != null">
+                                                    <div class="col-11 d-flex" v-if="services.visibility.auto_per_rate">
                                                         <div class="form-group">
                                                             <label for=""> Fixed 1.0</label>
                                                             <input type="text" v-model="auto_price_plus" class="form-control" placeholder="0" aria-describedby="helpId">
@@ -393,20 +467,20 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <div class="price_box">
-                                                                <span>222</span>
-                                                                <span>555 USD</span>
-                                                                <input type="hidden" name="price">
+                                                                <span>@{{services.form_fields.price}}</span>
+                                                                <span>@{{services.form_fields.price_original}} USD</span>
+                                                                <input type="hidden" name="price" v-model="services.form_fields.price">
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-11" v-else>
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" name="price">
-                                                            <label for="">999 USD</label>
+                                                            <input type="text" class="form-control" name="price" v-model="services.form_fields.price">
+                                                            <label for="">@{{services.form_fields.price_original}} USD</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-1">
-                                                        <div class="setting-switch setting-switch-table">
+                                                        <div class="switch-custom switch-custom__table">
                                                             <label class="switch">
                                                                 <input type="checkbox" class="toggle-page-visibility"  v-model="auto_per_rate_toggler" >
                                                                 <span class="slider round"></span>
@@ -414,14 +488,15 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <div class="row">
+                    
+                                                <div class="row" v-else>
                                                     <div class="col-12">
                                                         <div class="form-group">
-                                                            <input type="text" name="price" class="form-control" placeholder="Price">
+                                                            <input type="text" name="price" class="form-control"
+                                                                    v-model="services.form_fields.price" placeholder="Price">
                                                         </div>
-                                                        <div class="price_validation_messages">
-                                                            <p class="text-danger">dfdfdfdfdfd</p>
+                                                        <div class="price_validation_messages" v-if='services.validations.price.visibility' >
+                                                            <p class="text-danger">@{{services.validations.price.msg}}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -429,16 +504,16 @@
                                                 <div class="row mt-3 mb-3">
                                                     <div class="col-md-6">
                                                         <label for=""><strong>Min Order</strong></label>
-                                                        <div class="row order_limit">
+                                                        <div class="row order_limit" v-if="service_mode == 'Auto'  && services.form_fields.provider_service_id != null">
                                                             <div class="col-5">
                                                                 <div class="form-group">
-                                                                    <input type="text" class="form-control" name="min_quantity">
-                                                                    <label for="">7676 USD</label>
+                                                                    <input type="text" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
+                                                                    <label for="">@{{services.form_fields.auto_min_quantity}} USD</label>
                                                                 </div>
-                                                                <div class="overlay"></div>
+                                                                <div class="overlay" v-if="auto_min_rate_toggler"></div>
                                                             </div>
                                                             <div class="col-1">
-                                                                <div class="setting-switch setting-switch-table">
+                                                                <div class="switch-custom switch-custom__table">
                                                                     <label class="switch">
                                                                         <input type="checkbox" class="toggle-page-visibility"  v-model="auto_min_rate_toggler" >
                                                                         <span class="slider round"></span>
@@ -449,29 +524,37 @@
                                                         <div  v-else >
                                                             <div class="form-group">
                                                                 <div class="controls">
-                                                                    <input type="text" name="min_quantity" class="form-control" placeholder="Min quantity"/>
+                                                                    <input type="text" name="min_quantity"
+                                                                            class="form-control"
+                                                                            placeholder="Min quantity"
+                                                                            v-model="services.form_fields.min_quantity"
+                                                                            :class="{disabled :services.disable.min}"
+                                                                            :disabled="services.disable.min"
+                                                                    />
                                                                 </div>
                                                             </div>
-                                                            <div class="price_validation_messages">
-                                                                <p class="text-danger">fgdfgdfgdfgfg</p>
+                                                            <div class="price_validation_messages" v-if='services.validations.minQuantity.visibility' >
+                                                                <p class="text-danger">@{{services.validations.minQuantity.msg}}</p>
                                                             </div>
                                                         </div>
+                    
+                    
                                                     </div>
-
+                    
                                                     <div class="col-md-6">
                                                         <label for=""><strong>Max Order</strong></label>
-                                                        <div class="row order_limit">
+                                                        <div class="row order_limit" v-if="service_mode == 'Auto'  && services.form_fields.provider_service_id != null">
                                                             <div class="col-5">
                                                                 <div class="form-group">
-                                                                    <input type="text" class="form-control">
-                                                                    <label for="">6565 USD</label>
+                                                                    <input type="text" class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
+                                                                    <label for="">@{{services.form_fields.auto_max_quantity}} USD</label>
                                                                 </div>
-                                                                <div class="overlay"></div>
+                                                                <div class="overlay" v-if="auto_max_rate_toggler"></div>
                                                             </div>
                                                             <div class="col-1">
-                                                                <div class="setting-switch setting-switch-table">
+                                                                <div class="switch-custom switch-custom__table">
                                                                     <label class="switch">
-                                                                        <input type="checkbox" class="toggle-page-visibility">
+                                                                        <input type="checkbox" class="toggle-page-visibility"  v-model="auto_max_rate_toggler" >
                                                                         <span class="slider round"></span>
                                                                     </label>
                                                                 </div>
@@ -480,12 +563,28 @@
                                                         <div v-else>
                                                             <div class="form-group">
                                                                 <div class="controls">
-                                                                    <input type="text" name="max_quantity" class="form-control" placeholder="Max quantity"/>
+                    
+                                                                    <input type="text" name="max_quantity"
+                                                                            class="form-control"
+                                                                            placeholder="Max quantity"
+                                                                            v-model="services.form_fields.max_quantity"
+                                                                            :class="{disabled :services.disable.max}"
+                                                                            :disabled="services.disable.max"
+                                                                    />
                                                                 </div>
                                                             </div>
-                                                            <div class="price_validation_messages">
-                                                                <p class="text-danger">fghdfgdfgdfgdf</p>
+                                                            <div class="price_validation_messages" v-if='services.validations.maxQuantity.visibility' >
+                                                                <p class="text-danger">@{{services.validations.maxQuantity.msg}}</p>
                                                             </div>
+                                                        </div>
+                    
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label for=""> <strong>Average Time</strong></label>
+                                                            <input type="text" name="service_average_time" v-model="services.form_fields.service_average_time" class="form-control">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -493,32 +592,37 @@
                                                     <div class="col-12">
                                                         <div class="form-group">
                                                             <label for=""> <strong>Link duplicates</strong></label>
-                                                            <select name="link_duplicates" id="link_duplicates" class="form-control">
+                                                            <select name="link_duplicates" id="link_duplicates" class="form-control"
+                                                                    v-model="link_duplicate_selected">
                                                                 <option>Allow</option>
                                                                 <option>Disallow</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                 </div>
-
+                    
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="form-group">
-                                                            <label > <strong>Increment</strong><span class="fa fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Restricted to accept quantity. Multiple of setted value"></span></label>
-                                                            <input type="text" class="form-control" name="increment">
+                                                            <label > <strong>Increment</strong>    <span class="fa fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Restricted to accept quantity. Multiple of setted value"></span></label>
+                                                            {{-- <label for=""> Increment <i class="fas fa-info-circle"></i> </label> --}}
+                                                            <input type="text" class="form-control" name="increment"
+                                                                    v-model="services.form_fields.increment">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
+                                                <div class="row" v-if="services.visibility.overflow">
                                                     <div class="col-12">
                                                         <div class="form-group">
                                                             <label for=""> <strong>Overflow</strong>  </label>
-                                                            <input type="text" class="form-control" name="auto_overflow">
+                                                            <input type="text"
+                                                                    v-model="services.form_fields.auto_overflow"
+                                                                    class="form-control" name="auto_overflow">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="error-display">
-                                                    <p class="error-display-item" v-for="errC in errors.category">dfgdfgdfgfg</p>
+                                                <div v-if="errors.category.length != 0" class="error-display">
+                                                    <p class="error-display-item" v-for="errC in errors.category"> @{{ errC.desc }}</p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -694,11 +798,11 @@
                             </div>
                             <div class="__control_panel">
                                 <div class="__left_control_panel">
-                                    <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#serviceAddModal" type="button">Add Service</button>
-                                    <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#serviceDescription" type="button">Add Subscription</button>
+                                    <button class="btn btn-outline-secondary"  type="button" @click="serviceModalToggle">Add Service</button>
+                                    <button class="btn btn-outline-secondary" type="button" @click="openSubscriptionModal()">Add Subscription</button>
                                     <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModalCenter">Create Category</button>
-                                    <div class="d-inline service-checkbox-action">
-                                        <span>service selected</span>
+                                    <div v-if="service_checkbox.length >0" class="d-inline service-checkbox-action">
+                                        <span>service selected @{{ service_checkbox.length }}</span>
                                         <div class="dropdown __dropdown_buttons service_action">
                                             <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton"
                                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
