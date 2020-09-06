@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.css') }}">
     @yield('styles')
     <style>
         .radio-ml{
@@ -199,6 +200,11 @@
         @elseif(session('error'))
             toastr["error"]('{{ session('error') }}');
         @endif
+
+        /* global instances */
+        window.CSRF_TOKEN = '{{csrf_token()}}';
+        window.base_url = window.location.origin;
+        /* end of global instances */
 
         $('.summernote').summernote({
             height: 200, // set editor height

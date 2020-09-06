@@ -38,6 +38,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
 
         #Users...
+        Route::post('updatePassword', 'Panel\UserController@updatePassword');
+        Route::post('suspendUser', 'Panel\UserController@suspend');
+        Route::get('getusers', 'Panel\UserController@getUsers');
         Route::resource('users', 'Panel\UserController', ["as"=>"admin"]);
 
         #Orders...
