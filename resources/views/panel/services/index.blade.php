@@ -24,8 +24,7 @@
                                     <div class="modal-content">
                                         <form method="post"
                                               id="category_form"
-                                              @submit="submitCategoryForm"
-                                              enctype="multipart/form-data" novalidate>
+                                              @submit.prevent="submitCategoryForm">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle"> <strong>Create Category</strong> </h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -770,7 +769,7 @@
                                 </div>
                             </div>
                             <div class="__table_body category-sortable">
-                                <div class="__row_wrapper">
+                                <div class="__row_wrapper" v-for="(cate_item, index) in category_services">
                                     <div class="__cate_service_wrapper">
                                         <div class="__category_row">
                                             <div class="__catename_action">
@@ -779,7 +778,8 @@
                                                         d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path>
                                                 </svg>
                                                 <span class="category_title" style="font-weight: 500;color: rgba(0, 0, 0, 0.79);">
-                                                    <input type="hidden" class="category_hidden_id" value="">
+                                                    @{{cate_item.name}}
+                                                    <input type="hidden" class="category_hidden_id" :value="cate_item.id">
                                                 </span>
                                                 <span class="category_action"></span>
                                                 <div class="dropdown __dropdown_buttons">

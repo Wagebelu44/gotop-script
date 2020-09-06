@@ -265,24 +265,35 @@ const App = new Vue({
             this.services.form_fields.description = '';
             this.services.form_fields.subscription_type = null;
         }
-        this.providers_lists = <?=$providers?>;
+        this.providers_lists = [];
         this.services.visibility.auto_per_rate = this.auto_per_rate_toggler;
     },
+    mounted () {
+        this.getCategoryServices();
+    },
     methods: {
+        getCategoryServices()
+        {
+            fetch(base_url+"/admin/get-category-services")
+            .then(res=>res.json())
+            .then(res=>{
+                console.log(res);
+                this.category_services = res;
+            });
+        },
         submitCategoryForm(evt) {
             this.loader.category = true;
-            evt.preventDefault();
             let categoryForm = new FormData(document.getElementById('category_form'));
             if (this.category_edit) {
                 categoryForm.append('edit_id', this.category_edit_id);
                 categoryForm.append('edit_mode', true);
             }
-            fetch('{{route('reseller.categories.store')}}', 
+            fetch(base_url+'/admin/category-store', 
             {
                 headers: 
                 {
                     "Accept": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
                 },
                 credentials: "same-origin",
                 method: "POST",
@@ -303,7 +314,6 @@ const App = new Vue({
                         toastr["success"](res.message);
                         document.getElementById('category_form').reset();
                         $('#exampleModalCenter').modal('hide');
-                        //window.location.reload();
                     }, 2000);
                 }
 
@@ -383,7 +393,7 @@ const App = new Vue({
                 service_form.append('edit_id', this.service_edit_id);
                 service_form.append('edit_mode', true);
             }
-            fetch('{{route('reseller.services.store')}}', {
+            fetch(base_url+'/admin/services/store', {
                 headers: {
                     "Accept": "application/json",
                     "X-CSRF-TOKEN": "{{ csrf_token() }}",

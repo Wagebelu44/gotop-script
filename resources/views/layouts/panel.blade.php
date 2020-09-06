@@ -199,6 +199,10 @@
         @elseif(session('error'))
             toastr["error"]('{{ session('error') }}');
         @endif
+        /* global instances */
+        window.CSRF_TOKEN = '{{csrf_token()}}';
+        window.base_url = window.location.origin;
+        /* end of global instances */
 
         $('.summernote').summernote({
             height: 200, // set editor height
