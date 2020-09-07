@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Ticket extends Model
+class PaymentMethod extends Model
 {
     use SoftDeletes, LogsActivity;
 
-    protected $table = 'tickets';
+    protected $table = 'payment_methods';
 
     protected $fillable = [
-        'panel_id', 'user_id', 'send_by', 'sender_role', 'subject', 'subject_ids', 'payment_type', 'description', 'status', 'seen_by_admin', 'seen_by_user', 'created_by', 'updated_by', 'deleted_at'
+        'panel_id', 'global_payment_method_id', 'method_name', 'minimum', 'maximum', 'new_user_status', 'visibility', 'details', 'sort', 'created_by', 'updated_by'
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Tickets'; //custom_log_name_for_this_model
+    protected static $logName = 'Payment methods'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
@@ -31,10 +31,5 @@ class Ticket extends Model
     {
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
-    }
-
-    public function user()
-    {
-        return $this->belongsTo('App\User', 'user_id');
     }
 }
