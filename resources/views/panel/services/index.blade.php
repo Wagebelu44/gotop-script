@@ -935,7 +935,7 @@
                                             </div>
                                         </div>
                                         <div class="service_rows">
-                                            <div class="__service_row serviceRow" id="sortable">
+                                            <div class="__service_row serviceRow" id="sortable" v-for='(service, index) in cate_item.services'>
                                                 <div class="__service_td drag-handler-container" style="padding: 0">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="service-handle" viewBox="0 0 20 20"><title>Drag-Handle</title>
                                                         <path
@@ -944,31 +944,31 @@
                                                     <input type="checkbox" class="service_checkbox" style="margin-top: 5px" value="">
                                                 </div>
                                                 <div class="__service_td">
-                                                    1
+                                                    @{{service.id}}
                                                 </div>
                                                 <div class="__service_td __service_th_td" id="sName">
-                                                    Ibrahim
+                                                    @{{service.name}}
                                                 </div>
                                                 <div class="__service_td __service_td_span_type" id="sType">
-                                                    service type
+                                                    @{{service.service_type}} 
                                                 </div>
                                                 <div class="__service_td __service_td_span_mode" id="sMode">
-                                                    Provider not found
+                                                    @{{service.mode}} 
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sPrice">
-                                                    <span class="d-block"> 2525 </span>
+                                                    <span class="d-block"> @{{service.price}}  </span>
                                                     <span class="d-block sub-price"> rate </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sMinQty">
-                                                    <span class="d-block"> 5 </span>
+                                                    <span class="d-block"> @{{service.min_quantity}}  </span>
                                                     <span class="d-block sub-price"> rate </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sMaxQty">
-                                                    <span class="d-block"> 999 </span>
+                                                    <span class="d-block">  @{{service.max_quantity}} </span>
                                                     <span class="d-block sub-price"> price </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sStatus">
-                                                    Enabled
+                                                    @{{service.status}}
                                                 </div>
                                                 <div class="__service_td __service_td_span" style="grid-column: span 3 / auto;padding: 0;text-align: right;">
                                                     <div class="dropdown __dropdown_buttons">

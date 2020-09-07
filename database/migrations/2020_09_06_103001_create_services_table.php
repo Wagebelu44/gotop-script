@@ -43,7 +43,6 @@ class CreateServicesTable extends Migration
                     'Invites From Groups',
                     'Subscriptions',
                 ])->nullable();
-            $table->tinyInteger('crown')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('increment')->nullable();
             $table->integer('auto_overflow')->nullable();
@@ -62,6 +61,7 @@ class CreateServicesTable extends Migration
             $table->foreign('panel_id')->on('panel_admins')->references('id')->onDelete('cascade');
             $table->foreign('category_id')->on('service_categories')->references('id')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

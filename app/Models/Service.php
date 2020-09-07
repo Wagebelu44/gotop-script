@@ -13,9 +13,7 @@ class Service extends Model
 
     protected $table = 'services';
 
-    protected $fillable = [
-        'category_id', 'deleted_at', 'updated_by', 'created_by', 'category_id', 'title', 'slug', 'image', 'content', 'type', 'status'
-    ];
+    protected $fillable = ['id','category_id','panel_id','sort','name','mode','drip_feed_status','refill_status','link_duplicates','service_type','crown','price','increment','auto_overflow','min_quantity','max_quantity','provider_id','provider_service_id','provider_sync_status','short_description','description','icon','service_average_time','subscription_type','is_user','status','created_at','updated_at'];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;

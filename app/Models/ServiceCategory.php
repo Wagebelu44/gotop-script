@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -19,6 +20,12 @@ class ServiceCategory extends Model
         , 'status'
         , 'panel_id'
     ];
+
+
+     public function services()
+     {
+         return $this->hasMany(Service::class, 'category_id');
+     }
 
 
     protected static $logAttributes = ['*'];

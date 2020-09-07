@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -16,7 +18,7 @@ class ServiceController extends Controller
 
     public function getCateServices(Request $request)
     {
-        return ServiceCategory::where('panel_id', auth()->user()->panel_id)->where('status', 'active')->orderBy('id', 'ASC')->get();
+        return ServiceCategory::with('services')->where('panel_id', auth()->user()->panel_id)->where('status', 'active')->orderBy('id', 'ASC')->get();
     }
 
     public function create()
@@ -55,8 +57,7 @@ class ServiceController extends Controller
             {
                 $data = $request->except('_token', 'score', 'users', 'provider_selected_service_data');
             }
-            
-            $data['panel_id'] = 1;
+            $data['panel_id'] = auth()->user()->panel_id;
             $data['provider_sync_status'] = $request->provider_sync_status == 'on'? true: false;
             if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package')
             {
@@ -91,7 +92,6 @@ class ServiceController extends Controller
             }
             else
             {
-               
                 $service = Service::create($data);
                 if ($data['mode'] == 'Auto') {
                     $json_data = json_decode($request->provider_selected_service_data, true);
