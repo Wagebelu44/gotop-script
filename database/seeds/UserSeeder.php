@@ -1,6 +1,5 @@
 <?php
 
-use App\User;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -13,10 +12,10 @@ class UserSeeder extends Seeder
     public function run()
     {
         for ($i=0; $i <100 ; $i++) {
-            User::create([
+            \DB::table('users')->insert([
                 'panel_id' => 1,
-                'name' => 'name_'.$i,
-                'username' => 'User_'.$i,
+                'name' => 'User '.$i,
+                'username' => 'user_'.$i,
                 'skype_name' => 'User_'.$i,
                 'email' => 'user'.$i.'@gmail.com',
                 'password' => bcrypt('12345678'),
