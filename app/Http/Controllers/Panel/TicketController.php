@@ -6,18 +6,32 @@ use App\Http\Controllers\Controller;
 use App\Mail\TicketRepliedMail;
 use App\Models\Ticket;
 use App\Models\TicketComment;
+use App\Notifications\TicketNotification;
 use App\User;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class TicketController extends Controller
 {
 
     public function index()
     {
+        $inputSearch = request()->all();
+        $inputSearch['keyword'] = isset($inputSearch['keyword']) ? $inputSearch['keyword'] : '';
+
         $users = User::where('panel_id', Auth::user()->id)->get();
-        $tickets = Ticket::with('user')->where('panel_id', Auth::user()->id)->paginate(15);
+        $tickets = Ticket::with('user')->where('panel_id', Auth::user()->id)
+            ->where(function ($q) use ($inputSearch) {
+                if ($inputSearch['keyword'])
+                {
+                    $q->orWhereHas('user', function($q) use ($inputSearch)
+                    {
+                        $q->where('name', 'like', '%' . $inputSearch['keyword'] . '%');
+                    });
+                }
+            })->paginate(15);
         return view('panel.tickets.index', compact('users', 'tickets'));
     }
 
@@ -128,7 +142,7 @@ class TicketController extends Controller
 
         if ($ticket) {
             $ticket->save();
-            Mail::to($ticket->user->email)->send(new TicketRepliedMail($ticket));
+            Notification::send($ticket, new TicketNotification($comment));
             return redirect()->back()->with('success', 'Reply has been sent successfully');
         }
     }

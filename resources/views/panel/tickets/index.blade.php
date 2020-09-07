@@ -298,6 +298,12 @@
             //$('#bulk-close').submit();
         }
 
+        function submit_ticket(obj)
+        {
+            obj.setAttribute('disabled', 'disabled');
+            document.querySelector('#support_admin_ticket').submit();
+        }
+
         function searchTickets(column, value) {
             let form = $('#search-form');
             form.prepend(`<input type="hidden" name="columns[${column}]" value="${value}">`);
