@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
         for ($i=0; $i <100 ; $i++) {
             User::create([
                 'panel_id' => 1,
+                'name' => 'name_'.$i,
                 'username' => 'User_'.$i,
                 'skype_name' => 'User_'.$i,
                 'email' => 'user'.$i.'@gmail.com',

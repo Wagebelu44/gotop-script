@@ -26,12 +26,11 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
         if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package') {
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'price' => 'required|numeric',
-                'category_id' => 'required|integer|exists:categories,id',
+                'category_id' => 'required|integer|exists:service_categories,id',
             ]);
         }
         else
@@ -41,7 +40,7 @@ class ServiceController extends Controller
                 'price' => 'required',
                 'min_quantity' => 'required',
                 'max_quantity' => 'required',
-                'category_id' => 'required|integer|exists:categories,id',
+                'category_id' => 'required|integer|exists:service_categories,id',
             ]);
         }
 
@@ -56,9 +55,8 @@ class ServiceController extends Controller
             {
                 $data = $request->except('_token', 'score', 'users', 'provider_selected_service_data');
             }
-
-            $data['crown'] = $request->score;
-            $data['reseller_id'] = Auth::guard('reseller')->id();
+            
+            $data['panel_id'] = 1;
             $data['provider_sync_status'] = $request->provider_sync_status == 'on'? true: false;
             if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package')
             {

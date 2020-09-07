@@ -395,7 +395,7 @@ const App = new Vue({
             fetch(base_url+'/admin/services', {
                 headers: {
                     "Accept": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
                 },
                 credentials: "same-origin",
                 method: "POST",
