@@ -302,8 +302,17 @@ const App = new Vue({
             })
             .then(res => {
                 if (res.status === 200) {
+                    if (this.category_edit === true)
+                    {
+                        this.updateCategoryLists(this.category_edit_id, res.data);
+                    }
+                    else
+                    {
+                        this.category_services.push(res.data);
+                    }
                     this.category_edit = false;
                     this.category_edit_id = null;
+                    this.category = {...res.data};
                     setTimeout(() => {
                         this.loader.category = false;
                         toastr["success"](res.message);
@@ -350,7 +359,10 @@ const App = new Vue({
                 return res.json();
             })
             .then(res => {
-                console.log(res);
+                if (res.status === 200) {
+                    this.category = {...res.data};
+                    this.updateCategoryLists(id, res.data);
+                }
             }).catch(err => {
                 setTimeout(() => {
                     this.loader.category = false;
@@ -1164,6 +1176,15 @@ const App = new Vue({
             $("#subscriptionModal").modal('hide');
                 this.service_modal = false;
                 this.formReset();
+        },
+        updateCategoryLists(id, obj)
+        {
+            this.category_services = this.category_services.map(item=>{
+                if (item.id === id) {
+                    return obj;
+                }
+                return item;
+            })
         }
     },
 });
