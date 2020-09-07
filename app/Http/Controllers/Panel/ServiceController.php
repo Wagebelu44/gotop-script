@@ -18,7 +18,7 @@ class ServiceController extends Controller
 
     public function getCateServices(Request $request)
     {
-        return ServiceCategory::with('services')->where('panel_id', auth()->user()->panel_id)->where('status', 'active')->orderBy('id', 'ASC')->get();
+        return ServiceCategory::with('services')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
     }
 
     public function create()
@@ -136,7 +136,19 @@ class ServiceController extends Controller
 
 
     /* category starts */
-
+    public function showCategory($id)
+    {
+        return ServiceCategory::find($id);
+    }
+    public function enablingCategory(Request $request, $id)
+    {
+        $category = ServiceCategory::find($id);
+        $category->status = $category->status == 'active'?'inactive':'active';
+        if($category->save())
+            return response()->json(['status'=>200,'data'=> $category, 'message'=>'Category Updated successfully.']);
+        else
+            return response()->json(['status'=>401,'data'=> null, 'message'=>'error occured.']);
+    }
     public function categoryStore(Request $request)
     {
         if ($request->has('edit_id'))
@@ -148,8 +160,8 @@ class ServiceController extends Controller
         else
         {
             $request->validate([
-            'name' => ['required', 'string', 'max:255']
-        ]);
+                'name' => ['required', 'string', 'max:255']
+            ]);
 
         }
 

@@ -105,7 +105,7 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for=""><strong>Category Name</strong></label>
-                                                            <input type="text" name="name" class="form-control custom-form-control" placeholder="Name">
+                                                            <input type="text" v-model="category.name" name="name" class="form-control custom-form-control" placeholder="Name">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -921,8 +921,8 @@
                                                     Action
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <a class="dropdown-item type-dropdown-item" href="#">Edit Category</a>
-                                                        <a class="dropdown-item type-dropdown-item" href="">Category</a>
+                                                        <a class="dropdown-item type-dropdown-item"    @click="categoryEdit(cate_item.id)">Edit Category</a>
+                                                        <a class="dropdown-item type-dropdown-item"  @click="updateCategoryStatus(cate_item.id)" > <span v-if="cate_item.status=='active'">Disable</span> <span v-else> Enable</span>  Category</a>
                                                     </div>
                                                 </div>
                                             </div>

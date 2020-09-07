@@ -53,6 +53,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('tasks', 'Panel\TaskController', ["as"=>"admin"]);
 
         #Services...
+        Route::post('category-status-change/{id}', 'Panel\ServiceController@enablingCategory');
+        Route::get('show-category/{id}', 'Panel\ServiceController@showCategory');
         Route::post('category-store', 'Panel\ServiceController@categoryStore');
         Route::get('get-category-services', 'Panel\ServiceController@getCateServices');
         Route::resource('services', 'Panel\ServiceController', ["as"=>"admin"]);

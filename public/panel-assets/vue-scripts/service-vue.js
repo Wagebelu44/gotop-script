@@ -109,10 +109,6 @@ const App = new Vue({
         service_type_selected: 'Default',
         category: {
             name: null,
-            star: null,
-            short_description: '',
-            description: '',
-            icon: null,
             status: null,
         },
         category_services: null,
@@ -316,6 +312,45 @@ const App = new Vue({
                     }, 2000);
                 }
 
+            }).catch(err => {
+                setTimeout(() => {
+                    this.loader.category = false;
+                    let prepare = [];
+                    err.then(erMesg => {
+                        let errMsgs = Object.entries(erMesg.errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            prepare.push(obj);
+                        }
+                        this.errors.category = prepare;
+                    });
+                }, 2000);
+            });
+        },
+        updateCategoryStatus(id)
+        {
+            this.loader.category = true;
+            fetch(base_url+'/admin/category-status-change/'+id, 
+            {
+                headers: 
+                {
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
+                },
+                credentials: "same-origin",
+                method: "POST",
+                body: {}
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw res.json();
+                }
+                return res.json();
+            })
+            .then(res => {
+                console.log(res);
             }).catch(err => {
                 setTimeout(() => {
                     this.loader.category = false;
@@ -709,16 +744,12 @@ const App = new Vue({
             this.loader.page = true;
             this.category_edit = true;
             this.category_edit_id = category_id;
-            fetch('showCategory/' + category_id).then(res => res.json())
+            fetch(base_url+'/admin/show-category/' + category_id).then(res => res.json())
                 .then(res => {
                     this.loader.page = false;
                     this.loader.category = true;
-                    this.category = {...res.data};
+                    this.category = {...res};
                     $('#exampleModalCenter').modal('show');
-                    if (this.category_edit) {
-                        $("#cate_short_desc").summernote('code', res.data.short_description);
-                        $("#cate_long_desc").summernote('code', res.data.description);
-                    }
                     this.loader.category = false;
                 });
 
