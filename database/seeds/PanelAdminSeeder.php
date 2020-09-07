@@ -2,6 +2,7 @@
 
 use App\PanelAdmin;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PanelAdminSeeder extends Seeder
 {
@@ -13,11 +14,13 @@ class PanelAdminSeeder extends Seeder
     public function run()
     {
         PanelAdmin::create([
-            'panel_id' => '1',
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'role' => 'Admin',
+            'uuid' => Str::uuid(),
+            'panel_id' => 1,
+            'name' => 'Test Admin',
+            'email' => 'admin@test.com',
             'password' => bcrypt('12345678'),
+            'role' => 'Admin',
+            'status' => 'Active'
         ]);
     }
 }

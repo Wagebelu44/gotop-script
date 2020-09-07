@@ -13,8 +13,12 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/post-log-name', 'Panel\ApiController@logName');
-Route::get('/post-active-log', 'Panel\ApiController@postActiveLog');
+Route::get('/post-log-name', 'Panel\ApiController@sentLogName');
+Route::get('/post-active-log', 'Panel\ApiController@sentActiveLog');
+Route::post('/post-permissions', 'Panel\ApiController@postPermissions');
+Route::post('/save-admin-user', 'Panel\ApiController@saveAdminUser');
+Route::post('/save-user', 'Panel\ApiController@saveUser');
+Route::post('/user-password', 'Panel\ApiController@userPasswordUpdate');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
