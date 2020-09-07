@@ -26,7 +26,94 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        //
+        dd($request->all());
+        if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package') {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'price' => 'required|numeric',
+                'category_id' => 'required|integer|exists:categories,id',
+            ]);
+        }
+        else
+        {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'price' => 'required',
+                'min_quantity' => 'required',
+                'max_quantity' => 'required',
+                'category_id' => 'required|integer|exists:categories,id',
+            ]);
+        }
+
+
+        try {
+
+            if ($request->has('edit_id'))
+            {
+                $data = $request->except('_token', 'score', 'users','edit_id','edit_mode', 'provider_selected_service_data');
+            }
+            else
+            {
+                $data = $request->except('_token', 'score', 'users', 'provider_selected_service_data');
+            }
+
+            $data['crown'] = $request->score;
+            $data['reseller_id'] = Auth::guard('reseller')->id();
+            $data['provider_sync_status'] = $request->provider_sync_status == 'on'? true: false;
+            if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package')
+            {
+                $data['min_quantity'] = 1;
+                $data['max_quantity'] = 1;
+            }
+
+            if (!$request->has('edit_id'))
+            {
+                $data['status'] = 'active';
+            }
+
+            if ($request->has('edit_id') && $request->has('edit_mode'))
+            {
+                $service = Service::find($request->edit_id);
+                $service->update($data);
+                if ($data['mode'] == 'Auto') {
+                    $json_data = json_decode($request->provider_selected_service_data, true);
+                    ProviderService::updateOrCreate(
+                        ['service_id'=> $service->id],
+                        [
+                        'provider_id' => $data['provider_id'],
+                        'provider_service_id' => $json_data['service'],
+                        'name' => $json_data['name'],
+                        'type' => $json_data['type'],
+                        'category' =>  $json_data['category'],
+                        'rate'=>  $json_data['rate'],
+                        'min'=>  $json_data['min'],
+                        'max'=>  $json_data['max'],
+                    ]);
+                }
+            }
+            else
+            {
+               
+                $service = Service::create($data);
+                if ($data['mode'] == 'Auto') {
+                    $json_data = json_decode($request->provider_selected_service_data, true);
+                    ProviderService::create([
+                        'service_id' => $service->id,
+                        'provider_id' => $data['provider_id'],
+                        'provider_service_id' => $json_data['service'],
+                        'name' => $json_data['name'],
+                        'type' => $json_data['type'],
+                        'category' =>  $json_data['category'],
+                        'rate'=>  $json_data['rate'],
+                        'min'=>  $json_data['min'],
+                        'max'=>  $json_data['max'],
+                    ]);
+                }
+            }
+            return response()->json(['status'=>200,'data'=> $service, 'message'=>'Service created successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['status'=>401, 'data'=>$e->getMessage()]);
+        }
     }
 
     public function show($id)

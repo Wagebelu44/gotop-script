@@ -277,7 +277,6 @@ const App = new Vue({
             fetch(base_url+"/admin/get-category-services")
             .then(res=>res.json())
             .then(res=>{
-                console.log(res);
                 this.category_services = res;
             });
         },
@@ -393,7 +392,7 @@ const App = new Vue({
                 service_form.append('edit_id', this.service_edit_id);
                 service_form.append('edit_mode', true);
             }
-            fetch(base_url+'/admin/services/store', {
+            fetch(base_url+'/admin/services', {
                 headers: {
                     "Accept": "application/json",
                     "X-CSRF-TOKEN": "{{ csrf_token() }}",
@@ -1059,13 +1058,14 @@ const App = new Vue({
             }
         },
         serviceModalToggle() {
+            
             if (!this.service_modal) {
-                $("#serviceModal").modal('show');
+                $("#serviceAddModal").modal('show');
                 this.service_modal = true;
             }
             else
             {
-                $("#serviceModal").modal('hide');
+                $("#serviceAddModal").modal('hide');
                 this.service_modal = false;
                 this.formReset();
             }
