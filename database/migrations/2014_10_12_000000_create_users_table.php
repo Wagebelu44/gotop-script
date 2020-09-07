@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('panel_id');
+            $table->string('name');
             $table->string('email')->unique();
             $table->string('username')->unique()->nullable();
             $table->string('skype_name')->unique()->nullable();
@@ -29,6 +30,7 @@ class CreateUsersTable extends Migration
             $table->string('status')->nullable()->comment("['pending', 'active', 'inactive']");
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

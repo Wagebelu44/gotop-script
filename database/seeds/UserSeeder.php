@@ -12,11 +12,16 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
-            'panel_id' => '1',
-            'name' => 'User',
-            'email' => 'user@gmail.com',
-            'password' => bcrypt('12345678'),
-        ]);
+        for ($i=0; $i <100 ; $i++) {
+            User::create([
+                'panel_id' => 1,
+                'username' => 'User_'.$i,
+                'skype_name' => 'User_'.$i,
+                'email' => 'user'.$i.'@gmail.com',
+                'password' => bcrypt('12345678'),
+                'status' => 'active',
+                'last_login_at' => now(),
+            ]);
+        }
     }
 }

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\SettingGeneral;
+use App\PanelAdmin;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\Models\Permission;
 
 class ApiController extends Controller
 {
-    public function logName(Request $request)
+    public function sentLogName(Request $request)
     {
         if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
             return false;
@@ -17,7 +20,7 @@ class ApiController extends Controller
         return response()->json($logNames);
     }
 
-    public function postActiveLog(Request $request)
+    public function sentActiveLog(Request $request)
     {
         if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
             return false;
@@ -50,5 +53,61 @@ class ApiController extends Controller
         
         $activities = $sql->paginate($request->paginate);
         return response()->json($activities);
+    }
+
+    public function postPermissions(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $data = Permission::insert($request->permissions);
+        return response()->json($data);
+    }
+
+    public function saveAdminUser(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $user = PanelAdmin::create($request->user);
+        $user->assignRole('Super Admin');
+
+        activity()->disableLogging();
+        SettingGeneral::updateOrCreate(['panel_id' => $user->panel_id], [
+            'updated_by' => $user->id,
+            'status' => $request->status,
+            'currency' => $request->currency,
+            'timezone' => $request->timezone,
+        ]);
+        
+        return response()->json(['success' => true]);
+    }
+
+    public function saveUser(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $user = PanelAdmin::updateOrCreate(['uuid' => $request->user['uuid'], 'panel_id' => $request->user['panel_id']], $request->user);
+        $user->syncPermissions($request->permissions);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function userPasswordUpdate(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $user = PanelAdmin::where('panel_id', $request->user['panel_id'])->where('uuid', $request->user['uuid'])->first();
+        if (!empty($user)) {
+            $user->update(['password' => $request->user['password']]);
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => $request->user]);
     }
 }
