@@ -728,8 +728,8 @@
                                                 <input type="hidden" name="id" v-model="service_edit_id">
                                                 <div class="form-group">
                                                     <select name="bulk_category_id" id="bulk_category_id" class="form-control custom-form-control">
-                                                        <option value="">Select a category</option>
-                                                        <option value="">name</option>
+                                                        <option value="" selected>Choose category</option>
+                                                        <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -845,7 +845,7 @@
                                                 <a class="dropdown-item" href="#" @click="bulkDisable">Disable All</a>
                                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bulkCategoryAssgin">Assign
                                                     Category</a>
-                                                <a class="dropdown-item" href="#" @click="resetCustomRates">Reset Custom rates</a>
+                                                {{-- <a class="dropdown-item" href="#" @click="resetCustomRates">Reset Custom rates</a> --}}
                                                 <a class="dropdown-item" href="#" @click="bulkDelete">Delete All</a>
                                             </div>
                                         </div>
@@ -945,7 +945,8 @@
                                                         <path
                                                             d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path>
                                                     </svg>
-                                                    <input type="checkbox" class="service_checkbox" style="margin-top: 5px" value="">
+                                                    <input type="checkbox" class="service_checkbox" style="margin-top: 5px" v-model="service_checkbox"
+                                                    :value="service.id">
                                                 </div>
                                                 <div class="__service_td">
                                                     @{{service.id}}

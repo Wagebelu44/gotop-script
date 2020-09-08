@@ -776,10 +776,10 @@ const App = new Vue({
                 //console.log(this.service_checkbox);
                 let forD = new FormData();
                 forD.append('service_ids', this.service_checkbox);
-                fetch('service_bulk_enable', {
+                fetch(base_url+'/admin/service_bulk_enable', {
                     headers: {
                         "Accept": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
                     },
                     credentials: "same-origin",
                     method: "POST",
@@ -807,10 +807,10 @@ const App = new Vue({
                 //console.log(this.service_checkbox);
                 let forD = new FormData();
                 forD.append('service_ids', this.service_checkbox);
-                fetch('service_bulk_disable', {
+                fetch(base_url+'/admin/service_bulk_disable', {
                     headers: {
                         "Accept": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
                     },
                     credentials: "same-origin",
                     method: "POST",
@@ -870,10 +870,10 @@ const App = new Vue({
                     //console.log(this.service_checkbox);
                     let forD = new FormData();
                     forD.append('service_ids', this.service_checkbox);
-                    fetch('service_bulk_delete', {
+                    fetch(base_url+'/admin/service_bulk_delete', {
                         headers: {
                             "Accept": "application/json",
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "X-CSRF-TOKEN": CSRF_TOKEN,
                         },
                         credentials: "same-origin",
                         method: "POST",
@@ -907,7 +907,7 @@ const App = new Vue({
                 fetch('service_bulk_category', {
                     headers: {
                         "Accept": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
                     },
                     credentials: "same-origin",
                     method: "POST",

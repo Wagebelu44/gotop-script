@@ -192,6 +192,33 @@ class ServiceController extends Controller
             return response()->json(['status'=>401, 'message'=>"Error occured"]);
         }
     }
+    public function bulkEnable(Request $request)
+    {
+        Service::whereIn('id',explode(',',$request->service_ids))->update([
+            'status' => 'active'
+        ]);
+        return response()->json(['status'=>200,'message'=>'successfully enabled all']);
+
+    }
+    public function bulkDisable(Request $request)
+    {
+        Service::whereIn('id',explode(',',$request->service_ids))->update([
+            'status' => 'inactive'
+        ]);
+        return response()->json(['status'=>200,'message'=>'successfully disabled all']);
+    }
+    public function bulkCategory(Request $request)
+    {
+        Service::whereIn('id',explode(',',$request->service_ids))->update([
+            'category_id' => $request->bulk_category_id
+        ]);
+        return response()->json(['status'=>200,'message'=>'successfully disabled all']);
+    }
+    public function bulkDelete(Request $request)
+    {
+        Service::whereIn('id',explode(',',$request->service_ids))->delete();
+        return response()->json(['status'=>200,'message'=>'successfully disabled all']);
+    }
     public function show($id)
     {
         return Service::find($id);

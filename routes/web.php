@@ -53,6 +53,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::resource('tasks', 'Panel\TaskController', ["as"=>"admin"]);
 
         #Services...
+        
+        Route::post('service_bulk_category', 'Panel\ServiceController@bulkCategory');
+        Route::post('service_bulk_enable', 'Panel\ServiceController@bulkEnable');
+        Route::post('service_bulk_delete', 'Panel\ServiceController@bulkDelete');
+        Route::post('service_bulk_disable', 'Panel\ServiceController@bulkDisable');
         Route::post('category-status-change/{id}', 'Panel\ServiceController@enablingCategory');
         Route::get('enableService/{id}', 'Panel\ServiceController@enableService');
         Route::DELETE('deleteService/{id}', 'Panel\ServiceController@deleteService');
