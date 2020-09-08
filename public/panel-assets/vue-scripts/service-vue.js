@@ -463,22 +463,17 @@ const App = new Vue({
                             this.loader.service = false;
                             toastr["success"](res.message);
                             document.getElementById('service_form').reset();
-                            $('#serviceModal').modal('hide');
+                            $('#serviceAddModal').modal('hide');
                             if (isEdit) 
                             {
                                 var row = res.data;
+                                this.updateServiceLists(row);
                                 var status = (row.status == 'active')?'Enabled':'Disabled';
-                                document.getElementById('sName_'+row.id).innerHTML=row.name;
-                                document.getElementById('sType_'+row.id).innerHTML=row.service_type;
-                                document.getElementById('sMode_'+row.id).innerHTML=row.mode;
-                                document.getElementById('sPrice_'+row.id).innerHTML=row.price;
-                                document.getElementById('sMinQty_'+row.id).innerHTML=row.min_quantity;
-                                document.getElementById('sMaxQty_'+row.id).innerHTML=row.max_quantity;
-                                document.getElementById('sStatus_'+row.id).innerHTML=status;
                             } 
                             else 
                             {
-                                window.location.reload();
+                                var row = res.data;
+                                this.addnewServicetoLists(row);
                             }
                         }, 2000);
                     }
@@ -486,7 +481,6 @@ const App = new Vue({
                     {
                         this.loader.service = false;
                         this.errors.services = res.data;
-                        
                     }
 
                 })
@@ -541,8 +535,8 @@ const App = new Vue({
                     this.loader.page = false;
                     this.loader.service = true;
                     this.service_edit = true;
-                    $('#serviceModal').modal('show');
-                    this.services.form_fields = {...res.data};
+                    this.services.form_fields = {...res};
+                    $('#serviceAddModal').modal('show');
                     this.service_mode = this.services.form_fields.mode;
                     this.service_type_selected = this.services.form_fields.service_type;
                     this.manipulateInputs();
@@ -1186,6 +1180,35 @@ const App = new Vue({
                 }
                 return item;
             })
+        },
+        updateServiceLists(obj)
+        {
+            let category = this.category_services.find(item=>item.id == obj.category_id);
+            if (category !== undefined) {
+               let servicesss =  category.services.map(ser=>{
+                   if (ser.id===obj.id)
+                   {
+                       return obj;
+                   }
+                   return ser;
+                });
+                this.category_services = this.category_services.map(item=>{
+                    if (item.id === category.id) {
+                         item.services = [...servicesss];
+                    }
+                    return item;
+               })
+            }
+        },
+        addnewServicetoLists(obj)
+        {
+            
+            this.category_services = this.category_services.map(item=>{
+                if (item.id == obj.category_id) {
+                        item.services.push(obj);
+                }
+                return item;
+            });
         }
     },
 });

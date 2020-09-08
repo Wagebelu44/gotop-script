@@ -406,7 +406,7 @@
                                                         <div class="form-group">
                                                             <div class="controls">
                                                                 <label for="name"> <strong>Service Name <span class="badge badge-pill badge-dark"> English </span> </strong>  </label>
-                                                                <input type="text" name="name" class="form-control" id="name" placeholder="Service Name">
+                                                                <input type="text" v-model="services.form_fields.name" name="name" class="form-control" id="name" placeholder="Service Name">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -414,9 +414,9 @@
                                                         <div class="form-group">
                                                             <div class="controls">
                                                                 <label for="name"> <strong>Category</strong>  </label>
-                                                                <select name="category_id" class="form-control">
+                                                                <select name="category_id" class="form-control" v-model='services.form_fields.category_id'>
                                                                     <option value="" selected>Choose category</option>
-                                                                <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
+                                                                    <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -956,16 +956,16 @@
                                                     @{{service.mode}} 
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sPrice">
-                                                    <span class="d-block"> @{{service.price}}  </span>
-                                                    <span class="d-block sub-price"> rate </span>
+                                                    <span class="d-block">@{{service.price}}</span>
+                                                    <span class="d-block sub-price"> $1245 </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sMinQty">
                                                     <span class="d-block"> @{{service.min_quantity}}  </span>
-                                                    <span class="d-block sub-price"> rate </span>
+                                                    <span class="d-block sub-price"> $8574 </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sMaxQty">
                                                     <span class="d-block">  @{{service.max_quantity}} </span>
-                                                    <span class="d-block sub-price"> price </span>
+                                                    <span class="d-block sub-price"> $1245 </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sStatus">
                                                     @{{service.status}}
