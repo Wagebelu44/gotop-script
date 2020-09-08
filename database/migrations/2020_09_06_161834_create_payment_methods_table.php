@@ -18,11 +18,11 @@ class CreatePaymentMethodsTable extends Migration
             $table->unsignedBigInteger('panel_id');
             $table->unsignedBigInteger('global_payment_method_id');
             $table->string('method_name');
-            $table->decimal('minimum', 8, 2);
-            $table->decimal('maximum', 8, 2);
+            $table->decimal('minimum', 8, 2)->default(0.00);
+            $table->decimal('maximum', 8, 2)->default(0.00);
             $table->enum('new_user_status', ['active', 'inactive'])->default('inactive');
             $table->enum('visibility', ['disabled', 'enabled'])->default('disabled');
-            $table->longText('details')->default(0);
+            $table->longText('details')->nullable();
             $table->unsignedInteger('sort')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

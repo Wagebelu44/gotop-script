@@ -1,5 +1,11 @@
 @extends('layouts.panel')
 
+@section('styles')
+    <style>
+        .row-disable {background: #e2e2e2;color: #c5c5c5;}
+    </style>
+@endsection
+
 @section('content')
     <div class="row all-mt-30">
         @include('panel.settings.navbar')
@@ -22,29 +28,33 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>
-                                    <div class="settings-menu-drag">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
-                                    </div>
-                                    Bank/Other
-                                </td>
-                                <td>Bank/Other</td>
-                                <td>10.00</td>
-                                <td>20.00</td>
-                                <td>Allowed</td>
-                                <td class="text-center">
-                                    <div class="setting-switch setting-switch-table">
-                                        <label class="switch">
-                                            <input type="checkbox" class="toggle-page-visibility" name="page_status" id="page_status">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="btn btn-default btn-xs" href="javascript:void(0)" data-toggle="modal" data-target="#cmsPaymentMethodEditPopUp">Edit</a>
-                                </td>
-                            </tr>
+                            @if(!empty($paymentMethodList))
+                                @foreach($paymentMethodList as $key => $value)
+                                <tr class="{{ $value->visibility == 'enabled' ? '':'row-disable' }}">
+                                    <td>
+                                        <div class="settings-menu-drag">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
+                                        </div>
+                                        {{ $value->name }}
+                                    </td>
+                                    <td>{{ $value->method_name }}</td>
+                                    <td>{{ $value->minimum }}</td>
+                                    <td>{{ $value->maximum }}</td>
+                                    <td>{{ $value->new_user_status == 'active' ? 'Allowed' : 'Not Allowed' }}</td>
+                                    <td class="text-center">
+                                        <div class="setting-switch setting-switch-table">
+                                            <label class="switch">
+                                                <input type="checkbox" value="{{ $value->visibility }}" class="toggle-page-visibility" {{ $value->visibility == 'enabled' ? 'checked' : '' }}  name="page_status" onclick="isActiveInactive({{ $key }},{{ $value->id }})" id="page_status_{{ $key }}">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default btn-xs" href="javascript:void(0)" onclick="editPaymentMethod('{{ $value->id }}')" >Edit</a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>
@@ -57,7 +67,7 @@
     <div class="modal fade in" id="cmsPaymentMethodAddPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <form class="form-material" id="moduleEditForm" method="post" action="" enctype="multipart/form-data">
+                <form class="form-material" id="addPayment" method="post" action="{{ route('admin.setting.payment.store') }}">
                     @csrf
 
                     <div class="modal-header">
@@ -70,12 +80,14 @@
                             <label class="control-label" for="payment_method">Payment method</label>
                             <select class="form-control" name="payment_method" id="payment_method" required>
                                 <option value="">Select Payment Method</option>
-
+                                @if (!empty($globalPaymentList))
+                                    @foreach ($globalPaymentList as $key => $value)
+                                        <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             @error('payment_method')
-                            <span role="alert">
-
-                                </span>
+                               <strong class="text-danger">{{ $message }}</strong>
                             @enderror
                         </div>
 
@@ -99,7 +111,7 @@
     <div class="modal fade in" id="cmsPaymentMethodEditPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
-                <form class="form-material" id="moduleEditForm" method="post" action="" enctype="multipart/form-data">
+                <form class="form-material" id="moduleEditForm" method="post" action="{{ route('admin.setting.payment.paymentUpdate') }}">
                     @csrf
 
                     <div class="modal-header">
@@ -127,13 +139,13 @@
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="New users">New users</label>
                             <select class="form-control" name="new_users" id="new_users" required>
-                                <option value="">Selete New Users</option>
+                                <option value="">Select New Users</option>
                             </select>
                         </div>
                         <hr>
                         <div id="payment_parameters">
                         </div>
-                        <input type="hidden" id="id" name="id" value=""/>
+                        <input type="hidden" id="id" name="payment_id" value=""/>
                         <input type="hidden" id="global_methods_id" name="global_methods_id" value=""/>
                     </div>
                     <div class="modal-footer">
@@ -148,4 +160,61 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        function isActiveInactive(sl, id) {
+            var status_value = '';
+            let status = $('#page_status_'+sl).val();
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "{{ route('admin.setting.payment.updateStatus') }}",
+                data: {'status': status, 'id': id, "_token": "{{ csrf_token() }}"},
+                success: function (response) {
+                    if(response.status === 200){
+                        location.reload();
+                    }
+                }
+            });
+        }
+
+        function editPaymentMethod(id) {
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "{{ route('admin.setting.payment.paymentEdit') }}",
+                data: {'id': id, "_token": "{{ csrf_token() }}"},
+                success: function (response) {
+                    var newUser = '<option value="">Select New Users</opton>';
+                    if (response.payment_method.new_user_status === 'active') {
+                        newUser += '<option value="active" selected>Allowed</option>'+
+                            '<option value="inactive">Not Allowed</option>';
+                    } else {
+                        newUser += '<option value="active">Allowed</option>'+
+                            '<option value="inactive" selected>Not Allowed</option>';
+                    }
+                    var parametersHTMl = '';
+                    for (var i = 0; i < response.payment_details.length; i++) {
+                        var parameter_value = response.payment_details[i].value != null ? response.payment_details[i].value : '';
+                        parametersHTMl +='<input type="hidden" name="payment_details[payment]['+i+'][form_label]" value="'+response.payment_details[i].form_label+'">';
+                        parametersHTMl +='<input type="hidden" name="payment_details[payment]['+i+'][key]" value="'+response.payment_details[i].key+'">';
+                        parametersHTMl +='<div class="form-group form-group__languages">'+
+                            '<label class="control-label" for="input_'+i+'">'+response.payment_details[i].form_label+'</label>'+
+                            '<input type="text" name="payment_details[payment]['+i+'][value]" id="input_'+i+'" class="form-control" value="'+parameter_value+'" required/>'+
+                            '</div>';
+                    }
+                    $('#payment_parameters').html(parametersHTMl);
+                    $('#new_users').html(newUser);
+                    $('#ModalEditLabel').html(response.payment_method.method_name+' (ID: '+response.payment_method.id+')');
+                    $('#method_name').val(response.payment_method.method_name);
+                    $('#minimum').val(response.payment_method.minimum);
+                    $('#maximum').val(response.payment_method.maximum);
+                    $('#id').val(response.payment_method.id);
+                    $('#global_methods_id').val(response.payment_method.global_payment_method_id);
+                    $('#cmsPaymentMethodEditPopUp').modal("show");
+                }
+            });
+        }
+    </script>
 @endsection

@@ -99,6 +99,10 @@ Route::group(['prefix' => 'admin'], function () {
             Route::resource('provider', 'Panel\Setting\ProviderController', ["as"=>"admin.setting"]);
 
             Route::resource('payment', 'Panel\Setting\PaymentController', ["as"=>"admin.setting"]);
+            Route::post('payment/update-status', 'Panel\Setting\PaymentController@updateStatus')->name('admin.setting.payment.updateStatus');
+            Route::post('payment/edit', 'Panel\Setting\PaymentController@paymentEdit')->name('admin.setting.payment.paymentEdit');
+            Route::post('payment/update', 'Panel\Setting\PaymentController@paymentUpdate')->name('admin.setting.payment.paymentUpdate');
+
             Route::get('module', 'Panel\Setting\ModuleController@index')->name('admin.setting.module');
             Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('admin.setting.module.update');
             Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('admin.setting.module.edit');
