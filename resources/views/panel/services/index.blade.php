@@ -989,7 +989,7 @@
                                                             </a>
                                                             {{-- <a class="dropdown-item type-dropdown-item" >Reset custom rates</a> --}}
                                                             <a class="dropdown-item type-dropdown-item" @click="serviceDelete(service.id)">Delete service</a>
-                                                            <a class="dropdown-item type-dropdown-item">Duplicate</a>
+                                                            <a class="dropdown-item type-dropdown-item" @click="serviceDuplicate(service.id)">Duplicate</a>
                                                         </div>
                                                     </div>
                                                 </div>

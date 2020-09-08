@@ -143,6 +143,25 @@ class ServiceController extends Controller
             return response()->json(['status' => 401, 'message' => 'Unable to delete service']);
         }
     }
+    public function duplicateService($service_id)
+    {
+
+        try {
+            $service_clients = Service::find($service_id)->replicate();
+            if ($service_clients->save()) {
+                return response()->json(['status' => 200, 'message' => 'Service duplicate successfully.', 'data' => $service_clients]);
+                //return redirect()->back()->withSuccess('Service duplicate successfully.');
+            }
+            else
+            {
+                return response()->json(['status' => 401, 'message' => 'Unable to duplicate service.']);
+                //return redirect()->back()->withErrors(['error' => 'Unable to duplicate service']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => 401, 'message' => $e->getMessage()]);
+            //return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
     public function updateService(Request $r, $id)
     {
         $data = $r->all();

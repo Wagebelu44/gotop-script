@@ -56,6 +56,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('category-status-change/{id}', 'Panel\ServiceController@enablingCategory');
         Route::get('enableService/{id}', 'Panel\ServiceController@enableService');
         Route::DELETE('deleteService/{id}', 'Panel\ServiceController@deleteService');
+        Route::get('duplicate/service/{service_id}', 'Panel\ServiceController@duplicateService');
         Route::get('show-category/{id}', 'Panel\ServiceController@showCategory');
         Route::post('category-store', 'Panel\ServiceController@categoryStore');
         Route::get('get-category-services', 'Panel\ServiceController@getCateServices');

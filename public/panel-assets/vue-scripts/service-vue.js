@@ -667,7 +667,7 @@ const App = new Vue({
         },
         serviceDuplicate(service_id, catStatus) {
             this.loader.page = true;
-            fetch('duplicate/service/' + service_id).then(res => res.json())
+            fetch(base_url+'/admin/duplicate/service/' + service_id).then(res => res.json())
                 .then(res => {
                     this.loader.page = false;
                     toastr["success"](res.message);
