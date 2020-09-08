@@ -978,8 +978,7 @@
                                                             Action
                                                         </button>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                                <a class="dropdown-item type-dropdown-item">Edit service</a>
-                                                                <a class="dropdown-item type-dropdown-item">Edit service</a>
+                                                            <a class="dropdown-item type-dropdown-item" @click="serviceEdit(service.id)">Edit service</a>
                                                             <a class="dropdown-item type-dropdown-item">Edit description</a>
                                                             <a class="dropdown-item type-dropdown-item" id="sStatusAction">Active service</a>
                                                             <a class="dropdown-item type-dropdown-item">Reset custom rates</a>

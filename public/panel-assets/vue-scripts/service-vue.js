@@ -199,7 +199,7 @@ const App = new Vue({
         'services.form_fields.provider_id': {
             handler: function(oldval,newval)
             {
-                this.getProviderServices(oldval);
+                //this.getProviderServices(oldval);
             },
             deep: true,
         },
@@ -535,8 +535,9 @@ const App = new Vue({
         serviceEdit(service_id) {
             this.loader.page = true;
             this.service_edit_id = service_id;
-            fetch('showService/' + service_id).then(res => res.json())
+            fetch(base_url+'/admin/services/' + service_id).then(res => res.json())
                 .then(res => {
+                    console.log(res);
                     this.loader.page = false;
                     this.loader.service = true;
                     this.service_edit = true;

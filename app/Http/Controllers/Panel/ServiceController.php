@@ -116,7 +116,7 @@ class ServiceController extends Controller
 
     public function show($id)
     {
-        //
+        return Service::find($id);
     }
 
     public function edit($id)
