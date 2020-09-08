@@ -546,13 +546,13 @@ const App = new Vue({
         },
         serviceDescription(service_id) {
             this.loader.page = true;
-            fetch('showService/' + service_id).then(res => res.json())
+            fetch(base_url+'/admin/services/' +  service_id).then(res => res.json())
                 .then(res => {
                     this.loader.page = false;
                     this.loader.description = true;
                     $('#serviceDescription').modal('show');
-                    this.services.form_fields.description = res.data.description;
-                    $("#serviceDescription_edit").summernote('code', res.data.description, {
+                    this.services.form_fields.description = res.description;
+                    $("#serviceDescription_edit").summernote('code', res.description, {
                             placeholder: 'Hello stand alone ui',
                             tabsize: 2,
                             height: 300,
@@ -578,7 +578,7 @@ const App = new Vue({
             fetch('updateService/' + this.service_edit_id, {
                 headers: {
                     "Accept": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
                 },
                 credentials: "same-origin",
                 method: "POST",
@@ -599,7 +599,6 @@ const App = new Vue({
                             toastr["success"](res.message);
                             document.getElementById('formDescription').reset();
                             $('#serviceDescription').modal('hide');
-                            //window.location.reload();
                         }, 2000);
                     }
 
@@ -624,10 +623,9 @@ const App = new Vue({
         },
         serviceEnableDisable(service_id) {
             this.loader.page = true;
-            fetch('enableService/' + service_id).then(res => res.json())
+            fetch(base_url+'/admin/enableService/' + service_id).then(res => res.json())
                 .then(res => {
                     this.loader.page = false;
-
                     toastr["success"](res.message);
                     if (res.status === 200) {
                         setTimeout(() => {
@@ -646,15 +644,26 @@ const App = new Vue({
                 })
         },
         serviceDelete(service_id) {
-            this.loader.page = true;
-            fetch('deleteService/' + service_id).then(res => res.json())
-                .then(res => {
-                    this.loader.page = false;
-                    toastr["success"](res.message);
-                    setTimeout(() => {
-                        $('.serviceRow_'+service_id).remove();
-                    }, 100);
-                })
+            if (confirm('Are you sure?')) {
+                this.loader.page = true;
+                fetch(base_url+'/admin/deleteService/' + service_id, {
+                    headers: 
+                    {
+                        "Accept": "application/json",
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                    },
+                    credentials: "same-origin",
+                    method: "DELETE",
+                    body: {} 
+                }).then(res => res.json())
+                    .then(res => {
+                        this.loader.page = false;
+                        toastr["success"](res.message);
+                        setTimeout(() => {
+                            $('.serviceRow_'+service_id).remove();
+                        }, 100);
+                    })
+            }
         },
         serviceDuplicate(service_id, catStatus) {
             this.loader.page = true;

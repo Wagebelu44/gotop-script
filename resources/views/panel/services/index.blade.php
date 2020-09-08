@@ -679,19 +679,22 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
+                                                <div class="overlay-loader" v-if="loader.description">
                                                     <div class="loader-holder">
                                                         <img src="{{asset('loader.gif')}}" alt="">
                                                     </div>
                                                 </div>
-                                                <input type="hidden" name="id"/>
+                                                <input type="hidden" name="id" v-model="service_edit_id"/>
                                                 <div class="form-group">
                                                     <label for="description"> <strong>Description</strong> </label>
-                                                    <textarea name="description" id="serviceDescription_edit" class="form-control summernote custom_summernote"></textarea>
+                                                    <textarea name="description"
+                                                                id="serviceDescription_edit"
+                                                                class="form-control custom_summernote"
+                                                                v-model="services.form_fields.description"></textarea>
+                    
                                                 </div>
-
-                                                <div class="error-display">
-                                                    <p class="error-display-item">rtretrytryty</p>
+                                                <div v-if="errors.category.length != 0" class="error-display">
+                                                    <p class="error-display-item" v-for="errC in errors.category"> @{{ errC.desc }}</p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -922,7 +925,8 @@
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <a class="dropdown-item type-dropdown-item"    @click="categoryEdit(cate_item.id)">Edit Category</a>
-                                                        <a class="dropdown-item type-dropdown-item"  @click="updateCategoryStatus(cate_item.id)" > <span v-if="cate_item.status=='active'">Disable</span> <span v-else> Enable</span>  Category</a>
+                                                        <a class="dropdown-item type-dropdown-item"  @click="updateCategoryStatus(cate_item.id)" > 
+                                                            <span v-if="cate_item.status=='active'">Disable</span> <span v-else> Enable</span>  Category</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -979,10 +983,12 @@
                                                         </button>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             <a class="dropdown-item type-dropdown-item" @click="serviceEdit(service.id)">Edit service</a>
-                                                            <a class="dropdown-item type-dropdown-item">Edit description</a>
-                                                            <a class="dropdown-item type-dropdown-item" id="sStatusAction">Active service</a>
-                                                            <a class="dropdown-item type-dropdown-item">Reset custom rates</a>
-                                                            <a class="dropdown-item type-dropdown-item" href="">Delete service</a>
+                                                            <a class="dropdown-item type-dropdown-item" @click="serviceDescription(service.id)">Edit description</a>
+                                                            <a class="dropdown-item type-dropdown-item"  @click="serviceEnableDisable(service.id)">
+                                                                <span v-if="service.status=='active'">Active</span> <span v-else> Inactive</span> service
+                                                            </a>
+                                                            {{-- <a class="dropdown-item type-dropdown-item" >Reset custom rates</a> --}}
+                                                            <a class="dropdown-item type-dropdown-item" @click="serviceDelete(service.id)">Delete service</a>
                                                             <a class="dropdown-item type-dropdown-item">Duplicate</a>
                                                         </div>
                                                     </div>

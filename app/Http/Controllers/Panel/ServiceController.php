@@ -114,6 +114,65 @@ class ServiceController extends Controller
         }
     }
 
+    public function enableService($id){
+        $servcie = Service::find($id);
+        $servcie->status = ($servcie->status =='active') ? 'inactive':'active';
+        if ($servcie->save())
+        {
+            $action = ($servcie->status == 'active')?'Enabled':'Disabled';
+            $actionToBe = ($servcie->status == 'active')?'Disable':'Enable';
+            return response()->json(['status' => 200, 'message' => 'Service updated successfully.', 'action' => $action, 'action' => $action]);
+        }
+        else
+        {
+            return response()->json(['status' => 401, 'message' => 'Unable to update data']);
+        }
+    }
+    public function deleteService($id)
+    {
+        $service = Service::find($id);
+        try {
+            if ($service->icon) {
+                Storage::delete('public/'.$service->icon);
+            }
+
+            $service->delete();
+
+            return response()->json(['status' => 200, 'message' => 'Service deleted successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 401, 'message' => 'Unable to delete service']);
+        }
+    }
+    public function updateService(Request $r, $id)
+    {
+        $data = $r->all();
+        $servcie = Service::find($id);
+        $udpated = $servcie->update($data);
+        if (isset($data['mode']) && $data['mode'] == 'Auto') {
+            $json_data = json_decode($r->provider_selected_service_data, true);
+            dd($json_data);
+           /*  ProviderService::updateOrCreate([
+                'service_id' => $service->id,
+            ],[
+                'provider_id' => $data['provider_id'],
+                'provider_service_id' => $json_data['service'],
+                'name' => $json_data['name'],
+                'type' => $json_data['type'],
+                'category' =>  $json_data['category'],
+                'rate'=>  $json_data['rate'],
+                'min'=>  $json_data['min'],
+                'max'=>  $json_data['max'],
+            ]); */
+        }
+        if ($udpated)
+        {
+            return response()->json(['status'=>200, 'message'=>"Description updated successfully"]);
+        }
+        else
+        {
+            return response()->json(['status'=>401, 'message'=>"Error occured"]);
+        }
+    }
     public function show($id)
     {
         return Service::find($id);
