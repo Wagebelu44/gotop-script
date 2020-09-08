@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.css') }}">
+    <!-- select2 css -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('panel-assets/select2/dist/css/select2.min.css') }}">
     @yield('styles')
 </head>
 
@@ -158,6 +160,9 @@
     <script src="{{ asset('panel-assets/libs/toastr.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="{{ asset('panel-assets/select2/dist/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/select2/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/select2/dist/js/select2.init.js') }}"></script>
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');

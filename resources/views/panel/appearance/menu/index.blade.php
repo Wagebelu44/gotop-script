@@ -14,7 +14,7 @@
                             </div>
                             <div class="col-md-8">
                                 <table class="table table-bordered">
-                                    <tbody class="tablecontents">
+                                    <tbody class="tablecontents" id="public_menu">
                                     @if(!empty($menus))
                                         @foreach($menus as $key => $menu)
                                             @if ($menu->menu_link_type == 'yes')
@@ -46,11 +46,11 @@
                             <div class="col-md-8">
                                 <a href="javascript:void(0)" onclick="addMenuItem(1)" class="btn btn-default m-b add-modal-menu">Add menu item</a>
                                 <table class="table table-bordered" style="margin-top: 10px;">
-                                    <tbody class="tablecontents">
+                                    <tbody class="tablecontents" id="signed_menu">
                                     @if(!empty($menus))
                                         @foreach($menus as $key => $menu)
                                             @if ($menu->menu_link_type == 'no')
-                                                <tr class="row1" data-id="{{ $menu->id }}">
+                                                <tr class="row2" data-id="{{ $menu->id }}">
                                                     <td>
                                                         <div class="settings-menu-drag">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
@@ -201,6 +201,7 @@
 @endsection
 @section('scripts')
     <script>
+
         $(function () {
             $( ".tablecontents" ).sortable({
                 items: "tr",
@@ -240,6 +241,7 @@
 
             }
         });
+
         function addMenuItem(type) {
             $('#menu_type').val(type);
             $('#menuPagePopUp').modal("show");
