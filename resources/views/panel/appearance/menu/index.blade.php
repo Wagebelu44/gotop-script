@@ -68,6 +68,7 @@
                                     @endif
                                     </tbody>
                                 </table>
+                                <a href="javascript:void(0)" onclick="addMenuItem(2)" class="btn btn-default m-b add-modal-menu">Add menu item</a>
                             </div>
                         </div>
                     </div>
