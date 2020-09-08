@@ -30,7 +30,7 @@
             <nav class="navbar top-navbar navbar-expand-md navbar-dark">
                 <div class="navbar-header">
                     <a class="nav-toggler waves-effect waves-light d-block d-md-none"><i class="ti-menu ti-close"></i></a>
-                    <a class="navbar-brand" href="{{ route('panel.dashboard') }}">
+                    <a class="navbar-brand" href="{{ route('admin.panel.dashboard') }}">
                         <span class="logo-text">
                             <img src="{{ asset('panel-assets/images/logo.png') }}" alt="{{ config('app.name', 'Laravel') }}" class="dark-logo" />
                         </span>
