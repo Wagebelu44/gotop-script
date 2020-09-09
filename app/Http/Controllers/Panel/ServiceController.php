@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Panel;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
+use App\Models\ProviderService;
 use App\Models\ServiceCategory;
+use App\Models\SettingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,6 +21,63 @@ class ServiceController extends Controller
     public function getCateServices(Request $request)
     {
         return ServiceCategory::with('services')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
+    }
+
+    public function getProviders()
+    {
+        return SettingProvider::where('panel_id', auth()->user()->panel_id)->get();
+    }
+    public function getProviderServices(Request $r)
+    {
+        try {
+            if (isset($r->provider_id)) {
+
+                $provider  = SettingProvider::find($r->provider_id);
+                if ($provider != null) {
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $provider->api_url);
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS,
+                        http_build_query(array(
+                            'key' =>$provider->api_key,
+                            'action' => 'services',
+                        )));
+
+                    // Receive server response ...
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                    $server_output = curl_exec($ch);
+
+                    curl_close ($ch);
+                    $result  =  json_decode($server_output, true);
+                    return response()->json([
+                        'status' => true,
+                        'data'    => $result,
+                    ]);
+                }
+                else
+                {
+                    return response()->json([
+                        'status' => false,
+                        'data'    => "No provider found",
+                    ]);
+                }
+
+            }
+            else
+            {
+                return response()->json([
+                    'status' => false,
+                    'data'    => "Invalid parameters",
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'data'    => $e->getMessage(),
+            ]);
+        }
     }
 
     public function create()
@@ -98,6 +157,7 @@ class ServiceController extends Controller
                     ProviderService::create([
                         'service_id' => $service->id,
                         'provider_id' => $data['provider_id'],
+                        'panel_id' => auth()->user()->panel_id,
                         'provider_service_id' => $json_data['service'],
                         'name' => $json_data['name'],
                         'type' => $json_data['type'],

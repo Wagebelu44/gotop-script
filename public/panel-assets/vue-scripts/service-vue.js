@@ -199,7 +199,7 @@ const App = new Vue({
         'services.form_fields.provider_id': {
             handler: function(oldval,newval)
             {
-                //this.getProviderServices(oldval);
+                this.getProviderServices(oldval);
             },
             deep: true,
         },
@@ -261,13 +261,21 @@ const App = new Vue({
             this.services.form_fields.description = '';
             this.services.form_fields.subscription_type = null;
         }
-        this.providers_lists = [];
         this.services.visibility.auto_per_rate = this.auto_per_rate_toggler;
     },
     mounted () {
         this.getCategoryServices();
+        this.loadProviders();
     },
     methods: {
+        loadProviders()
+        {
+            fetch(base_url+'/admin/service_provider')
+            .then(res=>res.json())
+            .then(res=>{
+                this.providers_lists = res;
+            });
+        },
         getCategoryServices()
         {
             fetch(base_url+"/admin/get-category-services")
@@ -935,10 +943,10 @@ const App = new Vue({
                 this.loader.page = true;
                 let forD = new FormData();
                 forD.append('provider_id', this.services.form_fields.provider_id);
-                fetch('{{route("reseller.service.get.provider.data")}}', {
+                fetch(base_url+'/admin/provider/get/services', {
                     headers: {
                         "Accept": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
                     },
                     credentials: "same-origin",
                     method: "POST",

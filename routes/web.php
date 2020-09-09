@@ -54,6 +54,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         #Services...
         
+        Route::get('service_provider', 'Panel\ServiceController@getProviders');
+        Route::post('provider/get/services', 'Panel\ServiceController@getProviderServices');
         Route::post('service_bulk_category', 'Panel\ServiceController@bulkCategory');
         Route::post('service_bulk_enable', 'Panel\ServiceController@bulkEnable');
         Route::post('service_bulk_delete', 'Panel\ServiceController@bulkDelete');
