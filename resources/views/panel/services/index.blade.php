@@ -164,7 +164,7 @@
                                                            <select name="category_id" class="form-control"
                                                                    v-model="services.form_fields.category_id">
                                                                <option value="" selected>Choose category</option>
-                                                               
+                                                               <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
                                                            </select>
                                                        </div>
                                                    </div>

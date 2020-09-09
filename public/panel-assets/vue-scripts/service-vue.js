@@ -472,7 +472,13 @@ const App = new Vue({
                         this.loader.service = false;
                         toastr["success"](res.message);
                         document.getElementById('service_form').reset();
-                        $('#serviceAddModal').modal('hide');
+                        if (this.subscription_modal) {
+                            $('#subscriptionModal').modal('hide');
+                        }
+                        else
+                        {
+                            $('#serviceAddModal').modal('hide');
+                        }
                         if (isEdit) 
                         {
                             var row = res.data;
@@ -484,6 +490,8 @@ const App = new Vue({
                             var row = res.data;
                             this.addnewServicetoLists(row);
                         }
+
+
                     }, 2000);
                 }
                 else if(res.status === 401)
