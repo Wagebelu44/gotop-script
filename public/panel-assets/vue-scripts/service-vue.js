@@ -601,42 +601,42 @@ const App = new Vue({
                 method: "POST",
                 body: service_form
             })
-                .then(res => {
-                    if (!res.ok) {
-                        throw res.json();
-                    }
-                    return res.json();
-                })
-                .then(res => {
-                    console.log(res, 'updated description');
-                    if (res.status === 200) {
-                        this.service_edit = false;
-                        setTimeout(() => {
-                            this.loader.description = false;
-                            toastr["success"](res.message);
-                            document.getElementById('formDescription').reset();
-                            $('#serviceDescription').modal('hide');
-                        }, 2000);
-                    }
-
-                })
-                .catch(err => {
-                    console.log(err);
+            .then(res => {
+                if (!res.ok) {
+                    throw res.json();
+                }
+                return res.json();
+            })
+            .then(res => {
+                console.log(res, 'updated description');
+                if (res.status === 200) {
+                    this.service_edit = false;
                     setTimeout(() => {
                         this.loader.description = false;
-                        let prepare = [];
-                        err.then(erMesg => {
-                            let errMsgs = Object.entries(erMesg.errors);
-                            for (let i = 0; i < errMsgs.length; i++) {
-                                let obj = {};
-                                obj.name = errMsgs[i][0];
-                                obj.desc = errMsgs[i][1][0];
-                                prepare.push(obj);
-                            }
-                            this.errors.category = prepare;
-                        });
+                        toastr["success"](res.message);
+                        document.getElementById('formDescription').reset();
+                        $('#serviceDescription').modal('hide');
                     }, 2000);
-                });
+                }
+
+            })
+            .catch(err => {
+                console.log(err);
+                setTimeout(() => {
+                    this.loader.description = false;
+                    let prepare = [];
+                    err.then(erMesg => {
+                        let errMsgs = Object.entries(erMesg.errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            prepare.push(obj);
+                        }
+                        this.errors.category = prepare;
+                    });
+                }, 2000);
+            });
         },
         serviceEnableDisable(service_id) {
             this.loader.page = true;
