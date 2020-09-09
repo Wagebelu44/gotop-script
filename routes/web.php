@@ -36,88 +36,88 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('password/reset', 'Panel\Auth\ResetPasswordController@reset')->name('panel.password.update');
         Route::get('password/reset/{token}', 'Panel\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
 
-    Route::group(['middleware' => 'auth:panelAdmin', 'as' => 'admin.'], function () {
-        Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
+        Route::group(['middleware' => 'auth:panelAdmin', 'as' => 'admin.'], function () {
+            Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
 
-        #Users...
-        Route::post('updatePassword', 'Panel\UserController@updatePassword');
-        Route::post('suspendUser', 'Panel\UserController@suspend');
-        Route::get('getusers', 'Panel\UserController@getUsers');
-        Route::resource('users', 'Panel\UserController');
             #Users...
             Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');
-            Route::resource('users', 'Panel\UserController', ["as"=>"admin"]);
+            Route::resource('users', 'Panel\UserController');
+            #Users...
+            Route::post('updatePassword', 'Panel\UserController@updatePassword');
+            Route::post('suspendUser', 'Panel\UserController@suspend');
+            Route::get('getusers', 'Panel\UserController@getUsers');
+            Route::resource('users', 'Panel\UserController');
 
-        #Orders...
-        Route::resource('orders', 'Panel\OrderController');
+            #Orders...
+            Route::resource('orders', 'Panel\OrderController');
 
-        #Drip-feed...
-        Route::resource('drip-feed', 'Panel\DripFeedController');
+            #Drip-feed...
+            Route::resource('drip-feed', 'Panel\DripFeedController');
 
-        #Tasks...
-        Route::resource('tasks', 'Panel\TaskController');
+            #Tasks...
+            Route::resource('tasks', 'Panel\TaskController');
 
-        #Services...
-        Route::resource('services', 'Panel\ServiceController');
+            #Services...
+            Route::resource('services', 'Panel\ServiceController');
 
-        #Payments...
-        Route::resource('payments', 'Panel\PaymentController');
+            #Payments...
+            Route::resource('payments', 'Panel\PaymentController');
 
-        #Tickets...
-        Route::resource('tickets', 'Panel\TicketController');
-        Route::get('tickets/status/{status}/{ticket_id}', 'Panel\TicketController@changeTicketStatus')->name('tickets.status.change');
-        Route::post('tickets/status/changes', 'Panel\TicketController@changeBulkStatus')->name('tickets.status.changes');
-        Route::post('tickets/{ticket}/comment', 'Panel\TicketController@comment')->name('tickets.comment');
+            #Tickets...
+            Route::resource('tickets', 'Panel\TicketController');
+            Route::get('tickets/status/{status}/{ticket_id}', 'Panel\TicketController@changeTicketStatus')->name('tickets.status.change');
+            Route::post('tickets/status/changes', 'Panel\TicketController@changeBulkStatus')->name('tickets.status.changes');
+            Route::post('tickets/{ticket}/comment', 'Panel\TicketController@comment')->name('tickets.comment');
 
-        #Reports...
-        Route::resource('reports', 'Panel\ReportController');
+            #Reports...
+            Route::resource('reports', 'Panel\ReportController');
 
-        #Rppearance...
-        Route::resource('appearance', 'Panel\AppearanceController');
+            #Rppearance...
+            Route::resource('appearance', 'Panel\AppearanceController');
 
-        #Rppearance menu...
-        Route::resource('menu', 'Panel\MenuController');
-        Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
+            #Rppearance menu...
+            Route::resource('menu', 'Panel\MenuController');
+            Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
 
-        #blog...
-        Route::resource('blog', 'Panel\BlogController');
+            #blog...
+            Route::resource('blog', 'Panel\BlogController');
 
-        #blog Category
-        Route::resource('blog-category', 'Panel\BlogCategoryController');
+            #blog Category
+            Route::resource('blog-category', 'Panel\BlogCategoryController');
 
-        #blog Slider
-        Route::resource('blog-slider', 'Panel\BlogSliderController');
+            #blog Slider
+            Route::resource('blog-slider', 'Panel\BlogSliderController');
 
 
-        #Profile...
-        Route::get('profile', 'Panel\ProfileController@profile')->name('profile');
-        Route::put('password/update', 'Panel\ProfileController@passwordUpdate')->name('password.update');
+            #Profile...
+            Route::get('profile', 'Panel\ProfileController@profile')->name('profile');
+            Route::put('password/update', 'Panel\ProfileController@passwordUpdate')->name('password.update');
 
-        #Settings...
-        Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {
-            Route::get('general', 'Panel\Setting\GeneralController@index')->name('general');
-            Route::post('general-update', 'Panel\Setting\GeneralController@generalUpdate')->name('generalUpdate');
+            #Settings...
+            Route::group(['prefix' => 'setting', 'as' => 'setting.'], function () {
+                Route::get('general', 'Panel\Setting\GeneralController@index')->name('general');
+                Route::post('general-update', 'Panel\Setting\GeneralController@generalUpdate')->name('generalUpdate');
 
-            Route::resource('faq', 'Panel\Setting\FaqController');
-            Route::post('faq-sortable', 'Panel\Setting\FaqController@sortable')->name('faq.sortable');
+                Route::resource('faq', 'Panel\Setting\FaqController');
+                Route::post('faq-sortable', 'Panel\Setting\FaqController@sortable')->name('faq.sortable');
 
-            Route::resource('provider', 'Panel\Setting\ProviderController');
+                Route::resource('provider', 'Panel\Setting\ProviderController');
 
-            Route::resource('payment', 'Panel\Setting\PaymentController');
-            Route::post('payment/update-status', 'Panel\Setting\PaymentController@updateStatus')->name('payment.updateStatus');
-            Route::post('payment/edit', 'Panel\Setting\PaymentController@paymentEdit')->name('payment.paymentEdit');
-            Route::post('payment/update', 'Panel\Setting\PaymentController@paymentUpdate')->name('payment.paymentUpdate');
+                Route::resource('payment', 'Panel\Setting\PaymentController');
+                Route::post('payment/update-status', 'Panel\Setting\PaymentController@updateStatus')->name('payment.updateStatus');
+                Route::post('payment/edit', 'Panel\Setting\PaymentController@paymentEdit')->name('payment.paymentEdit');
+                Route::post('payment/update', 'Panel\Setting\PaymentController@paymentUpdate')->name('payment.paymentUpdate');
 
-            Route::get('module', 'Panel\Setting\ModuleController@index')->name('module');
-            Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('module.update');
-            Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('module.edit');
+                Route::get('module', 'Panel\Setting\ModuleController@index')->name('module');
+                Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('module.update');
+                Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('module.edit');
 
-            Route::resource('notification', 'Panel\Setting\NotificationController');
-            Route::resource('staff-email', 'Panel\Setting\StaffEmailController');
+                Route::resource('notification', 'Panel\Setting\NotificationController');
+                Route::resource('staff-email', 'Panel\Setting\StaffEmailController');
 
-            Route::resource('bonuses', 'Panel\Setting\BonusesController');
+                Route::resource('bonuses', 'Panel\Setting\BonusesController');
 
             });
 
