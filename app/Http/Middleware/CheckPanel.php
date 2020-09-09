@@ -18,12 +18,12 @@ class CheckPanel
     public function handle($request, Closure $next)
     {
         //Check valid script...
-        if (env('SANDBOX')) {
+        if (env('SANDBOX') == 'live') {
             $domain = request()->getHost();
 
             if (session('domain') != $domain) {
                 try {
-                    $response = Http::post(env('SANDBOX_URL').'/api/check-domain', [
+                    $response = Http::post(env('SANDBOX_LIVE_URL').'/api/check-domain', [
                         'domain' => $domain,
                         'token' => env('PANLE_REQUEST_TOKEN'),
                     ]);
@@ -48,6 +48,8 @@ class CheckPanel
                     return view('panel-not-found', compact('message'));
                 }
             }
+        } elseif (env('SANDBOX') == 'sandbox') {
+            session(['panel' => env('SANDBOX_PANEL_ID')]);
         }
 
         return $next($request);
