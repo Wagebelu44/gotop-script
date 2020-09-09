@@ -52,6 +52,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('category-services', 'Panel\UserController@getCategoryService');
             Route::post('store-service', 'Panel\UserController@serviceUpdate');
             Route::DELETE('delete-user-service', 'Panel\UserController@deleteUsersService');
+            Route::post('bulk-status-update', 'Panel\UserController@bulkUserUpdate');
             Route::resource('users', 'Panel\UserController');
 
             #Orders...

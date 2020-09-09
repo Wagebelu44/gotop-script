@@ -12,7 +12,7 @@
                             </div>
                             <div class="__right_control_panel">
                                 <form class="d-flex pull-right" id="search-form"  @submit.prevent="searchFilter">
-                                    <div><a class="btn btn-link" href="">Export</a></div>
+                                <div><a class="btn btn-link" href="">Export @{{checkAlluser}}</a></div>
                                     <input type="hidden" name="order_by" value="">
                                     <input type="hidden" name="sort_by" value="">
                                     <div class="form-group mb-2 mr-0">
@@ -27,31 +27,34 @@
                         <div class="table-responsive">
                             <table class="table dataTable" id="users">
                                 <thead>
-                                <tr>
-                                    <th><input type="checkbox" name="select_all"></th>
-                                    <th colspan="11" style="display: none">
-                                        <span id="user-no"></span> users selected
-                                        <div class="btn-group">
-                                            <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Action
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <form method="post" id="global-update" action="">
-                                                    @csrf
-                                                    @method('put')
-                                                    <input type="hidden" name="type">
-                                                </form>
-                                                <form method="post" id="custom-rate-reset" action="">
-                                                    @csrf
-                                                    @method('put')
-                                                </form>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Suspend all</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Activate all</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Reset custom rates</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates from user</a>
+                                    <tr v-if="selectedUsers.length>0">
+                                        <th><input type="checkbox"  v-model="checkAlluser"></th>
+                                        <th colspan="11">
+                                            <span id="user-no"></span> users selected 
+                                            <div class="btn-group">
+                                                <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Action
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <form method="post" id="global-update" action="">
+                                                        @csrf
+                                                        @method('put')
+                                                        <input type="hidden" name="type">
+                                                    </form>
+                                                    <form method="post" id="custom-rate-reset" action="">
+                                                        @csrf
+                                                        @method('put')
+                                                    </form>
+                                                    <a class="dropdown-item type-dropdown-item" @click="suspendAlluser" href="javascript:void(0)">Suspend all</a>
+                                                    <a class="dropdown-item type-dropdown-item" @click="activeAlluser" href="javascript:void(0)">Activate all</a>
+                                                    <a class="dropdown-item type-dropdown-item" @click="resetAlluserRate" href="javascript:void(0)">Reset custom rates</a>
+                                                    {{-- <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates from user</a> --}}
+                                                </div>
                                             </div>
-                                        </div>
-                                    </th>
+                                        </th>
+                                    </tr>
+                                <tr v-else>
+                                    <th><input type="checkbox"  v-model="checkAlluser"></th>
                                     <th>ID</th>
                                     <th>Username</th>
                                     <th>Email</th>
@@ -79,7 +82,7 @@
                                 <tbody id="tbody_ss" v-if="users!==null">
                                     <tr v-for="(user, index) in users">
                                         <td>
-                                            <input type="checkbox" name="users[]" value="" class="user_check">
+                                            <input type="checkbox"  v-model="selectedUsers" class="user_check" :value="user.id">
                                         </td>
                                         <td>@{{user.id}}</td>
                                         <td>@{{user.username}}</td>
@@ -232,8 +235,6 @@
                             </div>
                             <!-- /.modal-dialog -->
                         </div>
-                        
-                        {{-- currently not used --}}
                         <div class="modal bs-example-modal-lg" id="customRateAddModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
@@ -298,7 +299,7 @@
                                                                             class="form-control" placeholder="Price" :value="ser.price">
                                                                             <input type="hidden" name="percentage"  value="0">
                                                                             <div class="input-group-append">
-                                                                                <span class="input-group-text" style="cursor: pointer" onclick="toggleSpan(this, ser.price, ser.service_id})">$</span>
+                                                                                <span class="input-group-text" style="cursor: pointer">$</span>
                                                                             </div>
                                                                         </div>
                                                                         <small class="mt-0 pt-0 d-block sub-price">$14</small>
@@ -333,6 +334,7 @@
                             </div>
                             <!-- /.modal-dialog -->
                         </div>
+                        {{-- currently not used --}}
                         <div class="modal bs-example-modal-lg" id="customRateUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">

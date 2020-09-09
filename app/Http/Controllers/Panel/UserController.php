@@ -190,4 +190,30 @@ class UserController extends Controller
         $user->servicesList()->detach();
         return response()->json(['status' => true, 'data'=> 'user services reset'], 200);
     }
+
+    public function bulkUserUpdate(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required',
+            'status' => 'required',
+        ]);
+        $data = $request->all();
+        if ($data['status'] == 'rate_reset') {
+            $users = User::whereIn('id', $data['user_ids'])->get();
+            foreach ($users as $user) {
+                $user->servicesList()->detach();
+            }
+        }
+        elseif ($data['status'] == 'active') {
+            User::whereIn('id', $data['user_ids'])->update([
+                'status' => 'active'
+            ]);
+        }
+        elseif ($data['status'] == 'inactive') {
+            User::whereIn('id', $data['user_ids'])->update([
+                'status' => 'inactive'
+            ]);
+        }
+        return response()->json(['status' => true, 'data'=> 'Bulk users update'], 200);
+    }
 }

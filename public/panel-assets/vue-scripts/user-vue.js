@@ -24,12 +24,23 @@ const userModule = new Vue({
         userServices: [],
         categoryServices: [],
         current_user_id: null,
+        selectedUsers: [],
+        checkAlluser: false,
     },
     created () {
         let myUrl = new URL (window.location.href);
         if (myUrl.search.includes('page=')) {
             this.pagination.current_page = myUrl.search.split('page=')[1];
         }
+    },
+    watch: {
+        checkAlluser(oldval, newval)
+        {
+            if (oldval) {
+                this.selectedUsers = this.users.map(it=>it.id);
+            }
+            else this.selectedUsers = [];
+        }  
     },
     mounted () {
         this.getUsers();
@@ -435,6 +446,125 @@ const userModule = new Vue({
                         }
                     });
                 });
+            }
+        },
+        activeAlluser()
+        {
+            if (this.selectedUsers.length>0) {
+
+                fetch(base_url+'/admin/bulk-status-update', {
+                    headers: {
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "same-origin",
+                    method: "POST",
+                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'active'}),
+                }).then(res => {
+                    if (!res.ok) {
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.status) {
+                        window.location.reload();
+                    }
+                })
+                .catch(res => {
+                    res.text().then(err => {
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                    });
+                });
+            }
+            else 
+            {
+                alert('No User is selected');
+            }
+        },
+        suspendAlluser()
+        {
+            if (this.selectedUsers.length>0) {
+                fetch(base_url+'/admin/bulk-status-update', {
+                    headers: {
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "same-origin",
+                    method: "POST",
+                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'inactive'}),
+                }).then(res => {
+                    if (!res.ok) {
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.status) {
+                        window.location.reload();
+                    }
+                })
+                .catch(res => {
+                    res.text().then(err => {
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                    });
+                });
+            }
+            else 
+            {
+                alert('No User is selected');
+            }
+        
+        },
+        resetAlluserRate()
+        {
+            if (this.selectedUsers.length>0) {
+                fetch(base_url+'/admin/bulk-status-update', {
+                    headers: {
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "same-origin",
+                    method: "POST",
+                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'rate_reset'}),
+                }).then(res => {
+                    if (!res.ok) {
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.status) {
+                        window.location.reload();
+                    }
+                })
+                .catch(res => {
+                    res.text().then(err => {
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                    });
+                });
+            }
+            else 
+            {
+                alert('No User is selected');
             }
         }
        
