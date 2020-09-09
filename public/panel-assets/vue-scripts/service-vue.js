@@ -556,6 +556,7 @@ const App = new Vue({
             this.loader.page = true;
             fetch(base_url+'/admin/services/' +  service_id).then(res => res.json())
                 .then(res => {
+                    console.log(res);
                     this.loader.page = false;
                     this.loader.description = true;
                     $('#serviceDescription').modal('show');
@@ -599,7 +600,7 @@ const App = new Vue({
                     return res.json();
                 })
                 .then(res => {
-                    console.log(res);
+                    console.log(res, 'updated description');
                     if (res.status === 200) {
                         this.service_edit = false;
                         setTimeout(() => {
@@ -635,12 +636,10 @@ const App = new Vue({
                 .then(res => {
                     this.loader.page = false;
                     toastr["success"](res.message);
-                    if (res.status === 200) {
-                        setTimeout(() => {
-                            document.getElementById('sStatus_'+service_id).innerHTML = res.action;
-                            document.getElementById('sStatusAction_'+service_id).innerHTML = res.actionToBe+' service';
-                        }, 100);
-                    }                            
+                    if (res.data) {
+                        let row  = res.data;
+                        this.updateServiceLists(row);
+                    }          
                 })
         },
         serviceResetRate(service_id) {
@@ -667,9 +666,10 @@ const App = new Vue({
                     .then(res => {
                         this.loader.page = false;
                         toastr["success"](res.message);
-                        setTimeout(() => {
-                            $('.serviceRow_'+service_id).remove();
-                        }, 100);
+                        if (res.status === 200) {
+                            let row = res.data;
+                            this.deleteService(row);
+                        }
                     })
             }
         },
@@ -1149,6 +1149,24 @@ const App = new Vue({
                 }
                 return item;
             });
+        },
+        deleteService(obj)
+        {
+            if (obj!==null) {
+                let category = this.category_services.find(item=>item.id == obj.category_id);
+                
+                if (category !== undefined) {
+                    let servicce = category.services.find(it=>it.id==obj.id);
+                    category.services.splice(category.services.indexOf(servicce), 1);
+                    let  servicesss= category.services;
+                    this.category_services = this.category_services.map(item=>{
+                        if (item.id === category.id) {
+                            item.services = [...servicesss];
+                        }
+                        return item;
+                    })
+                }
+            }
         }
     },
 });

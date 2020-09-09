@@ -183,13 +183,11 @@ class ServiceController extends Controller
         $servcie->status = ($servcie->status =='active') ? 'inactive':'active';
         if ($servcie->save())
         {
-            $action = ($servcie->status == 'active')?'Enabled':'Disabled';
-            $actionToBe = ($servcie->status == 'active')?'Disable':'Enable';
-            return response()->json(['status' => 200, 'message' => 'Service updated successfully.', 'action' => $action, 'action' => $action]);
+            return response()->json(['status' => 200, 'message' => 'Service updated successfully.', 'data' => $servcie]);
         }
         else
         {
-            return response()->json(['status' => 401, 'message' => 'Unable to update data']);
+            return response()->json(['status' => 401, 'message' => 'Unable to update data', 'data' => null]);
         }
     }
     public function deleteService($id)
@@ -202,9 +200,9 @@ class ServiceController extends Controller
 
             $service->delete();
 
-            return response()->json(['status' => 200, 'message' => 'Service deleted successfully.']);
+            return response()->json(['status' => 200, 'data'=> $service,  'message' => 'Service deleted successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['status' => 401, 'message' => 'Unable to delete service']);
+            return response()->json(['status' => 401, 'data'=> null, 'message' => 'Unable to delete service']);
         }
     }
     public function duplicateService($service_id)
@@ -226,34 +224,18 @@ class ServiceController extends Controller
             //return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
-    public function updateService(Request $r, $id)
+    public function updateService(Request $request, $id)
     {
-        $data = $r->all();
+        $data = $request->all();
         $servcie = Service::find($id);
         $udpated = $servcie->update($data);
-        if (isset($data['mode']) && $data['mode'] == 'Auto') {
-            $json_data = json_decode($r->provider_selected_service_data, true);
-            dd($json_data);
-           /*  ProviderService::updateOrCreate([
-                'service_id' => $service->id,
-            ],[
-                'provider_id' => $data['provider_id'],
-                'provider_service_id' => $json_data['service'],
-                'name' => $json_data['name'],
-                'type' => $json_data['type'],
-                'category' =>  $json_data['category'],
-                'rate'=>  $json_data['rate'],
-                'min'=>  $json_data['min'],
-                'max'=>  $json_data['max'],
-            ]); */
-        }
         if ($udpated)
         {
-            return response()->json(['status'=>200, 'message'=>"Description updated successfully"]);
+            return response()->json(['status'=>200, 'data'=>$servcie, 'message'=>"Description updated successfully"]);
         }
         else
         {
-            return response()->json(['status'=>401, 'message'=>"Error occured"]);
+            return response()->json(['status'=>401,  'data'=> null,  'message'=>"Error occured"]);
         }
     }
     public function bulkEnable(Request $request)
