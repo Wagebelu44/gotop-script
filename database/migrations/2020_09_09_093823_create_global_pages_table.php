@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePagesTable extends Migration
+class CreateGlobalPagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('pages', function (Blueprint $table) {
+        Schema::create('global_pages', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('panel_id');
-            $table->unsignedBigInteger('global_page_id')->nullable();
             $table->string('name');
             $table->string('url');
             $table->longText('content')->nullable();
@@ -26,8 +24,6 @@ class CreatePagesTable extends Migration
             $table->enum('is_public', ['Yes', 'No'])->default('Yes');
             $table->enum('is_editable', ['Yes', 'No'])->default('Yes');
             $table->enum('status', ['Active', 'Deactivated'])->default('Active');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -40,6 +36,6 @@ class CreatePagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pages');
+        Schema::dropIfExists('global_pages');
     }
 }
