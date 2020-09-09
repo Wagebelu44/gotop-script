@@ -961,16 +961,20 @@
                                                     @{{service.mode}} 
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sPrice">
-                                                    <span class="d-block">@{{service.price}}</span>
-                                                    <span class="d-block sub-price"> $1245 </span>
+                                                    <span class="d-block">$@{{service.price}}</span>
+                                                    <span class="d-block sub-price"> 
+                                                        <span v-if="service.provider!==null">
+                                                            $@{{service.provider?service.provider.rate:null}} 
+                                                        </span>
+                                                    </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sMinQty">
                                                     <span class="d-block"> @{{service.min_quantity}}  </span>
-                                                    <span class="d-block sub-price"> $8574 </span>
+                                                    <span class="d-block sub-price"> @{{service.provider?service.provider.min:null}} </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sMaxQty">
                                                     <span class="d-block">  @{{service.max_quantity}} </span>
-                                                    <span class="d-block sub-price"> $1245 </span>
+                                                    <span class="d-block sub-price"> @{{service.provider?service.provider.max:null}} </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sStatus">
                                                     @{{service.status}}

@@ -20,7 +20,7 @@ class ServiceController extends Controller
 
     public function getCateServices(Request $request)
     {
-        return ServiceCategory::with('services')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
+        return ServiceCategory::with('services', 'services.provider')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
     }
 
     public function getProviders()
