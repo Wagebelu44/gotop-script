@@ -204,6 +204,7 @@ const App = new Vue({
             deep: true,
         },
         'services.form_fields.provider_service_id': {
+            
             handler: function(oldval,newval)
             {
                 this.changeSelected();
@@ -539,7 +540,6 @@ const App = new Vue({
             this.service_edit_id = service_id;
             fetch(base_url+'/admin/services/' + service_id).then(res => res.json())
                 .then(res => {
-                    console.log(res);
                     this.loader.page = false;
                     this.loader.service = true;
                     this.service_edit = true;
@@ -679,89 +679,9 @@ const App = new Vue({
                 .then(res => {
                     this.loader.page = false;
                     toastr["success"](res.message);
+                    //console.log(res);
                     var row = res.data;
-                    setTimeout(() => {
-                        var catStatusclass = (catStatus == 'inactive')?'__service_row-services-disable __service_row-overlay':'';
-                        var serStatusclass = (row.status == 'inactive')?'__service_row-services-disable __service_row-overlay':'';
-                        var html = `<div class="__service_row serviceRow_`+row.id+` `+catStatusclass+` `+serStatusclass+`" id="sortable">
-                                <div class="__service_td drag-handler-container" style="padding: 0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="service-handle" viewBox="0 0 20 20"><title>Drag-Handle</title>
-                                        <path
-                                            d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path>
-                                    </svg>
-                                    <input type="checkbox" class="service_checkbox" style="margin-top: 5px" v-model="service_checkbox"
-                                           value="`+row.id+`">
-                                </div>
-                                <div class="__service_td">
-                                    `+row.id+`
-                                </div>
-                                <div class="__service_td __service_th_td">
-                                    `+row.name+`
-                                </div>
-                                <div class="__service_td __service_td_span_type">
-                                    `+row.service_type+`
-                                </div>
-                                <div class="__service_td __service_td_span_mode">
-                                    {!! ($service->mode == "manual") ? 'Manual': $service->provider->domain.'<br>'.$service->provider_service_id !!}
-                                </div>
-                                <div class="__service_td __service_td_span">
-                                    `+row.price+`
-                                </div>
-                                <div class="__service_td __service_td_span">
-                                    `+row.min_quantity+`
-                                </div>
-                                <div class="__service_td __service_td_span">
-                                    `+row.max_quantity+`
-                                </div>
-                                <div class="__service_td __service_td_span" id="sStatus_`+row.id+`">`;
-                                    if(row.status == 'active') {
-                                        html += `Enabled`;
-                                    } else {
-                                        html += `Disabled`;
-                                    }
-                                html += `</div>`;
-                                html += `<div class="__service_td __service_td_span" style="grid-column: span 3 / auto;padding: 0;text-align: right;">
-                                    <div class="dropdown __dropdown_buttons">
-                                        <button class="btn btn-default dropdown-toggle" type="button"
-                                                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                                aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if ($service->service_type == 'Subscriptions')
-                                            <a class="dropdown-item type-dropdown-item" href="#" @click="subscriptionEdit(`+row.id+`)">Edit
-                                                service</a>
-                                            @else
-                                            <a class="dropdown-item type-dropdown-item" href="#" @click="serviceEdit(`+row.id+`)">Edit
-                                                service</a>
-                                                @endif
-                                            <a class="dropdown-item type-dropdown-item" href="#"
-                                               @click="serviceDescription(`+row.id+`)">Edit description</a>
-
-                                            <a class="dropdown-item type-dropdown-item" href="#"
-                                               @click="serviceEnableDisable(`+row.id+`)" id="sStatusAction_`+row.id+`">`;
-                                                if(row.status == 'active') {
-                                                    html += `Disable service`;
-                                                } else {
-                                                    html += `Enable service`;
-                                                }
-                                                html += `</a>`;
-
-                                            html += `<a class="dropdown-item type-dropdown-item" href="#"
-                                            @click="serviceResetRate(`+row.id+`)">Reset custom rates</a>
-
-                                            <a class="dropdown-item type-dropdown-item" href="#"
-                                            @click="serviceDelete(`+row.id+`)">Delete
-                                                service</a>
-
-                                            <a class="dropdown-item type-dropdown-item" href="#"
-                                            @click="serviceDuplicate(`+row.id+`)" >Duplicate</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>`;
-                        $(html).insertAfter('.serviceRow_'+service_id);
-                    }, 100);
+                    this.addnewServicetoLists(row);
                 })
         },
         categoryEdit(category_id) {
@@ -952,36 +872,36 @@ const App = new Vue({
                     method: "POST",
                     body:forD,
                 })
-                    .then(res => {
-                        if (!res.ok) {
-                            throw res;
+                .then(res => {
+                    if (!res.ok) {
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.status) {
+                        if (res.data !==null) {
+                            this.loader.page = false;
+                            this.provider_services = res.data;
+                            this.services.visibility.service_id_by_provider = true;
+                            this.services.validations.provider_service_not_found= '';
                         }
-                        return res.json();
-                    })
-                    .then(res => {
-                        if (res.status) {
-                            if (res.data !==null) {
-                                this.loader.page = false;
-                                this.provider_services = res.data;
-                                this.services.visibility.service_id_by_provider = true;
-                                this.services.validations.provider_service_not_found= '';
-                            }
-                            else
-                            {
-                                this.loader.page = false;
-                                this.services.visibility.service_id_by_provider = false;
-                                this.services.validations.provider_service_not_found= 'Nothing found';
-                                this.services.form_fields.provider_service_id = null;
-
-                            }
-                        }
-                    })
-                    .catch(err=> {
-                        err.text().then(errMessage=>{
-                            this.services.validations.provider_service_not_found= errMessage;
+                        else
+                        {
+                            this.loader.page = false;
+                            this.services.visibility.service_id_by_provider = false;
+                            this.services.validations.provider_service_not_found= 'Nothing found';
                             this.services.form_fields.provider_service_id = null;
-                        })
-                    });
+
+                        }
+                    }
+                })
+                .catch(err=> {
+                    err.text().then(errMessage=>{
+                        this.services.validations.provider_service_not_found= errMessage;
+                        this.services.form_fields.provider_service_id = null;
+                    })
+                });
             }
 
         },
@@ -1049,13 +969,11 @@ const App = new Vue({
                 });
         },
         changeSelected() {
-
             this.provider_services.forEach(item => {
                 if (item.service  == this.services.form_fields.provider_service_id) {
                     this.provider_service_selected = item;
                 }
             });
-
             if (this.provider_service_selected !== null) {
                 this.services.visibility.drip_feed = true;
                 /* if (this.provider_service_selected.dripfeed === true) {
@@ -1074,7 +992,6 @@ const App = new Vue({
                 this.services.form_fields.auto_min_quantity = this.provider_service_selected.min;
                 this.services.form_fields.auto_max_quantity = this.provider_service_selected.max;
                 this.service_type_selected = this.provider_service_selected.type;
-                console.log(this.service_type_selected);
 
             }
 

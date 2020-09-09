@@ -207,7 +207,7 @@
                                                            </div>
                                                            <span style="color: red" v-if="service_mode == 'Auto' && services.validations.provider_service_not_found !==''">@{{services.validations.provider_service_not_found}}</span>
                                                            <div class="form-group" v-if="services.visibility.service_id_by_provider">
-                                                               <label for=""><strong>Services</strong></label>
+                                                           <label for=""><strong>Services </strong></label>
                                                                <v-select :options="provider_subscription_computed"
                                                                            class="style-chooser"
                                                                            v-model="services.form_fields.provider_service_id"
@@ -215,7 +215,7 @@
                                                                <input type="hidden" name="provider_service_id" v-model="services.form_fields.provider_service_id">
                                                            </div>
                                                            <input type="hidden" name="service_type"  v-if="!services.visibility.service_type" v-model="service_type_selected">
-                                                           <input type="hidden" name="provider_selected_service_data" :value="JSON.stringify(this.provider_service_selected)">
+                                                           <input type="hidden" name="provider_selected_service_data" :value="JSON.stringify(provider_service_selected)">
                                                        </div>
                                                    </div>
                                                </div>
@@ -445,7 +445,7 @@
                                                                 
                                                                 <span style="color: red" v-if="service_mode == 'Auto' && services.validations.provider_service_not_found !==''">@{{services.validations.provider_service_not_found}}</span>
                                                                 <div class="form-group" v-if="services.visibility.service_id_by_provider">
-                                                                    <label for=""><strong>Services</strong></label>
+                                                                <label for=""><strong>Services</strong></label>
                                                                     <v-select :options="provider_services_computed"
                                                                                 class="style-chooser"
                                                                                 v-model="services.form_fields.provider_service_id"
@@ -454,7 +454,7 @@
                                                                   
                                                                 </div>
                                                                 <input type="hidden" name="service_type"  v-if="!services.visibility.service_type" v-model="service_type_selected">
-                                                                <input type="hidden" name="provider_selected_service_data" :value="JSON.stringify(this.provider_service_selected)">
+                                                                <input type="hidden" name="provider_selected_service_data" :value="JSON.stringify(provider_service_selected)">
                                                                 <div class="form-group" v-if="services.visibility.service_type">
                                                                     <label for=""><strong>Service Type</strong></label>
                                                                     <select name="service_type" id="service_type"
