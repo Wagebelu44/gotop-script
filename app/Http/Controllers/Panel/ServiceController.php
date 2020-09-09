@@ -131,24 +131,26 @@ class ServiceController extends Controller
 
             if ($request->has('edit_id') && $request->has('edit_mode'))
             {
-                //dd($request->all(), $data);
+                
                 $service = Service::find($request->edit_id);
                 $service->update($data);
                 if ($data['mode'] == 'Auto') {
-                    $json_data = json_decode($request->provider_selected_service_data, true);
-                    ProviderService::updateOrCreate(
-                        ['service_id'=> $service->id],
-                        [
-                        'provider_id' => $data['provider_id'],
-                        'provider_service_id' => $json_data['service'],
-                        'name' => $json_data['name'],
-                        'type' => $json_data['type'],
-                        'category' =>  $json_data['category'],
-                        'rate'=>  $json_data['rate'],
-                        'min'=>  $json_data['min'],
-                        'max'=>  $json_data['max'],
-                        'panel_id' => auth()->user()->panel_id,
-                    ]);
+                    $json_data = $request->provider_selected_service_data!=null?json_decode($request->provider_selected_service_data, true):null;
+                    if ($json_data!=null) {
+                        ProviderService::updateOrCreate(
+                            ['service_id'=> $service->id],
+                            [
+                            'provider_id' => $data['provider_id'],
+                            'provider_service_id' => $json_data['service'],
+                            'name' => $json_data['name'],
+                            'type' => $json_data['type'],
+                            'category' =>  $json_data['category'],
+                            'rate'=>  $json_data['rate'],
+                            'min'=>  $json_data['min'],
+                            'max'=>  $json_data['max'],
+                            'panel_id' => auth()->user()->panel_id,
+                        ]);
+                    }
                 }
             }
             else

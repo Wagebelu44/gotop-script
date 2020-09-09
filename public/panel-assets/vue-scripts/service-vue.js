@@ -457,60 +457,60 @@ const App = new Vue({
                 method: "POST",
                 body: service_form
             })
-                .then(res => {
-                    if (!res.ok) {
-                        throw res.json();
-                    }
-                    return res.json();
-                })
-                .then(res => {
-                    if (res.status === 200) {
-                        var isEdit = this.service_edit;
-                        this.service_edit = false;
-                        this.service_edit_id = null;
-                        setTimeout(() => {
-                            this.loader.service = false;
-                            toastr["success"](res.message);
-                            document.getElementById('service_form').reset();
-                            $('#serviceAddModal').modal('hide');
-                            if (isEdit) 
-                            {
-                                var row = res.data;
-                                this.updateServiceLists(row);
-                                var status = (row.status == 'active')?'Enabled':'Disabled';
-                            } 
-                            else 
-                            {
-                                var row = res.data;
-                                this.addnewServicetoLists(row);
-                            }
-                        }, 2000);
-                    }
-                    else if(res.status === 401)
-                    {
-                        this.loader.service = false;
-                        this.errors.services = res.data;
-                    }
-
-                })
-                .catch(err => 
-                {
+            .then(res => {
+                if (!res.ok) {
+                    throw res.json();
+                }
+                return res.json();
+            })
+            .then(res => {
+                if (res.status === 200) {
+                    var isEdit = this.service_edit;
+                    this.service_edit = false;
+                    this.service_edit_id = null;
                     setTimeout(() => {
                         this.loader.service = false;
-                        let prepare = [];
-                        err.then(erMesg => {
-                            let errMsgs = Object.entries(erMesg.errors);
-                            for (let i = 0; i < errMsgs.length; i++) {
-                                let obj = {};
-                                obj.name = errMsgs[i][0];
-                                obj.desc = errMsgs[i][1][0];
-                                prepare.push(obj);
-                            }
-                            this.errors.services = prepare;
-                        });
+                        toastr["success"](res.message);
+                        document.getElementById('service_form').reset();
+                        $('#serviceAddModal').modal('hide');
+                        if (isEdit) 
+                        {
+                            var row = res.data;
+                            this.updateServiceLists(row);
+                            var status = (row.status == 'active')?'Enabled':'Disabled';
+                        } 
+                        else 
+                        {
+                            var row = res.data;
+                            this.addnewServicetoLists(row);
+                        }
                     }, 2000);
-                });
-                console.log(this.errors.services, 'service');
+                }
+                else if(res.status === 401)
+                {
+                    this.loader.service = false;
+                    this.errors.services = res.data;
+                }
+
+            })
+            .catch(err => 
+            {
+                setTimeout(() => {
+                    this.loader.service = false;
+                    let prepare = [];
+                    err.then(erMesg => {
+                        let errMsgs = Object.entries(erMesg.errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            prepare.push(obj);
+                        }
+                        this.errors.services = prepare;
+                    });
+                }, 2000);
+            });
+          
         },
         editHelper() {
             this.service_mode = capitalize(this.services.form_fields.mode);
@@ -679,7 +679,6 @@ const App = new Vue({
                 .then(res => {
                     this.loader.page = false;
                     toastr["success"](res.message);
-                    //console.log(res);
                     var row = res.data;
                     this.addnewServicetoLists(row);
                 })
@@ -1136,10 +1135,17 @@ const App = new Vue({
         },
         addnewServicetoLists(obj)
         {
-            
             this.category_services = this.category_services.map(item=>{
                 if (item.id == obj.category_id) {
-                        item.services.push(obj);
+                        if (item.services) {
+                            item.services.push(obj);
+                        }
+                        else
+                        {
+                            item.services = [];
+                            item.services.push(obj);
+                        }
+                        
                 }
                 return item;
             });
