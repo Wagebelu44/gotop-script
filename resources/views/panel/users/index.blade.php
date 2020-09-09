@@ -260,7 +260,7 @@
                                                                             @{{cs.name}}
                                                                         </div>
                                                                         <div v-for="(service, i) in cs.services" class="dropdown-item type-dropdown-item" 
-                                                                        style="padding-left: 50px;" onclick="addCustomRate(service)">
+                                                                        style="padding-left: 50px;" @click="addCustomRate(service)">
                                                                             <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700; ">@{{service.id}}</span>
                                                                             <span>@{{ service.name }}</span> 
                                                                             <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700;">@{{service.price}}</span>
@@ -278,32 +278,35 @@
                                                             <thead>
                                                             <tr>
                                                                 <th>Service ID</th>
-                                                                <th style="width: 50%">Name</th>
+                                                                <th style="width: 30%">Name</th>
                                                                 <th>Price</th>
-                                                                <th>Price update</th>
+                                                                <th style="width: 30%">Price update</th>
                                                                 <th>Actions</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                               {{--  <tr v-for="(ser, in) in userServices">
-                                                                    <td>@{{ser.id}}</td>
+                                                                <tr v-for="(ser, ind) in userServices">
+                                                                    <td >@{{ser.service_id}}</td>
                                                                     <td style="width: 30%">@{{ser.name}}</td>
-                                                                    <td>@{{ser.price}}</td>
-                                                                    <td>
+                                                                    <td >@{{ser.price}}</td>
+                                                                    <td style="width: 30%">
                                                                         <div class="input-group">
-                                                                            <input step="any"  type="number" name="price" id="price" onkeyup="updateInput(this, ser.id)" class="form-control" placeholder="Price" :value="ser.price">
-                                                                            <input type="hidden" name="percentage" id="percentage" value="0">
+                                                                            <input step="any"  
+                                                                            type="number" name="price"  
+                                                                            @keyup="updateInput($event, ser.service_id)" 
+                                                                            class="form-control" placeholder="Price" :value="ser.price">
+                                                                            <input type="hidden" name="percentage"  value="0">
                                                                             <div class="input-group-append">
-                                                                                <span class="input-group-text" style="cursor: pointer" onclick="toggleSpan(this, ser.price, ser.id})">$</span>
+                                                                                <span class="input-group-text" style="cursor: pointer" onclick="toggleSpan(this, ser.price, ser.service_id})">$</span>
                                                                             </div>
                                                                         </div>
                                                                         <small class="mt-0 pt-0 d-block sub-price">$14</small>
                                                                     </td>
                                                                     <td>
-                                                                        <button type="button" onclick="removeCustomRate(ser.id)" 
+                                                                        <button type="button" @click="removeCustomRate(ser.service_id)" 
                                                                         class="btn btn-danger"> <i class="fa fa-trash"></i> </button>
                                                                     </td>
-                                                                </tr> --}}
+                                                                </tr>
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -311,7 +314,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="save" class="btn btn-primary custom-button save-button"> <i class="fa fa-check"></i> Save</button>
+                                            <button type="button" @click="storeUserService" class="btn btn-primary custom-button save-button"> <i class="fa fa-check"></i> Save</button>
                                             <button type="button"> <i class="fa fa-trash"></i> Delete all</button>
                                             <button type="button" class="btn btn-danger custom-button"  data-dismiss="modal">Close</button>
                                         </div>
@@ -426,6 +429,9 @@
     });
     $('#passwordUpdateModal').on('hidden.bs.modal', function () {
         userModule.edit_user_id = null;
+    });
+    $('#customRateAddModal').on('hidden.bs.modal', function () {
+        userModule.current_user_id = null;
     });
 </script>
 @endsection

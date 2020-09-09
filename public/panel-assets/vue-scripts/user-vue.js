@@ -23,6 +23,7 @@ const userModule = new Vue({
         formFunc: null,
         userServices: [],
         categoryServices: [],
+        current_user_id: null,
     },
     created () {
         let myUrl = new URL (window.location.href);
@@ -43,7 +44,6 @@ const userModule = new Vue({
             fetch(base_url+'/admin/category-services/')
             .then(res => res.json())
             .then(res => {
-                console.log(res);
                 this.categoryServices = res;
             });
         },
@@ -230,10 +230,24 @@ const userModule = new Vue({
             }
         },
         customeRate(user_id) {
+            this.current_user_id = user_id;
             fetch(base_url+'/admin/users-services/'+ user_id)
             .then(res => res.json())
             .then(res => {
-                this.userServices = res;
+                this.userServices = [];
+                if (res.length>0) {
+                    res.forEach(item=>{
+                        let provider_service = null; //provider_rate(item.id);
+                        let rateObj = {}; 
+                        rateObj.service_id = item.id;
+                        rateObj.name = item.name;
+                        rateObj.price =  item.pivot.price;
+                        rateObj.provider_price = provider_service!==null?provider_service.rate: null;
+                        rateObj.back_end =  true;
+                        this.userServices.unshift(rateObj);
+                    });
+                }
+                
                 $('#customRateAddModal').modal('show');
             });
         },
@@ -282,6 +296,108 @@ const userModule = new Vue({
         searchFilter() {
             this.getUsers();
         },
+        addCustomRate(obj) 
+        {
+            let service_ids = obj.id;
+            let provider_service = null; //provider_rate(service_ids);
+            
+            let pushAble = false;
+            if (this.userServices.length>0) {
+                this.userServices.forEach(item=>{
+                    if (item.service_id == obj.id) {
+                        pushAble=true;
+                    }
+                });
+            }
+            if (!pushAble) 
+            {
+                let rateObj = {}; 
+                rateObj.service_id = obj.id;
+                rateObj.name = obj.name;
+                rateObj.price =  obj.price;
+                rateObj.provider_price =  provider_service!==null?provider_service.rate: null;
+                rateObj.back_end =  false;
+                this.userServices.unshift(rateObj);
+            }
+        },
+        removeCustomRate(service_id)
+        {
+            let originUrl = window.location.origin;
+            if (originUrl == 'http://localhost') {
+                originUrl += '/go2top/public/';
+            }
+            else
+            {
+                originUrl +='/';
+            }
+            if (this.userServices.length>0) {
+                this.userServices.forEach(item=>{
+                    if (item.service_id == service_id) {
+                        if (item.back_end) 
+                        {
+                           /*  $('#deleteCustomRate').attr('action', originUrl + 'reseller/users/' + current_user_id + '/services/' + service_id);
+                            $('#deleteCustomRate').submit(); */
+                        }
+                        else
+                        {
+                            this.userServices.splice(this.userServices.indexOf(item), 1);
+                        }
+                    }
+                });
+            }
+        }, 
+        storeUserService()
+        {
+            if (this.userServices.length===0) {
+                alert('No Item is selected');
+            }
+            else
+            {
+
+                let user_data = {};
+                user_data.user_id =  this.current_user_id;
+                user_data.services = JSON.stringify(this.userServices);
+                fetch(base_url+'/admin/store-service', {
+                    headers: {
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "same-origin",
+                    method: "POST",
+                    body: JSON.stringify(user_data),
+                }).then(res => {
+                    if (!res.ok) {
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.status) {
+                        $("#customRateAddModal").modal('hide'); 
+                    }
+                })
+                .catch(res => {
+                    res.text().then(err => {
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                    });
+                });
+            }
+        },
+        updateInput(obj, service_id)
+        {
+            this.userServices.map(item=>{
+                if (item.service_id === service_id) {
+                    item.update_price = obj.target.value;
+                }
+                return item;
+            });
+        }
        
     }
 });

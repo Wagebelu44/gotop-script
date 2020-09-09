@@ -152,28 +152,31 @@ class UserController extends Controller
         $user = User::find($user_id);
         return $user->servicesList()->get();
     }
-    public function serviceUpdate(User $user, Request $request)
+    public function serviceUpdate(Request $request)
     {
+        
         $request->validate([
-            'price.*' => 'required|numeric',
-            'percentage.*' => 'required|numeric',
+            'user_id' => 'required|numeric',
+            'services' => 'required',
         ]);
 
-        Gate::authorize('view', $user);
-
         try {
-            foreach ($request->price as $index => $value) {
-                if ($user->servicesList->contains('id', $index)) {
-                    $user->servicesList()->detach($index);
-                    $user->servicesList()->attach($index, ['price' => $request->percentage[$index] ? ($value * Service::find($index)->price) / 100 : $value]);
-                } else {
-                    $user->servicesList()->attach($index, ['price' => $request->percentage[$index] ? ($value * Service::find($index)->price) / 100 : $value]);
-                }
+            $data  = $request->all();
+            $user = User::find($data['user_id']);
+            if ($user->servicesList()->count()>0) {
+                $user->servicesList()->detach();
             }
-
-            return redirect()->back()->withSuccess('Service custom rate updated successfully.');
+            $panel_id = auth()->user()->panel_id;
+            $serviceLists  = json_decode($data['services']);
+            
+            foreach ($serviceLists as $index => $value) 
+            {
+                $price = isset($value->update_price)?$value->update_price:$value->price;
+               $user->servicesList()->attach($value->service_id, ['price' => $price, 'panel_id'=>$panel_id]);
+            }
+            return response()->json(['status' => true, 'data'=> $user->servicesList()->get()], 200);
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return response()->json(['status' => false, 'data'=> $e->getMessage()], 401);
         }
     }
 }
