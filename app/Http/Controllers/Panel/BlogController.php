@@ -17,14 +17,9 @@ class BlogController extends Controller
 
     public function index()
     {
-        if(Auth::user()->can('blog')) {
-            $data = Blog::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
-            $page = 'index';
-            return view('panel.blog.index', compact('data', 'page'));
-        } else {
-            return view('panel.permission');
-        }
-
+        $data = Blog::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
+        $page = 'index';
+        return view('panel.blog.index', compact('data', 'page'));
     }
 
     public function create()

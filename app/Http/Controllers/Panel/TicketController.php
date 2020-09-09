@@ -35,11 +35,6 @@ class TicketController extends Controller
         return view('panel.tickets.index', compact('users', 'tickets'));
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
 
@@ -96,11 +91,6 @@ class TicketController extends Controller
         return view('panel.tickets.show', compact('ticket'));
     }
 
-    public function edit($id)
-    {
-        //
-    }
-
     public function update(Request $request)
     {
         Ticket::whereIn('id', $request->tickets)->update($request->only('status'));
@@ -145,9 +135,9 @@ class TicketController extends Controller
     public function changeTicketStatus($status, $ticket_id)
     {
         $ticketStatus = Ticket::find($ticket_id);
-            $ticketStatus->status = $status;
-            $ticketStatus->save();
-            return redirect()->back()->with('success', 'Status Changed Successfully');
+        $ticketStatus->status = $status;
+        $ticketStatus->save();
+        return redirect()->back()->with('success', 'Status Changed Successfully');
     }
 
     public function changeBulkStatus(Request $request)
