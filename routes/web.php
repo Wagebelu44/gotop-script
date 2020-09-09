@@ -12,27 +12,29 @@ Route::get('command', function () {
 });
 //Test Route::END
 
-Route::get('/', 'Web\PageController@index')->name('home');
 
-Auth::routes(['verify' => true]);
-Route::group(['middleware' => ['auth', 'verified']], function () {
-    Route::get('/home', 'User\DashboardController@index')->name('home');
-});
+Route::group(['middleware' => 'checkPanel'], function () {
+    Route::get('/', 'Web\PageController@index')->name('home');
 
-Route::group(['prefix' => 'admin'], function () {
-    // Authentication Routes...
-    Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
-    Route::post('/', 'Panel\Auth\LoginController@login');
-    Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
+    Auth::routes(['verify' => true]);
+    Route::group(['middleware' => ['auth', 'verified']], function () {
+        Route::get('/home', 'User\DashboardController@index')->name('home');
+    });
 
-    Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
-    Route::post('/register', 'Panel\Auth\RegisterController@register');
+    Route::group(['prefix' => 'admin'], function () {
+        // Authentication Routes...
+        Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
+        Route::post('/', 'Panel\Auth\LoginController@login');
+        Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
 
-    // Password Reset Routes...
-    Route::post('password/email', 'Panel\Auth\ForgotPasswordController@sendResetLinkEmail')->name('panel.password.email');
-    Route::get('password/reset', 'Panel\Auth\ForgotPasswordController@showLinkRequestForm')->name('panel.password.request');
-    Route::post('password/reset', 'Panel\Auth\ResetPasswordController@reset')->name('panel.password.update');
-    Route::get('password/reset/{token}', 'Panel\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
+        Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
+        Route::post('/register', 'Panel\Auth\RegisterController@register');
+
+        // Password Reset Routes...
+        Route::post('password/email', 'Panel\Auth\ForgotPasswordController@sendResetLinkEmail')->name('panel.password.email');
+        Route::get('password/reset', 'Panel\Auth\ForgotPasswordController@showLinkRequestForm')->name('panel.password.request');
+        Route::post('password/reset', 'Panel\Auth\ResetPasswordController@reset')->name('panel.password.update');
+        Route::get('password/reset/{token}', 'Panel\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
 
     Route::group(['middleware' => 'auth:panelAdmin', 'as' => 'admin.'], function () {
         Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
@@ -42,6 +44,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('suspendUser', 'Panel\UserController@suspend');
         Route::get('getusers', 'Panel\UserController@getUsers');
         Route::resource('users', 'Panel\UserController');
+            #Users...
+            Route::post('updatePassword', 'Panel\UserController@updatePassword');
+            Route::post('suspendUser', 'Panel\UserController@suspend');
+            Route::get('getusers', 'Panel\UserController@getUsers');
+            Route::resource('users', 'Panel\UserController', ["as"=>"admin"]);
 
         #Orders...
         Route::resource('orders', 'Panel\OrderController');
@@ -112,7 +119,8 @@ Route::group(['prefix' => 'admin'], function () {
 
             Route::resource('bonuses', 'Panel\Setting\BonusesController');
 
-        });
+            });
 
+        });
     });
 });
