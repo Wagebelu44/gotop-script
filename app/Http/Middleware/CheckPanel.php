@@ -20,7 +20,6 @@ class CheckPanel
         //Check valid script...
         if (env('SANDBOX')) {
             $domain = request()->getHost();
-            $domain = 'test.com';
 
             if (session('domain') != $domain) {
                 try {
