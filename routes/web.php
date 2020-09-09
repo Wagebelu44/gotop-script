@@ -72,7 +72,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         #Rppearance menu...
         Route::resource('menu', 'Panel\MenuController');
-        Route::post('menu-sortable', 'Panel\MenuController@sortable')->name('menu.sortable');
+        Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
 
         #blog...
         Route::resource('blog', 'Panel\BlogController');

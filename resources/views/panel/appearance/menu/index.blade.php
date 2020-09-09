@@ -14,19 +14,19 @@
                             </div>
                             <div class="col-md-8">
                                 <table class="table table-bordered">
-                                    <tbody class="tablecontents">
+                                    <tbody class="tablecontents" id="public_menu">
                                     @if(!empty($menus))
-                                        @foreach($menus as $key => $menu)
-                                            @if ($menu->menu_link_type == 'yes')
-                                                <tr class="row1" data-id="{{ $menu->id }}">
+                                        @foreach($menus as $key => $public_menu)
+                                            @if ($public_menu->menu_link_type == 'yes')
+                                                <tr class="row1" data-id="{{ $public_menu->id }}">
                                                     <td>
                                                         <div class="settings-menu-drag">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
                                                         </div>
-                                                        {{ $menu->menu_name }}
+                                                        {{ $public_menu->menu_name }}
                                                     </td>
                                                     <td class="p-r text-right">
-                                                        <button data-url="{{ route('admin.menu.edit', $menu->id) }}" data-id="{!! $menu->id !!}" class="edit btn btn-default m-t-20">
+                                                        <button data-url="{{ route('admin.menu.edit', $public_menu->id) }}" data-id="{!! $public_menu->id !!}" class="edit btn btn-default m-t-20">
                                                             Edit
                                                         </button>
                                                     </td>
@@ -46,7 +46,7 @@
                             <div class="col-md-8">
                                 <a href="javascript:void(0)" onclick="addMenuItem(1)" class="btn btn-default m-b add-modal-menu">Add menu item</a>
                                 <table class="table table-bordered" style="margin-top: 10px;">
-                                    <tbody class="tablecontents">
+                                    <tbody class="tablecontents" id="signed_menu">
                                     @if(!empty($menus))
                                         @foreach($menus as $key => $menu)
                                             @if ($menu->menu_link_type == 'no')
@@ -201,6 +201,7 @@
 @endsection
 @section('scripts')
     <script>
+
         $(function () {
             $( ".tablecontents" ).sortable({
                 items: "tr",
@@ -212,8 +213,8 @@
             });
 
             function sendOrderToServer() {
-                var order = [];
-
+                let order = [];
+                console.log(order)
                 $('tr.row1').each(function(index,element) {
                     order.push({
                         id: $(this).attr('data-id'),
@@ -240,6 +241,7 @@
 
             }
         });
+
         function addMenuItem(type) {
             $('#menu_type').val(type);
             $('#menuPagePopUp').modal("show");

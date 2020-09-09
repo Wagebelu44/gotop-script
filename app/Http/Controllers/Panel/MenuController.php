@@ -13,7 +13,7 @@ class MenuController extends Controller
     public function index()
     {
         $pages = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
-        $menus = Menu::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
+        $menus = Menu::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
         return view('panel.appearance.menu.index', compact('pages', 'menus'));
     }
 
@@ -82,16 +82,18 @@ class MenuController extends Controller
         return redirect()->back()->with('success', 'Menu delete successfully !!');
     }
 
-    public function sortable(Request $request)
+    public function sortableMenu(Request $request)
     {
-        $data = Menu::where('panel_id', Auth::user()->panel_id)->get();
-        foreach ($data as $menu) {
+        $dataSorting = Menu::where('panel_id', Auth::user()->panel_id)->get();
+        foreach ($dataSorting as $menu) {
             $menu->timestamps = false; // To disable update_at field updation
             $id = $menu->id;
-            foreach ($request->order as $order) {
-                if ($order['id'] == $id) {
-                    $menu->update(['sort' => $order['position']]);
+            //dd($request->order);
+            foreach ($request->order as $orderSort) {
+                if ($orderSort['id'] == $id) {
+                    $menu->update(['sort' => $orderSort['position']]);
                 }
+
             }
         }
         return response()->json([
