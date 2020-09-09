@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        $users = User::where('panel_id', Auth::user()->panel_id)
+        $users = User::with('servicesList')->where('panel_id', Auth::user()->panel_id)
                 ->where(function($q) use($request) {
                     if (isset($request->status) && $request->status != '') {
                         $q->where('status', $request->status);
@@ -178,5 +178,16 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'data'=> $e->getMessage()], 401);
         }
+    }
+    public function deleteUsersService(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|numeric'
+        ]);
+        $data = $request->all();
+        $user_id  = $data['user_id'];
+        $user = User::find($user_id);
+        $user->servicesList()->detach();
+        return response()->json(['status' => true, 'data'=> 'user services reset'], 200);
     }
 }

@@ -397,6 +397,45 @@ const userModule = new Vue({
                 }
                 return item;
             });
+        },
+        deleteAllUserService()
+        {
+            if (this.userServices.length===0) {
+                alert('No Item is selected');
+            }
+            else
+            {
+                fetch(base_url+'/admin/delete-user-service', {
+                    headers: {
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "same-origin",
+                    method: "DELETE",
+                    body: JSON.stringify({user_id: this.current_user_id}),
+                }).then(res => {
+                    if (!res.ok) {
+                        throw res;
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.status) {
+                        $("#customRateAddModal").modal('hide'); 
+                    }
+                })
+                .catch(res => {
+                    res.text().then(err => {
+                        let errMsgs = Object.entries(JSON.parse(err).errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            this.validationErros.push(obj);
+                        }
+                    });
+                });
+            }
         }
        
     }

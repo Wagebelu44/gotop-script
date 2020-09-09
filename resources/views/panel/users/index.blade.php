@@ -91,7 +91,8 @@
                                         <td>@{{user.created_at}}</td>
                                         <td>@{{user.last_login_at}}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate(user.id)" title="Services custom rates">custom rates</a>
+                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate(user.id)" 
+                                        title="Services custom rates">custom rates (<span v-if="user.services_list.length>0">@{{user.services_list.length}}</span> <span v-else>0</span>)</a>
                                         </td>
                                         <td>
                                             <div class="btn-group">
@@ -315,7 +316,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" @click="storeUserService" class="btn btn-primary custom-button save-button"> <i class="fa fa-check"></i> Save</button>
-                                            <button type="button"> <i class="fa fa-trash"></i> Delete all</button>
+                                            <button type="button" @click="deleteAllUserService"> <i class="fa fa-trash"></i> Delete all</button>
                                             <button type="button" class="btn btn-danger custom-button"  data-dismiss="modal">Close</button>
                                         </div>
                                     </form>
