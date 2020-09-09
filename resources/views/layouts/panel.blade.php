@@ -14,35 +14,9 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.css') }}">
+    <!-- select2 css -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('panel-assets/select2/dist/css/select2.min.css') }}">
     @yield('styles')
-    <style>
-        .radio-ml{
-            margin-left: 15px;
-        }
-        .disable-keystroke {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        .input-group-addon {
-            padding: 6px 12px;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1;
-            color: #555;
-            text-align: center;
-            background-color: #eee;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .seo-preview-url {
-            display: block;
-            word-wrap: break-word;
-            color: #006621;
-            font-size: 13px;
-            line-height: 16px;
-            margin-bottom: 2px;
-        }
-    </style>
 </head>
 
 <body>
@@ -58,7 +32,7 @@
             <nav class="navbar top-navbar navbar-expand-md navbar-dark">
                 <div class="navbar-header">
                     <a class="nav-toggler waves-effect waves-light d-block d-md-none"><i class="ti-menu ti-close"></i></a>
-                    <a class="navbar-brand" href="{{ route('panel.dashboard') }}">
+                    <a class="navbar-brand" href="{{ route('admin.panel.dashboard') }}">
                         <span class="logo-text">
                             <img src="{{ asset('panel-assets/images/logo.png') }}" alt="{{ config('app.name', 'Laravel') }}" class="dark-logo" />
                         </span>
@@ -186,6 +160,9 @@
     <script src="{{ asset('panel-assets/libs/toastr.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="{{ asset('panel-assets/select2/dist/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/select2/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/select2/dist/js/select2.init.js') }}"></script>
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');

@@ -8,20 +8,20 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Ticket extends Model
+class TicketComment extends Model
 {
     use SoftDeletes, LogsActivity, Notifiable;
 
-    protected $table = 'tickets';
+    protected $table = 'ticket_comments';
 
     protected $fillable = [
-        'panel_id', 'user_id', 'send_by', 'sender_role', 'subject', 'subject_ids', 'payment_type', 'description', 'status', 'seen_by_admin', 'seen_by_user', 'created_by', 'updated_by', 'deleted_at'
+        'panel_id', 'message','commentable_type','commentable_id','comment_by','commentor_role', 'created_by', 'updated_by', 'deleted_at'
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Tickets'; //custom_log_name_for_this_model
+    protected static $logName = 'Ticket Comments'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
@@ -34,19 +34,13 @@ class Ticket extends Model
         $activity->panel_id = auth()->user()->panel_id;
     }
 
-    /*Relationship*/
-
-    public function comments()
+    public function commentable()
     {
-        return $this->morphMany(TicketComment::class, 'commentable');
+        return $this->morphTo();
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User', 'user_id');
-    }
-    public function sender()
-    {
-        return $this->belongsTo('App\User', 'send_by');
+        return $this->belongsTo('App\User', 'comment_by');
     }
 }
