@@ -43,17 +43,17 @@ class TicketController extends Controller
             'user_id' => 'required',
         ]);
 
-        $s_ids = null;
+        $sIds = null;
         if (isset($request->order_ids)) {
-            $s_ids = $request->order_ids;
+            $sIds = $request->order_ids;
         }elseif (isset($request->transaction_id)) {
-            $s_ids = $request->transaction_id;
+            $sIds = $request->transaction_id;
         }
-        $payment_types = null;
+        $paymentTypes = null;
         if (isset($request->order_types)) {
-            $payment_types = $request->order_types;
+            $paymentTypes = $request->order_types;
         }elseif (isset($request->payment_types)) {
-            $payment_types = $request->payment_types;
+            $paymentTypes = $request->payment_types;
         }
 
         $ticketsData = [];
@@ -61,8 +61,8 @@ class TicketController extends Controller
             $ticketsData[] = [
                 'panel_id'       => Auth::user()->panel_id,
                 'subject'        => $request->subject,
-                'subject_ids'    => $s_ids,
-                'payment_type'   => $payment_types,
+                'subject_ids'    => $sIds,
+                'payment_type'   => $paymentTypes,
                 'description'    => $request->message,
                 'user_id'        => $user_id,
                 'send_by'        => Auth::user()->id,
@@ -72,8 +72,8 @@ class TicketController extends Controller
             ];
         }
 
-        $s_tickets = Ticket::insert($ticketsData);
-        if ($s_tickets) {
+        $tickets = Ticket::insert($ticketsData);
+        if ($tickets) {
             return redirect()->back()->with('success', 'Ticket has been sent');
         } else {
             return redirect()->back()->with('error', 'There is an error');
