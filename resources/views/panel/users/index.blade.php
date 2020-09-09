@@ -91,7 +91,7 @@
                                         <td>@{{user.created_at}}</td>
                                         <td>@{{user.last_login_at}}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate" title="Services custom rates">custom rates</a>
+                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate(user.id)" title="Services custom rates">custom rates</a>
                                         </td>
                                         <td>
                                             <div class="btn-group">
@@ -196,8 +196,6 @@
                             </div>
                             <!-- /.modal-dialog -->
                         </div>
-
-                        {{-- currently not used --}}
                         <div class="modal bs-example-modal-lg" id="passwordUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
@@ -233,6 +231,8 @@
                             </div>
                             <!-- /.modal-dialog -->
                         </div>
+                        
+                        {{-- currently not used --}}
                         <div class="modal bs-example-modal-lg" id="customRateAddModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
@@ -250,20 +250,21 @@
                                                             <button class="btn btn-default custom-button dropdown-toggle" type="button"
                                                                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                                                                     aria-expanded="false">
-                                                                Choose service
+                                                                    Choose service
                                                             </button>
                                                             <div class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuButton">
-                                                                <div id="user_filter_type">
-                                                                    <div
-                                                                        class="dropdown-item type-dropdown-item"
+                                                                <div id="user_filter_type" v-for="(cs, ind) in categoryServices">
+                                                                        <div 
+                                                                        class="dropdown-item type-dropdown-item" 
                                                                         style="font-weight: 700; pointer-events: none">
-                                                                    </div>
-                                                                    <div class="dropdown-item type-dropdown-item"
-                                                                         style="padding-left: 50px;">
-                                                                        <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700; ">11</span>
-                                                                        <span>dfdfdf</span>
-                                                                        <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700;">222</span>
-                                                                    </div>
+                                                                            @{{cs.name}}
+                                                                        </div>
+                                                                        <div v-for="(service, i) in cs.services" class="dropdown-item type-dropdown-item" 
+                                                                        style="padding-left: 50px;" onclick="addCustomRate(service)">
+                                                                            <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700; ">@{{service.id}}</span>
+                                                                            <span>@{{ service.name }}</span> 
+                                                                            <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700;">@{{service.price}}</span>
+                                                                        </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -284,7 +285,25 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-
+                                                               {{--  <tr v-for="(ser, in) in userServices">
+                                                                    <td>@{{ser.id}}</td>
+                                                                    <td style="width: 30%">@{{ser.name}}</td>
+                                                                    <td>@{{ser.price}}</td>
+                                                                    <td>
+                                                                        <div class="input-group">
+                                                                            <input step="any"  type="number" name="price" id="price" onkeyup="updateInput(this, ser.id)" class="form-control" placeholder="Price" :value="ser.price">
+                                                                            <input type="hidden" name="percentage" id="percentage" value="0">
+                                                                            <div class="input-group-append">
+                                                                                <span class="input-group-text" style="cursor: pointer" onclick="toggleSpan(this, ser.price, ser.id})">$</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <small class="mt-0 pt-0 d-block sub-price">$14</small>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button type="button" onclick="removeCustomRate(ser.id)" 
+                                                                        class="btn btn-danger"> <i class="fa fa-trash"></i> </button>
+                                                                    </td>
+                                                                </tr> --}}
                                                             </tbody>
                                                         </table>
                                                     </div>

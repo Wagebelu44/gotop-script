@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Panel;
 
+use Auth;
 use App\User;
 use Illuminate\Http\Request;
+use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Auth;
 
 class UserController extends Controller
 {
@@ -135,6 +136,44 @@ class UserController extends Controller
             return response()->json(['status' => true, 'data'=> null], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
+        }
+    }
+
+   
+    /* service custom price */
+    public function getCategoryService()
+    {
+        return ServiceCategory::with(['services'=>function($q){
+            $q->where('status', 'active');
+        }])->where('status', 'active')->orderBy('id', 'ASC')->get();
+    }
+    public function getUserServices($user_id)
+    {
+        $user = User::find($user_id);
+        return $user->servicesList()->get();
+    }
+    public function serviceUpdate(User $user, Request $request)
+    {
+        $request->validate([
+            'price.*' => 'required|numeric',
+            'percentage.*' => 'required|numeric',
+        ]);
+
+        Gate::authorize('view', $user);
+
+        try {
+            foreach ($request->price as $index => $value) {
+                if ($user->servicesList->contains('id', $index)) {
+                    $user->servicesList()->detach($index);
+                    $user->servicesList()->attach($index, ['price' => $request->percentage[$index] ? ($value * Service::find($index)->price) / 100 : $value]);
+                } else {
+                    $user->servicesList()->attach($index, ['price' => $request->percentage[$index] ? ($value * Service::find($index)->price) / 100 : $value]);
+                }
+            }
+
+            return redirect()->back()->withSuccess('Service custom rate updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
 }

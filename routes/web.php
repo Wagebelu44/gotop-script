@@ -48,6 +48,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');
+            Route::get('users-services/{user_id}', 'Panel\UserController@getUserServices');
+            Route::get('category-services', 'Panel\UserController@getCategoryService');
             Route::resource('users', 'Panel\UserController');
 
             #Orders...

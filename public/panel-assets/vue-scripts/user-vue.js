@@ -21,6 +21,8 @@ const userModule = new Vue({
         validationErros: [],
         edit_user_id: null,
         formFunc: null,
+        userServices: [],
+        categoryServices: [],
     },
     created () {
         let myUrl = new URL (window.location.href);
@@ -30,11 +32,21 @@ const userModule = new Vue({
     },
     mounted () {
         this.getUsers();
+        this.getCategoryServices();
     },
     updated () {
         this.formFunc =  this.edit_user_id===null? this.saveUserInfo:this.updateUser;
     },
     methods: {
+        getCategoryServices()
+        {
+            fetch(base_url+'/admin/category-services/')
+            .then(res => res.json())
+            .then(res => {
+                console.log(res);
+                this.categoryServices = res;
+            });
+        },
         getUsers(page=1) {
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
@@ -217,8 +229,13 @@ const userModule = new Vue({
                 });
             }
         },
-        customeRate() {
-            alert('not yet implemented');
+        customeRate(user_id) {
+            fetch(base_url+'/admin/users-services/'+ user_id)
+            .then(res => res.json())
+            .then(res => {
+                this.userServices = res;
+                $('#customRateAddModal').modal('show');
+            });
         },
         resetPassword(user_id) {
             this.edit_user_id = user_id;
@@ -264,6 +281,7 @@ const userModule = new Vue({
         }, 
         searchFilter() {
             this.getUsers();
-        }
+        },
+       
     }
 });
