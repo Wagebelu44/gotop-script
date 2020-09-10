@@ -19,7 +19,11 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Auth::routes(['verify' => true]);
     Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/home', 'User\DashboardController@index')->name('home');
-        Route::get('/order', 'Panel\OrderController@getFrontEndOrderPanel');
+
+        /* User order module */
+        Route::get('/order', 'User\OrderController@index');
+        Route::get('/get-category-services', 'User\OrderController@getCateServices');
+        Route::get('/make_new_order', 'User\OrderController@store');
 
     });
 

@@ -231,10 +231,9 @@ const NewOrder = new Vue({
         },
     },
     created () {
-        this.categoryjs =  <?= json_encode($categories)?>;
         let category_id_selected = document.getElementById('category_id').value;
-        let services = this.categoryjs.find(item => item.id == category_id_selected);
-        $submitted_order = <?=json_encode($order)?>;
+        /* let services = this.categoryjs.find(item => item.id == category_id_selected);
+        $submitted_order = [];
         if(services !== null)
         {
            this.services = services.services.map(item=>{
@@ -250,9 +249,24 @@ const NewOrder = new Vue({
            if (this.services[0]) {
               this.service_id = $submitted_order == null ? this.services[0].id : $submitted_order.service_id;
            }
-        }
+        } */
+        
+    },
+    mounted () {
+        this.getCategoryServices();
+    },
+    updated () {
+
     },
     methods: {
+        getCategoryServices()
+        {
+            fetch(base_url+"/get-category-services")
+            .then(res=>res.json())
+            .then(res=>{
+                this.categoryjs = res;
+            });
+        },
         categoryChanges(evt){
             this.category_id = evt.target.value;
         },

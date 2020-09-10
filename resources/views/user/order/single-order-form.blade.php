@@ -1,7 +1,7 @@
 <div id="vueHolder">
-    <form action="#" method="post"  id="order-form-gotop" class="has-validation-callback">
+    <form action="{{url('make_new_order')}}" method="post"  id="order-form-gotop" class="has-validation-callback">
        @csrf
-      {{--  <div class="form-group">
+     {{--   <div class="form-group">
           <label for="orderform-category">Category:</label>
           @php
                $selected = null;
@@ -16,6 +16,13 @@
              @endforeach
           </select>
        </div> --}}
+       <div class="form-group">
+       <label for="orderform-category">Category:</label>
+          <select class="form-control" id="category_id" name="category_id" @change="categoryChanges">
+            <option value="" >Select a Category</option>
+            <option :value="c.id" v-for="(c,i) in categoryjs">@{{c.name}}</option>
+          </select>
+       </div>
        <div class="form-group">
           <label for="orderform-service">Service: </label>
           <select class="form-control" id="service_id" name="service_id" v-model="service_id">
@@ -138,16 +145,8 @@
           <textarea class="form-control" id="custom_comments" style="height: 150px;" placeholder="1 on each line" name="custom_comments"></textarea>
        </div>
        <div class="form-group">
-          <button class="btn btn-blue btn-block" id="btn-proceed" type="submit">Submit</button>
-          {{-- <p style="color:red"><strong>( Order submit option will be available soon, we are working on some serious issue )</strong></p> --}}
+          <button class="btn btn-primary btn-block" id="btn-proceed" type="submit">Submit</button>
        </div>
     </form>
  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="{{asset('user-assets/vue-scripts/single-order.js')}}"></script>
-<script>
-    
-        console.log('making single order');
-
-</script>
