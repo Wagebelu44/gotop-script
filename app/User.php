@@ -2,12 +2,13 @@
 
 namespace App;
 
+use App\Models\Service;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -37,6 +38,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];  
+
+
+    public function servicesList()
+    {
+        return $this->belongsToMany(Service::class, 'service_price_user', 'user_id', 'service_id')
+            ->withPivot('price', 'panel_id');
+    }
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
