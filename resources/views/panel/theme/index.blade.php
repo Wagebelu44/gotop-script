@@ -16,7 +16,7 @@
                                 @if($theme->status != 'Active')
                                 <div class="el-overlay">
                                     <ul class="list-style-none el-info">
-                                        <li class="el-item"><a class="btn default btn-outline el-link" href="javascript:void(0);" onclick="activate('{{ route($resource.'edit', $theme->id) }}')">Activate</a></li>
+                                        <li class="el-item"><a class="btn default btn-outline el-link" href="javascript:void(0);" onclick="activate('{{ route($resource.'active', $theme->id) }}')">Activate</a></li>
                                     </ul>
                                 </div>
                                 @endif
@@ -27,7 +27,7 @@
                                     <span class="text-muted">{{ $theme->status }}</span>
                                 </div>
                                 <div class="ml-auto mr-3">
-                                    <button type="button" class="btn btn-dark btn-circle"><i class="fa fa-edit"></i></button>
+                                    <a href="{{ route($resource.'show', $theme->id) }}" class="btn btn-dark btn-circle" style="padding:10px;"><i class="fa fa-edit"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -44,19 +44,20 @@
 function activate(url) {
     Swal.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        text: "Active this theme for your panel.",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Yes, active it!'
     }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire(
-            'Deleted!',
-            'Your file has been deleted.',
-            'success'
-            )
+        if (result.value) {
+            var statusForm = `<form method="POST" action="`+url+`" id="statusForm">
+                <input name="_token" type="hidden" value="`+$('meta[name="csrf-token"]').attr('content')+`">
+                <button type="submit">Active</button>
+            </form>`;
+            $(document.body).append(statusForm);
+            $('#statusForm').submit();
         }
     })
 }

@@ -81,6 +81,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('menu', 'Panel\MenuController');
             Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
             Route::resource('theme', 'Panel\ThemeController');
+            Route::post('theme-active/{id}', 'Panel\ThemeController@active')->name('theme.active');
 
             #blog...
             Route::resource('blog', 'Panel\BlogController');

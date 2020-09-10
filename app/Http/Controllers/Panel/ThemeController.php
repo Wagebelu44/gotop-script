@@ -15,6 +15,15 @@ class ThemeController extends Controller
         return view('panel.theme.index', compact('themes'));
     }
 
+    public function show($id)
+    {
+        $theme = Theme::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+        if (!empty($theme)) {
+            dd('a');
+        }
+        return redirect()->back()->with('error', 'Theme not found!');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -80,23 +89,14 @@ class ThemeController extends Controller
         return redirect()->back()->with('success', 'Menu delete successfully !!');
     }
 
-    public function sortableMenu(Request $request)
+    public function active(Request $request, $id)
     {
-        $dataSorting = Menu::where('panel_id', Auth::user()->panel_id)->get();
-        foreach ($dataSorting as $menu) {
-            $menu->timestamps = false; // To disable update_at field updation
-            $id = $menu->id;
-            //dd($request->order);
-            foreach ($request->order as $orderSort) {
-                if ($orderSort['id'] == $id) {
-                    $menu->update(['sort' => $orderSort['position']]);
-                }
-
-            }
+        $theme = Theme::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+        if (!empty($theme)) {
+            Theme::where('panel_id', Auth::user()->panel_id)->update(['status' => 'Deactivated']);
+            $theme->update(['status' => 'Active']);
+            return redirect()->back()->with('success', 'Theme active successfully!');
         }
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Update successfully',
-        ], 200);
+        return redirect()->back()->with('error', 'Theme not found!');
     }
 }
