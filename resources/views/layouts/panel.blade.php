@@ -146,7 +146,7 @@
     <script src="{{ asset('panel-assets/libs/jquery.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/popper.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/bootstrap/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
+    {{-- <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script> --}}
 
     <!-- apps -->
     <script src="{{ asset('panel-assets/js/app.min.js') }}"></script>

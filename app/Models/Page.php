@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\G\GlobalPage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
@@ -16,6 +17,11 @@ class Page extends Model
     protected $fillable = [
         'panel_id', 'global_page_id', 'name', 'content', 'url', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'status', 'created_by', 'updated_by',
     ];
+
+    function globalPage()
+    {
+        return $this->belongsTo(GlobalPage::class);
+    }
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;

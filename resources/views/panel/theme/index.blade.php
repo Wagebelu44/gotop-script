@@ -27,7 +27,7 @@
                                     <span class="text-muted">{{ $theme->status }}</span>
                                 </div>
                                 <div class="ml-auto mr-3">
-                                    <a href="{{ route($resource.'show', $theme->id) }}" class="btn btn-dark btn-circle" style="padding:10px;"><i class="fa fa-edit"></i></a>
+                                    <a href="{{ route($resource.'edit', $theme->id) }}" class="btn btn-dark btn-circle" style="padding:10px;"><i class="fa fa-edit"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -62,3 +62,4 @@ function activate(url) {
     })
 }
 </script>
+@endsection

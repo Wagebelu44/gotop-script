@@ -15,7 +15,7 @@ class Ticket extends Model
     protected $table = 'tickets';
 
     protected $fillable = [
-        'panel_id', 'user_id', 'send_by', 'sender_role', 'subject', 'subject_ids', 'payment_type', 'description', 'status', 'seen_by_admin', 'seen_by_user', 'created_by', 'updated_by', 'deleted_at'
+        'panel_id', 'user_id', 'send_by', 'sender_role', 'subject', 'subject_ids', 'payment_type', 'description', 'status', 'seen_by_admin', 'seen_by_user', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

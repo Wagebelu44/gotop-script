@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\G\GlobalTheme;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
@@ -16,6 +17,16 @@ class Theme extends Model
     protected $fillable = [
         'panel_id', 'global_theme_id', 'name', 'location', 'snapshot', 'status', 'activated_at',
     ];
+
+    function pages()
+    {
+        return $this->hasMany(ThemePage::class);
+    }
+
+    function globalTheme()
+    {
+        return $this->belongsTo(GlobalTheme::class);
+    }
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;

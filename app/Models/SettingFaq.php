@@ -14,7 +14,7 @@ class SettingFaq extends Model
     protected $table = 'setting_faqs';
 
     protected $fillable = [
-      'panel_id', 'question', 'answer', 'sort', 'status', 'created_by', 'updated_by', 'deleted_at'
+      'panel_id', 'question', 'answer', 'sort', 'status', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

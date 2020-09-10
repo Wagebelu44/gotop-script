@@ -17,6 +17,16 @@ class ThemePage extends Model
         'panel_id', 'page_id', 'theme_id', 'content',
     ];
 
+    function page()
+    {
+        return $this->belongsTo(Page::class);
+    }
+
+    function theme()
+    {
+        return $this->belongsTo(Theme::class);
+    }
+
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;

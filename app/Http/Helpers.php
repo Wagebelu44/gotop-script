@@ -2,6 +2,23 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+if ( ! function_exists('defaultThemePageContent')) {
+    function defaultThemePageContent()
+    {
+        return '{% if content %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="well">
+                            {{ content }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}';
+    }
+}
+
 //Delete existing file
 if ( ! function_exists('deleteFile')) {
     function deleteFile($path, $name)
