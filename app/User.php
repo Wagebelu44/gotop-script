@@ -51,6 +51,6 @@ class User extends Authenticatable
     public function tapActivity(Activity $activity)
     {
         $activity->ip = \request()->ip();
-        $activity->panel_id = auth()->user()->panel_id;
+        $activity->panel_id = auth()->user()->panel_id??1;
     }
 }
