@@ -83,10 +83,10 @@ class OrderController extends Controller
                     ->withErrors($validate)
                     ->withInput();
             }
-
-            if (auth()->user()->user_balance < $data['charge']) {
+            /* commented for now but important line of code */
+            /* if (auth()->user()->user_balance < $data['charge']) {
                 return redirect()->back()->with('error', 'You do not have sufficient Balance');
-            }
+            } */
 
             $service = Service::find($data['service_id']);
             if ($service != null) {
@@ -229,7 +229,8 @@ class OrderController extends Controller
                 if (!(isset($data['drip_feed']) && $data['drip_feed']=='on'))
                 {
 
-                    User::where('id', auth()->user()->id)->update(['balance'=> auth()->user()->balance() - $data['charge'] ]);
+                    //User::where('id', auth()->user()->id)->update(['balance'=> auth()->user()->balance() - $data['charge'] ]);
+                    User::where('id', auth()->user()->id)->update(['balance'=> 1021 ]);
                     $log = Transaction::create([
                         'transaction_type' => 'withdraw',
                         'amount' => $data['charge'],
@@ -365,7 +366,7 @@ class OrderController extends Controller
                     }
                     $make_order->save();
                 }
-                return redirect()->route('single-order', ['order_id'=>$make_order->id])
+                return redirect()->route('order', ['order_id'=>$make_order->id])
                 ->with('success', 'Successfully saved');
             }
             else return redirect()->back()->with('error', 'Error Occuered');

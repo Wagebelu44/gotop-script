@@ -14,6 +14,25 @@
                     </span>
                 </div>
                 <div class="card-body">
+                    @if (Session::has('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <strong>Error! </strong>{{Session::get('error')}}.
+                        </div>
+                    @elseif ($errors->any())
+                        @foreach ($errors->all() as $error)
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                                <strong>Warning! </strong>{{$error}}.
+                            </div>
+                        @endforeach
+                    @endif
                     <div class="tab-content" style="padding-top: 0px !important">
                         <div  id="new_order">
                             @include('user.order.single-order-form')
