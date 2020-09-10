@@ -84,9 +84,9 @@
                                         <label class="control-label" for="blog_category">Blog Category</label>
                                         <select class="form-control is-public @error('category_id') is-invalid @enderror" name="category_id" id="category_id">
                                             <option value="">Select Category</option>
-                                            @if (!$get_blog_category->isEmpty())
-                                                @foreach ($get_blog_category as $key => $category)
-                                                    <option value="{{ $category->id }}"  {{ old('category_id', isset($data) ? $data->category_id : $category->id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            @if (!empty($categories))
+                                                @foreach ($categories as $key => $category)
+                                                    <option value="{{ $category->id }}"  {{ isset($data) && $data->category_id == $category->id ? 'selected':''  }}>{{ $category->name }}</option>
                                                 @endforeach
                                             @endif
                                         </select>
@@ -119,6 +119,26 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                <div class="appearance-seo__block-collapse collapse in" id="collapse-languages-seo" aria-expanded="true">
+
+                                    <div class="form-group" style="margin-top: 20px;">
+                                        <label class="control-label" for=meta_title">Page title</label>
+                                        <input type="text" id="meta_title" class="form-control" name="meta_title" value="{{ old('meta_title', isset($data) ? $data->meta_title : '') }}">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label" for="meta_keyword">Meta-keywords</label>
+                                        <input id="meta_keyword" class="form-control" name="meta_keyword" value="{{ old('meta_keyword', isset($data) ? $data->meta_keyword : '') }}">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label" for="meta_description">Meta-description</label>
+                                        <textarea id="meta_description" class="form-control" name="meta_description" rows="5">{{ old('meta_description', isset($data) ? $data->meta_description : '') }}</textarea>
+                                    </div>
+
+                                </div>
+
                                 <hr>
 
                                 <div class="form-group">

@@ -78,7 +78,6 @@ if ( ! function_exists('numberFormat')) {
     }
 }
 
-
 if ( ! function_exists('getTimezone')) {
     function getTimezone() {
         $arr = [
@@ -163,7 +162,6 @@ if ( ! function_exists('getTicketPerUser')) {
         return $arr;
     }
 }
-
 
 if ( ! function_exists('SettingNotificationTableSeeder')) {
     function SettingNotificationTableSeeder(){
@@ -280,3 +278,4 @@ View Payouts in admin panel: {{ affiliates.payouts }}',
         return true;
     }
 }
+

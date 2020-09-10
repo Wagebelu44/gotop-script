@@ -76,6 +76,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
             #Rppearance...
             Route::resource('appearance', 'Panel\AppearanceController');
+            Route::post('appearance-status', 'Panel\AppearanceController@updateStatus')->name('appearance.updateStatus');
 
             #Rppearance menu...
             Route::resource('menu', 'Panel\MenuController');
