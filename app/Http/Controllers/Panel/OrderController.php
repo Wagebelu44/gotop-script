@@ -18,9 +18,13 @@ class OrderController extends Controller
         //
     }
 
+    public function getFrontEndOrderPanel()
+    {
+        return view('user.order.index');
+    }
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     public function show($id)

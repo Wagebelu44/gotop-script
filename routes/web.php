@@ -19,6 +19,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Auth::routes(['verify' => true]);
     Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/home', 'User\DashboardController@index')->name('home');
+        Route::get('/order', 'Panel\OrderController@getFrontEndOrderPanel');
+
     });
 
     Route::group(['prefix' => 'admin'], function () {
