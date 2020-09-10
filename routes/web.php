@@ -80,6 +80,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             #Rppearance menu...
             Route::resource('menu', 'Panel\MenuController');
             Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
+            Route::resource('theme', 'Panel\ThemeController');
 
             #blog...
             Route::resource('blog', 'Panel\BlogController');

@@ -20,6 +20,7 @@ class CreateGlobalThemesTable extends Migration
             $table->string('snapshot')->nullable();
             $table->enum('status', ['Active', 'Deactivated'])->default('Deactivated');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -23,6 +23,7 @@ class CreateThemesTable extends Migration
             $table->enum('status', ['Active', 'Deactivated'])->default('Deactivated');
             $table->dateTime('activated_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
