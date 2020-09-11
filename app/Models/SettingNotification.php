@@ -14,7 +14,7 @@ class SettingNotification extends Model
     protected $table = 'setting_notifications';
 
     protected $fillable = [
-        'panel_id', 'subject', 'body', 'title', 'description', 'type', 'status', 'created_by', 'updated_by', 'deleted_at'
+        'panel_id', 'subject', 'body', 'title', 'description', 'type', 'status', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

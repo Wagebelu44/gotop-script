@@ -34,7 +34,7 @@
                                             <td>
                                                 <div class="setting-switch setting-switch-table">
                                                     <label class="switch">
-                                                        <input type="checkbox" class="toggle-page-visibility" name="status" id="status" value="{{ $info->status }}"  {{ $info->status == 'active' ? 'Checked' : '' }}>
+                                                        <input type="checkbox" class="toggle-page-visibility" onclick="isActiveInactive({{ $info->id }})" name="status" id="status{{$info->id}}" value="{{ $info->status }}"  {{ $info->status == 'Active' ? 'checked' : '' }}>
                                                         <span class="slider round"></span>
                                                     </label>
                                                 </div>
@@ -77,7 +77,7 @@
 
                                     <div class="form-group">
                                         <label class="control-label" for="content">Content</label>
-                                        <textarea name="content" id="content" class="form-control summernote">
+                                        <textarea name="page_content" id="content" class="form-control summernote">
                                             {{ old('content', isset($data) ? $data->content : '') }}
                                         </textarea>
                                         @error('content')
@@ -155,4 +155,32 @@
             @endif
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        function isActiveInactive(pageId) {
+            var status_value = '';
+            let status = $('#status'+pageId).val();
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "{{ route($resource.'updateStatus') }}",
+                data: {'status': status, 'id': pageId, "_token": "{{ csrf_token() }}"},
+                success: function (response) {
+                    if (response.status === 'success'){
+                        if (status === 'Active') {
+                            status_value = 'Deactivated';
+                        } else if (status === 'Deactivated') {
+                            status_value = 'Active';
+                        }
+                        $('#status'+pageId).val(status_value);
+                        toastr["success"](response.message);
+                    }else{
+                        toastr["error"]("Something went wrong !! Please try again !!");
+                    }
+                }
+            });
+        }
+    </script>
 @endsection

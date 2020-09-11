@@ -14,7 +14,7 @@ class StaffEmail extends Model
     protected $table = 'staff_emails';
 
     protected $fillable = [
-        'panel_id', 'email', 'payment_received', 'new_manual_orders', 'fail_orders', 'new_messages', 'new_manual_payout', 'created_by', 'updated_by', 'deleted_at'
+        'panel_id', 'email', 'payment_received', 'new_manual_orders', 'fail_orders', 'new_messages', 'new_manual_payout', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

@@ -14,6 +14,7 @@ class PanelAdminSeeder extends Seeder
      */
     public function run()
     {
+        //Panel admin create...
         PanelAdmin::create([
             'uuid' => Str::uuid(),
             'panel_id' => 1,
@@ -24,12 +25,14 @@ class PanelAdminSeeder extends Seeder
             'status' => 'Active'
         ]);
 
+        //Assign role to panel admin...
         DB::table('roles_model')->insert([
             'role_id' => 1, 
             'model_type' => '\App\PanelAdmin', 
             'model_id' => 1
         ]);
         
+        //Added page to panel...
         $pageData = [];
         $pages = DB::table('global_pages')->get();
         foreach ($pages as $page) {
@@ -49,6 +52,7 @@ class PanelAdminSeeder extends Seeder
         }
         DB::table('pages')->insert($pageData);
         
+        //Added theme to panel...
         $themeData = [];
         $themes = DB::table('global_themes')->get();
         foreach ($themes as $theme) {
@@ -63,5 +67,22 @@ class PanelAdminSeeder extends Seeder
             ];
         }
         DB::table('themes')->insert($themeData);
+
+        
+        //Added theme page to panel...
+        $themePageData = [];
+        $pages = DB::table('pages')->where('panel_id', 1)->where('is_editable', 'Yes')->get();
+        foreach ($pages as $page) {
+            $themes = DB::table('themes')->where('panel_id', 1)->get();
+            foreach ($themes as $theme) {
+                $themePageData[] = [
+                    'panel_id' => 1,
+                    'page_id' => $page->id,
+                    'theme_id' => $theme->id,
+                    'content' => defaultThemePageContent(),
+                ];
+            }
+        }
+        DB::table('theme_pages')->insert($themePageData);
     }
 }

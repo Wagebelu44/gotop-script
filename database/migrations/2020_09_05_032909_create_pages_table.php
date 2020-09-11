@@ -22,7 +22,7 @@ class CreatePagesTable extends Migration
             $table->longText('content')->nullable();
             $table->string('meta_title')->nullable();
             $table->string('meta_keyword')->nullable();
-            $table->string('meta_description')->nullable();
+            $table->text('meta_description')->nullable();
             $table->enum('is_public', ['Yes', 'No'])->default('Yes');
             $table->enum('is_editable', ['Yes', 'No'])->default('Yes');
             $table->enum('status', ['Active', 'Deactivated'])->default('Active');
