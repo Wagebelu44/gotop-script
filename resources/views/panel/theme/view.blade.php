@@ -20,7 +20,7 @@
                             <div class="row">
                                 <div class="col-sm-8">{{ $theme->name }} Theme</div>
                                 <div class="col-sm-4 text-right">
-                                    <a href="#" class="btn btn-xs btn-default" onclick="fullScreen()">
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-default" id="full-screen">
                                         <span class="glyphicon glyphicon-fullscreen"></span> Full screen
                                     </a>
                                 </div>
@@ -66,9 +66,12 @@
                             </div>
                         </div>
                         <div class="card-footer text-right">
-                            {{-- <button type="reset" class="btn btn-default">Reset</button> --}}
-                            <a type="reset" class="btn btn-default" href="javascript:void(0);" onclick="reset('{{ route($resource.'reset', $page->id) }}')">Reset</a>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            @if(!empty($page))
+                                @if($page->updated_at != null)
+                                    <a type="reset" class="btn btn-default" href="javascript:void(0);" onclick="reset('{{ route($resource.'reset', $page->id) }}')">Reset</a>
+                                @endif
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            @endif
                         </div>
                     </div>
                 </form>
@@ -90,22 +93,24 @@
     <script src="{{ asset('panel-assets/libs/codemirror/mode/css/css.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/codemirror/addon/display/fullscreen.js') }}"></script>
     <script>
-        function hideShow(key) {
-            $('#hideShow'+key).slideToggle('slow');
-        }
-
-        var editor = CodeMirror.fromTextArea(document.getElementById("content"), {
-            lineNumbers: true,
-            lineWrapping: true,
-            viewportMargin: Infinity,
-            extraKeys: {
-                "F11": function(cm) {
-                    cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-                },
-                "Esc": function(cm) {
-                    if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        $(function () {
+            var editor = CodeMirror.fromTextArea(document.getElementById("content"), {
+                lineNumbers: true,
+                lineWrapping: true,
+                viewportMargin: Infinity,
+                extraKeys: {
+                    "F11": function(cm) {
+                        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                    },
+                    "Esc": function(cm) {
+                        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    }
                 }
-            }
+            });
+
+            $("#full-screen").click(function() {
+                editor.setOption("fullScreen", true);
+            });
         });
 
         function reset(url) {
@@ -132,8 +137,8 @@
     @endif
 
     <script>
-        function fullScreen() {
-            editor.setOption("fullScreen", true);
+        function hideShow(key) {
+            $('#hideShow'+key).slideToggle('slow');
         }
     </script>
 @endsection

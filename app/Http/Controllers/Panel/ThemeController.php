@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Theme;
 use App\Models\ThemePage;
 use Auth;
-use Illuminate\Support\Facades\View;
-use TwigBridge\Facade\Twig;
 
 class ThemeController extends Controller
 {
@@ -16,14 +14,6 @@ class ThemeController extends Controller
     {
         $themes = Theme::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'ASC')->get();
         return view('panel.theme.index', compact('themes'));
-    }
-
-    public function show($id)
-    {
-        $page = ThemePage::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
-        //Twig::render('mytemplate.twig', $page->toArray());
-        $data = View::make('panel.theme.test', $page->toArray());
-        echo ($data);
     }
 
     public function edit(Request $request, $id)
