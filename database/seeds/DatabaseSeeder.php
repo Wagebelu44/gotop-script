@@ -11,8 +11,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(PanelAdminSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(RoleSeeder::class);
+        $this->call(GlobalPagesSeeder::class);
+        $this->call(GlobalThemesSeeder::class);
+        $this->call(PanelAdminSeeder::class);
     }
 }

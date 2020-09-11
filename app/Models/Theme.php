@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Page extends Model
+class Theme extends Model
 {
     use SoftDeletes, LogsActivity;
 
-    protected $table = 'pages';
+    protected $table = 'themes';
 
     protected $fillable = [
-        'panel_id', 'global_page_id', 'name', 'content', 'url', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'status', 'created_by', 'updated_by',
+        'panel_id', 'global_theme_id', 'name', 'location', 'snapshot', 'status', 'activated_at',
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Page'; //custom_log_name_for_this_model
+    protected static $logName = 'Theme'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
