@@ -1,6 +1,6 @@
 <div class="tab-content table-responsive-xl" id="orders_tble">
     <div class="d-flex top-caret-bar">
-        <div class="d-flex service-checkbox-action bg-danger">
+        <div class="d-flex service-checkbox-action bg-danger" v-if="service_checkbox.length>0">
             <div>
                 <span style="color:#fff; padding: 0px 5px">Order Selected</span>
             </div>
@@ -40,7 +40,7 @@
                                 <i class="fa fa-search search-icon-users" aria-hidden="true"></i>
                             </div>
                             <div id="user_filter_type">
-                                    <a class="dropdown-item type-dropdown-item"> </a>
+                                    <a class="dropdown-item type-dropdown-item" v-for="(u, i) in users"> @{{ u.username }} </a>
                             </div>
                         </div>
                         <form action="" method="get" class="user_filter_type_form">
@@ -60,8 +60,12 @@
                             Services
                         </button>
                         <div class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuButton" id="service_filter_type">
-                            <a class="dropdown-item type-dropdown-item">
-                                <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700"></span>
+                            <a class="dropdown-item type-dropdown-item" v-for="(s, i) in services">
+                                <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700">
+                                    @{{ s.id }}
+                                </span>
+                                @{{ s.name }}
+                                (@{{ s.totalOrder??0 }})
                             </a>
                         </div>
                         <form action="" method="get" class="service_filter_type_form">
@@ -83,9 +87,9 @@
                             Mode
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="mode_filter_type">
-                            <a data-key="all" class="dropdown-item type-dropdown-item">All</a>
-                            <a data-key="manual" class="dropdown-item type-dropdown-item">Manual</a>
-                            <a data-key="auto" class="dropdown-item type-dropdown-item">Auto</a>
+                            <a data-key="all" class="dropdown-item type-dropdown-item">All <span v-if="order_mode_count">@{{ order_mode_count.manual +   order_mode_count.auto }}</span></a>
+                            <a data-key="manual" class="dropdown-item type-dropdown-item">Manual <span v-if="order_mode_count">@{{ order_mode_count.manual }}</span>  </a>
+                            <a data-key="auto" class="dropdown-item type-dropdown-item">Auto <span v-if="order_mode_count">@{{ order_mode_count.auto }} </span> </a>
                         </div>
                         <form action="" method="get" class="mode-filter-type-form">
                             <input type="hidden" name="mode">
@@ -106,7 +110,7 @@
                 <td>@{{ o.link }}</td>
                 <td>@{{ o.start_counter }}</td>
                 <td>@{{ o.quantity }}</td>
-                <td>@{{ o.service_id }}</td> 
+                <td>@{{ o.service_name }}</td> 
                 <td class="status-value">@{{ o.status }}</td>
                 <td>@{{ o.remains }}</td>
                 <td>@{{ o.created_at }}</td>

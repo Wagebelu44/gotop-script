@@ -25,7 +25,7 @@ class OrderController extends Controller
             $show_page = $request->page_size;
         }
         $date_time->setTimezone($la_time);
-        $orders = Order::select('orders.*', 'users.username as username', 'services.service_type as service_type')
+        $orders = Order::select('orders.*', 'users.username as username','services.name as service_name', 'services.service_type as service_type')
             ->leftJoin('drip_feed_orders', function($q) {
                 $q->on('drip_feed_orders.id', '=', 'orders.drip_feed_id');
             })
@@ -120,7 +120,9 @@ class OrderController extends Controller
         $role =  'admin';
         $page_name =  'order_index';
         $users = User::get();
-        $services = Service::orderBy('sort','ASC')->get();
+        $services = Service::select('services.id', 'services.name', 'A.totalOrder')
+        ->leftJoin(\DB::raw('( SELECT service_id, count(id) as totalOrder From orders GROUP BY service_id) as A'), 'services.id', '=','A.service_id')
+        ->orderBy('sort','ASC')->get();
         $failed_order = 0;
         $order_mode=['auto'=>0, 'manual'=>0];
         $auto_order_statuss = [];
@@ -139,21 +141,13 @@ class OrderController extends Controller
                 $order_mode['manual']++;
             }
         }
-
-        $service_order_count = Order::get();
-        $order_service_count = [];
-        foreach ($service_order_count as $oc) {
-            if (!isset($order_service_count[$oc->service_id])) {
-                $order_service_count[$oc->service_id] = 0;
-                $order_service_count[$oc->service_id] = 1;
-            }
-            else
-            {
-
-                $order_service_count[$oc->service_id]++;
-            }
-        }
-        return $orders;
+        $data = [
+            'orders' => $orders,
+            'users' => $users,
+            'services' => $services,
+            'order_mode_count' => $order_mode,
+        ];
+        return response()->json($data, 200);
     }
 
     public function create()

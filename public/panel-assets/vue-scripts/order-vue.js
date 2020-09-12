@@ -3,6 +3,9 @@ const orderModule = new Vue({
     data: {
         pagination: {current_page: 1},
         orders: [],
+        users: [],
+        services: [],
+        order_mode_count: null,
         service_checkbox: [],
         filter: {
             status: "", 
@@ -51,8 +54,12 @@ const orderModule = new Vue({
             fetch(base_url+'/admin/get-orders'+ page_id)
                 .then(res => res.json())
                 .then(res => {
-                    this.orders = res.data;
-                    this.pagination = res.data;
+                    console.log(res);
+                    this.orders = res.orders.data;
+                    this.users = res.users;
+                    this.services = res.services;
+                    this.order_mode_count = res.order_mode_count;
+                    this.pagination = res.orders;
                 });
         },
         bulkSelect()
