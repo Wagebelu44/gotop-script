@@ -1,4 +1,4 @@
-const userModule = new Vue({
+const orderModule = new Vue({
     el: '#order_module',
     data: {
         pagination: {current_page: 1},
@@ -51,7 +51,7 @@ const userModule = new Vue({
             fetch(base_url+'/admin/get-orders'+ page_id)
                 .then(res => res.json())
                 .then(res => {
-                    this.orders = res.data.data;
+                    this.orders = res.data;
                     this.pagination = res.data;
                 });
         },

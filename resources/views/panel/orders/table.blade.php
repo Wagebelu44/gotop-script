@@ -93,7 +93,6 @@
                     </div>
                 </th>
                 <th>Actions</th>
-            <th>Mode</th>
         </tr>
         </thead>
         <tbody>
@@ -101,23 +100,17 @@
                 <td>
                     <input type="checkbox" name="service_checkbox" class="service_checkbox" v-model="service_checkbox" value="" />
                 </td>
-                <td>
-                    @{{ o.username }}
-                </td>
-                <td></td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="status-value"></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>@{{ o.id }}</td>
+                <td>@{{ o.username }}</td>
+                <td>@{{ o.charges }}</td>
+                <td>@{{ o.link }}</td>
+                <td>@{{ o.start_counter }}</td>
+                <td>@{{ o.quantity }}</td>
+                <td>@{{ o.service_id }}</td> 
+                <td class="status-value">@{{ o.status }}</td>
+                <td>@{{ o.remains }}</td>
+                <td>@{{ o.created_at }}</td>
+                <td>@{{ o.mode }}</td>
                     <td>
                         <div class="dropdown show goTopDropdown">
                             <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -156,39 +149,7 @@
                             </ul>
                         </div>
                     </td>
-                    <td>
-                        <div class="dropdown show goTopDropdown">
-                            <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Actions
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <li>
-                                        <form action="" method="post">
-                                            @csrf
-                                            <input type="hidden" name="order_table_id"  value="" />
-                                            <input type="hidden" name="order_id"  value="" />
-                                            <input type="hidden" name="refill_order_status"  value="success" />
-                                            <button class="dropdown-item type-dropdown-item">Success</button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="" method="post">
-                                            @csrf
-                                            <input type="hidden" name="order_table_id"  value="" />
-                                            <input type="hidden" name="order_id"  value="" />
-                                            <input type="hidden" name="refill_order_status"  value="rejected" />
-                                            <button class="dropdown-item type-dropdown-item">Reject</button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="#" method="post">
-                                            @csrf
-                                            <button type="button" class="dropdown-item type-dropdown-item">Details</button>
-                                        </form>
-                                    </li>
-                            </ul>
-                        </div>
-                    </td>
+                    
             </tr>
         </tbody>
     </table>
