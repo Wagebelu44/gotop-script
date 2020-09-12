@@ -14,7 +14,7 @@ class BlogCategory extends Model
     protected $table = 'blog_categories';
 
     protected $fillable = [
-        'panel_id', 'name', 'deleted_at', 'status', 'created_by', 'updated_by'
+        'panel_id', 'name', 'status', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

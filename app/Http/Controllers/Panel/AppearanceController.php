@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Models\Theme;
+use App\Models\ThemePage;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -27,22 +29,38 @@ class AppearanceController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'page_name' => 'required|max:255',
-            'page_content' => 'required',
-            'page_url' => 'required'
+            'name' => 'required|max:255',
+            'url' => 'required'
         ]);
 
-        Page::create([
+        $page = Page::create([
             'panel_id'          => Auth::user()->panel_id,
-            'page_name'         => $request->page_name,
+            'name'              => $request->name,
+            'url'               => $request->url,
             'content'           => $request->page_content,
-            'url'               => $request->page_url,
-            'public'            => $request->is_public,
-            'page_title'        => $request->seo_title,
-            'meta_keyword'      => $request->seo_keywords,
-            'meta_description'  => $request->seo_description,
+            'is_public'         => $request->is_public,
+            'meta_title'        => $request->meta_title,
+            'meta_keyword'      => $request->meta_keywords,
+            'meta_description'  => $request->meta_description,
             'created_by'        => Auth::user()->id,
         ]);
+
+        if (!empty($page)){
+            $themes = Theme::where('panel_id', Auth::user()->panel_id)->get();
+            if (!empty($themes)){
+                $themePages = [];
+                foreach ($themes as $key => $theme){
+                    $themePages[] = [
+                        'panel_id' => Auth::user()->panel_id,
+                        'page_id'  => $page->id,
+                        'theme_id' => $theme->id,
+                        'content'  => defaultThemePageContent()
+                    ];
+                }
+                ThemePage::insert($themePages);
+            }
+        }
+
         return redirect()->back()->with('success', 'Appearance Post save successfully !!');
     }
 
@@ -59,23 +77,45 @@ class AppearanceController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'page_name' => 'required|max:255',
-            'page_content' => 'required',
-            'page_url' => 'required'
+            'name' => 'required|max:255',
+            'url' => 'required'
         ]);
 
         Page::find($id)->update([
             'panel_id'          => Auth::user()->panel_id,
-            'page_name'         => $request->page_name,
+            'name'              => $request->name,
             'content'           => $request->page_content,
-            'url'               => $request->page_url,
-            'public'            => $request->is_public,
-            'page_title'        => $request->seo_title,
-            'meta_keyword'      => $request->seo_keywords,
-            'meta_description'  => $request->seo_description,
+            'url'               => $request->url,
+            'is_public'         => $request->is_public,
+            'meta_title'        => $request->meta_title,
+            'meta_keyword'      => $request->meta_keywords,
+            'meta_description'  => $request->meta_description,
             'updated_by'        => Auth::user()->id,
         ]);
         return redirect()->back()->with('success', 'Appearance Post update successfully !!');
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|numeric',
+            'status' => 'required',
+        ]);
+        $status = '';
+        if ($request->status == 'Active'){
+            $status = 'Deactivated';
+        } elseif ($request->status == 'Deactivated'){
+            $status = 'Active';
+        }
+
+        Page::find($request->id)->update([
+            'status'      => $status,
+            'updated_by'  => Auth::user()->id,
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Status change successfully !!'
+        ]);
     }
 
 }
