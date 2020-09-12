@@ -36,6 +36,134 @@ class OrderController extends Controller
         ->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
     }
 
+   
+
+    public function storeMassOrder(Request $r)
+    {
+        try {
+            $data = $r->all();
+            $validate = Validator::make($data, [
+                'content' => 'required',
+            ]);
+            if ($validate->fails()) {
+                return redirect()->back()
+                    ->withErrors($validate)
+                    ->withInput();
+            }
+            $each_line = preg_split("/\r\n|\n|\r/", $data['content']);
+            $orders = [];
+            $total_amount = 0;
+            foreach ($each_line as $line) {
+                $input_line = explode('|', $line);
+                if (count($input_line) != 3) return redirect()->back()->with('error', 'Please follow the instruction for filling up the form')->withInput();
+                $ser = Service::find($input_line[0]);
+                if ($ser==null) {
+                     return redirect()->back()->with('error', 'No service found with this ID'. $input_line[0]);
+                }
+                /* sdfsd */
+                $order_status = 'pending';
+                $provider_id = null;
+                $original_unit_price = 0;
+                $original_charges = 0;
+                $auto_order_response = null;
+                if ($ser->mode == 'auto') {
+                    $ps = ProviderService::where('service_id', $ser->id)->first();
+                    $provider_info = null;
+                    if ($ps != null) {
+                        $provider_info = Provider::find($ps->provider_id);
+                    }
+                    if ($provider_info == null) {
+                        $order_status =  "cancelled";
+                        $original_unit_price = $ps->rate;
+                        $auto_order_response  =  json_encode(['error'=> 'provider not found, provider_id '.$ps->provider_id]);
+                        $original_charges = ($ps->rate / 1000) *  $input_line[1];
+                    }
+                    else
+                    {
+                        $original_unit_price = $ps->rate;
+                        $original_charges = ($ps->rate / 1000) *  $input_line[1];
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $provider_info->api_url);
+                        curl_setopt($ch, CURLOPT_POST, 1);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS,
+                                http_build_query(array(
+                                    'key' => $provider_info->api_key,
+                                    'action' => 'add',
+                                    'service' => $ps->provider_service_id,
+                                    'link' => $input_line[2],
+                                    'quantity' => $input_line[1],
+                                    )));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        $server_output = curl_exec($ch);
+                        curl_close ($ch);
+                        $result  =  json_decode($server_output, true);
+                        $auto_order_response = json_encode($result);
+                        if (isset($result['order'])) {
+                            $provider_id = $result['order'];
+                        }
+                        else
+                        {
+                            $order_status =  "failed";
+                        }
+                    }
+                }
+                /* asdfasdf */
+                $service_for_price = auth()->user()->servicesList()->where('id', $input_line[0])->first();
+                $s_price = $ser->price;
+                if ($service_for_price !=null) {
+                    $s_price = $service_for_price->pivot->price;
+                }
+                $total_amount += ($s_price / 1000) * $input_line[1];
+                $orders[] = [
+                    'order_id' => rand(0, round(microtime(true))),
+                    'status' => $order_status,
+                    'charges' => ($s_price / 1000) * $input_line[1],
+                    'unit_price' => $s_price,
+                    'original_charges' => ($ser->price / 1000) * $input_line[1],
+                    'original_unit_price' => $ser->price,
+                    'provider_order_id' => $provider_id,
+                    'link' => $input_line[2],
+                    'quantity' => $input_line[1],
+                    'user_id' => auth()->user()->id,
+                    'category_id' => $ser->category_id,
+                    'service_id' => $input_line[0],
+                    'created_at' => now(),
+                    'order_viewable_time' => now(),
+                    'panel_id' => auth()->user()->panel_id,
+                    'auto_order_response' => $auto_order_response,
+                    'mode' =>  $ser->mode,
+                ];
+            }
+            // if (auth()->user()->user_balance < $total_amount) {
+            //     return redirect()->back()->with('error', 'You do not have sufficient Balance');
+            // }
+            if (Order::insert($orders))
+            {
+
+                \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
+                $update_balance = auth()->user()->balance() - $total_amount;
+                User::where('id', auth()->user()->id)->update(['balance'=> $update_balance ]);
+                $log = Transaction::create([
+                    'transaction_type' => 'withdraw',
+                    'amount' => $total_amount,
+                    'transaction_flag' => 'order_place',
+                    'user_id' =>  auth()->user()->id,
+                    'admin_id' => null,
+                    'status' => 'done',
+                    'memo' => null,
+                    'fraud_risk' => null,
+                    'payment_gateway_response' => null,
+                    'reseller_payment_methods_setting_id' =>  null,
+                    'reseller_id' => 1,
+                    ]);
+                return redirect()->back()->with('success', 'Successfully saved');
+            }
+            else return redirect()->back()->with('error', 'Please make sure you are following correct format.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *

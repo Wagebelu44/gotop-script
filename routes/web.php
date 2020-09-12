@@ -24,6 +24,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('/order/{order_id?}', 'User\OrderController@index')->name('order');
         Route::get('/get-category-services', 'User\OrderController@getCateServices');
         Route::post('/make_new_order', 'User\OrderController@store');
+        Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
 
     });
 
