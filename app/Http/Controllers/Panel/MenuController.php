@@ -12,93 +12,115 @@ class MenuController extends Controller
 {
     public function index()
     {
-        $pages = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
-        $menus = Menu::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
-        return view('panel.appearance.menu.index', compact('pages', 'menus'));
+        if(Auth::user()->can('menu')) {
+            $pages = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
+            $menus = Menu::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
+            return view('panel.appearance.menu.index', compact('pages', 'menus'));
+        }else{
+            return view('panel.permission');
+        }
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'menu_name' => 'required|max:255',
-        ]);
+        if(Auth::user()->can('menu')) {
+            $request->validate([
+                'menu_name' => 'required|max:255',
+            ]);
 
-        $external_url = '';
-        if ($request->menu_link == 0) :
-            $external_url = $request->external_url;
-        endif;
+            $external_url = '';
+            if ($request->menu_link == 0) :
+                $external_url = $request->external_url;
+            endif;
 
-        Menu::create([
-            'panel_id'          => Auth::user()->panel_id,
-            'menu_name'         => $request->menu_name,
-            'external_link'     => $external_url,
-            'menu_link_id'      => $request->menu_link,
-            'menu_link_type'    => $request->menu_type == 1 ? 'YES' : 'NO',
-            'created_at'        => Auth::user()->id
-        ]);
+            Menu::create([
+                'panel_id'          => Auth::user()->panel_id,
+                'menu_name'         => $request->menu_name,
+                'external_link'     => $external_url,
+                'menu_link_id'      => $request->menu_link,
+                'menu_link_type'    => $request->menu_type == 1 ? 'YES' : 'NO',
+                'created_at'        => Auth::user()->id
+            ]);
 
-        return redirect()->back()->with('success', 'Menu save successfully!');
+            return redirect()->back()->with('success', 'Menu save successfully!');
+        }else{
+            return view('panel.permission');
+        }
     }
 
     public function edit($id)
     {
-        $editMenu = Menu::where('panel_id', Auth::user()->panel_id)->where('id',$id)->first();
-        return response()->json([
-            'status' => 'success',
-            'data' => $editMenu,
-        ], 200);
+        if(Auth::user()->can('menu')) {
+            $editMenu = Menu::where('panel_id', Auth::user()->panel_id)->where('id',$id)->first();
+            return response()->json([
+                'status' => 'success',
+                'data' => $editMenu,
+            ], 200);
+        }else{
+            return view('panel.permission');
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'menu_name_edit' => 'required|max:255',
-        ]);
+        if(Auth::user()->can('menu')) {
+            $request->validate([
+                'menu_name_edit' => 'required|max:255',
+            ]);
 
-        $external_url = '';
-        if ($request->menu_link == 0){
-            $external_url = $request->external_url;
+            $external_url = '';
+            if ($request->menu_link == 0){
+                $external_url = $request->external_url;
+            }
+
+            Menu::find($id)->update([
+                'panel_id'       => Auth::user()->panel_id,
+                'menu_name'      => $request->menu_name_edit,
+                'external_link'  => $external_url,
+                'menu_link_id'   => $request->menu_link_edit,
+                'updated_at'     => Auth::user()->id
+            ]);
+
+            return redirect()->back()->with('success', 'Menu update successfully!');
+        }else{
+            return view('panel.permission');
         }
-
-        Menu::find($id)->update([
-            'panel_id'       => Auth::user()->panel_id,
-            'menu_name'      => $request->menu_name_edit,
-            'external_link'  => $external_url,
-            'menu_link_id'   => $request->menu_link_edit,
-            'updated_at'     => Auth::user()->id
-        ]);
-
-        return redirect()->back()->with('success', 'Menu update successfully!');
     }
 
     public function destroy($id)
     {
-        $data = Menu::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
-        if (empty($data)) {
-            return redirect()->route('admin.menu.index');
+        if(Auth::user()->can('menu')) {
+            $data = Menu::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+            if (empty($data)) {
+                return redirect()->route('admin.menu.index');
+            }
+            $data->delete();
+            return redirect()->back()->with('success', 'Menu delete successfully !!');
+        }else{
+            return view('panel.permission');
         }
-        $data->delete();
-
-        return redirect()->back()->with('success', 'Menu delete successfully !!');
     }
 
     public function sortableMenu(Request $request)
     {
-        $dataSorting = Menu::where('panel_id', Auth::user()->panel_id)->get();
-        foreach ($dataSorting as $menu) {
-            $menu->timestamps = false; // To disable update_at field updation
-            $id = $menu->id;
-            //dd($request->order);
-            foreach ($request->order as $orderSort) {
-                if ($orderSort['id'] == $id) {
-                    $menu->update(['sort' => $orderSort['position']]);
-                }
+        if(Auth::user()->can('menu')) {
+            $dataSorting = Menu::where('panel_id', Auth::user()->panel_id)->get();
+            foreach ($dataSorting as $menu) {
+                $menu->timestamps = false; // To disable update_at field updation
+                $id = $menu->id;
+                foreach ($request->order as $orderSort) {
+                    if ($orderSort['id'] == $id) {
+                        $menu->update(['sort' => $orderSort['position']]);
+                    }
 
+                }
             }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update successfully',
+            ], 200);
+        }else{
+            return view('panel.permission');
         }
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Update successfully',
-        ], 200);
     }
 }
