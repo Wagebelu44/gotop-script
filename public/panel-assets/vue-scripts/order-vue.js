@@ -24,7 +24,6 @@ const orderModule = new Vue({
     },
    
     methods: {
-        
         //
         getOrders(page=1) {
             let page_number = this.pagination.current_page;
@@ -65,7 +64,20 @@ const orderModule = new Vue({
         bulkSelect()
         {
 
-        }
+        },
+        actionConditionalA(order)
+        {
+            return order.mode !=='auto' && order.status !== 'cancelled';
+        },
+        actionConditionalB(order)
+        {
+            return ['completed', 'pending', 'in progress', 'processing', 'failed', 'partial', 'cancelled'].includes(order.status);
+        },
+        actionConditionalC(order)
+        {
+            return [ 'pending', 'in progress', 'processing', 'failed', 'cancelled'].includes(order.status);
+        },
+
         
        
     }
