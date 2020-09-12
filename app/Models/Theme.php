@@ -20,7 +20,7 @@ class Theme extends Model
 
     function pages()
     {
-        return $this->hasMany(ThemePage::class);
+        return $this->hasMany(ThemePage::class)->where('page_id', '>', '0');
     }
 
     function globalTheme()

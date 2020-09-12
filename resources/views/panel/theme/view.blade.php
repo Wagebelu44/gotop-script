@@ -30,34 +30,25 @@
                             <div class="row">
                                 <div class="col-sm-3">
                                     <ul class="list-style-none" style="max-height:500px; overflow:auto;">
+                                        @foreach($pages as $k => $gr)
                                         <li>
-                                            <a href="javascript:void(0)" onclick="hideShow(1)"><i class="fa fa-folder text-info"></i> Html</a>
-                                            <ul class="list-style-none" id="hideShow1" style="padding-left: 15px;">
-                                                @foreach($theme->pages as $pg)
+                                            <a href="javascript:void(0)" onclick="hideShow({{ $k }})"><i class="fa fa-folder text-info"></i> {{ strtoupper($gr->group) }}</a>
+                                            <ul class="list-style-none" id="hideShow{{ $k }}" style="padding-left: 15px;">
+                                                @foreach($gr->groupPages as $pg)
                                                 <li data-toggle="tooltip" data-placement="top" title="{{ $pg->updated_at }}">
-                                                    <a href="{{ route($resource.'edit', $theme->id) }}?page={{ $pg->id }}">
-                                                        <i class="fa fa-file{{ ($pg->updated_at != null)?'-alt':'' }} text-info"></i> {{ $pg->page->name }}
+                                                    <a href="{{ route($resource.'edit', $theme->id) }}?page={{ $pg->name }}">
+                                                        <i class="fa fa-file{{ ($pg->updated_at != null)?'-alt':'' }} text-info"></i> {{ $pg->name }}
                                                     </a>
                                                 </li>
                                                 @endforeach
                                             </ul>
                                         </li>
-                                        <li>
-                                            <a href="javascript:void(0)" onclick="hideShow(2)"><i class="fa fa-folder text-info"></i> Javascrip</a>
-                                            <ul class="list-style-none" id="hideShow2" style="padding-left: 15px;">
-                                                <li><a href="javascript:void(0)"><i class="fa fa-file text-info"></i> custom.js</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)" onclick="hideShow(3)"><i class="fa fa-folder text-info"></i> Css</a>
-                                            <ul class="list-style-none" id="hideShow3" style="padding-left: 15px;">
-                                                <li><a href="javascript:void(0)"><i class="fa fa-file text-info"></i> style.css</a></li>
-                                            </ul>
-                                        </li>
+                                        @endforeach
                                     </ul>
                                 </div>
                                 <div class="col-sm-9">
                                     @if(!empty($page))
+                                    <div class="alert alert-success">{{ strtoupper($page->group).'/'.$page->name }}</div>
                                     <textarea id="content" name="content">{{ $page->content }}</textarea>
                                     @else
                                         <div class="alert alert-success">Pick a file from the left sidebar to start editing.</div>

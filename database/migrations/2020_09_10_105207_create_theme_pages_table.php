@@ -16,9 +16,12 @@ class CreateThemePagesTable extends Migration
         Schema::create('theme_pages', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('panel_id');
-            $table->unsignedBigInteger('page_id');
+            $table->unsignedBigInteger('page_id')->nullable();
             $table->unsignedBigInteger('theme_id');
+            $table->string('group');
+            $table->string('name');
             $table->longText('content')->nullable();
+            $table->unsignedTinyInteger('sort');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -70,18 +70,48 @@ class PanelAdminSeeder extends Seeder
 
         
         //Added theme page to panel...
-        $themePageData = [];
-        $pages = DB::table('pages')->where('panel_id', 1)->where('is_editable', 'Yes')->get();
-        foreach ($pages as $page) {
-            $themes = DB::table('themes')->where('panel_id', 1)->get();
-            foreach ($themes as $theme) {
+        $themes = DB::table('themes')->where('panel_id', 1)->get();
+        foreach ($themes as $theme) {
+            $themePageData[] = [
+                'panel_id' => 1,
+                'theme_id' => $theme->id,
+                'page_id' => 0,
+                'group' => 'twig',
+                'name' => 'layout.twig',
+                'content' => '',
+                'sort' => 1,
+            ];
+
+            $pages = DB::table('pages')->where('panel_id', 1)->where('is_editable', 'Yes')->get();
+            foreach ($pages as $page) {
                 $themePageData[] = [
                     'panel_id' => 1,
-                    'page_id' => $page->id,
                     'theme_id' => $theme->id,
+                    'page_id' => $page->id,
+                    'group' => 'twig',
+                    'name' => strtolower($page->name).'.twig',
                     'content' => defaultThemePageContent(),
+                    'sort' => 2,
                 ];
             }
+            $themePageData[] = [
+                'panel_id' => 1,
+                'theme_id' => $theme->id,
+                'page_id' => 0,
+                'group' => 'css',
+                'name' => 'style.css',
+                'content' => '',
+                'sort' => 3,
+            ];
+            $themePageData[] = [
+                'panel_id' => 1,
+                'theme_id' => $theme->id,
+                'page_id' => 0,
+                'group' => 'js',
+                'name' => 'custom.js',
+                'content' => '',
+                'sort' => 4,
+            ];
         }
         DB::table('theme_pages')->insert($themePageData);
     }
