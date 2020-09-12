@@ -36,6 +36,36 @@ class OrderController extends Controller
         ->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
     }
 
+    public function orderLists(Request $r)
+    {
+        $input = $r->all();
+        $order = Order::where('user_id', auth()->user()->id)->where('refill_status', 0);
+        if(isset($input['query']))
+        {
+            $orders =  $order->where('status', $input['query'])->orderBy('id', 'DESC')->paginate(10);
+        }
+        elseif (isset($input['user_search_keyword'])) {
+            if ($input['status'] !='all') {
+                $order->where('status', $input['status']);
+            }
+            $q_string = $input['user_search_keyword'];
+            $orders =  $order->where(function($q) use($q_string) {
+                    $q->where('id', 'LIKE', '%' . $q_string . '%');
+                    $q->orWhere('link', 'LIKE', '%' . $q_string . '%');
+                    $q->orWhere('service_id', 'LIKE', '%' . $q_string . '%');
+                    $q->orWhere('status', 'LIKE', '%' . $q_string . '%');
+            })->orderBy('id', 'DESC')->paginate(10);
+        }
+        else
+        {
+            $orders = $order->orderBy('id', 'DESC')->paginate(10);
+        }
+        $role =  'user';
+        $page_name =  'orders';
+        $auto_order_statuss = [];
+        return view('user.order.lists',compact('orders','role','page_name', 'auto_order_statuss'));
+    }
+
    
 
     public function storeMassOrder(Request $r)
@@ -169,10 +199,7 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+   
 
     /**
      * Store a newly created resource in storage.
