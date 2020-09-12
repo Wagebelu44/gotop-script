@@ -26,7 +26,7 @@
         <thead>
         <tr>
                 <th> <input type="checkbox" @click="bulkSelect" /></th>
-            <th scope="col">ID</th>
+                <th scope="col">ID</th>
                 <th>
                     <div class="dropdown __dropdown_buttons">
                         <button class="btn btn-default dropdown-toggle" type="button"
@@ -48,11 +48,11 @@
                         </form>
                     </div>
                 </th>
-            <th scope="col">Charge</th>
-            <th scope="col">Link</th>
-            <th scope="col" width="150">Start count</th>
-            <th scope="col" width="150">Quantity</th>
-            <th scope="col">
+                <th scope="col">Charge</th>
+                <th scope="col">Link</th>
+                <th scope="col" width="150">Start count</th>
+                <th scope="col" width="150">Quantity</th>
+                <th scope="col">
                     <div class="dropdown __dropdown_buttons">
                         <button class="btn btn-default dropdown-toggle" type="button"
                                 id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
@@ -97,12 +97,12 @@
         </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr v-for="(o,i) in orders">
                 <td>
                     <input type="checkbox" name="service_checkbox" class="service_checkbox" v-model="service_checkbox" value="" />
                 </td>
                 <td>
-
+                    @{{ o.username }}
                 </td>
                 <td></td>
                 <td>

@@ -64,6 +64,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('users', 'Panel\UserController');
 
             #Orders...
+            Route::get('get-orders', 'Panel\OrderController@getOrderLists');
             Route::resource('orders', 'Panel\OrderController');
 
             #Drip-feed...
