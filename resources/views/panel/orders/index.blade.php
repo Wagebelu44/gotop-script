@@ -114,7 +114,7 @@
 
                             </div>
                             <div class="col-md-6 text-right">
-                                <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getUsers()"></data-pagination>
+                                <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getOrders()"></data-pagination>
                             </div>
                         </div>
 

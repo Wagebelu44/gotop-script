@@ -90,7 +90,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('get-category-services', 'Panel\ServiceController@getCateServices');
             Route::post('updateService/{id}', 'Panel\ServiceController@updateService');
             Route::resource('services', 'Panel\ServiceController', ["as"=>"admin"]);
+
             #Tasks...
+            Route::get('tasks-lists', 'Panel\TaskController@getTasksOrders');
             Route::resource('tasks', 'Panel\TaskController');
 
             #Services...
