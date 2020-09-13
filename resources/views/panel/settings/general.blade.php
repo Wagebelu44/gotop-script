@@ -55,6 +55,11 @@
                         <hr>
 
                         <div class="form-group">
+                            <label class="control-label" for="panel_name">Panel Name</label>
+                            <input type="text" class="form-control" value="{{ old('panel_name', isset($general) && $general->panel_name ? $general->panel_name:'') }}" name="panel_name">
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="timezone">Timezone</label>
                             <select class="form-control" name="timezone" id="timezone">
                                 @foreach(getTimezone() as $key => $timezone)

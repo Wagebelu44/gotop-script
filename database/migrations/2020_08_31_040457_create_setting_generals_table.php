@@ -16,9 +16,9 @@ class CreateSettingGeneralsTable extends Migration
         Schema::create('setting_generals', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('panel_id');
-            $table->unsignedBigInteger('updated_by');
             $table->string('logo')->nullable();
             $table->string('favicon')->nullable();
+            $table->string('panel_name')->nullable();
             $table->string('timezone')->nullable();
             $table->string('currency')->nullable();
             $table->string('currency_format')->nullable();
@@ -37,6 +37,7 @@ class CreateSettingGeneralsTable extends Migration
             $table->longText('custom_footer_code')->nullable();
             $table->enum('horizontal_menu', ['Yes', 'No'])->default('Yes');
             $table->enum('status', ['Active', 'Canceled'])->default('Active');
+            $table->unsignedBigInteger('updated_by');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -68,6 +68,7 @@ class GeneralController extends Controller
                 'updated_by'         => Auth::user()->id,
                 'logo'               => $logo,
                 'favicon'            => $favicon,
+                'panel_name'         => $request->panel_name,
                 'timezone'           => $request->timezone,
                 'currency_format'    => $request->currency_format,
                 'rates_rounding'     => $request->rates_rounding,
