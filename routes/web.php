@@ -65,6 +65,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
             #Orders...
             Route::get('get-orders', 'Panel\OrderController@getOrderLists');
+            Route::post('orders/update/{id}', 'Panel\OrderController@updateOrder');
             Route::resource('orders', 'Panel\OrderController');
 
             #Drip-feed...

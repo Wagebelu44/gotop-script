@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\User;
 use App\Models\Order;
 use App\Models\Service;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -16,6 +17,77 @@ class OrderController extends Controller
         return view('panel.orders.index');
     }
 
+    public function updateOrder(Request $request, $id)
+    {
+        try {
+            $data = $request->all();
+            $order = Order::select('orders.*', 'users.username as username','services.name as service_name', 'services.service_type as service_type')
+            ->where('orders.id', $id)
+            ->join('services','orders.service_id','=','services.id')
+            ->join('users','users.id','=','orders.user_id')
+            ->first();
+            if (isset($data['status']) && $data['status'] == 'cancel_refund') {
+                    $user = User::find($order->user_id);
+                    $user->balance = $user->balance + $order->charges;
+                    $user->save();
+                    Transaction::create([
+                        'transaction_type' => 'deposit',
+                        'amount' => $order->charges,
+                        'transaction_flag' => 'refund',
+                        'user_id' =>  $order->user_id,
+                        'admin_id' => auth()->user()->id,
+                        'status' => 'done',
+                        'memo' => null,
+                        'fraud_risk' => null,
+                        'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
+                        'payment_gateway_response' => null,
+                        'reseller_payment_methods_setting_id' =>  null,
+                        'reseller_id' => 1,
+                        ]);
+                        $order->status = 'cancelled';
+                        $order->save();
+            }
+            elseif (isset($data['partial']) && !empty($data['partial'])) {
+
+                $current_b = $order->charges;
+                $now_b = $data['partial'] * ($order->unit_price / 1000);
+                $updateable_balance =  $current_b - $now_b;
+
+                $user = User::find($order->user_id);
+                    $user->balance = $user->balance + $updateable_balance;
+                    $user->save();
+                Transaction::create([
+                'transaction_type' => 'deposit',
+                'amount' => $updateable_balance,
+                'transaction_flag' => 'refund',
+                'user_id' =>  $order->user_id,
+                'admin_id' => auth()->user()->id,
+                'status' => 'done',
+                'memo' => null,
+                'fraud_risk' => null,
+                'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
+                'payment_gateway_response' => null,
+                'reseller_payment_methods_setting_id' =>  null,
+                'reseller_id' => 1,
+                ]);
+                $order->update([
+                    'quantity' => $data['partial'],
+                    'status'   => 'partial',
+                    'charges'  => $now_b,
+                ]);
+            }
+            else
+            {
+                $order->update($data);
+            }
+            if($order)
+                return response()->json(['status'=>200, 'data'=>$order,  'success'=>'successfully updated']);
+            else return response()->json(['status'=>401,  'data'=>$order, 'error'=>'Could not updated']);
+        }catch (\Exception $e)
+        {
+            return response()->json(['status'=>500, 'error'=>$e->getMessage()]);
+        }
+    }
     public function getOrderLists(Request $request)
     {
         $date_time = new \DateTime();
