@@ -28,24 +28,26 @@ class CheckPanel
                         'token' => env('PANLE_REQUEST_TOKEN'),
                     ]);
 
-                    if ($response->successful()) {
-                        $data = json_decode($response->body());
-                        if ($data->success) {
-                            session(['panel' => $data->panel]);
-                            session(['domain' => $domain]);
+                    if ($response->ok()) {
+                        if ($response->successful()) {
 
-                            return $next($request);
+                            $data = json_decode($response->body());
+                            if ($data->success) {
+                                session(['panel' => $data->panel]);
+                                session(['domain' => $domain]);
+    
+                                return $next($request);
+                            } else {                        
+                                return redirect()->route('panel-not-found')->with('panelErr', 'Domain not found or suspended. Please contact with provider!');
+                            }
                         } else {
-                            $message = null;
-                            return view('panel-not-found', compact('message'));
+                            return redirect()->route('panel-not-found')->with('panelErr', 'Network error. Please contact with provider!');
                         }
                     } else {
-                        $message = null;
-                        return view('panel-not-found', compact('message'));
+                        return redirect()->route('panel-not-found')->with('panelErr', 'Network error. Please contact with provider!');
                     }
                 } catch(Exception $e) {
-                    $message = $e->getMessage();
-                    return view('panel-not-found', compact('message'));
+                    return redirect()->route('panel-not-found')->with('panelErr', $e->getMessage());
                 }
             }
         } elseif (env('PROJECT') == 'sandbox') {

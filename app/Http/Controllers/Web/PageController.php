@@ -10,6 +10,12 @@ use App\Models\ThemePage;
 
 class PageController extends Controller
 {
+    public function panelNotFound()
+    {
+        $msg = session('panelErr');
+        return view('panel-not-found', compact('msg'));
+    }
+
     public function index()
     {
         $menus = Menu::where('panel_id', 1)->orderBy('sort', 'asc')->get();
