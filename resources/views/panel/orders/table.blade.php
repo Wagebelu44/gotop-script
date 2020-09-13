@@ -115,51 +115,62 @@
                 <td>@{{ o.remains }}</td>
                 <td>@{{ o.created_at }}</td>
                 <td>@{{ o.mode }}</td>
-                    <td>
-                        <div class="dropdown show goTopDropdown">
-                            <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Actions
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                               
-                                    <li v-if="actionConditionalA(o)"><a class="dropdown-item type-dropdown-item" onclick="popModal('link',o.link, o.id)">Edit Link</a></li>
-                                    <li v-if="actionConditionalA(o)"><a class="dropdown-item type-dropdown-item" onclick="popModal('start_count', o.start_counter, o.id)">Set Start Count</a></li>
-                                    <li v-if="actionConditionalA(o)"><a class="dropdown-item type-dropdown-item" onclick="popModal('remain', o.remains, o.id)">Set Remain</a></li>
-                                    <li v-if="actionConditionalA(o)"><a class="dropdown-item type-dropdown-item" onclick="popModal('partial',  o.remains, o.id)">Set Partial</a></li>
-                                    <li v-if="actionConditionalA(o)" class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('inprogress', o.id)">In Progress</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('processing', o.id)">Processing</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('completed', o.id)">Completed</a></li>
-                                        </ul>
-                                    </li>
-                                    <li v-if="actionConditionalA(o)"><a class="dropdown-item type-dropdown-item"  onclick="changeStatus('cancel_refund', o.id)">Cancel and refund</a></li>
-                        
-                                    <li v-if="actionConditionalB(o) && o.status==='failed'"><a class="dropdown-item type-dropdown-item" onclick="#">Fail Detail</a></li>
-                                    <li v-if="actionConditionalB(o) && o.status==='failed'"><a class="dropdown-item type-dropdown-item" href="#">Resend Order</a></li>
-                                    <li v-if="actionConditionalB(o) && o.status==='failed'"><a class="dropdown-item type-dropdown-item" onclick="#">Edit Link</a></li>
-                                
-                                    <li v-if="actionConditionalB(o) && o.status!=='failed'"><a class="dropdown-item type-dropdown-item" href="#">Order Detail</a></li>
-                                
-                                    <li v-if="o.drip_feed_id === null"><a class="dropdown-item type-dropdown-item" onclick="popModal('start_count', o.start_counter, o.id)">Set Start Count</a></li>
-                                    
-                                    <li v-if="actionConditionalB(o) && (o.status!=='partial' && o.status!=='partial')"><a class="dropdown-item type-dropdown-item" onclick="popModal('partial',  o.remains, o.id)">Set Partial</a></li>
-                                
-                                
-                                    <li v-if="actionConditionalC(o)" class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('inprogress', o.id)">In Progress</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('processing', o.id)">Processing</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('completed', o.id)">Completed</a></li>
-                                            
-                                            <li v-if="actionConditionalC(o) && o.status==='cancelled'"><a class="dropdown-item type-dropdown-item" onclick="changeStatus('pending', o.id)">Pending</a></li>
-                                            
-                                        </ul>
-                                    </li>
-                                      
-                            </ul>
-                        </div>
-                    </td>
+                <td>
+                    <div class="dropdown show goTopDropdown">
+                        <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <div v-if='o.mode!=="auto" && o.status !=="cancelled"'>
+                                <li><a class="dropdown-item type-dropdown-item" onclick="popModal('link', o.link, o.id)">Edit Link</a></li>
+                                <li><a class="dropdown-item type-dropdown-item" onclick="popModal('start_count',o.start_counter, o.id)">Set Start Count</a></li>
+                                <li><a class="dropdown-item type-dropdown-item" onclick="popModal('remain', o.remains, o.id)">Set Remain</a></li>
+                                <li><a class="dropdown-item type-dropdown-item" onclick="popModal('partial', o.remains, o.id)">Set Partial</a></li>
+                                <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('inprogress',o.id)">In Progress</a></li>
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('processing',o.id)">Processing</a></li>
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('completed',o.id)">Completed</a></li>
+                                    </ul>
+                                </li>
+                                <li><a class="dropdown-item type-dropdown-item"  onclick="changeStatus('cancel_refund',o.id)">Cancel and refund</a></li>
+                            </div>
+                            <div v-else>
+                                <div v-if="actionConditionalB(o)">
+                                    <div v-if="o.status == 'failed'">
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="#">Fail Detail</a></li>
+                                        <li><a class="dropdown-item type-dropdown-item" href="#">Resend Order</a></li>
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="#">Edit Link</a></li>
+                                    </div>
+                                    <div v-else>
+                                        <li><a class="dropdown-item type-dropdown-item" href="#">Order Detail</a></li>
+                                    </div>
+                                    <div v-if="o.drip_feed_id == null">
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="popModal('start_count', o.start_counter, o.id)">Set Start Count</a></li>
+                                    </div>
+                                    <div v-if="o.status !=='partial' && o.status !=='cancelled'">
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="popModal('partial', o.remains, o.id)">Set Partial</a></li>
+                                    </div>
+                                    <div v-if="actionConditionalC(o)">
+                                        <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('inprogress',o.id)">In Progress</a></li>
+                                                <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('processing',o.id)">Processing</a></li>
+                                                <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('completed',o.id)">Completed</a></li>
+                                                <div v-if='o.status == "cancelled"'>
+                                                    <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('pending',o.id)">Pending</a></li>
+                                                </div>
+                                            </ul>
+                                        </li>
+                                    </div>
+                                    <div v-if="o.status !== 'cancelled'">
+                                        <li><a class="dropdown-item type-dropdown-item" onclick="changeStatus('cancel_refund',o.id)">Cancel and refund</a></li>
+                                    </div>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>

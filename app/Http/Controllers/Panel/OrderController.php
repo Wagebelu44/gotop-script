@@ -32,6 +32,7 @@ class OrderController extends Controller
             ->join('users','users.id','=','orders.user_id')
             ->join('services','orders.service_id','=','services.id')
             ->where('orders.refill_status', 0)
+            ->where('orders.panel_id', auth()->user()->panel_id)
             ->where(function ($q) {
                 if (request()->query('status') && request()->query('status') != 'all') {
                     if (request()->query('status') =='INPROGRESS') {
@@ -86,16 +87,14 @@ class OrderController extends Controller
                             }
                         }
                     }
-
                 }
-
                 if (request()->query('filter_type') && request()->query('services')) {
                     $filte_type = request()->query('filter_type');
                     $search_input = request()->query('search');
-
-                    if ($search_input != null) {
-
-                        if ($filte_type == 'order_id') {
+                    if ($search_input != null) 
+                    {
+                        if ($filte_type == 'order_id') 
+                        {
                             $q->where('orders.order_id', '=', $search_input)
                             ->where('orders.service_id', request()->query('services'));
                         }
@@ -119,9 +118,10 @@ class OrderController extends Controller
 
         $role =  'admin';
         $page_name =  'order_index';
-        $users = User::get();
+        $users = User::where('panel_id', auth()->user()->panel_id)->get();
         $services = Service::select('services.id', 'services.name', 'A.totalOrder')
         ->leftJoin(\DB::raw('( SELECT service_id, count(id) as totalOrder From orders GROUP BY service_id) as A'), 'services.id', '=','A.service_id')
+        ->where('panel_id', auth()->user()->panel_id)
         ->orderBy('sort','ASC')->get();
         $failed_order = 0;
         $order_mode=['auto'=>0, 'manual'=>0];
