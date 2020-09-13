@@ -14,10 +14,6 @@ class NotificationController extends Controller
     {
         $page = 'index';
         $data = SettingNotification::where('panel_id', Auth::user()->panel_id)->get();
-        if (count($data) != 8){
-            SettingNotification::where('panel_id', Auth::user()->panel_id)->delete();
-            SettingNotificationTableSeeder();
-        }
         $staffEmails = StaffEmail::where('panel_id', Auth::user()->panel_id)->get();
         return view('panel.settings.notifications', compact('data', 'page', 'staffEmails'));
     }
