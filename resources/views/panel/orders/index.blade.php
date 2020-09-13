@@ -1,7 +1,26 @@
 @extends('layouts.panel')
 
 @section('content')
-    <div class="container-fluid all-mt-30">
+<style>
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu a::after {
+        transform: rotate(90deg);
+        position: absolute;
+        left: 0;
+        top: 10px;
+    }
+
+    .dropdown-submenu .dropdown-menu {
+        top: 0;
+        left: -100%;
+        margin-left: .1rem;
+        margin-right: .1rem;
+    }
+</style>
+    <div class="container-fluid all-mt-30" id="order_module">
         <div class="row">
             <div class="col-12">
                 <div class="material-card card">
@@ -95,15 +114,7 @@
 
                             </div>
                             <div class="col-md-6 text-right">
-                                <span>Record per page</span>
-                                <form action="" id="show_per_page" method="get" class="d-inline">
-                                    <select name="page_size" id="page_size">
-                                        <option value="100">100</option>
-                                        <option value="200">200</option>
-                                        <option value="500">500</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </form>
+                                <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getOrders()"></data-pagination>
                             </div>
                         </div>
 
@@ -111,5 +122,120 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="orderEdit-modal" tabindex="-1" role="dialog"
+        aria-labelledby="orderEdit-modalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered __modal_dialog_custom" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Update Order</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post"
+                            id="formDescription"  >
+                            <input type="hidden" name="id" >
+                            <div class="row">
+                                <div class="col-md-12" id="link_id" style="display: none">
+                                    <div class="form-group">
+                                        <label for="link">Link</label>
+                                        <input type="url" class="form-control" name="link">
+                                    </div>
+                                </div>
+                                <div class="col-md-12" id="start_count_id" style="display: none">
+                                    <div class="form-group">
+                                        <label for="start_counter">Set Start Count</label>
+                                        <input type="number" class="form-control" name="start_counter" >
+                                    </div>
+                                </div>
+                                <div class="col-md-12" id="remain_id" style="display: none">
+                                    <div class="form-group">
+                                        <label for="remains">Remain</label>
+                                        <input type="number" class="form-control" name="remains" >
+                                    </div>
+                                </div>
+                                <div class="col-md-12" id="partial_id" style="display: none">
+                                    <div class="form-group">
+                                        <label for="partial">Partials</label>
+                                        <input type="number" class="form-control" name="partial" >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" @click="update_service"  class="btn btn-success"><i class="fa fa-check"></i> update</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Confirm</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" @click="yes" >Yes</button>
+                        <button type="button" class="btn btn-primary"  @click="no">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="order_service_type_detail">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Order Detail
+                    </div>
+                    <div class="modal-body">
+                        <p id="order-modal-detail" style="white-space: break-spaces;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum, amet non
+                            ullam magni voluptatem illum id
+                            corrupti adipisci repellat veritatis, nemo vel! Incidunt laudantium ut nihil ullam repellendus rerum fuga?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="service_type_modal()">close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    
+@endsection
+@section('scripts')
+<script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/order-vue.js')}}"></script>
+<script>
+    setTimeout(function () {
+    $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
+       if (!$(this).next().hasClass('show')) {
+           $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
+       }
+       //alert('dafs');
+       var $subMenu = $(this).next(".dropdown-menu");
+       $subMenu.toggleClass('show');
+
+
+       $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
+           $('.dropdown-submenu .show').removeClass("show");
+       });
+
+       return false;
+   });
+    }, 5000);
+
+    function service_type_modal()
+    {
+        $("#order_service_type_detail").modal('hide');
+    }
+</script>
 @endsection
