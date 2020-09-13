@@ -14,8 +14,8 @@ class CreateServicePriceUserTable extends Migration
     public function up()
     {
         Schema::create('service_price_user', function (Blueprint $table) {
-            $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('panel_id');
+            $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->on('users')->references('id')->onDelete('cascade');
             $table->foreign('service_id')->on('services')->references('id')->onDelete('cascade');
