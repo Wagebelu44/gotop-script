@@ -18,10 +18,10 @@ class CreateThemePagesTable extends Migration
             $table->unsignedBigInteger('panel_id');
             $table->unsignedBigInteger('page_id')->nullable();
             $table->unsignedBigInteger('theme_id');
-            $table->string('group');
+            $table->string('group')->default('twig');
             $table->string('name');
             $table->longText('content')->nullable();
-            $table->unsignedTinyInteger('sort');
+            $table->unsignedTinyInteger('sort')->default(2);
             $table->timestamps();
             $table->softDeletes();
         });
