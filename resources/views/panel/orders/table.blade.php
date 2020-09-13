@@ -105,9 +105,46 @@
                     <input type="checkbox" name="order_checkbox" class="order_checkbox" v-model="order_checkbox" :value="o.id" />
                 </td>
                 <td>@{{ o.id }}</td>
-                <td>@{{ o.username }}</td>
+                <td>
+                    @{{ o.username }}
+                    <div class="badge badge-secondary" v-if="o.drip_feed_id !== null">Drip Feed</div>
+                    <div class="badge badge-secondary" v-if="o.source ==='API'">API</div>
+                </td>
                 <td>@{{ o.charges }}</td>
-                <td>@{{ o.link }}</td>
+                <td>
+                    @{{ o.link }}
+                        <span v-if="o.service_type ==='SEO'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Keywords</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='SEO2'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Keywords</a>
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Email</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Custom Comments' || o.service_type ==='Custom Comments Package'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Comments</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Comment Likes' || o.service_type ==='Mentions Users Followers'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Username</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions Custom List' || o.service_type ==='Mentions'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Username</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions with Hashtags'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Username</a>
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_2', o )">Hastags</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Comment Replies'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Username</a>
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Comments</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions Hashtag'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Hastags</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions Media Likers'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Mediua URLs</a>
+                        </span>
+               
+                </td>
                 <td>@{{ o.start_counter }}</td>
                 <td>@{{ o.quantity }}</td>
                 <td>@{{ o.service_name }}</td> 

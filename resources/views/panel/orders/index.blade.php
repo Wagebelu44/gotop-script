@@ -190,6 +190,23 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="order_service_type_detail">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Order Detail
+                    </div>
+                    <div class="modal-body">
+                        <p id="order-modal-detail" style="white-space: break-spaces;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum, amet non
+                            ullam magni voluptatem illum id
+                            corrupti adipisci repellat veritatis, nemo vel! Incidunt laudantium ut nihil ullam repellendus rerum fuga?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="service_type_modal()">close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     
@@ -215,5 +232,10 @@
        return false;
    });
     }, 5000);
+
+    function service_type_modal()
+    {
+        $("#order_service_type_detail").modal('hide');
+    }
 </script>
 @endsection
