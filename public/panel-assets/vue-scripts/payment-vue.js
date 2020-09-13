@@ -3,6 +3,7 @@ const orderModule = new Vue({
     data: {
         pagination: {current_page: 1},
         payments: [],
+        global_payments: [],
         users: [],
         services: [],
         order_mode_count: null,
@@ -62,6 +63,8 @@ const orderModule = new Vue({
                 .then(res => {
                     console.log(res);
                     this.payments = res.payments.data;
+                    this.global_payments = res.globalMethods;
+                    this.users = res.users;
                 });
         },
        

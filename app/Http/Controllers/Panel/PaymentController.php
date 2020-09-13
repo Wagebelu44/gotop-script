@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\GlobalPaymentMethod;
 use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
@@ -56,9 +58,13 @@ class PaymentController extends Controller
             ->orderBy($sort_by, $order_by);
             $payments = $local_payments->paginate($show_page);
             $total_payments = $local_payments->count();
+            $globalMethods = GlobalPaymentMethod::where('status', 'active')->get();
+            $users = User::where('panel_id', auth()->user()->panel_id)->get(); 
         $data = [
             'payments' => $payments,
             'total_payments' => $total_payments,
+            'globalMethods' => $globalMethods,
+            'users' => $users,
         ];
         return response()->json($data, 200);
     }

@@ -112,25 +112,25 @@
                                                 {{-- <div class="ui-widget">
                                                   <input type="text" name="user_id" id="user_id_payment" class="form-control custom-form-control" placeholder="type user name" />
                                                 </div> --}}
-                                                <select name="user_id" class="form-control custom-form-control select2 @error('user_id') is-invalid @enderror" required data-validation-required-message="This field is required">
+                                                <select name="user_id" class="form-control custom-form-control" required >
                                                     <option disabled selected>Choose user</option>
-                                                        <option value="">username</option>
+                                                <option :value="u.id" v-for="(u, i) in users">@{{ u.name }} </option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Amount</strong></label>
-                                                <input type="text" name="amount" class="form-control custom-form-control @error('amount') is-invalid @enderror" placeholder="Amount" value="{{ old('amount') }}" required data-validation-required-message="This field is required">
+                                                <input type="text" name="amount" class="form-control custom-form-control" placeholder="Amount" value="14" required >
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Payment Method</strong></label>
-                                                <select name="reseller_payment_methods_setting_id" id="reseller_payment_methods_setting_id" class="form-control custom-form-control select2 @error('reseller_payment_methods_setting_id') is-invalid @enderror" required data-validation-required-message="This field is required">
+                                                <select name="reseller_payment_methods_setting_id" id="reseller_payment_methods_setting_id" class="form-control custom-form-control" required >
                                                     <option disabled selected>Choose payment method</option>
-                                                        <option value="">method name</option>
+                                                <option :value="gp.id" v-for="(gp, i) in global_payments">@{{gp.name}}</option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Memo (optional)</strong></label>
-                                                <input type="text" name="memo" class="form-control custom-form-control @error('memo') is-invalid @enderror" placeholder="Memo" value="{{ old('memo') }}" required data-validation-required-message="This field is required">
+                                                <input type="text" name="memo" class="form-control custom-form-control" placeholder="Memo" value="12" required >
                                             </div>
                                         </div>
                                         <div class="modal-footer">
