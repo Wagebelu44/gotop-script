@@ -12,13 +12,15 @@ class ProviderService extends Model
     use SoftDeletes, LogsActivity;
 
     protected $table = 'provider_services';
-    protected $fillable =['id','service_id','panel_id','provider_id','provider_service_id','name','type','category','rate','min','max','created_at','updated_at','deleted_at'];
+    protected $fillable =[
+        'id', 'panel_id', 'service_id', 'provider_id', 'provider_service_id', 'name', 'type', 'category', 'rate', 'min', 'max', 
+    ];
 
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Page'; //custom_log_name_for_this_model
+    protected static $logName = 'Provider Service'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
