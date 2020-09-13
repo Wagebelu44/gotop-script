@@ -31,8 +31,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function servicesList()
     {
-        return $this->belongsToMany(Service::class, 'service_price_user', 'user_id', 'service_id')
-            ->withPivot('price', 'panel_id');
+        return $this->belongsToMany(Service::class, 'service_price_user', 'user_id', 'service_id')->withPivot('price', 'panel_id');
     }
 
     protected static $logAttributes = ['*'];
