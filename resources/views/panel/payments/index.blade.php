@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('content')
-    <div class="container-fluid all-mt-30">
+    <div class="container-fluid all-mt-30" id="payment_module">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -71,16 +71,16 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>11</td>
-                                        <td>xyz</td>
-                                        <td>1111</td>
-                                        <td>Bonus</td>
-                                        <td>dfsffdfd</td>
-                                        <td>12:20 am</td>
-                                        <td>12:20 am</td>
+                                    <tr v-for="(p, i) in payments">
+                                        <td> @{{ p.id }} </td>
+                                        <td>@{{ p.id }}</td>
+                                        <td>@{{ p.id }}</td>
+                                        <td>@{{ p.id }}</td>
+                                        <td>@{{ p.id }}</td>
+                                        <td>@{{ p.id }}</td>
+                                        <td>@{{ p.id }}</td>
                                         <td>
-                                            Bonus
+                                            @{{ p.id }}
                                         </td>
                                         <td>
                                             <div class="btn-group">
@@ -97,7 +97,6 @@
                                 </tbody>
                             </table>
                         </div>
-                            <div class="text-center mt-4">No data available in table</div>
                         <div class="modal bs-example-modal-lg" id="paymentAddModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
@@ -151,4 +150,33 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+<script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/payment-vue.js')}}"></script>
+<script>
+    setTimeout(function () {
+    $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
+       if (!$(this).next().hasClass('show')) {
+           $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
+       }
+       //alert('dafs');
+       var $subMenu = $(this).next(".dropdown-menu");
+       $subMenu.toggleClass('show');
+
+
+       $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
+           $('.dropdown-submenu .show').removeClass("show");
+       });
+
+       return false;
+   });
+    }, 5000);
+
+    function service_type_modal()
+    {
+        $("#order_service_type_detail").modal('hide');
+    }
+</script>
 @endsection
