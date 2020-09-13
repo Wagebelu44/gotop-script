@@ -12,11 +12,6 @@ class PageController extends Controller
 {
     public function index()
     {
-        if (session('panelErr')) {
-            $msg = session('panelErr');
-            return view('panel-not-found', compact('msg'));
-        }
-
         $menus = Menu::where('panel_id', 1)->orderBy('sort', 'asc')->get();
         $settingGeneral = SettingGeneral::where('panel_id', 1)->first();
         return view('web.home', compact('menus', 'settingGeneral'));

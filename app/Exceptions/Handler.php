@@ -52,6 +52,20 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($this->isHttpException($exception)) {
+            if ($exception->getStatusCode() == 10000) {
+                return response()->view('panel-not-found', ['msg' => 'Domain not found or suspended. Please contact with provider!'], 404);
+            }
+    
+            if ($exception->getStatusCode() == 10001) {
+                return response()->view('panel-not-found', ['msg' => 'Network error. Please contact with provider!'], 404);
+            }
+    
+            if ($exception->getStatusCode() == 10002) {
+                return response()->view('panel-not-found', ['msg' => 'Server not found. Please contact with provider!'], 404);
+            }
+        }
+
         return parent::render($request, $exception);
     }
 

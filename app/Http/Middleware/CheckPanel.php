@@ -37,17 +37,17 @@ class CheckPanel
                                 session(['domain' => $domain]);
     
                                 return $next($request);
-                            } else {                        
-                                return redirect()->route('home')->with('panelErr', 'Domain not found or suspended. Please contact with provider!');
+                            } else {
+                                return abort(10000);
                             }
                         } else {
-                            return redirect()->route('home')->with('panelErr', 'Network error. Please contact with provider!');
+                            return abort(10001);
                         }
                     } else {
-                        return redirect()->route('home')->with('panelErr', 'Network error. Please contact with provider!');
+                        return abort(10001);
                     }
                 } catch(Exception $e) {
-                    return redirect()->route('home')->with('panelErr', $e->getMessage());
+                    return abort(10002);
                 }
             }
         } elseif (env('PROJECT') == 'sandbox') {
