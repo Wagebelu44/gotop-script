@@ -12,7 +12,6 @@ Route::get('command', function () {
 });
 //Test Route::END
 
-
 Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/', 'Web\PageController@index')->name('home');
 
@@ -173,6 +172,6 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     Auth::routes(['verify' => true]);
     Route::group(['middleware' => ['auth', 'verified']], function () {
-        Route::get('/home', 'User\DashboardController@index')->name('home');
+        Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
 });

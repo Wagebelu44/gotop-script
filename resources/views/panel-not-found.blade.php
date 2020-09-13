@@ -1,1 +1,1 @@
-Website not found or suspended!
+{{ $msg }}

@@ -28,24 +28,26 @@ class CheckPanel
                         'token' => env('PANLE_REQUEST_TOKEN'),
                     ]);
 
-                    if ($response->successful()) {
-                        $data = json_decode($response->body());
-                        if ($data->success) {
-                            session(['panel' => $data->panel]);
-                            session(['domain' => $domain]);
+                    if ($response->ok()) {
+                        if ($response->successful()) {
 
-                            return $next($request);
+                            $data = json_decode($response->body());
+                            if ($data->success) {
+                                session(['panel' => $data->panel]);
+                                session(['domain' => $domain]);
+    
+                                return $next($request);
+                            } else {
+                                return abort(10000);
+                            }
                         } else {
-                            $message = null;
-                            return view('panel-not-found', compact('message'));
+                            return abort(10001);
                         }
                     } else {
-                        $message = null;
-                        return view('panel-not-found', compact('message'));
+                        return abort(10001);
                     }
                 } catch(Exception $e) {
-                    $message = $e->getMessage();
-                    return view('panel-not-found', compact('message'));
+                    return abort(10002);
                 }
             }
         } elseif (env('PROJECT') == 'sandbox') {
