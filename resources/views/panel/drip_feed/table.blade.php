@@ -2,7 +2,7 @@
     <table class="table">
         <thead>
         <tr>
-            <th> <input type="checkbox" /> </th>
+            {{-- <th> <input type="checkbox" /> </th> --}}
             <th scope="col">ID</th>
             <th>User</th>
             <th>Total Charges</th>
@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             <tr v-for="(dp, i) in driporders">
-                <td> <input type="checkbox" /> </td>
+               {{--  <td> <input type="checkbox" /> </td> --}}
                 <td> @{{ dp.id }} </td>
                 <td> @{{ dp.user_name }} </td>
                 <td> @{{ dp.total_charges }} </td>

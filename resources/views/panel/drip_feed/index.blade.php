@@ -38,7 +38,7 @@
                             <div class="col-md-6">
                                 <form class="d-flex pull-right" method="get" action="">
                                     <div>
-                                        <a href="" class="btn btn-link">Export</a>
+                                  {{--       <a href="" class="btn btn-link">Export</a> --}}
                                     </div>
                                     <div class="form-group mb-2 mr-0">
                                         <input type="search" name="search" class="form-control" placeholder="search...">
