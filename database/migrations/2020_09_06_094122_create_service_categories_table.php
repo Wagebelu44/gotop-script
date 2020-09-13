@@ -16,7 +16,7 @@ class CreateServiceCategoriesTable extends Migration
         Schema::create('service_categories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('panel_id'); 
-            $table->integer('sort')->unsigned()->nullable();
+            $table->unsignedInteger('sort')->nullable();
             $table->string('name');
             $table->enum('status', ['active', 'inactive']);
             $table->foreign('panel_id')->on('panel_admins')->references('id')->onDelete('cascade');

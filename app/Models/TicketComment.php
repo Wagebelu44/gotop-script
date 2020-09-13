@@ -15,7 +15,7 @@ class TicketComment extends Model
     protected $table = 'ticket_comments';
 
     protected $fillable = [
-        'panel_id', 'message','commentable_type','commentable_id','comment_by','commentor_role', 'created_by', 'updated_by', 'deleted_at'
+        'panel_id', 'message','commentable_type','commentable_id','comment_by','commentor_role', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

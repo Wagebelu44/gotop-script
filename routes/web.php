@@ -14,13 +14,6 @@ Route::get('command', function () {
 
 
 Route::group(['middleware' => 'checkPanel'], function () {
-    Route::get('/', 'Web\PageController@index')->name('home');
-
-    Auth::routes(['verify' => true]);
-    Route::group(['middleware' => ['auth', 'verified']], function () {
-        Route::get('/home', 'User\DashboardController@index')->name('home');
-    });
-
     Route::group(['prefix' => 'admin'], function () {
         // Authentication Routes...
         Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
@@ -97,10 +90,14 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
             #Rppearance...
             Route::resource('appearance', 'Panel\AppearanceController');
+            Route::post('appearance-status', 'Panel\AppearanceController@updateStatus')->name('appearance.updateStatus');
 
             #Rppearance menu...
             Route::resource('menu', 'Panel\MenuController');
             Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
+            Route::resource('theme', 'Panel\ThemeController')->only('index', 'edit', 'update');
+            Route::post('theme-active/{id}', 'Panel\ThemeController@active')->name('theme.active');
+            Route::post('theme-page-reset/{id}', 'Panel\ThemeController@reset')->name('theme.reset');
 
             #blog...
             Route::resource('blog', 'Panel\BlogController');
@@ -143,5 +140,14 @@ Route::group(['middleware' => 'checkPanel'], function () {
             });
 
         });
+    });
+
+    
+    Route::get('/', 'Web\PageController@index')->name('home');
+    Route::get('/{url}', 'Web\PageController@page')->name('route');
+
+    Auth::routes(['verify' => true]);
+    Route::group(['middleware' => ['auth', 'verified']], function () {
+        Route::get('/home', 'User\DashboardController@index')->name('home');
     });
 });

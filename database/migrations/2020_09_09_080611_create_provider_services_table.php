@@ -15,10 +15,10 @@ class CreateProviderServicesTable extends Migration
     {
         Schema::create('provider_services', function (Blueprint $table) {
             $table->id();
-            $table->integer('service_id')->unsigned();
-            $table->integer('panel_id')->unsigned();
-            $table->integer('provider_id')->unsigned();
-            $table->integer('provider_service_id')->unsigned();
+            $table->unsignedBigInteger('panel_id');
+            $table->unsignedBigInteger('service_id');
+            $table->unsignedBigInteger('provider_id');
+            $table->unsignedBigInteger('provider_service_id');
             $table->string('name', 100)->nullable();
             $table->string('type', 100)->nullable();
             $table->string('category', 100)->nullable();

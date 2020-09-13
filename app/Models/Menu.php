@@ -14,7 +14,7 @@ class Menu extends Model
     protected $table = 'menus';
 
     protected $fillable = [
-        'panel_id', 'deleted_at', 'updated_by', 'created_by', 'menu_name', 'external_link', 'menu_link_id', 'menu_link_type', 'sort', 'status'
+        'panel_id', 'menu_name', 'external_link', 'menu_link_id', 'menu_link_type', 'sort', 'status', 'updated_by', 'created_by',
     ];
 
     protected static $logAttributes = ['*'];

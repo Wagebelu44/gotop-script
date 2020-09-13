@@ -14,7 +14,7 @@ class BlogSlider extends Model
     protected $table = 'blog_sliders';
 
     protected $fillable = [
-        'panel_id', 'title','read_more','image', 'status', 'deleted_at', 'created_by', 'updated_by'
+        'panel_id', 'title','read_more','image', 'status', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

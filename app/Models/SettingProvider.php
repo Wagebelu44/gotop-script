@@ -15,7 +15,7 @@ class SettingProvider extends Model
     protected $table = 'setting_providers';
 
     protected $fillable = [
-        'panel_id', 'domain', 'api_url', 'api_key', 'status', 'created_by', 'updated_by', 'deleted_at'
+        'panel_id', 'domain', 'api_url', 'api_key', 'status', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];
