@@ -12,9 +12,6 @@ Route::get('command', function () {
 });
 //Test Route::END
 
-Route::get('/panel-not-found', 'Web\PageController@panelNotFound')->name('panel-not-found');
-
-
 Route::group(['middleware' => 'checkPanel'], function () {
     Route::group(['prefix' => 'admin'], function () {
         // Authentication Routes...

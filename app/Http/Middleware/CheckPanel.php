@@ -38,16 +38,16 @@ class CheckPanel
     
                                 return $next($request);
                             } else {                        
-                                return redirect()->route('panel-not-found')->with('panelErr', 'Domain not found or suspended. Please contact with provider!');
+                                return redirect()->route('home')->with('panelErr', 'Domain not found or suspended. Please contact with provider!');
                             }
                         } else {
-                            return redirect()->route('panel-not-found')->with('panelErr', 'Network error. Please contact with provider!');
+                            return redirect()->route('home')->with('panelErr', 'Network error. Please contact with provider!');
                         }
                     } else {
-                        return redirect()->route('panel-not-found')->with('panelErr', 'Network error. Please contact with provider!');
+                        return redirect()->route('home')->with('panelErr', 'Network error. Please contact with provider!');
                     }
                 } catch(Exception $e) {
-                    return redirect()->route('panel-not-found')->with('panelErr', $e->getMessage());
+                    return redirect()->route('home')->with('panelErr', $e->getMessage());
                 }
             }
         } elseif (env('PROJECT') == 'sandbox') {
