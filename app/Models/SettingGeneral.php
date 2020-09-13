@@ -15,7 +15,7 @@ class SettingGeneral extends Model
     protected $fillable = [
         'panel_id', 'logo', 'favicon', 'timezone', 'currency', 'currency_format', 'rates_rounding', 'ticket_system', 'tickets_per_user',
         'signup_page', 'email_confirmation', 'skype_field', 'name_fields', 'terms_checkbox', 'reset_password', 'average_time',
-        'drip_feed_interval', 'custom_header_code', 'custom_footer_code', 'status', 'updated_by',
+        'drip_feed_interval', 'custom_header_code', 'custom_footer_code', 'horizontal_menu', 'status', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];

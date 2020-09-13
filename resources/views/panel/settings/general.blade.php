@@ -155,6 +155,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label" for="horizontal_menu">Horizontal Menu</label>
+                            <div class="setting-switch setting-switch-table">
+                                <label class="switch">
+                                    <input type="checkbox" class="toggle-page-visibility" name="horizontal_menu" id="horizontal_menu" {{ isset($general) && $general->horizontal_menu == 'Yes' ? 'checked' : '' }}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="drip_feed_interval">Minimum drip-feed interval </label>
                             <input type="text" class="form-control" value="{{ old('drip_feed_interval', isset($general) && $general->drip_feed_interval ? $general->drip_feed_interval:'') }}" name="drip_feed_interval">
                         </div>
