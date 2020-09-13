@@ -94,6 +94,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
             #Tasks...
             Route::get('tasks-lists', 'Panel\TaskController@getTasksOrders');
+            Route::post('refill/order/status', 'Panel\TaskController@refillChnageStatus')->name('task.change.status');
             Route::resource('tasks', 'Panel\TaskController');
 
             #Services...

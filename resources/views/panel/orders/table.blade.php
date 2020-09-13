@@ -152,7 +152,7 @@
                 <td>@{{ o.remains }}</td>
                 <td>@{{ o.created_at }}</td>
                 <td>@{{ o.mode }}</td>
-                <td>
+                <td v-if="order_page == 'order'">
                     <div class="dropdown show goTopDropdown">
                         <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Actions
@@ -205,6 +205,44 @@
                                     </div>
                                 </div>
                             </div>
+                        </ul>
+                    </div>
+                </td>
+                <td v-else-if="order_page == 'task'">
+                    <div class="dropdown show goTopDropdown">
+                        <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                <div v-if="o.refill_order_status === 'pending'">
+                                    <li>
+                                        <form action="{{route('admin.task.change.status')}}" method="post">
+                                            @csrf
+                                            <input type="hidden" name="order_table_id"  :value="o.id" />
+                                            <input type="hidden" name="order_id"  :value="o.id" />
+                                            <input type="hidden" name="refill_order_status"  value="success" />
+                                            <button class="dropdown-item type-dropdown-item">Success</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="{{route('admin.task.change.status')}}" method="post">
+                                            @csrf
+                                        <input type="hidden" name="order_table_id"  :value="o.id" />
+                                        <input type="hidden" name="order_id"  :value="o.id" />
+                                        <input type="hidden" name="refill_order_status"  value="rejected" />
+                                                <button class="dropdown-item type-dropdown-item">Reject</button>
+                                        </form>
+                                    </li>
+                                </div>
+                                <div v-else>
+                                    <li>
+                                        <form action="#" method="post">
+                                            @csrf
+                                                <button type="button" class="dropdown-item type-dropdown-item">Details</button>
+                                        </form>
+                                    </li>
+                                </div>
+                            
                         </ul>
                     </div>
                 </td>

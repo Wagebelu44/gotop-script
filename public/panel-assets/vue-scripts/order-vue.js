@@ -27,6 +27,8 @@ const orderModule = new Vue({
         order_id : null,
         
         editable_id: null,
+
+        order_page: 'order',
     },
     created () {
        

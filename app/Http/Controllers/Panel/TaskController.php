@@ -16,6 +16,27 @@ class TaskController extends Controller
         return view('panel.tasks.index');
     }
 
+    public function refillChnageStatus(Request $r)
+    {
+        try {
+            $refill_status =  Order::where([
+                ['id', '=', $r->order_table_id],
+                ['order_id', '=', $r->order_id],
+            ])->first();
+            $refill_status->refill_order_status = $r->refill_order_status;
+            if ($refill_status->save()) {
+                  return redirect()->back()->with('success', 'status has been changed');
+            }
+            else
+            {
+                return redirect()->back()->with('error', 'Error occured');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
+    }
+    
     public function getTasksOrders(Request $request)
     {
         $taskOrders = Order::select('orders.*', 'users.username as username' ,'services.name as service_name', 'services.service_type as service_type')
