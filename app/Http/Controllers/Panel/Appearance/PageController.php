@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Panel;
+namespace App\Http\Controllers\Panel\Appearance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
@@ -9,21 +9,20 @@ use App\Models\ThemePage;
 use Illuminate\Http\Request;
 use Auth;
 
-class AppearanceController extends Controller
+class PageController extends Controller
 {
-
     public function index()
     {
         $data = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
         $page = 'index';
-        return view('panel.appearance.index', compact('data', 'page'));
+        return view('panel.appearance.pages', compact('data', 'page'));
     }
 
     public function create()
     {
         $data = null;
         $page = 'create';
-        return view('panel.appearance.index', compact('data', 'page'));
+        return view('panel.appearance.pages', compact('data', 'page'));
     }
 
     public function store(Request $request)
@@ -70,10 +69,10 @@ class AppearanceController extends Controller
     {
         $data = Page::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
         if (empty($data)) {
-            return redirect()->route(' admin.appearance.index');
+            return redirect()->route('admin.appearance.page.index');
         }
         $page = 'edit';
-        return view('panel.appearance.index', compact('data', 'page'));
+        return view('panel.appearance.pages', compact('data', 'page'));
     }
 
     public function update(Request $request, $id)
@@ -119,5 +118,4 @@ class AppearanceController extends Controller
             'message' => 'Status change successfully !!'
         ]);
     }
-
 }
