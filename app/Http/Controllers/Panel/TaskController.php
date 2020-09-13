@@ -18,9 +18,10 @@ class TaskController extends Controller
 
     public function getTasksOrders(Request $request)
     {
-        $taskOrders = Order::select('orders.*', 'users.username as username')
+        $taskOrders = Order::select('orders.*', 'users.username as username' ,'services.name as service_name', 'services.service_type as service_type')
         ->where('orders.panel_id', auth()->user()->panel_id)
-        ->where('refill_status', '!=', 0)
+        ->join('services','orders.service_id','=','services.id')
+        ->where('orders.refill_status', '!=', 0)
             ->leftJoin('drip_feed_orders', function($q) {
                 $q->on( 'drip_feed_orders.id', '=', 'orders.drip_feed_id');
                 $q->where('orders.order_viewable_time','<=', (new \DateTime())->format('Y-m-d H:i:s'));

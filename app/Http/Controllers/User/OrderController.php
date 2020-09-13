@@ -67,6 +67,55 @@ class OrderController extends Controller
         return view('user.order.lists',compact('orders','role','page_name', 'auto_order_statuss'));
     }
 
+
+    public function refillStatusChange(Request $r)
+    {
+        try {
+            $refill_status =  Order::where([
+                ['id', '=', $r->order_table_id],
+                ['order_id', '=', $r->order_id],
+            ])->first();
+
+            $order_cloned  = Order::create([
+                'order_id' => $refill_status->order_id,
+                'status' => 'COMPLETED',
+                'panel_id' => auth()->user()->panel_id,
+                'charges' => $refill_status->charges,
+                'link' => $refill_status->link,
+                'start_counter' => $refill_status->start_counter,
+                'remains' => $refill_status->remains,
+                'quantity' => $refill_status->quantity,
+                'user_id' => $refill_status->user_id,
+                'service_id' => $refill_status->service_id,
+                'category_id' => $refill_status->category_id,
+                'custom_comments' => $refill_status->custom_comments,
+                'mode'  => $refill_status->mode,
+                'source' => $refill_status->source,
+                'drip_feed_id'  => $refill_status->drip_feed_id,
+                'order_viewable_time' => $refill_status->order_viewable_time,
+                'text_area_1' => $refill_status->text_area_1,
+                'text_area_2' => $refill_status->text_area_2,
+                'additional_inputs'  => $refill_status->additional_inputs,
+                'refill_status' => false,
+                'refill_order_status' => 'PENDING',
+                ]);
+
+                $refill_status->refill_status =  true;
+                $refill_status->refill_order_status = $r->refill_order_status;
+
+            if ($refill_status->save()) {
+                return redirect()->back()->with('success', 'Status changes');
+            }
+            else
+            {
+                return redirect()->back()->with('error', 'Could not change, error occured');
+            }
+        } catch (\Exception $e) {
+             return redirect()->back()->with('error', $e->getMessage());
+        }
+
+    }
+
    
 
     public function storeMassOrder(Request $r)

@@ -25,6 +25,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('/get-category-services', 'User\OrderController@getCateServices');
         Route::get('/orders', 'User\OrderController@orderLists');
         Route::post('/make_new_order', 'User\OrderController@store');
+        Route::post('statusChanges', 'User\OrderController@refillStatusChange')->name('user.changeRefillStatus');
         Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
 
     });
