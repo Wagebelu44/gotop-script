@@ -10,20 +10,6 @@ class PageController extends Controller
 {
     public function index()
     {
-        $layout = ThemePage::where('panel_id', 1)->where('name', 'layout.twig')->first();
-        $page = ThemePage::with('page')->where('panel_id', 1)->where('name', 'account.twig')->first();
-       
-        $loader1 = new \Twig\Loader\ArrayLoader([
-            'base.html' => str_replace('{{ content }}', '{% block content %}{% endblock %}', $layout->content),
-        ]);
-        $loader2 = new \Twig\Loader\ArrayLoader([
-            'index.html' => '{% extends "base.html" %}{% block content %}'.$page->content.'{% endblock %}',
-            'base.html'  => 'Will never be loaded',
-        ]);
-        
-        $loader = new \Twig\Loader\ChainLoader([$loader1, $loader2]);
-        $twig = new \Twig\Environment($loader);
-
         return view('web.home');
     }
 
