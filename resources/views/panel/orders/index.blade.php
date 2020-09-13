@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('content')
-    <div class="container-fluid all-mt-30">
+    <div class="container-fluid all-mt-30" id="order_module">
         <div class="row">
             <div class="col-12">
                 <div class="material-card card">
@@ -95,15 +95,7 @@
 
                             </div>
                             <div class="col-md-6 text-right">
-                                <span>Record per page</span>
-                                <form action="" id="show_per_page" method="get" class="d-inline">
-                                    <select name="page_size" id="page_size">
-                                        <option value="100">100</option>
-                                        <option value="200">200</option>
-                                        <option value="500">500</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </form>
+                                <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getUsers()"></data-pagination>
                             </div>
                         </div>
 
@@ -112,4 +104,21 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+<script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/order-vue.js')}}"></script>
+<script>
+    console.log('hello world');
+    // $('#userModal').on('hidden.bs.modal', function () {
+    //     userModule.edit_user_id = null;
+    //     userModule.formClear();
+    // });
+    // $('#passwordUpdateModal').on('hidden.bs.modal', function () {
+    //     userModule.edit_user_id = null;
+    // });
+    // $('#customRateAddModal').on('hidden.bs.modal', function () {
+    //     userModule.current_user_id = null;
+    // });
+</script>
 @endsection

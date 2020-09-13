@@ -8,7 +8,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="stylesheet" href="{{ asset('panel-assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/weather-icons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/bootstrap/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
     @yield('styles')
@@ -31,7 +31,7 @@
 
     <script src="{{ asset('panel-assets/libs/jquery.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/popper.min.js') }}"></script>
-    <script src="{{ asset('panel-assets/libs/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/bootstrap/bootstrap.min.js') }}"></script>
 
     <!-- apps -->
     <script src="{{ asset('panel-assets/js/app.min.js') }}"></script>

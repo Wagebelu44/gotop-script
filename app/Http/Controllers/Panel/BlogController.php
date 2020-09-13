@@ -26,15 +26,14 @@ class BlogController extends Controller
     {
         $data = null;
         $page = 'create';
-        $get_blog_category = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
-        return view('panel.blog.index', compact('data', 'page', 'get_blog_category'));
+        $categories = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
+        return view('panel.blog.index', compact('data', 'page', 'categories'));
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
             'image'         => 'required|image',
-            'category_id'   => 'required',
             'title'         => 'required',
             'blog_content'  => 'required',
             'type'          => 'required',
@@ -60,22 +59,20 @@ class BlogController extends Controller
         }
 
         Blog::create([
-            'panel_id'       => Auth::user()->panel_id,
-            'title'          => $request->title,
-            'slug'           => $this->createSlug(Str::slug(strtolower($request->title))),
-            'category_id'    => $request->category_id,
-            'content'        => $request->blog_content,
-            'image'          => $image,
-            'status'         => $request->status,
-            'type'           => $request->type,
-            'created_by'     => Auth::user()->id,
+            'panel_id'          => Auth::user()->panel_id,
+            'title'             => $request->title,
+            'slug'              => $this->createSlug(Str::slug(strtolower($request->title))),
+            'category_id'       => $request->category_id,
+            'content'           => $request->blog_content,
+            'meta_title'        => $request->meta_title,
+            'meta_keyword'      => $request->meta_keyword,
+            'meta_description'  => $request->meta_description,
+            'image'             => $image,
+            'status'            => $request->status,
+            'type'              => $request->type,
+            'created_by'        => Auth::user()->id,
         ]);
         return redirect()->back()->with('success', 'blog Post save successfully !!');
-    }
-
-    public function show($id)
-    {
-        //
     }
 
     public function edit($id)
@@ -84,16 +81,15 @@ class BlogController extends Controller
         if (empty($data)) {
             return redirect()->route(' admin.blog.index');
         }
-        $get_blog_category = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
+        $categories = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
         $page = 'edit';
-        return view('panel.blog.index', compact('data', 'page', 'get_blog_category'));
+        return view('panel.blog.index', compact('data', 'page', 'categories'));
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
             'image'        => 'sometimes|image',
-            'category_id'  => 'required',
             'title'        => 'required',
             'blog_content' => 'required',
             'type'         => 'required',
@@ -119,15 +115,18 @@ class BlogController extends Controller
         }
 
         Blog::find($id)->update([
-            'panel_id'      => Auth::user()->panel_id,
-            'title'         => $request->title,
-            'slug'          => $this->createSlug(Str::slug(strtolower($request->title))),
-            'category_id'   => $request->category_id,
-            'content'       => $request->blog_content,
-            'image'         => $image,
-            'type'          => $request->type,
-            'status'        => $request->status,
-            'created_by'    => Auth::user()->id,
+            'panel_id'          => Auth::user()->panel_id,
+            'title'             => $request->title,
+            'slug'              => $this->createSlug(Str::slug(strtolower($request->title))),
+            'category_id'       => $request->category_id,
+            'meta_title'        => $request->meta_title,
+            'meta_keyword'      => $request->meta_keyword,
+            'meta_description'  => $request->meta_description,
+            'content'           => $request->blog_content,
+            'image'             => $image,
+            'type'              => $request->type,
+            'status'            => $request->status,
+            'created_by'        => Auth::user()->id,
         ]);
         return redirect()->back()->with('success', 'blog Post update successfully !!');
     }

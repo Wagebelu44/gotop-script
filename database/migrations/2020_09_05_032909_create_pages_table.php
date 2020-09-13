@@ -16,15 +16,16 @@ class CreatePagesTable extends Migration
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('panel_id');
-            $table->string('page_name');
-            $table->longText('content');
+            $table->unsignedBigInteger('global_page_id')->nullable();
+            $table->string('name');
             $table->string('url');
-            $table->enum('public', ['yes', 'no'])->default('no');
-            $table->string('page_title')->nullable();
-            $table->text('meta_keyword')->nullable();
+            $table->longText('content')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->string('meta_keyword')->nullable();
             $table->text('meta_description')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->enum('non_editable', ['yes', 'no'])->default('yes');
+            $table->enum('is_public', ['Yes', 'No'])->default('Yes');
+            $table->enum('is_editable', ['Yes', 'No'])->default('Yes');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

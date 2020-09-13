@@ -23,7 +23,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
         /* User order module */
         Route::get('/order/{order_id?}', 'User\OrderController@index')->name('order');
         Route::get('/get-category-services', 'User\OrderController@getCateServices');
+        Route::get('/orders', 'User\OrderController@orderLists');
         Route::post('/make_new_order', 'User\OrderController@store');
+        Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
 
     });
 
@@ -62,6 +64,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('users', 'Panel\UserController');
 
             #Orders...
+            Route::get('get-orders', 'Panel\OrderController@getOrderLists');
             Route::resource('orders', 'Panel\OrderController');
 
             #Drip-feed...
@@ -103,10 +106,14 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
             #Rppearance...
             Route::resource('appearance', 'Panel\AppearanceController');
+            Route::post('appearance-status', 'Panel\AppearanceController@updateStatus')->name('appearance.updateStatus');
 
             #Rppearance menu...
             Route::resource('menu', 'Panel\MenuController');
             Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
+            Route::resource('theme', 'Panel\ThemeController')->only('index', 'edit', 'update');
+            Route::post('theme-active/{id}', 'Panel\ThemeController@active')->name('theme.active');
+            Route::post('theme-page-reset/{id}', 'Panel\ThemeController@reset')->name('theme.reset');
 
             #blog...
             Route::resource('blog', 'Panel\BlogController');

@@ -30,11 +30,11 @@
                                     @foreach($data as $key => $info)
                                         <tr class="@if($info->non_editable == 'yes') disable-keystroke @endif">
                                             <td class="p-l">{{ $key+1 }}</td>
-                                            <td class="p-l">{{ $info->page_name }}</td>
+                                            <td class="p-l">{{ $info->name }}</td>
                                             <td>
                                                 <div class="setting-switch setting-switch-table">
                                                     <label class="switch">
-                                                        <input type="checkbox" class="toggle-page-visibility" name="page_status" id="page_status" value="{{ $info->status }}"  {{ $info->status == 'active' ? 'Checked' : '' }}>
+                                                        <input type="checkbox" class="toggle-page-visibility" onclick="isActiveInactive({{ $info->id }})" name="status" id="status{{$info->id}}" value="{{ $info->status }}"  {{ $info->status == 'Active' ? 'checked' : '' }}>
                                                         <span class="slider round"></span>
                                                     </label>
                                                 </div>
@@ -66,9 +66,9 @@
                                 <div class="relative">
 
                                     <div class="form-group">
-                                        <label class="control-label" for="page_name">Page name</label>
-                                        <input type="text" id="page_name" class="form-control" name="page_name" value="{{ old('page_name', isset($data) ? $data->page_name : '') }}">
-                                        @error('page_name')
+                                        <label class="control-label" for="name">Page name</label>
+                                        <input type="text" id="name" class="form-control" name="name" value="{{ old('name', isset($data) ? $data->name : '') }}">
+                                        @error('name')
                                         <span role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -76,11 +76,11 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="control-label" for="page_Content">Content</label>
-                                        <textarea name="page_content" id="page_content" class="form-control summernote">
-                                            {{ old('page_content', isset($data) ? $data->content : '') }}
+                                        <label class="control-label" for="content">Content</label>
+                                        <textarea name="page_content" id="content" class="form-control summernote">
+                                            {{ old('content', isset($data) ? $data->content : '') }}
                                         </textarea>
-                                        @error('page_Content')
+                                        @error('content')
                                         <span role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -93,9 +93,9 @@
                                 <div class="form-group">
                                     <label class="control-label" for="createpageform-url">URL</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon" for="page_url">{{ URL::to('/') }}</span>
-                                        <input type="text" id="page_url" class="form-control" name="page_url" value="{{ old('page_url', isset($data) ? $data->url : '') }}">
-                                        @error('page_url')
+                                        <span class="input-group-addon" for="url">{{ URL::to('/') }}</span>
+                                        <input type="text" id="url" class="form-control" name="url" value="{{ old('url', isset($data) ? $data->url : '') }}">
+                                        @error('url')
                                         <span role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -128,18 +128,18 @@
                                     <div class="appearance-seo__block-collapse collapse in" id="collapse-languages-seo" aria-expanded="true">
 
                                         <div class="form-group" style="margin-top: 20px;">
-                                            <label class="control-label" for="seo_title">Page title</label>
-                                            <input type="text" id="seo_title" class="form-control" name="seo_title" value="{{ old('seo_title', isset($data) ? $data->page_title : '') }}">
+                                            <label class="control-label" for=meta_title">Page title</label>
+                                            <input type="text" id="meta_title" class="form-control" name="meta_title" value="{{ old('meta_title', isset($data) ? $data->meta_title : '') }}">
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label" for="seo_keywords">Meta-keywords</label>
-                                            <input id="seo_keywords" class="form-control" name="seo_keywords" value="{{ old('seo_keywords', isset($data) ? $data->meta_keyword : '') }}">
+                                            <label class="control-label" for="meta_keywords">Meta-keywords</label>
+                                            <input id="meta_keywords" class="form-control" name="meta_keywords" value="{{ old('meta_keywords', isset($data) ? $data->meta_keyword : '') }}">
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="control-label" for="seo_description">Meta-description</label>
-                                            <textarea id="seo_description" class="form-control" name="seo_description" rows="5">{{ old('seo_description', isset($data) ? $data->meta_description : '') }}</textarea>
+                                            <label class="control-label" for="meta_description">Meta-description</label>
+                                            <textarea id="meta_description" class="form-control" name="meta_description" rows="5">{{ old('meta_description', isset($data) ? $data->meta_description : '') }}</textarea>
                                         </div>
 
                                     </div>
@@ -155,4 +155,32 @@
             @endif
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        function isActiveInactive(pageId) {
+            var status_value = '';
+            let status = $('#status'+pageId).val();
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "{{ route($resource.'updateStatus') }}",
+                data: {'status': status, 'id': pageId, "_token": "{{ csrf_token() }}"},
+                success: function (response) {
+                    if (response.status === 'success'){
+                        if (status === 'Active') {
+                            status_value = 'Deactivated';
+                        } else if (status === 'Deactivated') {
+                            status_value = 'Active';
+                        }
+                        $('#status'+pageId).val(status_value);
+                        toastr["success"](response.message);
+                    }else{
+                        toastr["error"]("Something went wrong !! Please try again !!");
+                    }
+                }
+            });
+        }
+    </script>
 @endsection

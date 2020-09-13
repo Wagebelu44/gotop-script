@@ -30,6 +30,8 @@ class User extends Authenticatable
         , 'status'
         , 'status'
     ];
+
+    protected $appends = ['balance'];
     
     protected $hidden = [
         'password', 'remember_token',
@@ -39,7 +41,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];  
 
-
+    public function balance()
+    {
+        return 5000;
+    }
+    public function getBalanceAttribute()
+    {
+        return 50000;
+    }
     public function servicesList()
     {
         return $this->belongsToMany(Service::class, 'service_price_user', 'user_id', 'service_id')

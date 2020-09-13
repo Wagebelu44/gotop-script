@@ -21,7 +21,8 @@
     <script>
          /* global instances */
             window.CSRF_TOKEN = '{{csrf_token()}}';
-            window.base_url = window.location.origin;
+           
+            window.base_url = "{{env('APP_URL')}}";
         /* end of global instances */
     </script>
 </head>

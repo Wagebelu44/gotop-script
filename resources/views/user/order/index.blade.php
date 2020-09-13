@@ -37,15 +37,15 @@
                         <div  id="new_order">
                             @include('user.order.single-order-form')
                         </div>
-                        <div  id="mass_order" style="display: none">
-                            @include('user.order.mass-order')
-                        </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg p-0 news_layout-mobile">
-            {{-- @include('frontend/orders/common/news_layout') --}}
+        <div class="col-lg-6">
+            <div>
+                @include('user.order.mass-order')
+            </div>
         </div>
     </div>
 </div>

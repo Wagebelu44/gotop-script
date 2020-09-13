@@ -63,7 +63,6 @@ class GeneralController extends Controller
         SettingGeneral::updateOrCreate(
             [
                 'panel_id'   => Auth::user()->panel_id,
-                'updated_by' => Auth::user()->id,
             ],
             [
                 'logo'               => $logo,

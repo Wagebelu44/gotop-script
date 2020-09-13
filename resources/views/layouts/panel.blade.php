@@ -5,17 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Laravel') }}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('panel-assets/images/favicon.png') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/fontawesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/weather-icons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/toastr.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.css') }}">
-    <!-- select2 css -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('panel-assets/select2/dist/css/select2.min.css') }}">
     @yield('styles')
 </head>
 
@@ -145,8 +145,8 @@
 
     <script src="{{ asset('panel-assets/libs/jquery.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/popper.min.js') }}"></script>
-    <script src="{{ asset('panel-assets/libs/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/bootstrap/bootstrap.min.js') }}"></script>
+    {{-- <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script> --}}
 
     <!-- apps -->
     <script src="{{ asset('panel-assets/js/app.min.js') }}"></script>
@@ -155,14 +155,13 @@
 
     <script src="{{ asset('panel-assets/libs/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('panel-assets/js/sidebarmenu.js') }}"></script>
-    <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
 
-    <script src="{{ asset('panel-assets/libs/toastr.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="{{ asset('panel-assets/select2/dist/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('panel-assets/select2/dist/js/select2.min.js') }}"></script>
-    <script src="{{ asset('panel-assets/select2/dist/js/select2.init.js') }}"></script>
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');
@@ -171,27 +170,10 @@
         @endif
         /* global instances */
         window.CSRF_TOKEN = '{{csrf_token()}}';
-        window.base_url = window.location.origin;
+        window.base_url = "{{env('APP_URL')}}";
         /* end of global instances */
 
-        /* global instances */
-        window.CSRF_TOKEN = '{{ csrf_token() }}';
-        window.base_url = window.location.origin;
-        /* end of global instances */
-
-        $('.summernote').summernote({
-            height: 200, // set editor height
-            minHeight: null, // set minimum height of editor
-            maxHeight: null, // set maximum height of editor
-            focus: false, // set focus to editable area after initializing summernote
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']]
-            ]
-        });
+   
     </script>
     @yield('scripts')
 </body>
