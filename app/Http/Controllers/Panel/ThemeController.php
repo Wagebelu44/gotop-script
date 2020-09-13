@@ -18,13 +18,18 @@ class ThemeController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $theme = Theme::with('pages.page')->where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+        $theme = Theme::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
         if (!empty($theme)) {
+            $pages = ThemePage::select('group')->with(['groupPages' => function($q) use($id) {
+                $q->where('panel_id', Auth::user()->panel_id);
+                $q->where('theme_id', $id);
+            }])->where('panel_id', Auth::user()->panel_id)->where('theme_id', $id)->groupBy('group')->orderBy('group', 'DESC')->get();
+
             $page = null;
             if ($request->page) {
-                $page = ThemePage::where('panel_id', Auth::user()->panel_id)->where('id', $request->page)->first();
+                $page = ThemePage::where('panel_id', Auth::user()->panel_id)->where('name', $request->page)->first();
             }
-            return view('panel.theme.view', compact('theme', 'page'));
+            return view('panel.theme.view', compact('theme', 'pages', 'page'));
         }
         return redirect()->route('admin.theme.index');
     }

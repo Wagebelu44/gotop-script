@@ -14,8 +14,13 @@ class ThemePage extends Model
     protected $table = 'theme_pages';
 
     protected $fillable = [
-        'panel_id', 'page_id', 'theme_id', 'content',
+        'panel_id', 'page_id', 'theme_id', 'group', 'name', 'content', 'sort',
     ];
+
+    function groupPages()
+    {
+        return $this->hasMany(ThemePage::class, 'group', 'group');
+    }
 
     function page()
     {
