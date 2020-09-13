@@ -6,7 +6,8 @@ const orderModule = new Vue({
         users: [],
         services: [],
         order_mode_count: null,
-        service_checkbox: [],
+        order_checkbox: [],
+        checkAllOrders: false,
         filter: {
             status: "", 
             search: "",
@@ -31,7 +32,13 @@ const orderModule = new Vue({
        
     },
     watch: {
-        
+        checkAllOrders(oldval, newval)
+        {
+            if (oldval) {
+                this.order_checkbox = this.orders.map(it=>it.id);
+            }
+            else this.order_checkbox = [];
+        }  
     },
     mounted () {
         this.getOrders();
@@ -75,10 +82,6 @@ const orderModule = new Vue({
                     this.order_mode_count = res.order_mode_count;
                     this.pagination = res.orders;
                 });
-        },
-        bulkSelect()
-        {
-
         },
         actionConditionalA(order)
         {
@@ -237,7 +240,52 @@ const orderModule = new Vue({
         no()
         {
             $("#mi-modal").modal('hide');
-        }
+        },
+        modalVIsible(type, obj){
+
+            $("#order_service_type_detail").modal('show');
+            let d = '';
+            if (type  === 'text_area_1') {
+                d = obj.text_area_1;
+            }
+            else if (type  === 'additional_comment_owner_username_visible') {
+                d = obj.additional_inputs;
+            }
+            else if (type  === 'text_area_2') {
+                d = obj.text_area_2;
+            }
+            $('#order-modal-detail').html(d);
+        },
+        bulkStatusChange(status) {
+            $('#loader-page').show();
+            if (this.order_checkbox.length !== 0) {
+                let forD = new FormData();
+                forD.append('service_ids', this.order_checkbox);
+                forD.append('status', status);
+                fetch(base_url+'/admin/orders/update/status', {
+                    headers: {
+                        "Accept": "application/json",
+                        "X-CSRF-TOKEN": CSRF_TOKEN,
+                    },
+                    credentials: "same-origin",
+                    method: "POST",
+                    body: forD,
+                }).then(res => res.json())
+                    .then(res => {
+                        if (res.status === 200) {
+                            setTimeout(() => {
+                                $('#loader-page').hide();
+                                toastr["success"](res.message);
+                                window.location.reload();
+                            }, 2000);
+                        }
+
+                        console.log(res);
+                    })
+            } else {
+                alert('No check box is selected');
+            }
+        },
 
         
        

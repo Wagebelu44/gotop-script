@@ -1,8 +1,8 @@
 <div class="tab-content table-responsive-xl" id="orders_tble">
     <div class="d-flex top-caret-bar">
-        <div class="d-flex service-checkbox-action bg-danger" v-if="service_checkbox.length>0">
+        <div class="d-flex service-checkbox-action bg-danger" v-if="order_checkbox.length>0">
             <div>
-                <span style="color:#fff; padding: 0px 5px">Order Selected</span>
+                <span style="color:#fff; padding: 0px 5px">Order Selected <span> @{{order_checkbox.length}} </span> </span>
             </div>
             <div class="dropdown show">
                 <a class="btn btn-sm dropdown-toggle" style="background: #fff; border: 1px solid #d4d4d4" href="#" role="button" id="dropdownMenuLink"
@@ -11,13 +11,13 @@
                     Actions
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                     <li><a class="dropdown-item">Resend Orders</a></li>
-                    <li><a class="dropdown-item">Cancal and refund</a></li>
-                    <li><a class="dropdown-item">Pending</a></li>
-                    <li><a class="dropdown-item">In Progress</a></li>
-                    <li><a class="dropdown-item">Processing</a></li>
-                    <li><a class="dropdown-item">Completed</a></li>
-
+                    <li><a class="dropdown-item" @click="bulkStatusChange('failed_resend')">Resend Orders</a></li>
+                    <li><a class="dropdown-item" @click="bulkStatusChange('cancel_refund')">Cancal and refund</a></li>
+                    <li><a class="dropdown-item" @click="bulkStatusChange('pending')">Pending</a></li>
+                    <li><a class="dropdown-item" @click="bulkStatusChange('inprogress')">In Progress</a></li>
+                    <li><a class="dropdown-item" @click="bulkStatusChange('processing')">Processing</a></li>
+                    <li><a class="dropdown-item" @click="bulkStatusChange('completed')">Completed</a></li>
+                   
                 </ul>
             </div>
         </div>
@@ -25,7 +25,7 @@
     <table class="table">
         <thead>
         <tr>
-                <th> <input type="checkbox" @click="bulkSelect" /></th>
+                <th> <input type="checkbox" v-model="checkAllOrders" /></th>
                 <th scope="col">ID</th>
                 <th>
                     <div class="dropdown __dropdown_buttons">
@@ -102,7 +102,7 @@
         <tbody>
             <tr v-for="(o,i) in orders">
                 <td>
-                    <input type="checkbox" name="service_checkbox" class="service_checkbox" v-model="service_checkbox" value="" />
+                    <input type="checkbox" name="order_checkbox" class="order_checkbox" v-model="order_checkbox" :value="o.id" />
                 </td>
                 <td>@{{ o.id }}</td>
                 <td>@{{ o.username }}</td>

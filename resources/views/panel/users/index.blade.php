@@ -30,7 +30,7 @@
                                     <tr v-if="selectedUsers.length>0">
                                         <th><input type="checkbox"  v-model="checkAlluser"></th>
                                         <th colspan="11">
-                                            <span id="user-no"></span> users selected 
+                                            <span id="user-no"></span> users selected <span> @{{selectedUsers.length}} </span>
                                             <div class="btn-group">
                                                 <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     Action

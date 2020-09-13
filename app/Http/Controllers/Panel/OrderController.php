@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\Service;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\ProviderService;
+use App\Models\SettingProvider;
 use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
@@ -88,6 +90,184 @@ class OrderController extends Controller
             return response()->json(['status'=>500, 'error'=>$e->getMessage()]);
         }
     }
+
+    public function bulkStatusChange(Request $r)
+    {
+        if ($r->status == 'cancel_refund') {
+            $orders = Order::whereIn('id',explode(',',$r->service_ids))->get();
+            foreach ($orders as $order) {
+                $user = User::find($order->user_id);
+                $user->balance = $user->balance + $order->charges;
+                $user->save();
+                Transaction::create([
+                    'transaction_type' => 'deposit',
+                    'amount' => $order->charges,
+                    'transaction_flag' => 'refund',
+                    'user_id' =>  $order->user_id,
+                    'admin_id' => auth()->user()->id,
+                    'status' => 'done',
+                    'memo' => null,
+                    'fraud_risk' => null,
+                    'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
+                    'payment_gateway_response' => null,
+                    'reseller_payment_methods_setting_id' =>  null,
+                    'reseller_id' => 1,
+                    ]);
+                    $order->status = 'cancelled';
+                    $order->save();
+            }
+        }
+        elseif($r->status == 'failed_resend')
+        {
+            $orders = Order::whereIn('id',explode(',',$r->service_ids))->get();
+            foreach ($orders as $order) 
+            {
+                $this->resendMultipleOrders($order->order_id);
+            }
+        }
+        else
+        {
+            Order::whereIn('id',explode(',',$r->service_ids))->update([
+                'status' => $r->status
+            ]);
+        }
+        return response()->json(['status'=>200, 'data'=> 'null', 'message'=>'successfully status changed']);
+    }
+
+    public function resendMultipleOrders($order_id)
+    {
+        $make_order = Order::where('order_id', $order_id)->where('refill_status', 0)->first();
+        if ($make_order) 
+        {
+            $ps = ProviderService::where('service_id', $make_order->service_id)->first();
+            $provider_info = null;
+            if ($ps != null) {
+                $provider_info = SettingProvider::find($ps->provider_id);
+            }
+            else
+            {
+                $make_order->status =  "cancelled";
+                $make_order->auto_order_response  =  json_encode(['error'=> 'service ID has some issue, not found, ID'.$make_order->service_id]);
+                $make_order->save();
+                return true;
+            }
+    
+            if ($provider_info == null) {
+                $make_order->status =  "cancelled";
+                $make_order->auto_order_response  =  json_encode(['error'=> 'provider not found']);
+                $make_order->save();
+                return true;
+            }
+    
+            $make_order->original_charges = ($ps->rate/1000) * $make_order->quantity;
+            $make_order->original_unit_price = $ps->rate;
+            $dataArray = array();
+            if ($ps->type == 'Default') {
+                    $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    );
+            }
+            elseif($ps->type == 'Package')
+            {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    );
+            }
+            elseif($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package')
+            {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'comments' => $make_order->text_area_1,
+                    );
+            }
+            elseif($ps->type ==  'Mentions Custom List')
+            {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'usernames' => $make_order->text_area_1,
+                    );
+            }
+            elseif($ps->type == 'Mentions Hashtag')
+            {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    'hashtag' => $make_order->additional_inputs,
+                    );
+            }
+            elseif($ps->type == 'Comment Likes')
+            {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    'username' => $make_order->additional_inputs,
+                    );
+            }
+            elseif($ps->type == 'Poll')
+            {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    'answer_number' => $make_order->additional_inputs,
+                    );
+            }
+            elseif($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers')
+            {
+                $make_order->status =  "cancelled";
+                $make_order->auto_order_response  =  json_encode(['error'=> 'subscription is not implemented yet']);
+                $make_order->save();
+                return true;
+            }
+    
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $provider_info->api_url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataArray));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $server_output = curl_exec($ch);
+            curl_close ($ch);
+            $result  =  json_decode($server_output, true);
+            $make_order->auto_order_response  =  json_encode($result);
+            if (isset($result['order'])) 
+            {
+                $make_order->status =  "pending";
+                $make_order->provider_order_id = $result['order'];
+            }
+            else
+            {
+                $make_order->status =  "failed";
+            }
+
+            if( $make_order->save() )
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
     public function getOrderLists(Request $request)
     {
         $date_time = new \DateTime();
