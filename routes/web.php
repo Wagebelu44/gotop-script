@@ -49,6 +49,22 @@ Route::group(['middleware' => 'checkPanel'], function () {
             #Drip-feed...
             Route::resource('drip-feed', 'Panel\DripFeedController');
 
+            #Services...
+            Route::get('service_provider', 'Panel\ServiceController@getProviders');
+            Route::post('provider/get/services', 'Panel\ServiceController@getProviderServices');
+            Route::post('service_bulk_category', 'Panel\ServiceController@bulkCategory');
+            Route::post('service_bulk_enable', 'Panel\ServiceController@bulkEnable');
+            Route::post('service_bulk_delete', 'Panel\ServiceController@bulkDelete');
+            Route::post('service_bulk_disable', 'Panel\ServiceController@bulkDisable');
+            Route::post('category-status-change/{id}', 'Panel\ServiceController@enablingCategory');
+            Route::get('enableService/{id}', 'Panel\ServiceController@enableService');
+            Route::DELETE('deleteService/{id}', 'Panel\ServiceController@deleteService');
+            Route::get('duplicate/service/{service_id}', 'Panel\ServiceController@duplicateService');
+            Route::get('show-category/{id}', 'Panel\ServiceController@showCategory');
+            Route::post('category-store', 'Panel\ServiceController@categoryStore');
+            Route::get('get-category-services', 'Panel\ServiceController@getCateServices');
+            Route::post('updateService/{id}', 'Panel\ServiceController@updateService');
+            Route::resource('services', 'Panel\ServiceController', ["as"=>"admin"]);
             #Tasks...
             Route::resource('tasks', 'Panel\TaskController');
 
