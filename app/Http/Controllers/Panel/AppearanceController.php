@@ -54,6 +54,8 @@ class AppearanceController extends Controller
                         'panel_id' => Auth::user()->panel_id,
                         'page_id'  => $page->id,
                         'theme_id' => $theme->id,
+                        'name' => strtolower($request->name),
+                        'sort' => 2,
                         'content'  => defaultThemePageContent()
                     ];
                 }
