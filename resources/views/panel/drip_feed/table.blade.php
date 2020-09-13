@@ -22,25 +22,21 @@
         </tr>
         </thead>
         <tbody>
-            <tr>
+            <tr v-for="(dp, i) in driporders">
                 <td> <input type="checkbox" /> </td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td> @{{ dp.id }} </td>
+                <td> @{{ dp.user_name }} </td>
+                <td> @{{ dp.total_charges }} </td>
                 <td>
-                    <a href="#" target="_blank" class="link"><i class="fa fa-link"></i></a>
+                    <a :href="dp.orders_link" target="_blank" class="link"><i class="fa fa-link"></i> @{{ dp.orders_link }} </a>
                 </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-
-                <td></td>
-                <td></td>
-
-                <td class="status-value">
-
-                </td>
+                <td> @{{ dp.service_quantity }} </td>
+                <td> @{{ dp.service_name }} </td>
+                <td> @{{ dp.runOrders }} / @{{ dp.runs }} </td>
+                <td> @{{ dp.interval }} </td>
+                <td>@{{ dp.total_quantity }} </td>
+                <td>@{{ dp.created_at }}</td>
+                <td class="status-value">@{{ dp.status }}</td>
                 <td>
                     <div class="dropdown show goTopDropdown">
                         <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -49,11 +45,10 @@
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <li class="dropdown-submenu"><a class="dropdown-item type-dropdown-item dropdown-toggle" href="#">Change status</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item type-dropdown-item">Canceled</a></li>
-                                    <li><a class="dropdown-item type-dropdown-item">Completed</a></li>
+                                    <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('completed', dp.id)">Completed</a></li>
                                 </ul>
                             </li>
-                            <li><a class="dropdown-item type-dropdown-item disabled">Cancel and refund</a></li>
+                            <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('canceled', dp.id)">Cancel and refund</a></li>
                         </ul>
                     </div>
                 </td>

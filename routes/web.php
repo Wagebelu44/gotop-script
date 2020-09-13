@@ -70,6 +70,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('orders', 'Panel\OrderController');
 
             #Drip-feed...
+            Route::get('drip-feed-lists', 'Panel\DripFeedController@getDripFeedLists');
+            Route::post('drip-feed/update/{id}', 'Panel\DripFeedController@updateDripOrder');
             Route::resource('drip-feed', 'Panel\DripFeedController');
 
             #Services...
