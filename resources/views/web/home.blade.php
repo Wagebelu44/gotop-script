@@ -6,6 +6,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Go2Fans</title>
+    @if(isset($settingGeneral->favicon))
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('./storage/images/setting/'.$settingGeneral->favicon) }}">
+    @endif
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
     <link href=" {{ asset('assets/css/style.css') }}" rel="stylesheet">
@@ -13,7 +16,13 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <a class="navbar-brand" href="#">Company Name</a>
+    <a class="navbar-brand" href="{{ url('/') }}">
+        @if(isset($settingGeneral->logo))
+            <img style="width: 100px;" src="{{ asset('./storage/images/setting/'.$settingGeneral->logo) }}">
+        @else
+            Your Logo
+        @endif
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>

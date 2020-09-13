@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\Menu;
+use App\Models\SettingGeneral;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\ThemePage;
@@ -12,7 +13,8 @@ class PageController extends Controller
     public function index()
     {
         $menus = Menu::where('panel_id', 1)->orderBy('sort', 'asc')->get();
-        return view('web.home', compact('menus'));
+        $settingGeneral = SettingGeneral::where('panel_id', 1)->first();
+        return view('web.home', compact('menus', 'settingGeneral'));
     }
 
     public function page($url)
