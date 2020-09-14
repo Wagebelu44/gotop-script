@@ -92,30 +92,49 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         // Validate form data
-        $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
-            'reseller_payment_methods_setting_id' => 'required|integer',
-            'amount' => 'required|numeric',
-            'memo' => 'required|string|max:255',
-        ]);
+        if (isset($request->edit_mode) && $request->edit_mode == true) {
+            $request->validate([
+                'user_id' => 'required|integer|exists:users,id',
+                'reseller_payment_methods_setting_id' => 'required|integer',
+                'amount' => 'required|numeric',
+            ]);
+        }
+        else
+        {
 
+            $request->validate([
+                'user_id' => 'required|integer|exists:users,id',
+                'reseller_payment_methods_setting_id' => 'required|integer',
+                'amount' => 'required|numeric',
+                'memo' => 'required|string|max:255',
+            ]);
+        }
         try {
-            $data = $request->except('_token');
+          
             $data['panel_id'] =  auth()->user()->panel_id;
             $data['mode'] = 'manual';
-            $log =  Transaction::create([
+            $payment_data = [
                 'transaction_type' => 'deposit',
                 'amount' => $request->amount,
                 'transaction_flag' => 'admin_panel',
                 'user_id' => $request->user_id,
                 'admin_id' => auth()->user()->id,
                 'status' => 'done',
-                'memo' => $request->memo,
+                'memo' => $request->memo?? '',
                 'fraud_risk' => null,
                 'payment_gateway_response' => null,
                 'reseller_payment_methods_setting_id' => $request->reseller_payment_methods_setting_id,
                 'panel_id' => auth()->user()->panel_id,
-            ]);
+            ];
+            if (isset($request->edit_mode) && $request->edit_mode == true)
+            {
+                $log =  Transaction::find($request->edit_id);
+                $log->update($payment_data);
+            }
+            else
+            {
+                $log =  Transaction::create($payment_data);
+            }
             if ($log) {
                 \DB::statement('UPDATE transactions t
                         CROSS JOIN (SELECT MAX(sequence_number) + 1 as new_sequence_number
@@ -123,38 +142,41 @@ class PaymentController extends Controller
                         SET t.sequence_number = s.new_sequence_number
                         WHERE t.id='.$log->id);
             }
-
-            $bonus = SettingBonuse::where('global_payment_method_id', $request->reseller_payment_methods_setting_id)->get()->last();
-            if ($bonus !=null) {
-                if ( floatval($request->input('amount')) >= floatval($bonus->deposit_from)) {
-                    $bonus = ($bonus->bonus_amount / 100) * floatval($request->amount);
-                    $tran = Transaction::create([
-                        'transaction_type' => 'deposit',
-                        'transaction_detail' => json_encode([
-                            'payment_secrete'=>  '',
-                            'currency_code'=> 'USD',
-                            'actual_amount'=> floatval($request->amount),
-                            'actual_payment_id'=>$log->id]),
-                        'amount' =>  $bonus,
-                        'transaction_flag' => 'bonus_deposit',
-                        'user_id' =>  $request->user_id,
-                        'admin_id' => auth()->user()->panel_id,
-                        'status' => 'done',
-                        'memo' => null,
-                        'fraud_risk' => null,
-                        'payment_gateway_response' => null,
-                        'reseller_payment_methods_setting_id' => $request->reseller_payment_methods_setting_id,
-                        'reseller_id' => auth()->user()->panel_id,
-                    ]);
-                    if ($tran) {
-                        \DB::statement('UPDATE transactions t
-                        CROSS JOIN (SELECT MAX(sequence_number) + 1 as new_sequence_number
-                        FROM transactions) s
-                        SET t.sequence_number = s.new_sequence_number
-                        WHERE t.id='.$tran->id);
+            if (!isset($request->edit_mode))
+            {
+                $bonus = SettingBonuse::where('global_payment_method_id', $request->reseller_payment_methods_setting_id)->get()->last();
+                if ($bonus !=null) {
+                    if ( floatval($request->input('amount')) >= floatval($bonus->deposit_from)) {
+                        $bonus = ($bonus->bonus_amount / 100) * floatval($request->amount);
+                        $tran = Transaction::create([
+                            'transaction_type' => 'deposit',
+                            'transaction_detail' => json_encode([
+                                'payment_secrete'=>  '',
+                                'currency_code'=> 'USD',
+                                'actual_amount'=> floatval($request->amount),
+                                'actual_payment_id'=>$log->id]),
+                            'amount' =>  $bonus,
+                            'transaction_flag' => 'bonus_deposit',
+                            'user_id' =>  $request->user_id,
+                            'admin_id' => auth()->user()->panel_id,
+                            'status' => 'done',
+                            'memo' => null,
+                            'fraud_risk' => null,
+                            'payment_gateway_response' => null,
+                            'reseller_payment_methods_setting_id' => $request->reseller_payment_methods_setting_id,
+                            'reseller_id' => auth()->user()->panel_id,
+                        ]);
+                        if ($tran) {
+                            \DB::statement('UPDATE transactions t
+                            CROSS JOIN (SELECT MAX(sequence_number) + 1 as new_sequence_number
+                            FROM transactions) s
+                            SET t.sequence_number = s.new_sequence_number
+                            WHERE t.id='.$tran->id);
+                        }
                     }
                 }
             }
+            
 
             $user = User::find($request->user_id);
             $user->balance += $request->amount;
@@ -178,7 +200,7 @@ class PaymentController extends Controller
 
     public function show($id)
     {
-        //
+        return Transaction::find($id);
     }
 
     public function edit($id)

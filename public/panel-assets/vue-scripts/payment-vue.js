@@ -1,4 +1,4 @@
-const orderModule = new Vue({
+const paymentModule = new Vue({
     el: '#payment_module',
     data: {
         pagination: {current_page: 1},
@@ -18,6 +18,14 @@ const orderModule = new Vue({
         },
         payment_edit_id: null,
         payment_edit: false,
+
+        payment_obj: {
+            user_id: null,
+            amount: null,
+            reseller_payment_methods_setting_id: null,
+            memo: null,
+        },
+        api_payment_obj: null,
 
     },
     created () {
@@ -66,7 +74,6 @@ const orderModule = new Vue({
             fetch(base_url+'/admin/payments-lists'+ page_id)
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res);
                     this.payments = res.payments.data;
                     this.global_payments = res.globalMethods;
                     this.users = res.users;
@@ -110,8 +117,8 @@ const orderModule = new Vue({
                         if (isEdit) 
                         {
                             var row = res.data;
-                            this.updateServiceLists(row);
-                            var status = (row.status == 'active')?'Enabled':'Disabled';
+                            this.updatePaymentLists(row);
+                            //var status = (row.status == 'active')?'Enabled':'Disabled';
                         } 
                         else 
                         {
@@ -150,7 +157,35 @@ const orderModule = new Vue({
         addToPaymentList(payment)
         {
             this.payments.unshift(payment);
+        },
+        async getPayment(payment_id)
+        {
+          return await fetch(base_url+'/admin/payments/'+payment_id)
+            .then(res=>res.json())
+            .then(res=>{
+                return this.api_payment_obj = res;
+            });
+        },
+        editPayment(payment_id)
+        {
+            this.getPayment(payment_id).then(re=>{
+                this.payment_edit = true;
+                this.payment_edit_id = payment_id;
+                this.payment_obj = {...re};
+                $('#paymentAddModal').modal('show');
+            });
+         
+        },
+        updatePaymentLists(payment)
+        {
+            this.payments = this.payments.map(item=>{
+                if (payment.id === item.id) {
+                    return payment;
+                }
+                return item;
+            });
         }
+
        
     }
 });
