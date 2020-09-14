@@ -25,6 +25,7 @@ class ReportController extends Controller
             for ($j = 1; $j < 13; $j++) {
                 $year = $request->query('year') ?? date('Y');
                 $query = Transaction::where(\DB::raw('Date(created_at)'), $year . '-' . $j . '-' . $i)
+                    ->where('panel_id',  auth()->user()->panel_id)
                     ->where('status', 'done')
                     ->where(function($q){
                         $q->where('transaction_flag', 'admin_panel');
@@ -53,6 +54,7 @@ class ReportController extends Controller
             for ($j = 1; $j < 13; $j++) {
                 $year = $request->query('year') ?? date('Y');
                 $query = Order::whereDate('created_at', $year . '-' . $j . '-' . $i)
+                    ->where('panel_id',  auth()->user()->panel_id)
                     ->where(function ($q) use ($request) {
                         if ($request->query('user_ids') && !in_array('all', $request->query('user_ids'))) {
                             $q->whereIn('user_id', $request->query('user_ids'));
@@ -93,6 +95,7 @@ class ReportController extends Controller
             for ($j = 1; $j < 13; $j++) {
                 $year = $request->query('year') ?? date('Y');
                 $query = Ticket::whereDate('created_at', $year . '-' . $j . '-' . $i)
+                    ->where('panel_id',  auth()->user()->panel_id)
                     ->where(function ($q) use ($request) {
                         if ($request->query('status')) {
                             $q->where('status', $request->query('status'));
@@ -120,6 +123,7 @@ class ReportController extends Controller
             for ($j = 1; $j < 13; $j++) {
                 $year = $request->query('year') ?? date('Y');
                 $result = Order::select(\DB::raw('sum(charges - original_charges) AS total'))
+                    ->where('panel_id',  auth()->user()->panel_id)
                     ->whereDate('created_at', $year . '-' . $j . '-' . $i)
                     ->whereNotNull('provider_order_id')
                     ->where(function ($q) use ($request) {
