@@ -100,7 +100,7 @@
                                         <option value="">Select page</option>
                                         @if (!empty($pages))
                                             @foreach ($pages as $key => $value)
-                                                <option value="{{ $value->id }}" id="menu_{{ $value->id }}">{{ $value->page_name }}</option>
+                                                <option value="{{ $value->id }}" id="menu_{{ $value->id }}">{{ $value->name }}</option>
                                             @endforeach
                                         @endif
                                         <option value="0" id="menu_0">External link</option>
@@ -155,7 +155,7 @@
                                         <option value="">Select page</option>
                                         @if (!empty($pages))
                                             @foreach ($pages as $key => $value)
-                                                <option value="{{ $value->id }}" id="menu_{{ $value->id }}">{{ $value->page_name }}</option>
+                                                <option value="{{ $value->id }}" id="menu_{{ $value->id }}">{{ $value->name }}</option>
                                             @endforeach
                                         @endif
                                         <option value="0" id="menu_0">External link</option>
