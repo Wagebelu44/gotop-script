@@ -12,15 +12,7 @@ Route::get('command', function () {
 });
 //Test Route::END
 
-
 Route::group(['middleware' => 'checkPanel'], function () {
-    Route::get('/', 'Web\PageController@index')->name('home');
-
-    Auth::routes(['verify' => true]);
-    Route::group(['middleware' => ['auth', 'verified']], function () {
-        Route::get('/home', 'User\DashboardController@index')->name('home');
-    });
-
     Route::group(['prefix' => 'admin'], function () {
         // Authentication Routes...
         Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
@@ -48,6 +40,11 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');
+            Route::get('users-services/{user_id}', 'Panel\UserController@getUserServices');
+            Route::get('category-services', 'Panel\UserController@getCategoryService');
+            Route::post('store-service', 'Panel\UserController@serviceUpdate');
+            Route::DELETE('delete-user-service', 'Panel\UserController@deleteUsersService');
+            Route::post('bulk-status-update', 'Panel\UserController@bulkUserUpdate');
             Route::resource('users', 'Panel\UserController');
 
             #Orders...
@@ -56,6 +53,22 @@ Route::group(['middleware' => 'checkPanel'], function () {
             #Drip-feed...
             Route::resource('drip-feed', 'Panel\DripFeedController');
 
+            #Services...
+            Route::get('service_provider', 'Panel\ServiceController@getProviders');
+            Route::post('provider/get/services', 'Panel\ServiceController@getProviderServices');
+            Route::post('service_bulk_category', 'Panel\ServiceController@bulkCategory');
+            Route::post('service_bulk_enable', 'Panel\ServiceController@bulkEnable');
+            Route::post('service_bulk_delete', 'Panel\ServiceController@bulkDelete');
+            Route::post('service_bulk_disable', 'Panel\ServiceController@bulkDisable');
+            Route::post('category-status-change/{id}', 'Panel\ServiceController@enablingCategory');
+            Route::get('enableService/{id}', 'Panel\ServiceController@enableService');
+            Route::DELETE('deleteService/{id}', 'Panel\ServiceController@deleteService');
+            Route::get('duplicate/service/{service_id}', 'Panel\ServiceController@duplicateService');
+            Route::get('show-category/{id}', 'Panel\ServiceController@showCategory');
+            Route::post('category-store', 'Panel\ServiceController@categoryStore');
+            Route::get('get-category-services', 'Panel\ServiceController@getCateServices');
+            Route::post('updateService/{id}', 'Panel\ServiceController@updateService');
+            Route::resource('services', 'Panel\ServiceController', ["as"=>"admin"]);
             #Tasks...
             Route::resource('tasks', 'Panel\TaskController');
 
@@ -74,13 +87,18 @@ Route::group(['middleware' => 'checkPanel'], function () {
             #Reports...
             Route::resource('reports', 'Panel\ReportController');
 
-            #Rppearance...
-            Route::resource('appearance', 'Panel\AppearanceController');
-            Route::post('appearance-status', 'Panel\AppearanceController@updateStatus')->name('appearance.updateStatus');
+            #Appearance...
+            Route::group(['prefix' => 'appearance', 'as' => 'appearance.'], function () {
+                Route::resource('page', 'Panel\Appearance\PageController');
+                Route::post('page-status', 'Panel\Appearance\PageController@updateStatus')->name('page.updateStatus');
 
-            #Rppearance menu...
-            Route::resource('menu', 'Panel\MenuController');
-            Route::post('menu-sortable', 'Panel\MenuController@sortableMenu')->name('menu.sortable');
+                Route::resource('menu', 'Panel\Appearance\MenuController');
+                Route::post('menu-sortable', 'Panel\Appearance\MenuController@sortableMenu')->name('menu.sortable');
+
+                Route::resource('file', 'Panel\Appearance\FileController');
+            });
+
+            #Appearance Themes...
             Route::resource('theme', 'Panel\ThemeController')->only('index', 'edit', 'update');
             Route::post('theme-active/{id}', 'Panel\ThemeController@active')->name('theme.active');
             Route::post('theme-page-reset/{id}', 'Panel\ThemeController@reset')->name('theme.reset');
@@ -127,4 +145,12 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
         });
     });
+
+
+    Route::get('/', 'Web\PageController@index')->name('home');
+    Auth::routes(['verify' => true]);
+    Route::group(['middleware' => ['auth', 'verified']], function () {
+        Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
+    });
+    Route::get('/{url}', 'Web\PageController@page')->name('route');
 });

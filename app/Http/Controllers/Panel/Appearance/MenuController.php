@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Panel;
+namespace App\Http\Controllers\Panel\Appearance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
@@ -12,18 +12,18 @@ class MenuController extends Controller
 {
     public function index()
     {
-        if(Auth::user()->can('menu')) {
+        if (Auth::user()->can('menu')) {
             $pages = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
             $menus = Menu::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
-            return view('panel.appearance.menu.index', compact('pages', 'menus'));
-        }else{
+            return view('panel.appearance.menu', compact('pages', 'menus'));
+        } else {
             return view('panel.permission');
         }
     }
 
     public function store(Request $request)
     {
-        if(Auth::user()->can('menu')) {
+        if (Auth::user()->can('menu')) {
             $request->validate([
                 'menu_name' => 'required|max:255',
             ]);
@@ -43,27 +43,27 @@ class MenuController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Menu save successfully!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function edit($id)
     {
-        if(Auth::user()->can('menu')) {
+        if (Auth::user()->can('menu')) {
             $editMenu = Menu::where('panel_id', Auth::user()->panel_id)->where('id',$id)->first();
             return response()->json([
                 'status' => 'success',
                 'data' => $editMenu,
             ], 200);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request, $id)
     {
-        if(Auth::user()->can('menu')) {
+        if (Auth::user()->can('menu')) {
             $request->validate([
                 'menu_name_edit' => 'required|max:255',
             ]);
@@ -82,28 +82,28 @@ class MenuController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Menu update successfully!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function destroy($id)
     {
-        if(Auth::user()->can('menu')) {
+        if (Auth::user()->can('menu')) {
             $data = Menu::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
-                return redirect()->route('admin.menu.index');
+                return redirect()->route('admin.appearance.menu.index');
             }
             $data->delete();
             return redirect()->back()->with('success', 'Menu delete successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function sortableMenu(Request $request)
     {
-        if(Auth::user()->can('menu')) {
+        if (Auth::user()->can('menu')) {
             $dataSorting = Menu::where('panel_id', Auth::user()->panel_id)->get();
             foreach ($dataSorting as $menu) {
                 $menu->timestamps = false; // To disable update_at field updation
@@ -119,7 +119,7 @@ class MenuController extends Controller
                 'status' => 'success',
                 'message' => 'Update successfully',
             ], 200);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

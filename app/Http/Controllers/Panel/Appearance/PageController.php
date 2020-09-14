@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Panel;
+namespace App\Http\Controllers\Panel\Appearance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
@@ -9,34 +9,33 @@ use App\Models\ThemePage;
 use Illuminate\Http\Request;
 use Auth;
 
-class AppearanceController extends Controller
+class PageController extends Controller
 {
-
     public function index()
     {
-        if(Auth::user()->can('pages')) {
+        if (Auth::user()->can('pages')) {
             $data = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
             $page = 'index';
-            return view('panel.appearance.index', compact('data', 'page'));
-        }else{
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
             return view('panel.permission');
         }
     }
 
     public function create()
     {
-        if(Auth::user()->can('pages')) {
+        if (Auth::user()->can('pages')) {
             $data = null;
             $page = 'create';
-            return view('panel.appearance.index', compact('data', 'page'));
-        }else{
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
             return view('panel.permission');
         }
     }
 
     public function store(Request $request)
     {
-        if(Auth::user()->can('pages')) {
+        if (Auth::user()->can('pages')) {
             $this->validate($request, [
                 'name' => 'required|max:255',
                 'url' => 'required'
@@ -63,6 +62,8 @@ class AppearanceController extends Controller
                             'panel_id' => Auth::user()->panel_id,
                             'page_id'  => $page->id,
                             'theme_id' => $theme->id,
+                            'name' => strtolower($request->name),
+                            'sort' => 2,
                             'content'  => defaultThemePageContent()
                         ];
                     }
@@ -70,28 +71,28 @@ class AppearanceController extends Controller
                 }
             }
             return redirect()->back()->with('success', 'Appearance Post save successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function edit($id)
     {
-        if(Auth::user()->can('pages')) {
+        if (Auth::user()->can('pages')) {
             $data = Page::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
-                return redirect()->route(' admin.appearance.index');
+                return redirect()->route('admin.appearance.page.index');
             }
             $page = 'edit';
-            return view('panel.appearance.index', compact('data', 'page'));
-        }else{
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request, $id)
     {
-        if(Auth::user()->can('pages')) {
+        if (Auth::user()->can('pages')) {
             $this->validate($request, [
                 'name' => 'required|max:255',
                 'url' => 'required'
@@ -109,14 +110,14 @@ class AppearanceController extends Controller
                 'updated_by'        => Auth::user()->id,
             ]);
             return redirect()->back()->with('success', 'Appearance Post update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function updateStatus(Request $request)
     {
-        if(Auth::user()->can('pages')) {
+        if (Auth::user()->can('pages')) {
             $request->validate([
                 'id' => 'required|numeric',
                 'status' => 'required',
@@ -136,9 +137,8 @@ class AppearanceController extends Controller
                 'status' => 'success',
                 'message' => 'Status change successfully !!'
             ]);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
-
 }

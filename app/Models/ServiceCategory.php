@@ -2,36 +2,31 @@
 
 namespace App\Models;
 
-use App\Models\G\GlobalTheme;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Contracts\Activity;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Theme extends Model
+class ServiceCategory extends Model
 {
     use SoftDeletes, LogsActivity;
 
-    protected $table = 'themes';
+    protected $table = 'service_categories';
 
     protected $fillable = [
-        'panel_id', 'global_theme_id', 'name', 'location', 'snapshot', 'status', 'activated_at',
+        'panel_id', 'name', 'status',
     ];
 
-    function pages()
+    public function services()
     {
-        return $this->hasMany(ThemePage::class)->where('page_id', '>', '0');
-    }
-
-    function globalTheme()
-    {
-        return $this->belongsTo(GlobalTheme::class);
+        return $this->hasMany(Service::class, 'category_id');
     }
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Theme'; //custom_log_name_for_this_model
+    protected static $logName = 'Service Category'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

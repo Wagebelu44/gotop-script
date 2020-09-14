@@ -12,7 +12,7 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        if(Auth::user()->can('notification setting')) {
+        if (Auth::user()->can('notification setting')) {
             $page = 'index';
             $data = SettingNotification::where('panel_id', Auth::user()->panel_id)->get();
             if (count($data) != 8){
@@ -21,26 +21,26 @@ class NotificationController extends Controller
             }
             $staffEmails = StaffEmail::where('panel_id', Auth::user()->panel_id)->get();
             return view('panel.settings.notifications', compact('data', 'page', 'staffEmails'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function edit($id){
-        if(Auth::user()->can('notification setting')) {
+        if (Auth::user()->can('notification setting')) {
             $page = 'edit';
             $data = SettingNotification::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
                 return redirect()->route('admin.setting.notification');
             }
             return view('panel.settings.notifications', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request, $id){
-        if(Auth::user()->can('notification setting')) {
+        if (Auth::user()->can('notification setting')) {
             $this->validate($request, [
                 'subject' => 'required|max:191',
                 'body' => 'required',
@@ -55,7 +55,7 @@ class NotificationController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Notification update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

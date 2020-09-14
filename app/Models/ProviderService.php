@@ -2,36 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\G\GlobalTheme;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Contracts\Activity;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Theme extends Model
+class ProviderService extends Model
 {
     use SoftDeletes, LogsActivity;
 
-    protected $table = 'themes';
-
-    protected $fillable = [
-        'panel_id', 'global_theme_id', 'name', 'location', 'snapshot', 'status', 'activated_at',
+    protected $table = 'provider_services';
+    protected $fillable =[
+        'id', 'panel_id', 'service_id', 'provider_id', 'provider_service_id', 'name', 'type', 'category', 'rate', 'min', 'max', 
     ];
 
-    function pages()
-    {
-        return $this->hasMany(ThemePage::class)->where('page_id', '>', '0');
-    }
-
-    function globalTheme()
-    {
-        return $this->belongsTo(GlobalTheme::class);
-    }
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Theme'; //custom_log_name_for_this_model
+    protected static $logName = 'Provider Service'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

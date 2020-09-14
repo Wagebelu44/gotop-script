@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(GlobalPagesSeeder::class);
         $this->call(GlobalThemesSeeder::class);
+        $this->call(GlobalPaymentSeeder::class);
         $this->call(PanelAdminSeeder::class);
     }
 }

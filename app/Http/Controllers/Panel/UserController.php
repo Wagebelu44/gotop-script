@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Panel;
 
+use Auth;
 use App\User;
 use Illuminate\Http\Request;
+use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Auth;
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        $users = User::where('panel_id', Auth::user()->panel_id)
+        $users = User::with('servicesList')->where('panel_id', Auth::user()->panel_id)
                 ->where(function($q) use($request) {
                     if (isset($request->status) && $request->status != '') {
                         $q->where('status', $request->status);
@@ -136,5 +137,83 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
         }
+    }
+
+   
+    /* service custom price */
+    public function getCategoryService()
+    {
+        return ServiceCategory::with(['services'=>function($q){
+            $q->where('status', 'active');
+        }])->where('status', 'active')->orderBy('id', 'ASC')->get();
+    }
+    public function getUserServices($user_id)
+    {
+        $user = User::find($user_id);
+        return $user->servicesList()->get();
+    }
+    public function serviceUpdate(Request $request)
+    {
+        
+        $request->validate([
+            'user_id' => 'required|numeric',
+            'services' => 'required',
+        ]);
+
+        try {
+            $data  = $request->all();
+            $user = User::find($data['user_id']);
+            if ($user->servicesList()->count()>0) {
+                $user->servicesList()->detach();
+            }
+            $panel_id = auth()->user()->panel_id;
+            $serviceLists  = json_decode($data['services']);
+            
+            foreach ($serviceLists as $index => $value) 
+            {
+                $price = isset($value->update_price)?$value->update_price:$value->price;
+               $user->servicesList()->attach($value->service_id, ['price' => $price, 'panel_id'=>$panel_id]);
+            }
+            return response()->json(['status' => true, 'data'=> $user->servicesList()->get()], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'data'=> $e->getMessage()], 401);
+        }
+    }
+    public function deleteUsersService(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|numeric'
+        ]);
+        $data = $request->all();
+        $user_id  = $data['user_id'];
+        $user = User::find($user_id);
+        $user->servicesList()->detach();
+        return response()->json(['status' => true, 'data'=> 'user services reset'], 200);
+    }
+
+    public function bulkUserUpdate(Request $request)
+    {
+        $request->validate([
+            'user_ids' => 'required',
+            'status' => 'required',
+        ]);
+        $data = $request->all();
+        if ($data['status'] == 'rate_reset') {
+            $users = User::whereIn('id', $data['user_ids'])->get();
+            foreach ($users as $user) {
+                $user->servicesList()->detach();
+            }
+        }
+        elseif ($data['status'] == 'active') {
+            User::whereIn('id', $data['user_ids'])->update([
+                'status' => 'active'
+            ]);
+        }
+        elseif ($data['status'] == 'inactive') {
+            User::whereIn('id', $data['user_ids'])->update([
+                'status' => 'inactive'
+            ]);
+        }
+        return response()->json(['status' => true, 'data'=> 'Bulk users update'], 200);
     }
 }

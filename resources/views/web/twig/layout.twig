@@ -3,35 +3,36 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Go2Fans</title>
-    @if(isset($settingGeneral->favicon))
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('./storage/images/setting/'.$settingGeneral->favicon) }}">
-    @endif
-    <!-- Bootstrap core CSS -->
-    <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet">
-    <link href=" {{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <title>{{ page['meta_title'] }}</title>
+    <meta name="keywords" content="{{ page['meta_title'] }}">
+    <meta name="description" content="{{ page['meta_description'] }}">
+    {% if site['favicon'] %}
+      <link rel="shortcut icon" type="image/ico" href="{{ site['favicon'] }}" />
+    {% endif %}
+
+	{% for style in site['styles'] %}
+    	<link rel="stylesheet" type="text/css" href="{{ style }}">
+  	{% endfor %}
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <a class="navbar-brand" href="{{ url('/') }}">
-        @if(isset($settingGeneral->logo))
-            <img style="width: 100px;" src="{{ asset('./storage/images/setting/'.$settingGeneral->logo) }}">
-        @else
+    <a class="navbar-brand" href="/">
+        {% if site['logo'] %}
+            <img style="width: 100px;" src="{{ site['logo'] }}">
+        {% else %}
             Your Logo
-        @endif
+        {% endif %}
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            @guest
-                @if(!empty($menus))
+            {% if user['auth'] %}
+				@if(!empty($menus))
                     @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'yes')
+                        @if($menu->menu_link_type == 'no')
                             <li class="nav-item">
                                 <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                             </li>
@@ -41,7 +42,7 @@
             @else
                 @if(!empty($menus))
                     @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'no')
+                        @if($menu->menu_link_type == 'yes')
                             <li class="nav-item">
                                 <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                             </li>
@@ -84,15 +85,10 @@
     </div>
 </nav>
 
-<div class="container">
-    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-        <h1 class="display-4">Main Content</h1>
-        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta error exercitationem iste nulla numquam pariatur possimus repellat. Dolore dolores eveniet fuga inventore libero magni modi officia, pariatur reiciendis sed, voluptatem!</p>
-    </div>
-</div>
+	{{ content }}
 
-<script src="{{ asset('assets/js/jquery.js') }}"></script>
-<script src="{{ asset('assets/js/bootstrap.js') }}"></script>
+{% for script in site['scripts'] %}
+  <script type="text/javascript" src="{{ script }}"></script>
+{% endfor %}
 </body>
 </html>
-

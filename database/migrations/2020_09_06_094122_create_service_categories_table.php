@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateThemePagesTable extends Migration
+class CreateServiceCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateThemePagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('theme_pages', function (Blueprint $table) {
+        Schema::create('service_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('panel_id');
-            $table->unsignedBigInteger('page_id')->nullable();
-            $table->unsignedBigInteger('theme_id');
-            $table->string('group')->default('twig');
+            $table->unsignedBigInteger('panel_id'); 
+            $table->unsignedInteger('sort')->nullable();
             $table->string('name');
-            $table->longText('content')->nullable();
-            $table->unsignedTinyInteger('sort')->default(2);
+            $table->enum('status', ['active', 'inactive']);
+            $table->foreign('panel_id')->on('panel_admins')->references('id')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +32,6 @@ class CreateThemePagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('theme_pages');
+        Schema::dropIfExists('service_categories');
     }
 }

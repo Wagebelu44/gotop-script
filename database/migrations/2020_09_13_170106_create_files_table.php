@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateThemePagesTable extends Migration
+class CreateFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateThemePagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('theme_pages', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('panel_id');
-            $table->unsignedBigInteger('page_id')->nullable();
-            $table->unsignedBigInteger('theme_id');
-            $table->string('group')->default('twig');
             $table->string('name');
-            $table->longText('content')->nullable();
-            $table->unsignedTinyInteger('sort')->default(2);
+            $table->string('size', 30)->nullable();
+            $table->string('mime_type', 30)->nullable();
+            $table->string('extension', 10)->nullable();
+            $table->text('url')->nullable();
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +34,6 @@ class CreateThemePagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('theme_pages');
+        Schema::dropIfExists('files');
     }
 }
