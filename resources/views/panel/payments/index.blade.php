@@ -73,14 +73,16 @@
                                 <tbody>
                                     <tr v-for="(p, i) in payments">
                                         <td> @{{ p.id }} </td>
-                                        <td>@{{ p.id }}</td>
-                                        <td>@{{ p.id }}</td>
-                                        <td>@{{ p.id }}</td>
-                                        <td>@{{ p.id }}</td>
-                                        <td>@{{ p.id }}</td>
-                                        <td>@{{ p.id }}</td>
+                                        <td>@{{ p.username }}</td>
+                                        <td>@{{ p.amount }}</td>
+                                        <td>@{{ p.payment_method_name }}</td>
+                                        <td>@{{ p.memo }}</td>
+                                        <td>@{{ p.created_at }}</td>
+                                        <td>@{{ p.updated_at }}</td>
                                         <td>
-                                            @{{ p.id }}
+                                            <span v-if="p.transaction_flag == 'admin_panel'">Manual</span>
+                                            <span v-else-if="p.transaction_flag == 'payment_gateway'">Auto</span>
+                                            <span v-else-if="p.transaction_flag == 'bonus_deposit'">Bonus</span>
                                         </td>
                                         <td>
                                             <div class="btn-group">
@@ -100,7 +102,7 @@
                         <div class="modal bs-example-modal-lg" id="paymentAddModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
-                                    <form  id="payment-form" method="post" action="" enctype="multipart/form-data" novalidate>
+                                    <form  id="payment-form" @submit.prevent="savePayment" method="post" action="" enctype="multipart/form-data" novalidate>
                                         @csrf
                                         <div class="modal-header">
                                             <h4 class="modal-title" id="myLargeModalLabel">Add payment</h4>
@@ -114,7 +116,7 @@
                                                 </div> --}}
                                                 <select name="user_id" class="form-control custom-form-control" required >
                                                     <option disabled selected>Choose user</option>
-                                                <option :value="u.id" v-for="(u, i) in users">@{{ u.name }} </option>
+                                                <option :value="u.id" v-for="(u, i) in users">@{{ u.username }} </option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -135,7 +137,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <div class="form-actions">
-                                                <button type="button" onclick="payment_submt(this)" class="btn btn-primary custom-button"> <i class="fa fa-check"></i> Save</button>
+                                                <button type="submit"  class="btn btn-primary custom-button"> <i class="fa fa-check"></i> Save</button>
                                             </div>
                                             <button type="button" class="btn btn-danger custom-button" data-dismiss="modal">Close</button>
                                         </div>

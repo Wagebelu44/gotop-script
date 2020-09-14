@@ -6,6 +6,9 @@ const orderModule = new Vue({
         global_payments: [],
         users: [],
         services: [],
+        loader: {
+            payment: false,
+        },
         order_mode_count: null,
         order_checkbox: [],
         checkAllOrders: false,
@@ -13,6 +16,8 @@ const orderModule = new Vue({
             status: "", 
             search: "",
         },
+        payment_edit_id: null,
+        payment_edit: false,
 
     },
     created () {
@@ -67,6 +72,85 @@ const orderModule = new Vue({
                     this.users = res.users;
                 });
         },
+        savePayment(evt)
+        {
+            this.loader.payment = true;
+            let payment_form = null;
+            payment_form = new FormData(document.getElementById('payment-form'));
+            if (this.payment_edit_id) {
+                payment_form.append('edit_id', this.payment_edit_id);
+                payment_form.append('edit_mode', true);
+            }
+            fetch(base_url+'/admin/payments', {
+                headers: {
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
+                },
+                credentials: "same-origin",
+                method: "POST",
+                body: payment_form
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw res.json();
+                }
+                return res.json();
+            })
+            .then(res => {
+                if (res.status === 200) {
+                    var isEdit = this.payment_edit;
+                    this.payment_edit = false;
+                    this.payment_edit_id = null;
+                    setTimeout(() => {
+                        this.loader.payment = false;
+                        toastr["success"](res.message);
+                        document.getElementById('payment-form').reset();
+                        $('#paymentAddModal').modal('hide');
+
+                        if (isEdit) 
+                        {
+                            var row = res.data;
+                            this.updateServiceLists(row);
+                            var status = (row.status == 'active')?'Enabled':'Disabled';
+                        } 
+                        else 
+                        {
+                            var row = res.data;
+                            this.addToPaymentList(row);
+                        }
+
+
+                    }, 2000);
+                }
+                else if(res.status === 401)
+                {
+                    this.loader.payment = false;
+                    this.errors.services = res.data;
+                }
+
+            })
+            .catch(err => 
+            {
+                setTimeout(() => {
+                    this.loader.service = false;
+                    let prepare = [];
+                    err.then(erMesg => {
+                        let errMsgs = Object.entries(erMesg.errors);
+                        for (let i = 0; i < errMsgs.length; i++) {
+                            let obj = {};
+                            obj.name = errMsgs[i][0];
+                            obj.desc = errMsgs[i][1][0];
+                            prepare.push(obj);
+                        }
+                        this.errors.services = prepare;
+                    });
+                }, 2000);
+            });
+        },
+        addToPaymentList(payment)
+        {
+            this.payments.unshift(payment);
+        }
        
     }
 });
