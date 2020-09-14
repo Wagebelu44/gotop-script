@@ -23,6 +23,11 @@ php artisan config:cache
 php artisan key:generate
 ~~~
 
+#### Storage folder link
+~~~php
+php artisan storage:link
+~~~
+
 ### Create a database name and change credential in `.env` file
 
 ### migrate and seed database
