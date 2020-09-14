@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use Auth;
 use App\User;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -30,10 +31,13 @@ class UserController extends Controller
                         $q->orWhere('email', $request->search);
                     }
         })->orderBy('id', 'DESC')->paginate(10);
-
+        $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
+        ->where('visibility', 'enabled')
+        ->get();
         return response()->json([
             'status' => 200,
             'data' => $users,
+            'global_payment_methods' => $globalMethods,
         ]);
     }
 

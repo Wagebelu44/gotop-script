@@ -14,6 +14,7 @@ const userModule = new Vue({
             status: '',
             balance: 0.00,
         },
+        global_payment_methods: [],
         filter: {
             status: "", 
             search: "",
@@ -87,6 +88,7 @@ const userModule = new Vue({
                 .then(res => res.json())
                 .then(res => {
                     this.users = res.data.data;
+                    this.global_payment_methods = res.global_payment_methods;
                     this.pagination = res.data;
                 });
         },
