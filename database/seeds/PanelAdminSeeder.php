@@ -29,12 +29,12 @@ class PanelAdminSeeder extends Seeder
         //Assign role to panel admin...
         DB::table('roles_model')->insert([
             'role_id' => 1, 
-            'model_type' => '\App\PanelAdmin', 
+            'model_type' => 'App\PanelAdmin', 
             'model_id' => 1
         ]);
         
         //Setting table create or update...
-        SettingGeneral::updateOrCreate(['panel_id' => 1], [
+        DB::table('setting_generals')->updateOrInsert(['panel_id' => 1], [
             'updated_by' => 1,
             'status' => 'Active',
             'currency' => 'USD',
