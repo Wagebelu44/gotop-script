@@ -44,11 +44,12 @@
                         {% if pagination['current'] >= pagination['pages'] %}
                             {% set l = 5 %}
                         {% endif %}
-                        {% for i in 1..ceil(pagination['pages']) %}
-                            {% if i >= (pagination['current']-l) and i <= (pagination['current']+r) %}
-                                <li{% if i == pagination['current'] %} class="active"{% endif %}><a href="{{ page['url'] }}/{{i}}{{ params }}">{{i}}</a></li>
-                            {%endif%}
-                        {% endfor %}
+                        {#{% for i in 1..ceil(pagination['pages']) %}
+                        {% if i >= (pagination['current']-l) and i <= (pagination['current']+r) %}
+                            <li{% if i == pagination['current'] %} class="active"{% endif %}><a href="{{ page['url'] }}/{{i}}{{ params }}">{{i}}</a></li>
+                        {%endif%}
+                    {% endfor %}
+                        #}
                         {% if pagination['current'] < pagination['pages'] %}
                             <li>
                                 <a href="{{ page['url'] }}/{{ pagination['next'] }}{{ params }}" aria-label="Next">
