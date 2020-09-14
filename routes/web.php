@@ -32,7 +32,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::group(['prefix' => 'admin'], function () {
         // Authentication Routes...
         Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
-        Route::post('/', 'Panel\Auth\LoginController@login');
+        Route::post('/login', 'Panel\Auth\LoginController@login')->name('panel.login.action');
         Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
 
         Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');

@@ -29,15 +29,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            {% if auth %}
-            {% for menu in site['menus'] %}
-                <li{% if menuActive %} class="active" {% endif %}>
-                    <a href="{{ menu['link'] }}" {% if menu['external'] %} target="_blank" {% endif %}>
-                        {% if menu['icon'] %}<i class="navbar-icon {{ menu['icon'] }}"></i>{% endif %}
-                        {{ menu['name'] }}
-                    </a>
-                </li>
-            {% endfor %}
+            {% if user['auth'] %}
 				@if(!empty($menus))
                     @foreach($menus as $menu)
                         @if($menu->menu_link_type == 'no')

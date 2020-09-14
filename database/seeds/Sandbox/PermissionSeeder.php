@@ -117,7 +117,8 @@ class PermissionSeeder extends Seeder
                 'module setting',
                 'integration setting',
                 'notification setting',
-                'bonus setting'
+                'bonus setting',
+                'faq setting',
             ]
         ];
 
