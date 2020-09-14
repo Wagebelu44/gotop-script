@@ -99,7 +99,7 @@
                         </li>
 
                         <li class="sidebar-item {{ Request::routeIs('admin.appearance*') ? 'selected':'' }}">
-                            <a class="sidebar-link {{ Request::routeIs('admin.appearance*') ? 'active':'' }}" href="{{ route('admin.appearance.index') }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.appearance*') ? 'active':'' }}" href="{{ route('admin.appearance.page.index') }}">
                                 <span class="hide-menu">Appearance</span>
                             </a>
                         </li>

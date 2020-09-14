@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Panel;
+namespace App\Http\Controllers\Panel\Appearance;
 
 use App\Http\Controllers\Controller;
 use App\Models\Menu;
@@ -14,7 +14,7 @@ class MenuController extends Controller
     {
         $pages = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
         $menus = Menu::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
-        return view('panel.appearance.menu.index', compact('pages', 'menus'));
+        return view('panel.appearance.menu', compact('pages', 'menus'));
     }
 
     public function store(Request $request)
@@ -75,7 +75,7 @@ class MenuController extends Controller
     {
         $data = Menu::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
         if (empty($data)) {
-            return redirect()->route('admin.menu.index');
+            return redirect()->route('admin.appearance.menu.index');
         }
         $data->delete();
 

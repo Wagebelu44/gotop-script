@@ -55,6 +55,11 @@
                         <hr>
 
                         <div class="form-group">
+                            <label class="control-label" for="panel_name">Panel Name</label>
+                            <input type="text" class="form-control" value="{{ old('panel_name', isset($general) && $general->panel_name ? $general->panel_name:'') }}" name="panel_name">
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="timezone">Timezone</label>
                             <select class="form-control" name="timezone" id="timezone">
                                 @foreach(getTimezone() as $key => $timezone)
@@ -152,6 +157,16 @@
                                 <option value="1" {{ isset($general) && $general->average_time == 1 ? 'selected':'' }}>Enabled</option>
                                 <option value="0" {{ isset($general) && $general->average_time == 0 ? 'selected':'' }}>Disabled</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="horizontal_menu">Horizontal Menu</label>
+                            <div class="setting-switch setting-switch-table">
+                                <label class="switch">
+                                    <input type="checkbox" class="toggle-page-visibility" name="horizontal_menu" id="horizontal_menu" {{ isset($general) && $general->horizontal_menu == 'Yes' ? 'checked' : '' }}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="form-group">
