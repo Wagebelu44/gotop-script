@@ -38,19 +38,21 @@ class PageController extends Controller
         if (Auth::user()->can('pages')) {
             $this->validate($request, [
                 'name' => 'required|max:255',
-                'url' => 'required'
+                'url' => 'required|alpha_dash|string|regex:/[a-z]/'
             ]);
 
             $page = Page::create([
                 'panel_id'          => Auth::user()->panel_id,
                 'name'              => $request->name,
-                'url'               => $request->url,
+                'url'               => strtolower($request->url),
                 'content'           => $request->page_content,
                 'is_public'         => $request->is_public,
                 'meta_title'        => $request->meta_title,
                 'meta_keyword'      => $request->meta_keywords,
                 'meta_description'  => $request->meta_description,
                 'created_by'        => Auth::user()->id,
+                'created_at'        => now(),
+                'updated_at'        => now(),
             ]);
 
             if (!empty($page)){
@@ -88,6 +90,7 @@ class PageController extends Controller
         } else {
             return view('panel.permission');
         }
+
     }
 
     public function update(Request $request, $id)
@@ -95,20 +98,22 @@ class PageController extends Controller
         if (Auth::user()->can('pages')) {
             $this->validate($request, [
                 'name' => 'required|max:255',
-                'url' => 'required'
+                'url' => 'required|alpha_dash|string|regex:/[a-z]/'
             ]);
 
             Page::find($id)->update([
                 'panel_id'          => Auth::user()->panel_id,
                 'name'              => $request->name,
                 'content'           => $request->page_content,
-                'url'               => $request->url,
+                'url'               => strtolower($request->url),
                 'is_public'         => $request->is_public,
                 'meta_title'        => $request->meta_title,
                 'meta_keyword'      => $request->meta_keywords,
                 'meta_description'  => $request->meta_description,
                 'updated_by'        => Auth::user()->id,
+                'updated_at'        => now(),
             ]);
+
             return redirect()->back()->with('success', 'Appearance Post update successfully !!');
         } else {
             return view('panel.permission');
@@ -122,6 +127,7 @@ class PageController extends Controller
                 'id' => 'required|numeric',
                 'status' => 'required',
             ]);
+
             $status = '';
             if ($request->status == 'Active'){
                 $status = 'Deactivated';
@@ -132,7 +138,9 @@ class PageController extends Controller
             Page::find($request->id)->update([
                 'status'      => $status,
                 'updated_by'  => Auth::user()->id,
+                'updated_at'  => now(),
             ]);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Status change successfully !!'
@@ -140,5 +148,7 @@ class PageController extends Controller
         } else {
             return view('panel.permission');
         }
+
+
     }
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Panel;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\PanelAdmin;
-use App\Models\SettingGeneral;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
@@ -86,7 +85,7 @@ class ApiController extends Controller
 
         //Setting table create or update...
         activity()->disableLogging();
-        SettingGeneral::updateOrCreate(['panel_id' => $user->panel_id], [
+        DB::table('setting_generals')->updateOrInsert(['panel_id' => $user->panel_id], [
             'updated_by' => $user->id,
             'status' => $request->status,
             'currency' => $request->currency,
