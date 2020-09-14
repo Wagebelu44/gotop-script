@@ -26,7 +26,7 @@
                                                         {{ $public_menu->menu_name }}
                                                     </td>
                                                     <td class="p-r text-right">
-                                                        <button data-url="{{ route('admin.menu.edit', $public_menu->id) }}" data-id="{!! $public_menu->id !!}" class="edit btn btn-default m-t-20">
+                                                        <button data-url="{{ route('admin.appearance.menu.edit', $public_menu->id) }}" data-id="{!! $public_menu->id !!}" class="edit btn btn-default m-t-20">
                                                             Edit
                                                         </button>
                                                     </td>
@@ -58,7 +58,7 @@
                                                         {{ $menu->menu_name }}
                                                     </td>
                                                     <td class="p-r text-right">
-                                                        <button data-url="{{ route('admin.menu.edit', $menu->id) }}" data-id="{!! $menu->id !!}" class="edit btn btn-default m-t-20">
+                                                        <button data-url="{{ route('admin.appearance.menu.edit', $menu->id) }}" data-id="{!! $menu->id !!}" class="edit btn btn-default m-t-20">
                                                             Edit
                                                         </button>
                                                     </td>
@@ -79,7 +79,7 @@
         <div class="modal fade in" id="menuPagePopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true" onsubmit="return addPageLink()">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
-                    <form class="form-material" id="menuForm" method="post" action="{{ route('admin.menu.store') }}" enctype="multipart/form-data">
+                    <form class="form-material" id="menuForm" method="post" action="{{ route('admin.appearance.menu.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="modal-header">
@@ -224,7 +224,7 @@
                 $.ajax({
                     type: "POST",
                     dataType: "json",
-                    url: "{{ route('admin.menu.sortable') }}",
+                    url: "{{ route('admin.appearance.menu.sortable') }}",
                     data: {
                         order:order,
                         _token: '{{csrf_token()}}'

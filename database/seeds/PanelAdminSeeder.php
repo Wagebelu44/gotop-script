@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\SettingGeneral;
 use App\PanelAdmin;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,14 @@ class PanelAdminSeeder extends Seeder
             'role_id' => 1, 
             'model_type' => '\App\PanelAdmin', 
             'model_id' => 1
+        ]);
+        
+        //Setting table create or update...
+        SettingGeneral::updateOrCreate(['panel_id' => 1], [
+            'updated_by' => 1,
+            'status' => 'Active',
+            'currency' => 'USD',
+            'timezone' => '-11',
         ]);
         
         //Added page to panel...
