@@ -1,0 +1,12 @@
+{% if termsofservice %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="well {% if site['rtl'] %} rtl-content {% endif %}">
+                    <h3 class="terms">terms_of_service</h3>
+                    {{ termsofservice }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
