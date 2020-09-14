@@ -9,7 +9,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        return view('panel.dashboard');
+        return redirect(route('admin.users.index'));
+        //return view('panel.dashboard');
     }
 
 }
