@@ -1,0 +1,110 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="well">
+                <form {% if site['rtl'] %} class="rtl-form"{% endif %} action="{{ page['url'] }}" method="post" id="order-form">
+                    {% if error %}
+                        <div class="alert alert-dismissible alert-danger {% if site['rtl'] %} rtl-alert {% endif %}">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{ errorMessage }}
+                        </div>
+                    {% endif %}
+
+                    {% if 1 == success %}
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4>Success</h4>
+                            ID: {{order['id']}}<br>
+                            Service: {{order['service']}}
+                            <br>
+                            Link: {{order['link']}}<br>
+                            Quantity: {{order['quantity']}}<br>
+                            Charge: {{order['charge']}}<br>
+                            Balance: {{order['balance']}}<br>
+                        </div>
+                    {%endif%}
+
+                    {% if 2 == success %}
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4>Success</h4>
+                            Subscription id: {{order['id']}}<br>
+                            Service: {{order['service']}}
+                            <br>
+                            Username: {{order['link']}}<br>
+                            Quantity:
+                            {% if order['quantity_min'] == order['quantity_max'] %}
+                                {{order['quantity_max']}}
+                            {% else %}
+                                {{order['quantity_min']}}-{{order['quantity_max']}}
+                            {%endif%}
+                            <br>
+                            New posts:
+                            {% if 0 == order['posts'] %}
+                                &#8734;
+                            {% else %}
+                                {{order['posts']}}
+                            {%endif%}
+                            <br>
+                            Delay:
+                            {{order['delay']}}
+                            <br>
+                        </div>
+                    {%endif%}
+
+                    {% if categories %}
+                        <div class="form-group">
+                            <label for="orderform-category" class="control-label">Category</label>
+                            <select class="form-control" id="orderform-category" name="OrderForm[category]">
+                                {% for categoryId,categoryName in categories %}
+                                    <option value="{{ categoryId }}" {% if categoryId == data['category'] %} selected {%endif%}>{{ categoryName }}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="service" class="control-label">Service</label>
+                        <select id="orderform-service" class="form-control" id="service" name="OrderForm[service]"></select>
+                    </div>
+
+                    <div class="form-group hidden fields" id="service_description">
+                        <label for="service_description" class="control-label">Description</label>
+                        <div class="panel-body border-solid border-rounded">
+                            {{service['description']}}
+                        </div>
+                    </div>
+
+                    <div id="fields"></div>
+
+                    <div class="form-group">
+                        <label for="charge" class="control-label">Charge</label>
+                        <input type="text" class="form-control" id="charge" value="{{ order['charge'] }}" readonly>
+                    </div>
+
+                    {% if check_agreement %}
+                        <div class="form-group">
+                            <label class="control-label terms">
+                                <input type="checkbox"  name="OrderForm[termsofservice]" class="terms-accept-checkbox" value="1" id="terms" {{data['termsofservice'] ? 'checked' : ''}}> I agree to terms
+                                <a href="#" target="_blank">Terms of service</a>
+                            </label>
+                        </div>
+                    {%endif%}
+
+                    <input type="hidden" name="_csrf" value="{{ csrftoken }}">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% if newOrderText %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="well {% if site['rtl'] %} rtl-content {% endif %}">
+                    {{ newOrderText }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

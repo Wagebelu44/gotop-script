@@ -1,0 +1,89 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            {% if success %}
+                <div class="alert alert-dismissible alert-success {% if site['rtl'] %} rtl-alert {% endif %}">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ successText }}
+                </div>
+            {% endif %}
+
+            <div class="well">
+                <div class="form-group">
+                    <label for="username" class="control-label">Email</label>
+                    <input type="text" class="form-control" id="username" value="{{ user['username'] }}" readonly>
+                </div>
+            </div>
+
+            <div class="well">
+                <form {% if site['rtl'] %}class="rtl-form"{% endif %} method="post" action="">
+                    {% if error %}
+                        <div class="alert alert-dismissible alert-danger {% if site['rtl'] %} rtl-alert {% endif %}">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{ errorText }}
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="current" class="control-label">Current password</label>
+                        <input type="password" class="form-control" id="current" name="SettingsFrom[current_password]">
+                    </div>
+                    <div class="form-group">
+                        <label for="new" class="control-label">New password</label>
+                        <input type="password" class="form-control" id="new" name="SettingsFrom[password]">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm" class="control-label">Confirm</label>
+                        <input type="password" class="form-control" id="confirm" name="SettingsFrom[confirm_password]">
+                    </div>
+
+                    <input type="hidden" name="_csrf" value="{{csrftoken}}">
+                    <button type="submit" class="btn btn-primary">Update password</button>
+                </form>
+            </div>
+
+            {% if site['languages']|length > 1 %}
+                <div class="well">
+                    <form {% if site['rtl'] %}class="rtl-form"{% endif %} method="post" action="">
+                        <div class="form-group">
+                            <label for="language" class="control-label">Language</label>
+                            <select class="form-control" id="language" name="SettingsFrom[lang]">
+                                {% for language in site['languages'] %}
+                                    <option value="{{ language['code'] }}" {% if language['code'] == user['lang'] %}selected{% endif %}>{{ language['name'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <input type="hidden" name="_csrf" value="{{csrftoken}}">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </div>
+            {% endif %}
+
+            <div class="well">
+                <form {% if site['rtl'] %}class="rtl-form"{% endif %} action="" method="post">
+                    <div class="form-group">
+                        <label for="timezone" class="control-label">Timezone</label>
+                        <select name="SettingsFrom[timezone]" id="timezone" class="form-control">
+                            {% for timezone,label in timezones %}
+                                <option value="{{timezone}}" {% if timezone == user['timezone'] %}selected{% endif %}>{{label}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <input type="hidden" name="_csrf" value="{{csrftoken}}">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+            <div class="well">
+                <form {% if site['rtl'] %}class="rtl-form"{% endif %} action="{{ page['url'] }}/newkey" method="post">
+                    <div class="form-group">
+                        <label for="key" class="control-label">Api key</label>
+                        <input type="text" class="form-control" id="api_key" value="{{ user['apikey'] }}" readonly>
+                    </div>
+
+                    <input type="hidden" name="_csrf" value="{{csrftoken}}">
+                    <button type="submit" class="btn btn-primary">Generate key</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
