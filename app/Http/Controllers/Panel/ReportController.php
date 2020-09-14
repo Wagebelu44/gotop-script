@@ -127,9 +127,10 @@ class ReportController extends Controller
             $data = $sql->get();
 
         $profits = [];
+        $gs = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
         foreach ($data as $qr) {
             $dd = explode('-', $qr->date);
-            $profits[intVal($dd[1])][intVal($dd[2])] = $qr->total;
+            $profits[intVal($dd[1])][intVal($dd[2])] = $gs->currency.$qr->total;
         }
         return view('panel.reports.profit', compact('profits'));
     }
