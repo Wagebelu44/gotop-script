@@ -59,38 +59,41 @@
                         <div class="table-responsive">
                             <table class="table table-striped border table-hover">
                                 <thead>
-                                <tr>
-                                    <th>SN</th>
-                                    <th>January</th>
-                                    <th>February</th>
-                                    <th>March</th>
-                                    <th>April</th>
-                                    <th>May</th>
-                                    <th>June</th>
-                                    <th>July</th>
-                                    <th>August</th>
-                                    <th>September</th>
-                                    <th>October</th>
-                                    <th>November</th>
-                                    <th>December</th>
-                                </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>January</th>
+                                        <th>February</th>
+                                        <th>March</th>
+                                        <th>April</th>
+                                        <th>May</th>
+                                        <th>June</th>
+                                        <th>July</th>
+                                        <th>August</th>
+                                        <th>September</th>
+                                        <th>October</th>
+                                        <th>November</th>
+                                        <th>December</th>
+                                    </tr>
+                                   
                                 </thead>
                                 <tbody>
+                                    @foreach($payments as $payment)
                                     <tr>
-                                        <td>0</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>${{ $payment[1] }}</td>
+                                        <td>${{ $payment[2] }}</td>
+                                        <td>${{ $payment[3] }}</td>
+                                        <td>${{ $payment[4] }}</td>
+                                        <td>${{ $payment[5] }}</td>
+                                        <td>${{ $payment[6] }}</td>
+                                        <td>${{ $payment[7] }}</td>
+                                        <td>${{ $payment[8] }}</td>
+                                        <td>${{ $payment[9] }}</td>
+                                        <td>${{ $payment[10] }}</td>
+                                        <td>${{ $payment[11] }}</td>
+                                        <td>${{ $payment[12] }}</td>
                                     </tr>
+                                    @endforeach
                                 </tbody>
                                 <tfoot>
                                 <tr>

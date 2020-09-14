@@ -110,6 +110,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('tickets/{ticket}/comment', 'Panel\TicketController@comment')->name('tickets.comment');
 
             #Reports...
+            Route::get('reports/orders', 'Panel\ReportController@order');
+            Route::get('reports/payment', 'Panel\ReportController@payments');
             Route::resource('reports', 'Panel\ReportController');
 
             #Appearance...

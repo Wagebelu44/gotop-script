@@ -2,16 +2,84 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('panel.reports.index');
+        $payments = $this->payments($request);
+        return view('panel.reports.index', compact('payments'));
     }
 
+    public function payments(Request $request)
+    {
+        $request = request();
+        $payments = collect();
+        for ($i = 1; $i < 32; $i++) {
+            $data = collect();
+            for ($j = 1; $j < 13; $j++) {
+                $year = $request->query('year') ?? date('Y');
+                $query = Transaction::where(\DB::raw('Date(created_at)'), $year . '-' . $j . '-' . $i)
+                    ->where('status', 'done')
+                    ->where(function($q){
+                        $q->where('transaction_flag', 'admin_panel');
+                        $q->orWhere('transaction_flag', 'payment_gateway');
+                    })
+                    ->where(function ($q) use ($request) {
+                        if ($request->query('user_ids') && !in_array('all', $request->query('user_ids'))) {
+                            $q->whereIn('user_id', $request->query('user_ids'));
+                        }
+                    });
+                $data->put($j, !$request->query('show') 
+                || $request->query('show') == 'amount' ? $query->sum('amount') : $query->count());
+            }
+            $payments->push($data);
+        }
+        return  $payments;
+    }
+    public function order()
+    {
+        $request = request();
+        $orders = collect();
+
+        for ($i = 1; $i < 32; $i++) {
+            $data = collect();
+
+            for ($j = 1; $j < 13; $j++) {
+                $year = $request->query('year') ?? date('Y');
+                $query = Order::whereDate('created_at', $year . '-' . $j . '-' . $i)
+                    ->where(function ($q) use ($request) {
+                        if ($request->query('user_ids') && !in_array('all', $request->query('user_ids'))) {
+                            $q->whereIn('user_id', $request->query('user_ids'));
+                        }
+                        if ($request->query('service_id') && !in_array('all', $request->query('service_id'))) {
+                            $q->whereIn('service_id', $request->query('service_id'));
+                        }
+                        if ($request->query('status') && !in_array('all', $request->query('status'))) {
+                            $q->whereIn('status', $request->query('status'));
+                        }
+                    });
+
+                if ($request->query('show') == 'charge') {
+                    $result = $query->sum('charges');
+                } elseif ($request->query('show') == 'quantity') {
+                    $result = $query->sum('quantity');
+                } else {
+                    $result = $query->count();
+                }
+
+                $data->put($j, $result);
+            }
+
+            $orders->push($data);
+        }
+
+        return view('panel.reports.order', compact('orders'));
+    }
     public function create()
     {
         //
