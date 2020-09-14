@@ -29,7 +29,7 @@ class PanelAdminSeeder extends Seeder
         //Assign role to panel admin...
         DB::table('roles_model')->insert([
             'role_id' => 1, 
-            'model_type' => '\App\PanelAdmin', 
+            'model_type' => 'App\PanelAdmin', 
             'model_id' => 1
         ]);
         
