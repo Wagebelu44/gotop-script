@@ -28,7 +28,7 @@
                                 <tbody>
                                 @if(!empty($data))
                                     @foreach($data as $key => $info)
-                                        <tr class="@if($info->non_editable == 'yes') disable-keystroke @endif">
+                                        <tr class="{{ $info->is_editable == 'No' ? 'disable-keystroke':'' }}">
                                             <td class="p-l">{{ $key+1 }}</td>
                                             <td class="p-l">{{ $info->name }}</td>
                                             <td>
@@ -39,8 +39,8 @@
                                                     </label>
                                                 </div>
                                             </td>
-                                            <td>{{ $info->public }}</td>
-                                            <td>{{ $info->created_at }}</td>
+                                            <td>{{ $info->is_public }}</td>
+                                            <td>{{ $info->updated_at }}</td>
                                             <td class="p-r text-right">
                                                 <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $info->id) }}">Edit</a>
                                             </td>
@@ -70,8 +70,8 @@
                                         <input type="text" id="name" class="form-control" name="name" value="{{ old('name', isset($data) ? $data->name : '') }}">
                                         @error('name')
                                         <span role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                                            <strong>{{ $message }}</strong>
+                                        </span>
                                         @enderror
                                     </div>
 
@@ -95,12 +95,13 @@
                                     <div class="input-group">
                                         <span class="input-group-addon" for="url">{{ URL::to('/') }}</span>
                                         <input type="text" id="url" class="form-control" name="url" value="{{ old('url', isset($data) ? $data->url : '') }}">
-                                        @error('url')
-                                        <span role="alert">
+                                    </div>
+                                    <strong id="urlAlert"></strong>
+                                    @error('url')
+                                    <span role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
-                                        @enderror
-                                    </div>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">
@@ -159,6 +160,22 @@
 
 @section('scripts')
     <script>
+        @if($page == 'create' || $page == 'edit')
+        $(function () {
+            jQuery('#url').on('input', function () {
+                $("#url").removeClass();
+                var url = $(this).val();
+                var isValid = /^[a-z-0-9]*$/.test(url);
+                if (isValid){
+                    $("#url").addClass("valid form-control");
+                    $("#urlAlert").text("Page url is valid");
+                } else{
+                    $("#url").addClass("invalid form-control");
+                    $("#urlAlert").text("Page url is invalid");
+                }
+            });
+        });
+        @endif
         function isActiveInactive(pageId) {
             var status_value = '';
             let status = $('#status'+pageId).val();
@@ -183,4 +200,15 @@
             });
         }
     </script>
+@endsection
+
+@section('styles')
+    <style type="text/css">
+        .valid {
+            border: 1px solid green;
+        }
+        .invalid {
+            border: 1px solid red;
+        }
+    </style>
 @endsection
