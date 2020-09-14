@@ -12,6 +12,12 @@ use Spatie\Permission\Models\Permission;
 
 class ApiController extends Controller
 {
+    public function index(Request $request)
+    {
+        
+        return response()->json('API worked!');
+    }
+
     public function sentLogName(Request $request)
     {
         if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
@@ -71,6 +77,12 @@ class ApiController extends Controller
         if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
             return false;
         }
+        
+        //Create panel admin...
+        $user = PanelAdmin::create($request->user);
+
+        //Assign role to panel admin...
+        $user->assignRole('Super Admin');
 
         //Setting table create or update...
         activity()->disableLogging();
@@ -80,13 +92,6 @@ class ApiController extends Controller
             'currency' => $request->currency,
             'timezone' => $request->timezone,
         ]);
-        
-        //Create panel admin...
-        $user = PanelAdmin::create($request->user);
-
-        //Assign role to panel admin...
-        $user->assignRole('Super Admin');
-
         
         
         //Added page to panel...

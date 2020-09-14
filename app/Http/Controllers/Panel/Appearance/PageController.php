@@ -13,109 +13,132 @@ class PageController extends Controller
 {
     public function index()
     {
-        $data = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
-        $page = 'index';
-        return view('panel.appearance.pages', compact('data', 'page'));
+        if (Auth::user()->can('pages')) {
+            $data = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
+            $page = 'index';
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function create()
     {
-        $data = null;
-        $page = 'create';
-        return view('panel.appearance.pages', compact('data', 'page'));
+        if (Auth::user()->can('pages')) {
+            $data = null;
+            $page = 'create';
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:255',
-            'url' => 'required'
-        ]);
+        if (Auth::user()->can('pages')) {
+            $this->validate($request, [
+                'name' => 'required|max:255',
+                'url' => 'required'
+            ]);
 
-        $page = Page::create([
-            'panel_id'          => Auth::user()->panel_id,
-            'name'              => $request->name,
-            'url'               => $request->url,
-            'content'           => $request->page_content,
-            'is_public'         => $request->is_public,
-            'meta_title'        => $request->meta_title,
-            'meta_keyword'      => $request->meta_keywords,
-            'meta_description'  => $request->meta_description,
-            'created_by'        => Auth::user()->id,
-        ]);
+            $page = Page::create([
+                'panel_id'          => Auth::user()->panel_id,
+                'name'              => $request->name,
+                'url'               => $request->url,
+                'content'           => $request->page_content,
+                'is_public'         => $request->is_public,
+                'meta_title'        => $request->meta_title,
+                'meta_keyword'      => $request->meta_keywords,
+                'meta_description'  => $request->meta_description,
+                'created_by'        => Auth::user()->id,
+            ]);
 
-        if (!empty($page)){
-            $themes = Theme::where('panel_id', Auth::user()->panel_id)->get();
-            if (!empty($themes)){
-                $themePages = [];
-                foreach ($themes as $key => $theme){
-                    $themePages[] = [
-                        'panel_id' => Auth::user()->panel_id,
-                        'page_id'  => $page->id,
-                        'theme_id' => $theme->id,
-                        'name' => strtolower($request->name),
-                        'sort' => 2,
-                        'content'  => defaultThemePageContent()
-                    ];
+            if (!empty($page)){
+                $themes = Theme::where('panel_id', Auth::user()->panel_id)->get();
+                if (!empty($themes)){
+                    $themePages = [];
+                    foreach ($themes as $key => $theme){
+                        $themePages[] = [
+                            'panel_id' => Auth::user()->panel_id,
+                            'page_id'  => $page->id,
+                            'theme_id' => $theme->id,
+                            'name' => strtolower($request->name),
+                            'sort' => 2,
+                            'content'  => defaultThemePageContent()
+                        ];
+                    }
+                    ThemePage::insert($themePages);
                 }
-                ThemePage::insert($themePages);
             }
+            return redirect()->back()->with('success', 'Appearance Post save successfully !!');
+        } else {
+            return view('panel.permission');
         }
-
-        return redirect()->back()->with('success', 'Appearance Post save successfully !!');
     }
 
     public function edit($id)
     {
-        $data = Page::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
-        if (empty($data)) {
-            return redirect()->route('admin.appearance.page.index');
+        if (Auth::user()->can('pages')) {
+            $data = Page::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+            if (empty($data)) {
+                return redirect()->route('admin.appearance.page.index');
+            }
+            $page = 'edit';
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
+            return view('panel.permission');
         }
-        $page = 'edit';
-        return view('panel.appearance.pages', compact('data', 'page'));
     }
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|max:255',
-            'url' => 'required'
-        ]);
+        if (Auth::user()->can('pages')) {
+            $this->validate($request, [
+                'name' => 'required|max:255',
+                'url' => 'required'
+            ]);
 
-        Page::find($id)->update([
-            'panel_id'          => Auth::user()->panel_id,
-            'name'              => $request->name,
-            'content'           => $request->page_content,
-            'url'               => $request->url,
-            'is_public'         => $request->is_public,
-            'meta_title'        => $request->meta_title,
-            'meta_keyword'      => $request->meta_keywords,
-            'meta_description'  => $request->meta_description,
-            'updated_by'        => Auth::user()->id,
-        ]);
-        return redirect()->back()->with('success', 'Appearance Post update successfully !!');
+            Page::find($id)->update([
+                'panel_id'          => Auth::user()->panel_id,
+                'name'              => $request->name,
+                'content'           => $request->page_content,
+                'url'               => $request->url,
+                'is_public'         => $request->is_public,
+                'meta_title'        => $request->meta_title,
+                'meta_keyword'      => $request->meta_keywords,
+                'meta_description'  => $request->meta_description,
+                'updated_by'        => Auth::user()->id,
+            ]);
+            return redirect()->back()->with('success', 'Appearance Post update successfully !!');
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function updateStatus(Request $request)
     {
-        $request->validate([
-            'id' => 'required|numeric',
-            'status' => 'required',
-        ]);
-        $status = '';
-        if ($request->status == 'Active'){
-            $status = 'Deactivated';
-        } elseif ($request->status == 'Deactivated'){
-            $status = 'Active';
-        }
+        if (Auth::user()->can('pages')) {
+            $request->validate([
+                'id' => 'required|numeric',
+                'status' => 'required',
+            ]);
+            $status = '';
+            if ($request->status == 'Active'){
+                $status = 'Deactivated';
+            } elseif ($request->status == 'Deactivated'){
+                $status = 'Active';
+            }
 
-        Page::find($request->id)->update([
-            'status'      => $status,
-            'updated_by'  => Auth::user()->id,
-        ]);
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Status change successfully !!'
-        ]);
+            Page::find($request->id)->update([
+                'status'      => $status,
+                'updated_by'  => Auth::user()->id,
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Status change successfully !!'
+            ]);
+        } else {
+            return view('panel.permission');
+        }
     }
 }
