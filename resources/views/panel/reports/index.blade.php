@@ -96,22 +96,22 @@
                                     @endforeach
                                 </tbody>
                                 <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                </tr>
-                                </tfoot>
+                                    <tr>
+                                        <th>Total</th>
+                                        <th>${{ $payments->sum('1') }}</th>
+                                        <th>${{ $payments->sum('2') }}</th>
+                                        <th>${{ $payments->sum('3') }}</th>
+                                        <th>${{ $payments->sum('4') }}</th>
+                                        <th>${{ $payments->sum('5') }}</th>
+                                        <th>${{ $payments->sum('6') }}</th>
+                                        <th>${{ $payments->sum('7') }}</th>
+                                        <th>${{ $payments->sum('8') }}</th>
+                                        <th>${{ $payments->sum('9') }}</th>
+                                        <th>${{ $payments->sum('10') }}</th>
+                                        <th>${{ $payments->sum('11') }}</th>
+                                        <th>${{ $payments->sum('12') }}</th>
+                                    </tr>
+                                    </tfoot>
                             </table>
                         </div>
                     </div>
