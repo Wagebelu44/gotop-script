@@ -17,8 +17,8 @@
                             <tr>
                                 <th width="40%" class="p-l">File</th>
                                 <th width="40%">Url</th>
-                                <th width="10%">Size</th>
-                                <th width="10%"></th>
+                                <th width="15%">Size</th>
+                                <th width="5%"></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -29,8 +29,10 @@
                                         <img class="img-thumbnail" src="{{ $file->url }}" width="80">
                                         {{ $file->name }}
                                     </td>
-                                    <td><label class="d-inline-block">{{ $file->url }} <i class="fa fa-copy"></i></label></td>
-                                    <td>{{ $file->size }}</td>
+                                    <td>
+                                        <label id="copyUrl{{ $file->id }}">{{ $file->url }} <i title="Copy URl" onclick="copyToClipboard({{ $file->id }})" class="fa fa-copy" style="cursor: copy"></i></label>
+                                    </td>
+                                    <td>{{ getFileSizeUnits($file->size) }}</td>
                                     <td>
                                         <form action="{{ route($resource.'destroy', $file->id) }}" method="post">
                                             @csrf
@@ -81,5 +83,15 @@
     </div>
 @endsection
 @section('scripts')
-
+    <script>
+        function copyToClipboard(id) {
+            var range = document.createRange();
+            range.selectNode(document.getElementById("copyUrl"+id));
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            toastr["success"]('This url copy successfully !!');
+        }
+    </script>
 @endsection

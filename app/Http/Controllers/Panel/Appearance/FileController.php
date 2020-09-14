@@ -38,13 +38,16 @@ class FileController extends Controller
                     'url'        => $url,
                     'created_by' => Auth::user()->id,
                 ];
-
                 Storage::disk('public')->put("files/".$fileName, (string) $file->encode());
             }
         }
 
-        File::insert($data);
-        return redirect()->back()->with('success', 'File save successfully !!');
+        if(!empty($data)){
+            File::insert($data);
+            return redirect()->back()->with('success', 'File save successfully !!');
+        }else{
+            return redirect()->back()->with('error', "File con't save ! Please try again !!");
+        }
 
     }
 
