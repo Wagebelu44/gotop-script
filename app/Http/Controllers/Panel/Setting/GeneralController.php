@@ -68,6 +68,7 @@ class GeneralController extends Controller
                 'updated_by'         => Auth::user()->id,
                 'logo'               => $logo,
                 'favicon'            => $favicon,
+                'panel_name'         => $request->panel_name,
                 'timezone'           => $request->timezone,
                 'currency_format'    => $request->currency_format,
                 'rates_rounding'     => $request->rates_rounding,
@@ -81,6 +82,7 @@ class GeneralController extends Controller
                 'reset_password'     => $request->reset_password,
                 'average_time'       => $request->average_time,
                 'drip_feed_interval' => $request->drip_feed_interval,
+                'horizontal_menu'    => isset($request->horizontal_menu) ? 'Yes':'No',
                 'custom_header_code' => null,
                 'custom_footer_code' => null,
             ]
