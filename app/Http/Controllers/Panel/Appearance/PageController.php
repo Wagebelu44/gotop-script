@@ -13,25 +13,49 @@ class PageController extends Controller
 {
     public function index()
     {
-        $data = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
-        $page = 'index';
-        return view('panel.appearance.pages', compact('data', 'page'));
+        if (Auth::user()->can('pages')) {
+            $data = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
+            $page = 'index';
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function create()
     {
-        $data = null;
-        $page = 'create';
-        return view('panel.appearance.pages', compact('data', 'page'));
+        if (Auth::user()->can('pages')) {
+            $data = null;
+            $page = 'create';
+            return view('panel.appearance.pages', compact('data', 'page'));
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function store(Request $request)
     {
+        if (Auth::user()->can('pages')) {
+            $this->validate($request, [
+                'name' => 'required|max:255',
+                'url' => 'required'
+            ]);
         $this->validate($request, [
             'name' => 'required|max:255',
             'url' => 'required|alpha_dash|string|regex:/[a-z]/'
         ]);
 
+            $page = Page::create([
+                'panel_id'          => Auth::user()->panel_id,
+                'name'              => $request->name,
+                'url'               => $request->url,
+                'content'           => $request->page_content,
+                'is_public'         => $request->is_public,
+                'meta_title'        => $request->meta_title,
+                'meta_keyword'      => $request->meta_keywords,
+                'meta_description'  => $request->meta_description,
+                'created_by'        => Auth::user()->id,
+            ]);
         $page = Page::create([
             'panel_id'          => Auth::user()->panel_id,
             'name'              => $request->name,
@@ -83,6 +107,11 @@ class PageController extends Controller
             'name' => 'required|max:255',
             'url' => 'required|alpha_dash|string|regex:/[a-z]/'
         ]);
+        if (Auth::user()->can('pages')) {
+            $this->validate($request, [
+                'name' => 'required|max:255',
+                'url' => 'required'
+            ]);
 
         Page::find($id)->update([
             'panel_id'          => Auth::user()->panel_id,
@@ -97,6 +126,21 @@ class PageController extends Controller
             'updated_at'        => now(),
         ]);
         return redirect()->back()->with('success', 'Appearance Post update successfully !!');
+            Page::find($id)->update([
+                'panel_id'          => Auth::user()->panel_id,
+                'name'              => $request->name,
+                'content'           => $request->page_content,
+                'url'               => $request->url,
+                'is_public'         => $request->is_public,
+                'meta_title'        => $request->meta_title,
+                'meta_keyword'      => $request->meta_keywords,
+                'meta_description'  => $request->meta_description,
+                'updated_by'        => Auth::user()->id,
+            ]);
+            return redirect()->back()->with('success', 'Appearance Post update successfully !!');
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function updateStatus(Request $request)
@@ -121,5 +165,16 @@ class PageController extends Controller
             'status' => 'success',
             'message' => 'Status change successfully !!'
         ]);
+            Page::find($request->id)->update([
+                'status'      => $status,
+                'updated_by'  => Auth::user()->id,
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Status change successfully !!'
+            ]);
+        } else {
+            return view('panel.permission');
+        }
     }
 }

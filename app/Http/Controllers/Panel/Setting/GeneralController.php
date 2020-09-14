@@ -14,57 +14,60 @@ class GeneralController extends Controller
 {
     public function index()
     {
-        $general = SettingGeneral::where('panel_id', Auth::user()->panel_id)->first();
-        return view('panel.settings.general', compact('general'));
+        if (Auth::user()->can('general setting')) {
+            $general = SettingGeneral::where('panel_id', Auth::user()->panel_id)->first();
+            return view('panel.settings.general', compact('general'));
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function generalUpdate(Request $request)
     {
-        $this->validate($request, [
-            'logo'    => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000',
-            'favicon' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000'
-        ]);
+        if (Auth::user()->can('general setting')) {
+            $this->validate($request, [
+                'logo'    => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000',
+                'favicon' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000'
+            ]);
 
-        $checkLogoFavicon = SettingGeneral::select('logo', 'favicon')->where('panel_id', Auth::user()->panel_id)->first();
-        if ($request->hasFile('logo')) {
-            if (!empty($checkLogoFavicon->logo)) {
-                deleteFile('./storage/images/setting/', $checkLogoFavicon->logo);
+            $checkLogoFavicon = SettingGeneral::select('logo', 'favicon')->where('panel_id', Auth::user()->panel_id)->first();
+            if ($request->hasFile('logo')) {
+                if (!empty($checkLogoFavicon->logo)) {
+                    deleteFile('./storage/images/setting/', $checkLogoFavicon->logo);
+                }
+                $logo = $request->file('logo');
+                $mime= $logo->getClientOriginalExtension();
+                $logoName = time()."_logo.".$mime;
+                $logo = Image::make($logo)->resize(200, 80);
+                Storage::disk('public')->put("images/setting/".$logoName, (string) $logo->encode());
             }
-            $logo = $request->file('logo');
-            $mime= $logo->getClientOriginalExtension();
-            $logoName = time()."_logo.".$mime;
-            $logo = Image::make($logo)->resize(200, 80);
-            Storage::disk('public')->put("images/setting/".$logoName, (string) $logo->encode());
-        }
 
-        if ($request->hasFile('favicon')) {
-            if (!empty($checkLogoFavicon->favicon)) {
-                deleteFile('./storage/images/setting/', $checkLogoFavicon->favicon);
+            if ($request->hasFile('favicon')) {
+                if (!empty($checkLogoFavicon->favicon)) {
+                    deleteFile('./storage/images/setting/', $checkLogoFavicon->favicon);
+                }
+                $favicon = $request->file('favicon');
+                $mime= $favicon->getClientOriginalExtension();
+                $faviconName = time()."_favicon.".$mime;
+                $favicon = Image::make($favicon)->resize(16, 16);
+                Storage::disk('public')->put("images/setting/".$faviconName, (string) $favicon->encode());
             }
-            $favicon = $request->file('favicon');
-            $mime= $favicon->getClientOriginalExtension();
-            $faviconName = time()."_favicon.".$mime;
-            $favicon = Image::make($favicon)->resize(16, 16);
-            Storage::disk('public')->put("images/setting/".$faviconName, (string) $favicon->encode());
-        }
 
-        if (isset($logoName)) {
-            $logo =  $logoName;
-        } else {
-            $logo = isset($checkLogoFavicon->logo) ? $checkLogoFavicon->logo:null;
-        }
+            if (isset($logoName)) {
+                $logo =  $logoName;
+            } else {
+                $logo = isset($checkLogoFavicon->logo) ? $checkLogoFavicon->logo:null;
+            }
 
-        if (isset($faviconName)) {
-            $favicon = $faviconName;
-        } else {
-            $favicon = isset($checkLogoFavicon->favicon) ? $checkLogoFavicon->favicon:null;
-        }
+            if (isset($faviconName)) {
+                $favicon = $faviconName;
+            } else {
+                $favicon = isset($checkLogoFavicon->favicon) ? $checkLogoFavicon->favicon:null;
+            }
 
-        SettingGeneral::updateOrCreate(
-            [
+            SettingGeneral::updateOrCreate([
                 'panel_id'   => Auth::user()->panel_id,
-            ],
-            [
+            ], [
                 'updated_by'         => Auth::user()->id,
                 'logo'               => $logo,
                 'favicon'            => $favicon,
@@ -85,9 +88,11 @@ class GeneralController extends Controller
                 'horizontal_menu'    => isset($request->horizontal_menu) ? 'Yes':'No',
                 'custom_header_code' => null,
                 'custom_footer_code' => null,
-            ]
-        );
+            ]);
 
-        return redirect()->back()->with('success', 'General Setting update successfully!');
+            return redirect()->back()->with('success', 'General Setting update successfully!');
+        } else {
+            return view('panel.permission');
+        }
     }
 }
