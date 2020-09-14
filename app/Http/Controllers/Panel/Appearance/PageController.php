@@ -73,7 +73,7 @@ class PageController extends Controller
                 }
             }
             return redirect()->back()->with('success', 'Appearance Post save successfully !!');
-        }else {
+        } else {
             return view('panel.permission');
         }
     }
@@ -87,7 +87,7 @@ class PageController extends Controller
             }
             $page = 'edit';
             return view('panel.appearance.pages', compact('data', 'page'));
-        }else {
+        } else {
             return view('panel.permission');
         }
 
@@ -115,7 +115,7 @@ class PageController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Appearance Post update successfully !!');
-        }else {
+        } else {
             return view('panel.permission');
         }
     }
@@ -145,7 +145,7 @@ class PageController extends Controller
                 'status' => 'success',
                 'message' => 'Status change successfully !!'
             ]);
-        }else {
+        } else {
             return view('panel.permission');
         }
 
