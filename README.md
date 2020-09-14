@@ -23,6 +23,11 @@ php artisan config:cache
 php artisan key:generate
 ~~~
 
+#### Storage folder link
+~~~php
+php artisan storage:link
+~~~
+
 ### Create a database name and change credential in `.env` file
 
 ### migrate and seed database
@@ -40,7 +45,7 @@ php artisan serve
 * Panel Admin Login:
 ~~~
 Url: {project_url}/admin
-Email: admin@gmail.com
+Email: admin@test.com
 Password: 12345678
 ~~~
 
