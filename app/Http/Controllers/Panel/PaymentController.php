@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use App\Models\SettingBonuse;
 use App\Models\GlobalPaymentMethod;
 use App\Http\Controllers\Controller;
@@ -66,7 +67,9 @@ class PaymentController extends Controller
                 ->orderBy($sort_by, $order_by);
                 $payments = $local_payments->paginate($show_page);
                 $total_payments = $local_payments->count();
-                $globalMethods = GlobalPaymentMethod::where('status', 'active')->get();
+                $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
+                ->where('visibility', 'enabled')
+                ->get();
                 $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get(); 
             $data = [
                 'payments' => $payments,
