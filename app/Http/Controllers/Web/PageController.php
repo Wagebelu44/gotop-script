@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\ThemePage;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
@@ -28,8 +29,25 @@ class PageController extends Controller
         if (empty($page)) {
             return 1;
         }
+
         $setting = SettingGeneral::where('panel_id', $panelId)->first();
 
+        $sql = Menu::with(['page' => function($q) {
+            $q->select('id', 'url');
+        }])
+        ->select('menu_link_id', 'menu_name', 'external_link')
+        ->where('panel_id', $panelId)
+        ->where('status', 'active')
+        ->orderBy('sort', 'ASC');
+        if (Auth::check()) {
+            $sql->where('menu_link_type', 'no');
+        } else {
+            $sql->where('menu_link_type', 'yes');
+        }
+        $menus = $sql->get();
+
+        $site['auth'] = (Auth::check()) ? true : false;
+        $site['menuActive'] = (Auth::check()) ? true : false;
         $site['title'] = 'ASDF';
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
@@ -58,6 +76,6 @@ class PageController extends Controller
         $loader = new \Twig\Loader\ChainLoader([$loader1, $loader2]);
         $twig = new \Twig\Environment($loader);
         
-        return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site]);
+        return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site, 'menus' => $menus->toArray()]);
     }
 }

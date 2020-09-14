@@ -15,88 +15,44 @@
   	{% endfor %}
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <a class="navbar-brand" href="/">
-        {% if site['logo'] %}
-            <img style="width: 100px;" src="{{ site['logo'] }}">
-        {% else %}
-            Your Logo
-        {% endif %}
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            {% if auth %}
-            {% for menu in site['menus'] %}
-                <li{% if menuActive %} class="active" {% endif %}>
-                    <a href="{{ menu['link'] }}" {% if menu['external'] %} target="_blank" {% endif %}>
-                        {% if menu['icon'] %}<i class="navbar-icon {{ menu['icon'] }}"></i>{% endif %}
-                        {{ menu['name'] }}
-                    </a>
-                </li>
-            {% endfor %}
-				@if(!empty($menus))
-                    @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'no')
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
-                            </li>
-                        @endif
-                    @endforeach
-                @endif
-            @else
-                @if(!empty($menus))
-                    @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'yes')
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
-                            </li>
-                        @endif
-                    @endforeach
-                @endif
-            @endguest
-        </ul>
-
-        <ul class="navbar-nav ml-auto">
-            <!-- Authentication Links -->
-            @guest
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                </li>
-                @if (Route::has('register'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                    </li>
-                @endif
-            @else
-                <li class="nav-item dropdown">
-                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                        {{ Auth::user()->name }}
-                    </a>
-
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ route('logout') }}"
-                           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            {{ __('Logout') }}
-                        </a>
-
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </div>
-                </li>
-            @endguest
-        </ul>
-    </div>
-</nav>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <a class="navbar-brand" href="/">
+            {% if site['logo'] %}
+                <img style="width: 100px;" src="{{ site['logo'] }}">
+            {% else %}
+                Your Logo
+            {% endif %}
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if site['auth'] %}
+                    {% for menu in menus %}
+                        <li{% if site['menuActive'] %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
+                            <a class="nav-link" href="{{ menu['page']['url'] }}">
+                                {{ menu['menu_name'] }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    {% for menu in menus %}
+                        <li{% if menuActive %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
+                            <a class="nav-link" href="{{ menu['page']['url'] }}">
+                                {{ menu['menu_name'] }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
 
 	{{ content }}
 
-{% for script in site['scripts'] %}
-  <script type="text/javascript" src="{{ script }}"></script>
-{% endfor %}
+    {% for script in site['scripts'] %}
+    <script type="text/javascript" src="{{ script }}"></script>
+    {% endfor %}
 </body>
 </html>
