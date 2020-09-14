@@ -12,6 +12,12 @@ use Spatie\Permission\Models\Permission;
 
 class ApiController extends Controller
 {
+    public function index(Request $request)
+    {
+        
+        return response()->json('API worked!');
+    }
+
     public function sentLogName(Request $request)
     {
         if (!$request->token == env('PANLE_REQUEST_TOKEN')) {

@@ -40,7 +40,7 @@ php artisan serve
 * Panel Admin Login:
 ~~~
 Url: {project_url}/admin
-Email: admin@gmail.com
+Email: admin@test.com
 Password: 12345678
 ~~~
 
