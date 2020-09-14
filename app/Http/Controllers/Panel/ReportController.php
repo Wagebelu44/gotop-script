@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Models\Order;
+use App\Models\Ticket;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -79,6 +80,65 @@ class ReportController extends Controller
         }
 
         return view('panel.reports.order', compact('orders'));
+    }
+
+    public function ticket()
+    {
+        $request = request();
+        $tickets = collect();
+
+        for ($i = 1; $i < 32; $i++) {
+            $data = collect();
+
+            for ($j = 1; $j < 13; $j++) {
+                $year = $request->query('year') ?? date('Y');
+                $query = Ticket::whereDate('created_at', $year . '-' . $j . '-' . $i)
+                    ->where(function ($q) use ($request) {
+                        if ($request->query('status')) {
+                            $q->where('status', $request->query('status'));
+                        } else {
+                            $q->where('status', 1);
+                        }
+                    })->count();
+                $data->put($j, $query);
+            }
+
+            $tickets->push($data);
+        }
+
+        return view('panel.reports.ticket', compact('tickets'));
+    }
+
+    public function profits()
+    {
+        $request = request();
+        $profits = collect();
+
+        for ($i = 1; $i < 32; $i++) {
+            $data = collect();
+
+            for ($j = 1; $j < 13; $j++) {
+                $year = $request->query('year') ?? date('Y');
+                $result = Order::select(\DB::raw('sum(charges - original_charges) AS total'))
+                    ->whereDate('created_at', $year . '-' . $j . '-' . $i)
+                    ->whereNotNull('provider_order_id')
+                    ->where(function ($q) use ($request) {
+                        if ($request->query('service_id') && !in_array('all', $request->query('service_id'))) {
+                            $q->whereIn('service_id', $request->query('service_id'));
+                        }
+                        if ($request->query('status') && !in_array('all', $request->query('status'))) {
+                            $q->whereIn('status', $request->query('status'));
+                        }
+                    })
+                    ->get();
+
+                $data->put($j, $result[0]->total);
+            }
+
+            $profits->push($data);
+        }
+
+        return view('panel.reports.profit', compact('profits'));
     }
     public function create()
     {

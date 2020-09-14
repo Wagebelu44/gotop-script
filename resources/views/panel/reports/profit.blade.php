@@ -10,19 +10,11 @@
         <div class="material-card card">
             <div class="card-body">
                 <div class="row mb-4">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         @include('panel.reports.menu')
-                    </div>
-                    <div class="col-md-3 text-right">
-                        <a class="btn btn-primary" style="{{ !request()->query('show') || request()->query('show') == 'count' ? 'background-color: #707CB8' : '' }}" href="javascript:void(0)" onclick="$('#search-form').find('input[name=show]').val('count');$('#search-form').submit()">Total orders</a>
-                        <a class="btn btn-primary" style="{{ request()->query('show') == 'charge' ? 'background-color: #707CB8' : '' }}" href="javascript:void(0)" onclick="$('#search-form').find('input[name=show]').val('charge');$('#search-form').submit()">Total charges</a>
-                        <a class="btn btn-primary" style="{{ request()->query('show') == 'quantity' ? 'background-color: #707CB8' : '' }}" href="javascript:void(0)" onclick="$('#search-form').find('input[name=show]').val('quantity');$('#search-form').submit()">Total quantity</a>
                     </div>
                     <div class="col-md-6">
                         <form id="search-form" method="get" novalidate>
-
-                            <input type="hidden" name="show" value="{{ request()->query('show') }}">
-
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -38,21 +30,8 @@
                                 <div class="col">
                                     <div class="form-group">
                                         <div class="controls">
-                                            
-                                            {{-- <select name="user_ids[]" id="user_ids" class="form-control" required data-validation-required-message="This field is required" multiple>
-                                                <option value="all" {{ ( request()->query('user_ids') && in_array('all', request()->query('user_ids')) ) ? 'selected' : '' }}>All users</option>
-                                                @foreach(auth()->guard('reseller')->user()->users as $user)
-                                                    <option value="{{ $user->id }}" {{ ( request()->query('user_ids') ? in_array($user->id, request()->query('user_ids')) : false) ? 'selected' : '' }}>{{ $user->name }}</option>
-                                                @endforeach
-                                            </select> --}}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <div class="controls">
                                             {{-- <select name="service_id[]" id="service_id" class="form-control" required data-validation-required-message="This field is required" multiple>
-                                                <option value="all" {{ ( request()->query('service_id') && in_array('all', request()->query('service_id')) ) ? 'selected' : ''  }}>All service</option>
+                                                <option value="all" {{ ( request()->query('service_id') && in_array('all', request()->query('service_id')) ) ? 'selected' : '' }}>All service</option>
                                                 @foreach(auth()->guard('reseller')->user()->services as $service)
                                                     <option value="{{ $service->id }}" {{ ( request()->query('service_id') ? in_array($service->id, request()->query('service_id')) : false ) ? 'selected' : '' }}>{{ $service->name }}</option>
                                                 @endforeach
@@ -64,13 +43,13 @@
                                     <div class="form-group">
                                         <div class="controls">
                                             {{-- <select name="status[]" id="status" class="form-control" required data-validation-required-message="This field is required" multiple>
-                                                <option value="all" {{ ( request()->query('status') && in_array('all', request()->query('status')) ) ? 'selected' : '' }}>All status</option>
-                                                <option value="PENDING" {{ ( request()->query('status') ? in_array('PENDING', request()->query('status')) : false ) ? 'selected' : '' }}>Pending</option>
+                                                <option value="all" {{ ( request()->query('status') && in_array('all', request()->query('status')) ) ? 'selected' : ''}}>All status</option>
+                                                <option value="PENDING" {{ ( request()->query('status') ? in_array('PENDING', request()->query('status')) : false ) ?  'selected' : '' }}>Pending</option>
                                                 <option value="INPROGRESS" {{ ( request()->query('status') ? in_array('INPROGRESS', request()->query('status')) : false ) ? 'selected' : '' }}>In progress</option>
                                                 <option value="COMPLETED" {{ ( request()->query('status') ? in_array('COMPLETED', request()->query('status')) : false ) ? 'selected' : '' }}>Completed</option>
                                                 <option value="PARTIAL" {{ ( request()->query('status') ? in_array('PARTIAL', request()->query('status')) : false ) ? 'selected' : '' }}>Partial</option>
                                                 <option value="CANCELLED" {{ ( request()->query('status') ? in_array('CANCELLED', request()->query('status')) : false ) ? 'selected' : '' }}>Canceled</option>
-                                                <option value="PROCESSING" {{ ( request()->query('status') ? in_array('PROCESSING', request()->query('status')) : false )? 'selected' : '' }}>Processing</option>
+                                                <option value="PROCESSING" {{ ( request()->query('status') ? in_array('PROCESSING', request()->query('status')) : false ) ? 'selected' : '' }}>Processing</option>
                                                 <option value="REFUNDED" {{ ( request()->query('status') ? in_array('REFUNDED', request()->query('status')) : false ) ? 'selected' : '' }}>Refunded</option>
                                                 <option value="REFILLING" {{ ( request()->query('status') ? in_array('REFILLING', request()->query('status')) : false ) ? 'selected' : '' }}>Refilling</option>
                                                 <option value="CANCELLING" {{ ( request()->query('status') ? in_array('CANCELLING', request()->query('status')) : false ) ? 'selected' : '' }}>Cancelling</option>
@@ -107,39 +86,39 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($orders as $order)
+                        @foreach($profits as $profit)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $order[1] }}</td>
-                            <td>{{ $order[2] }}</td>
-                            <td>{{ $order[3] }}</td>
-                            <td>{{ $order[4] }}</td>
-                            <td>{{ $order[5] }}</td>
-                            <td>{{ $order[6] }}</td>
-                            <td>{{ $order[7] }}</td>
-                            <td>{{ $order[8] }}</td>
-                            <td>{{ $order[9] }}</td>
-                            <td>{{ $order[10] }}</td>
-                            <td>{{ $order[11] }}</td>
-                            <td>{{ $order[12] }}</td>
+                            <td>{{ $profit[1] }}</td>
+                            <td>{{ $profit[2] }}</td>
+                            <td>{{ $profit[3] }}</td>
+                            <td>{{ $profit[4] }}</td>
+                            <td>{{ $profit[5] }}</td>
+                            <td>{{ $profit[6] }}</td>
+                            <td>{{ $profit[7] }}</td>
+                            <td>{{ $profit[8] }}</td>
+                            <td>{{ $profit[9] }}</td>
+                            <td>{{ $profit[10] }}</td>
+                            <td>{{ $profit[11] }}</td>
+                            <td>{{ $profit[12] }}</td>
                         </tr>
                         @endforeach
                         </tbody>
                         <tfoot>
                         <tr>
                             <th>Total</th>
-                            <th>{{ $orders->sum('1') }}</th>
-                            <th>{{ $orders->sum('2') }}</th>
-                            <th>{{ $orders->sum('3') }}</th>
-                            <th>{{ $orders->sum('4') }}</th>
-                            <th>{{ $orders->sum('5') }}</th>
-                            <th>{{ $orders->sum('6') }}</th>
-                            <th>{{ $orders->sum('7') }}</th>
-                            <th>{{ $orders->sum('8') }}</th>
-                            <th>{{ $orders->sum('9') }}</th>
-                            <th>{{ $orders->sum('10') }}</th>
-                            <th>{{ $orders->sum('11') }}</th>
-                            <th>{{ $orders->sum('12') }}</th>
+                            <th>{{ $profits->sum('1') }}</th>
+                            <th>{{ $profits->sum('2') }}</th>
+                            <th>{{ $profits->sum('3') }}</th>
+                            <th>{{ $profits->sum('4') }}</th>
+                            <th>{{ $profits->sum('5') }}</th>
+                            <th>{{ $profits->sum('6') }}</th>
+                            <th>{{ $profits->sum('7') }}</th>
+                            <th>{{ $profits->sum('8') }}</th>
+                            <th>{{ $profits->sum('9') }}</th>
+                            <th>{{ $profits->sum('10') }}</th>
+                            <th>{{ $profits->sum('11') }}</th>
+                            <th>{{ $profits->sum('12') }}</th>
                         </tr>
                         </tfoot>
                     </table>
@@ -153,18 +132,12 @@
 @section('script')
     <script>
         let service_id = $("#service_id");
-        let user_ids = $("#user_ids");
         let status = $("#status");
 
         service_id.select2({
             width: '100%',
             allowClear: true,
             placeholder: 'Select service_id'
-        });
-        user_ids.select2({
-            width: '100%',
-            allowClear: true,
-            placeholder: 'Select user'
         });
         status.select2({
             width: '100%',
@@ -174,9 +147,6 @@
 
         service_id.on('select2:select', function (e) {
             toggleSelected (e, service_id);
-        });
-        user_ids.on('select2:select', function (e) {
-            toggleSelected (e, user_ids);
         });
         status.on('select2:select', function (e) {
             toggleSelected (e, status);
