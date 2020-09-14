@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\SettingGeneral;
 use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
@@ -37,9 +38,10 @@ class ReportController extends Controller
             $data = $sql->get();
 
         $payments = [];
+        $gs = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
         foreach ($data as $qr) {
             $dd = explode('-', $qr->date);
-            $payments[intVal($dd[1])][intVal($dd[2])] = ($request->show == 'amount') ? $qr->amount : '$'.$qr->amount;
+            $payments[intVal($dd[1])][intVal($dd[2])] = ($request->show == 'amount') ? $qr->amount : $gs->currency.$qr->amount;
         }
         return  $payments;
     }
