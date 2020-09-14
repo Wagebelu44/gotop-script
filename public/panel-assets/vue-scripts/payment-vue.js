@@ -111,7 +111,7 @@ const paymentModule = new Vue({
                     setTimeout(() => {
                         this.loader.payment = false;
                         toastr["success"](res.message);
-                        document.getElementById('payment-form').reset();
+                        
                         $('#paymentAddModal').modal('hide');
 
                         if (isEdit) 

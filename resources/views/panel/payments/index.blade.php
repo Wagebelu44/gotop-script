@@ -90,7 +90,7 @@
                                                     Action
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Details</a>
+                                                    {{-- <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Details</a> --}}
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editPayment(p.id)" >Edit</a>
                                                 </div>
                                             </div>
@@ -121,7 +121,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Amount</strong></label>
-                                                <input type="text" name="amount" v-model='payment_obj.amount' class="form-control custom-form-control" placeholder="Amount" value="14" required >
+                                                <input type="text" name="amount" v-model='payment_obj.amount' class="form-control custom-form-control" placeholder="Amount"  required >
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Payment Method</strong></label>
@@ -132,7 +132,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Memo (optional)</strong></label>
-                                                <input type="text" v-model='payment_obj.memo' name="memo" class="form-control custom-form-control" placeholder="Memo" value="12" required >
+                                                <input type="text" v-model='payment_obj.memo' name="memo" class="form-control custom-form-control" placeholder="Memo"  required >
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -184,6 +184,7 @@
     $('#paymentAddModal').on('hidden.bs.modal', function () {
         paymentModule.payment_edit_id = null;
         paymentModule.payment_edit = false;
+        document.getElementById('payment-form').reset();
     });
 </script>
 @endsection
