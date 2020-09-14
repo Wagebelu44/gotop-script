@@ -34,7 +34,7 @@ class PanelAdminSeeder extends Seeder
         ]);
         
         //Setting table create or update...
-        SettingGeneral::updateOrCreate(['panel_id' => 1], [
+        DB::table('setting_generals')->updateOrInsert(['panel_id' => 1], [
             'updated_by' => 1,
             'status' => 'Active',
             'currency' => 'USD',
