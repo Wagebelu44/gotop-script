@@ -107,39 +107,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($orders as $order)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $order[1] }}</td>
-                            <td>{{ $order[2] }}</td>
-                            <td>{{ $order[3] }}</td>
-                            <td>{{ $order[4] }}</td>
-                            <td>{{ $order[5] }}</td>
-                            <td>{{ $order[6] }}</td>
-                            <td>{{ $order[7] }}</td>
-                            <td>{{ $order[8] }}</td>
-                            <td>{{ $order[9] }}</td>
-                            <td>{{ $order[10] }}</td>
-                            <td>{{ $order[11] }}</td>
-                            <td>{{ $order[12] }}</td>
-                        </tr>
-                        @endforeach
+                            @for ($i = 1; $i < 32; $i++)
+                            <tr>
+                                <td>{{ $i }}</td>
+                                @for ($j = 1; $j < 13; $j++)
+                                <td>{{ isset($orders[$j][$i])?$orders[$j][$i]:0 }}</td>
+                                    @php
+                                        $monthData[$j][] = isset($orders[$j][$i])?$orders[$j][$i]:0;
+                                    @endphp
+                                @endfor
+                            </tr>
+                            @endfor
                         </tbody>
                         <tfoot>
                         <tr>
                             <th>Total</th>
-                            <th>{{ $orders->sum('1') }}</th>
-                            <th>{{ $orders->sum('2') }}</th>
-                            <th>{{ $orders->sum('3') }}</th>
-                            <th>{{ $orders->sum('4') }}</th>
-                            <th>{{ $orders->sum('5') }}</th>
-                            <th>{{ $orders->sum('6') }}</th>
-                            <th>{{ $orders->sum('7') }}</th>
-                            <th>{{ $orders->sum('8') }}</th>
-                            <th>{{ $orders->sum('9') }}</th>
-                            <th>{{ $orders->sum('10') }}</th>
-                            <th>{{ $orders->sum('11') }}</th>
-                            <th>{{ $orders->sum('12') }}</th>
+                            @foreach ($monthData as $mon)
+                            <th>{{ array_sum($mon) }}</th>
+                            @endforeach
                         </tr>
                         </tfoot>
                     </table>

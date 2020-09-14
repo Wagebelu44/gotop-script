@@ -77,39 +77,24 @@
                                    
                                 </thead>
                                 <tbody>
-                                    @foreach($payments as $payment)
+                                    @for ($i = 1; $i < 32; $i++)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>${{ $payment[1] }}</td>
-                                        <td>${{ $payment[2] }}</td>
-                                        <td>${{ $payment[3] }}</td>
-                                        <td>${{ $payment[4] }}</td>
-                                        <td>${{ $payment[5] }}</td>
-                                        <td>${{ $payment[6] }}</td>
-                                        <td>${{ $payment[7] }}</td>
-                                        <td>${{ $payment[8] }}</td>
-                                        <td>${{ $payment[9] }}</td>
-                                        <td>${{ $payment[10] }}</td>
-                                        <td>${{ $payment[11] }}</td>
-                                        <td>${{ $payment[12] }}</td>
+                                        <td>{{ $i }}</td>
+                                        @for ($j = 1; $j < 13; $j++)
+                                        <td>{{ isset($payments[$j][$i])?$payments[$j][$i]:0 }}</td>
+                                            @php
+                                                $monthData[$j][] = isset($payments[$j][$i])?$payments[$j][$i]:0;
+                                            @endphp
+                                        @endfor
                                     </tr>
-                                    @endforeach
+                                    @endfor
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th>Total</th>
-                                        <th>${{ $payments->sum('1') }}</th>
-                                        <th>${{ $payments->sum('2') }}</th>
-                                        <th>${{ $payments->sum('3') }}</th>
-                                        <th>${{ $payments->sum('4') }}</th>
-                                        <th>${{ $payments->sum('5') }}</th>
-                                        <th>${{ $payments->sum('6') }}</th>
-                                        <th>${{ $payments->sum('7') }}</th>
-                                        <th>${{ $payments->sum('8') }}</th>
-                                        <th>${{ $payments->sum('9') }}</th>
-                                        <th>${{ $payments->sum('10') }}</th>
-                                        <th>${{ $payments->sum('11') }}</th>
-                                        <th>${{ $payments->sum('12') }}</th>
+                                        @foreach ($monthData as $mon)
+                                            <th>{{ array_sum($mon) }}</th>
+                                        @endforeach
                                     </tr>
                                     </tfoot>
                             </table>

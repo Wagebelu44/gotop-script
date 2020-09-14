@@ -18,130 +18,117 @@ class ReportController extends Controller
 
     public function payments(Request $request)
     {
-        $request = request();
-        $payments = collect();
-        for ($i = 1; $i < 32; $i++) {
-            $data = collect();
-            for ($j = 1; $j < 13; $j++) {
-                $year = $request->query('year') ?? date('Y');
-                $query = Transaction::where(\DB::raw('Date(created_at)'), $year . '-' . $j . '-' . $i)
-                    ->where('panel_id',  auth()->user()->panel_id)
-                    ->where('status', 'done')
-                    ->where(function($q){
-                        $q->where('transaction_flag', 'admin_panel');
-                        $q->orWhere('transaction_flag', 'payment_gateway');
-                    })
-                    ->where(function ($q) use ($request) {
-                        if ($request->query('user_ids') && !in_array('all', $request->query('user_ids'))) {
-                            $q->whereIn('user_id', $request->query('user_ids'));
-                        }
-                    });
-                $data->put($j, !$request->query('show') 
-                || $request->query('show') == 'amount' ? $query->sum('amount') : $query->count());
+        $year = $request->year ?? date('Y');
+        $sql = Transaction::select(\DB::raw('COUNT(id) AS countId'), \DB::raw('SUM(amount) AS amount'), \DB::raw('DATE(created_at) AS date'))
+            ->whereYear('created_at', $year)
+            ->where('panel_id',  auth()->user()->panel_id)
+            ->where('status', 'done')
+            ->where(function($q){
+                $q->where('transaction_flag', 'admin_panel');
+                $q->orWhere('transaction_flag', 'payment_gateway');
+            })
+            ->groupBy(\DB::raw('DATE(created_at)'));
+            if ($request->status) {
+                $sql->where('status', $request->status);
             }
-            $payments->push($data);
+            if ($request->user_ids  && !in_array('all', $request->user_ids)) {
+                $q->whereIn('user_id', $request->user_ids);
+            }
+            $data = $sql->get();
+
+        $payments = [];
+        foreach ($data as $qr) {
+            $dd = explode('-', $qr->date);
+            $payments[intVal($dd[1])][intVal($dd[2])] = ($request->show == 'amount') ? $qr->amount : '$'.$qr->amount;
         }
         return  $payments;
     }
-    public function order()
+    public function order(Request $request)
     {
-        $request = request();
-        $orders = collect();
-
-        for ($i = 1; $i < 32; $i++) {
-            $data = collect();
-
-            for ($j = 1; $j < 13; $j++) {
-                $year = $request->query('year') ?? date('Y');
-                $query = Order::whereDate('created_at', $year . '-' . $j . '-' . $i)
-                    ->where('panel_id',  auth()->user()->panel_id)
-                    ->where(function ($q) use ($request) {
-                        if ($request->query('user_ids') && !in_array('all', $request->query('user_ids'))) {
-                            $q->whereIn('user_id', $request->query('user_ids'));
-                        }
-                        if ($request->query('service_id') && !in_array('all', $request->query('service_id'))) {
-                            $q->whereIn('service_id', $request->query('service_id'));
-                        }
-                        if ($request->query('status') && !in_array('all', $request->query('status'))) {
-                            $q->whereIn('status', $request->query('status'));
-                        }
-                    });
-
-                if ($request->query('show') == 'charge') {
-                    $result = $query->sum('charges');
-                } elseif ($request->query('show') == 'quantity') {
-                    $result = $query->sum('quantity');
-                } else {
-                    $result = $query->count();
-                }
-
-                $data->put($j, $result);
+        $year = $request->year ?? date('Y');
+        $sql = Order::select(\DB::raw('COUNT(id) AS countId'), \DB::raw('DATE(created_at) AS date'))
+            ->whereYear('created_at', $year)
+            ->where('panel_id',  auth()->user()->panel_id)
+            ->groupBy(\DB::raw('DATE(created_at)'));
+            if ($request->status) {
+                $sql->where('status', $request->status);
             }
+            if ($request->user_ids  && !in_array('all', $request->user_ids)) {
+                $q->whereIn('user_id', $request->user_ids);
+            }
+            if ($request->query('service_id') && !in_array('all', $request->query('service_id'))) {
+                $q->whereIn('service_id', $request->query('service_id'));
+            }
+            if ($request->query('status') && !in_array('all', $request->query('status'))) {
+                $q->whereIn('status', $request->query('status'));
+            }
+            if ($request->query('show') == 'charge') 
+            {
+                $result = $sql->sum('charges');
+            } 
+            elseif ($request->query('show') == 'quantity') 
+            {
+                $result = $sql->sum('quantity');
+            } 
+            else 
+            {
+                $result = $sql->count();
+            }
+            $data = $sql->get();
 
-            $orders->push($data);
+        $orders = [];
+        foreach ($data as $qr) {
+            $dd = explode('-', $qr->date);
+            $orders[intVal($dd[1])][intVal($dd[2])] = $qr->countId;
         }
-
         return view('panel.reports.order', compact('orders'));
     }
 
-    public function ticket()
+    public function ticket(Request $request)
     {
-        $request = request();
-        $tickets = collect();
-
-        for ($i = 1; $i < 32; $i++) {
-            $data = collect();
-
-            for ($j = 1; $j < 13; $j++) {
-                $year = $request->query('year') ?? date('Y');
-                $query = Ticket::whereDate('created_at', $year . '-' . $j . '-' . $i)
-                    ->where('panel_id',  auth()->user()->panel_id)
-                    ->where(function ($q) use ($request) {
-                        if ($request->query('status')) {
-                            $q->where('status', $request->query('status'));
-                        } else {
-                            $q->where('status', 1);
-                        }
-                    })->count();
-                $data->put($j, $query);
+        $year = $request->year ?? date('Y');
+        $sql = Ticket::select(\DB::raw('COUNT(id) AS countId'), \DB::raw('DATE(created_at) AS date'))
+            ->whereYear('created_at', $year)
+            ->where('panel_id',  auth()->user()->panel_id)
+            ->groupBy(\DB::raw('DATE(created_at)'));
+            if ($request->status) {
+                $sql->where('status', $request->status);
             }
+            $data = $sql->get();
 
-            $tickets->push($data);
+        $tickets = [];
+        foreach ($data as $qr) {
+            $dd = explode('-', $qr->date);
+            $tickets[intVal($dd[1])][intVal($dd[2])] = $qr->countId;
         }
-
         return view('panel.reports.ticket', compact('tickets'));
     }
 
-    public function profits()
+    public function profits(Request $request)
     {
-        $request = request();
-        $profits = collect();
-
-        for ($i = 1; $i < 32; $i++) {
-            $data = collect();
-
-            for ($j = 1; $j < 13; $j++) {
-                $year = $request->query('year') ?? date('Y');
-                $result = Order::select(\DB::raw('sum(charges - original_charges) AS total'))
-                    ->where('panel_id',  auth()->user()->panel_id)
-                    ->whereDate('created_at', $year . '-' . $j . '-' . $i)
-                    ->whereNotNull('provider_order_id')
-                    ->where(function ($q) use ($request) {
-                        if ($request->query('service_id') && !in_array('all', $request->query('service_id'))) {
-                            $q->whereIn('service_id', $request->query('service_id'));
-                        }
-                        if ($request->query('status') && !in_array('all', $request->query('status'))) {
-                            $q->whereIn('status', $request->query('status'));
-                        }
-                    })
-                    ->get();
-
-                $data->put($j, $result[0]->total);
+        $year = $request->year ?? date('Y');
+        $sql = Order::select(\DB::raw('COUNT(id) AS countId'), \DB::raw('DATE(created_at) AS date'), 
+        \DB::raw('sum(charges - original_charges) AS total'))
+            //->whereNotNull('provider_order_id')
+            ->whereYear('created_at', $year)
+            ->where('panel_id',  auth()->user()->panel_id)
+            ->groupBy(\DB::raw('DATE(created_at)'));
+            if ($request->status) {
+                $sql->where('status', $request->status);
             }
+            if ($request->query('service_id') && !in_array('all', $request->query('service_id'))) {
+                $q->whereIn('service_id', $request->query('service_id'));
+            }
+            if ($request->query('status') && !in_array('all', $request->query('status'))) {
+                $q->whereIn('status', $request->query('status'));
+            }
+            $data = $sql->get();
 
-            $profits->push($data);
+        $profits = [];
+        foreach ($data as $qr) {
+            $dd = explode('-', $qr->date);
+            $profits[intVal($dd[1])][intVal($dd[2])] = $qr->total;
         }
-
         return view('panel.reports.profit', compact('profits'));
     }
     public function create()

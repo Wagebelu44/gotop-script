@@ -51,39 +51,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($tickets as $ticket)
+                        @for ($i = 1; $i < 32; $i++)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $ticket[1] }}</td>
-                            <td>{{ $ticket[2] }}</td>
-                            <td>{{ $ticket[3] }}</td>
-                            <td>{{ $ticket[4] }}</td>
-                            <td>{{ $ticket[5] }}</td>
-                            <td>{{ $ticket[6] }}</td>
-                            <td>{{ $ticket[7] }}</td>
-                            <td>{{ $ticket[8] }}</td>
-                            <td>{{ $ticket[9] }}</td>
-                            <td>{{ $ticket[10] }}</td>
-                            <td>{{ $ticket[11] }}</td>
-                            <td>{{ $ticket[12] }}</td>
+                            <td>{{ $i }}</td>
+                            @for ($j = 1; $j < 13; $j++)
+                            <td>{{ isset($tickets[$j][$i])?$tickets[$j][$i]:0 }}</td>
+                                @php
+                                    $monthData[$j][] = isset($tickets[$j][$i])?$tickets[$j][$i]:0;
+                                @endphp
+                            @endfor
                         </tr>
-                        @endforeach
+                        @endfor
                         </tbody>
                         <tfoot>
                         <tr>
                             <th>Total</th>
-                            <th>{{ $tickets->sum('1') }}</th>
-                            <th>{{ $tickets->sum('2') }}</th>
-                            <th>{{ $tickets->sum('3') }}</th>
-                            <th>{{ $tickets->sum('4') }}</th>
-                            <th>{{ $tickets->sum('5') }}</th>
-                            <th>{{ $tickets->sum('6') }}</th>
-                            <th>{{ $tickets->sum('7') }}</th>
-                            <th>{{ $tickets->sum('8') }}</th>
-                            <th>{{ $tickets->sum('9') }}</th>
-                            <th>{{ $tickets->sum('10') }}</th>
-                            <th>{{ $tickets->sum('11') }}</th>
-                            <th>{{ $tickets->sum('12') }}</th>
+                            @foreach ($monthData as $mon)
+                            <th>{{ array_sum($mon) }}</th>
+                            @endforeach
                         </tr>
                         </tfoot>
                     </table>

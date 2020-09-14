@@ -86,39 +86,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($profits as $profit)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $profit[1] }}</td>
-                            <td>{{ $profit[2] }}</td>
-                            <td>{{ $profit[3] }}</td>
-                            <td>{{ $profit[4] }}</td>
-                            <td>{{ $profit[5] }}</td>
-                            <td>{{ $profit[6] }}</td>
-                            <td>{{ $profit[7] }}</td>
-                            <td>{{ $profit[8] }}</td>
-                            <td>{{ $profit[9] }}</td>
-                            <td>{{ $profit[10] }}</td>
-                            <td>{{ $profit[11] }}</td>
-                            <td>{{ $profit[12] }}</td>
-                        </tr>
-                        @endforeach
+                            @for ($i = 1; $i < 32; $i++)
+                                <tr>
+                                    <td>{{ $i }}</td>
+                                    @for ($j = 1; $j < 13; $j++)
+                                    <td>{{ isset($profits[$j][$i])?$profits[$j][$i]:'' }}</td>
+                                        @php
+                                            $monthData[$j][] = isset($profits[$j][$i])?$profits[$j][$i]:'';
+                                        @endphp
+                                    @endfor
+                                </tr>
+                            @endfor
                         </tbody>
                         <tfoot>
                         <tr>
                             <th>Total</th>
-                            <th>{{ $profits->sum('1') }}</th>
-                            <th>{{ $profits->sum('2') }}</th>
-                            <th>{{ $profits->sum('3') }}</th>
-                            <th>{{ $profits->sum('4') }}</th>
-                            <th>{{ $profits->sum('5') }}</th>
-                            <th>{{ $profits->sum('6') }}</th>
-                            <th>{{ $profits->sum('7') }}</th>
-                            <th>{{ $profits->sum('8') }}</th>
-                            <th>{{ $profits->sum('9') }}</th>
-                            <th>{{ $profits->sum('10') }}</th>
-                            <th>{{ $profits->sum('11') }}</th>
-                            <th>{{ $profits->sum('12') }}</th>
+                            @foreach ($monthData as $mon)
+                                <th>{{ array_sum($mon) }}</th>
+                            @endforeach
                         </tr>
                         </tfoot>
                     </table>
