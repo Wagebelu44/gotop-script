@@ -28,7 +28,6 @@ class FileController extends Controller
                 $data = [];
                 foreach ($request->file('files') as $k => $file) {
                     $image = (new MediaController())->imageUpload($file, 'files', 1);
-                    $insertData[$k]['image'] = $image['name'];
 
                     $data[] = [
                         'panel_id'   => Auth::user()->panel_id,
