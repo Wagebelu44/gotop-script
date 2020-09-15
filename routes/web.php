@@ -153,4 +153,12 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
     Route::get('/{url}', 'Web\PageController@page')->name('route');
+
+       // Authentication Routes...
+ /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
+       Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
+
+       Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
+       Route::post('/register', 'Panel\Auth\RegisterController@register'); */
+
 });

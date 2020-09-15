@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\Menu;
-use App\Models\SettingGeneral;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\ThemePage;
+use Illuminate\Http\Request;
+use App\Models\SettingGeneral;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
@@ -22,7 +23,7 @@ class PageController extends Controller
         return view('web.home', compact('menus', 'settingGeneral'));
     }
 
-    public function page($url)
+    public function page(Request $request, $url)
     {
         $panelId = session('panel');
 
@@ -66,6 +67,17 @@ class PageController extends Controller
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
 
+        if ($url == 'sign-in') 
+        {
+            $site['url'] = route('login');
+            $site['csrf_field'] = csrf_field();
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+        }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
             'base.html' => str_replace('{{ content }}', '{% block content %}{% endblock %}', $layout->content),
