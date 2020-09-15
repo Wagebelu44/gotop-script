@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Web;
 
 use App\Models\Menu;
 use App\Models\Page;
+use App\Models\Service;
 use App\Models\ThemePage;
 use Illuminate\Http\Request;
 use App\Models\SettingGeneral;
+use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -53,6 +55,7 @@ class PageController extends Controller
         $site['title'] = 'ASDF';
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
+        $site['csrf_field'] = csrf_field();
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/style.css'),
@@ -70,13 +73,26 @@ class PageController extends Controller
         if ($url == 'sign-in') 
         {
             $site['url'] = route('login');
-            $site['csrf_field'] = csrf_field();
+           
             $site['validation_error'] = 0;
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
+        }
+        elseif ( $url ==  'services')
+        {
+            $service = ServiceCategory::with(['services'=> function($q){
+                $q->where('panel_id', auth()->user()->panel_id);
+                $q->where('status', 'active');
+                $q->orderBy('id', 'ASC');
+            }])
+            ->where('status', 'active')
+            ->where('panel_id', auth()->user()->panel_id)
+            ->orderBy('id', 'ASC');
+            $site['service_count'] = $service->count();
+            $site['service_lists'] = $service->get()->toArray();
         }
 
         $loader1 = new \Twig\Loader\ArrayLoader([

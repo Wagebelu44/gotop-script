@@ -15,7 +15,8 @@
   	{% endfor %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container-fluid m-0" >
+          <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <a class="navbar-brand" href="/">
             {% if site['logo'] %}
                 <img style="width: 100px;" src="{{ site['logo'] }}">
@@ -36,6 +37,14 @@
                             </a>
                         </li>
                     {% endfor %}
+					<li class="nav-item" >
+                            <a class="nav-link" href="/logout" 								onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                        </li>
+  							<form id="logout-form" action="/logout" method="POST" class="d-none">
+                            {{ site['csrf_field'] | raw }}
+                                </form>
                 {% else %}
                     {% for menu in menus %}
                         <li{% if menuActive %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
@@ -48,6 +57,8 @@
             </ul>
         </div>
     </nav>
+    </div>
+  
 
 	{{ content }}
 
