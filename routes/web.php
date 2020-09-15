@@ -100,6 +100,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('services', 'Panel\ServiceController');
 
             #Payments...
+            Route::get('payments-lists', 'Panel\PaymentController@getPaymentLists');
             Route::resource('payments', 'Panel\PaymentController');
 
             #Tickets...
@@ -109,6 +110,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('tickets/{ticket}/comment', 'Panel\TicketController@comment')->name('tickets.comment');
 
             #Reports...
+            Route::get('reports/profits', 'Panel\ReportController@profits');
+            Route::get('reports/tickets', 'Panel\ReportController@ticket');
+            Route::get('reports/orders', 'Panel\ReportController@order');
+            Route::get('reports/payment', 'Panel\ReportController@payments');
             Route::resource('reports', 'Panel\ReportController');
 
             #Appearance...
