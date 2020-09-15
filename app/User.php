@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use Notifiable, SoftDeletes, LogsActivity;
 
@@ -19,6 +19,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'panel_id', 'username', 'skype_name', 'phone', 'balance', 'email', 'api_key', 'referral_key', 'email_verified_at', 'password', 'status',
     ];
+
+    protected $appends = ['balance'];
     
     protected $hidden = [
         'password', 'remember_token',
@@ -28,7 +30,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];  
 
-
+    public function balance()
+    {
+        return 5000;
+    }
+    public function getBalanceAttribute()
+    {
+        return 50000;
+    }
     public function servicesList()
     {
         return $this->belongsToMany(Service::class, 'service_price_user', 'user_id', 'service_id')->withPivot('price', 'panel_id');

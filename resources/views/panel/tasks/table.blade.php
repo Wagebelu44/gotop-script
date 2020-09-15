@@ -97,102 +97,94 @@
         </tr>
         </thead>
         <tbody>
-            <tr>
-                <td> <input type="checkbox" name="service_checkbox" class="service_checkbox" v-model="service_checkbox" value="" /> </td>
-                <td></td>
-                <td></td>
-                <td></td>
+            <tr v-for="(o,i) in orders">
                 <td>
-
+                    <input type="checkbox" name="order_checkbox" class="order_checkbox" v-model="order_checkbox" :value="o.id" />
                 </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="status-value"></td>
-                <td></td>
+                <td>@{{ o.id }}</td>
                 <td>
-                    <form action="" method="post" class="d-inline">
-                        @csrf
-                        <input type="hidden" name="order_table_id" value="">
-                        <input type="hidden" name="order_id" value="">
-                        <input type="hidden" name="refill_order_status" value="processing">
-                        <button type="submit" style="background: #77b243;
-                    color: white;
-                    border: none;
-                    padding: 0 10px;
-                    cursor: pointer;">Refill</button>
-                    </form>
-                    <span class="badge badge-primary">refilling</span>
+                    @{{ o.username }}
+                    <div class="badge badge-secondary" v-if="o.drip_feed_id !== null">Drip Feed</div>
+                    <div class="badge badge-secondary" v-if="o.source ==='API'">API</div>
                 </td>
-                    <td>
-                        <div class="dropdown show goTopDropdown">
-                            <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Actions
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <li><a class="dropdown-item type-dropdown-item">Edit Link</a></li>
-                                    <li><a class="dropdown-item type-dropdown-item">Set Start Count</a></li>
-                                    <li><a class="dropdown-item type-dropdown-item">Set Remain</a></li>
-                                    <li><a class="dropdown-item type-dropdown-item">Set Partial</a></li>
-                                    <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item type-dropdown-item">In Progress</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item">Processing</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item">Completed</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="dropdown-item type-dropdown-item">Cancel and refund</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item">Fail Detail</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item" href="">Resend Order</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item">Edit Link</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item" href="#">Order Detail</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item">Set Start Count</a></li>
-                                            <li><a class="dropdown-item type-dropdown-item">Set Partial</a></li>
-                                            <li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item type-dropdown-item">In Progress</a></li>
-                                                    <li><a class="dropdown-item type-dropdown-item">Processing</a></li>
-                                                    <li><a class="dropdown-item type-dropdown-item">Completed</a></li>
-                                                        <li><a class="dropdown-item type-dropdown-item">Pending</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a class="dropdown-item type-dropdown-item">Cancel and refund</a></li>
-                            </ul>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="dropdown show goTopDropdown">
-                            <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Actions
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <li>
-                                        <form action="" method="post">
-                                            @csrf
-                                            <input type="hidden" name="order_table_id"  value="" />
-                                            <input type="hidden" name="order_id"  value="" />
-                                            <input type="hidden" name="refill_order_status"  value="success" />
-                                            <button class="dropdown-item type-dropdown-item">Success</button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="" method="post">
-                                            @csrf
-                                            <input type="hidden" name="order_table_id"  value="" />
-                                            <input type="hidden" name="order_id"  value="" />
-                                            <input type="hidden" name="refill_order_status"  value="rejected" />
+                <td>@{{ o.charges }}</td>
+                <td>
+                    @{{ o.link }}
+                        <span v-if="o.service_type ==='SEO'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Keywords</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='SEO2'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Keywords</a>
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Email</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Custom Comments' || o.service_type ==='Custom Comments Package'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Comments</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Comment Likes' || o.service_type ==='Mentions Users Followers'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Username</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions Custom List' || o.service_type ==='Mentions'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Username</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions with Hashtags'">
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Username</a>
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_2', o )">Hastags</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Comment Replies'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Username</a>
+                            <a  class="service_type_tags" @click="modalVIsible('text_area_1', o )">Comments</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions Hashtag'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Hastags</a>
+                        </span>
+                        <span v-else-if="o.service_type ==='Mentions Media Likers'">
+                            <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', o )">Mediua URLs</a>
+                        </span>
+               
+                </td>
+                <td>@{{ o.start_counter }}</td>
+                <td>@{{ o.quantity }}</td>
+                <td>@{{ o.service_name }}</td> 
+                <td class="status-value">@{{ o.status }}</td>
+                <td>@{{ o.remains }}</td>
+                <td>@{{ o.created_at }}</td>
+                <td>@{{ o.mode }}</td>
+                <td>
+                    <div class="dropdown show goTopDropdown">
+                        <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            @if($order->refill_order_status == 'pending')
+                                <li>
+                                    <form action="#" method="post">
+                                        @csrf
+                                        <input type="hidden" name="order_table_id"  value="{{$order->id}}" />
+                                        <input type="hidden" name="order_id"  value="{{$order->order_id}}" />
+                                        <input type="hidden" name="refill_order_status"  value="success" />
+                                        <button class="dropdown-item type-dropdown-item">Success</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="#" method="post">
+                                        @csrf
+                                    <input type="hidden" name="order_table_id"  value="{{$order->id}}" />
+                                    <input type="hidden" name="order_id"  value="{{$order->order_id}}" />
+                                    <input type="hidden" name="refill_order_status"  value="rejected" />
                                             <button class="dropdown-item type-dropdown-item">Reject</button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="#" method="post">
-                                            @csrf
-                                            <button type="button" class="dropdown-item type-dropdown-item">Details</button>
-                                        </form>
-                                    </li>
-                            </ul>
-                        </div>
-                    </td>
+                                    </form>
+                                </li>
+                            @else
+                            <li>
+                                <form action="#" method="post">
+                                    @csrf
+                                        <button type="button" class="dropdown-item type-dropdown-item">Details</button>
+                                </form>
+                            </li>
+                            @endif
+                        </ul>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>

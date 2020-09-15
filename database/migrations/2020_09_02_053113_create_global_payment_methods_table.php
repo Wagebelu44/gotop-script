@@ -17,7 +17,7 @@ class CreateGlobalPaymentMethodsTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->longText('fields')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -59,56 +59,44 @@
                         <div class="table-responsive">
                             <table class="table table-striped border table-hover">
                                 <thead>
-                                <tr>
-                                    <th>SN</th>
-                                    <th>January</th>
-                                    <th>February</th>
-                                    <th>March</th>
-                                    <th>April</th>
-                                    <th>May</th>
-                                    <th>June</th>
-                                    <th>July</th>
-                                    <th>August</th>
-                                    <th>September</th>
-                                    <th>October</th>
-                                    <th>November</th>
-                                    <th>December</th>
-                                </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>January</th>
+                                        <th>February</th>
+                                        <th>March</th>
+                                        <th>April</th>
+                                        <th>May</th>
+                                        <th>June</th>
+                                        <th>July</th>
+                                        <th>August</th>
+                                        <th>September</th>
+                                        <th>October</th>
+                                        <th>November</th>
+                                        <th>December</th>
+                                    </tr>
+                                   
                                 </thead>
                                 <tbody>
+                                    @for ($i = 1; $i < 32; $i++)
                                     <tr>
-                                        <td>0</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
+                                        <td>{{ $i }}</td>
+                                        @for ($j = 1; $j < 13; $j++)
+                                        <td>{{ isset($payments[$j][$i])?$payments[$j][$i]:0 }}</td>
+                                            @php
+                                                $monthData[$j][] = isset($payments[$j][$i])?$payments[$j][$i]:0;
+                                            @endphp
+                                        @endfor
                                     </tr>
+                                    @endfor
                                 </tbody>
                                 <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                    <th>100</th>
-                                </tr>
-                                </tfoot>
+                                    <tr>
+                                        <th>Total</th>
+                                        @foreach ($monthData as $mon)
+                                            <th>{{ array_sum($mon) }}</th>
+                                        @endforeach
+                                    </tr>
+                                    </tfoot>
                             </table>
                         </div>
                     </div>

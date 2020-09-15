@@ -56,7 +56,7 @@ class CreateServicesTable extends Migration
             $table->string('service_average_time', 100)->nullable();
             $table->string('subscription_type', 200)->nullable();
             $table->boolean('is_user')->default(0);
-            $table->enum('status', ['active', 'inactive'])->nullable();
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->foreign('panel_id')->on('panel_admins')->references('id')->onDelete('cascade');
             $table->foreign('category_id')->on('service_categories')->references('id')->onDelete('cascade');
             $table->timestamps();
