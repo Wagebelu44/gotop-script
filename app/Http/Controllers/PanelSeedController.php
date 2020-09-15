@@ -108,7 +108,7 @@ class PanelSeedController
                 'sort' => 1,
             ];
 
-            $pages = DB::table('pages')->where('panel_id', $user->panel_id)->where('is_editable', 'Yes')->get();
+            $pages = DB::table('pages')->where('panel_id', $user->panel_id)->get();
             foreach ($pages as $page) {
                 $themePageData[] = [
                     'panel_id' => $user->panel_id,

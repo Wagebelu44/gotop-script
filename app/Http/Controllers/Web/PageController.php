@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Models\Menu;
 use App\Models\Page;
+use App\Models\Order;
 use App\Models\Service;
 use App\Models\ThemePage;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class PageController extends Controller
         $panelId = session('panel');
 
         $page = Page::where('panel_id', $panelId)->where('url', $url)->first();
+        
         if (empty($page)) {
             return 1;
         }
@@ -69,7 +71,6 @@ class PageController extends Controller
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
-
         if ($url == 'sign-in') 
         {
             $site['url'] = route('login');
@@ -103,6 +104,41 @@ class PageController extends Controller
              if (Session::has('success')) {
                 $site['success'] = Session::get('success');
              }
+        }
+        elseif ( $url ==  'orders')
+        {
+            $input = $request->all();
+            $order = Order::select('orders.*', 'services.name as service_name')
+            ->where('orders.user_id', auth()->user()->id)
+            ->where('orders.refill_status', 0)
+            ->join('services', 'services.id', '=', 'orders.service_id');
+            if(isset($input['status']))
+            {
+                $orders =  $order->where('orders.status', $input['status'])->orderBy('orders.id', 'DESC')->get()->toArray();
+            }
+            if(isset($input['query']))
+            {
+                $orders =  $order->where('orders.status', $input['query'])->orderBy('orders.id', 'DESC')->get()->toArray();
+            }
+            elseif (isset($input['user_search_keyword'])) {
+                if ($input['status'] !='all') {
+                    $order->where('orders.status', $input['status']);
+                }
+                $q_string = $input['user_search_keyword'];
+                $orders =  $order->where(function($q) use($q_string) {
+                        $q->where('orders.id', 'LIKE', '%' . $q_string . '%');
+                        $q->orWhere('orders.link', 'LIKE', '%' . $q_string . '%');
+                        $q->orWhere('orders.service_id', 'LIKE', '%' . $q_string . '%');
+                        $q->orWhere('orders.status', 'LIKE', '%' . $q_string . '%');
+                })->orderBy('orders.id', 'DESC')->get()->toArray();
+            }
+            else
+            {
+                $orders = $order->orderBy('orders.id', 'DESC')->get()->toArray();
+            }
+            $site['orderList'] = $orders;
+            $site['url'] = $url;
+            $site['status'] = $input['status']??'all';
         }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
