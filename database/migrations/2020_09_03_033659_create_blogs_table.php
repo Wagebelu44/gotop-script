@@ -25,7 +25,7 @@ class CreateBlogsTable extends Migration
             $table->string('meta_keyword')->nullable();
             $table->text('meta_description')->nullable();
             $table->enum('type', ['blog', 'trending_blog', 'popular_blog'])->default('blog');
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
