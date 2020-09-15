@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\SettingGeneral;
 use App\PanelAdmin;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -87,19 +86,19 @@ class PanelAdminSeeder extends Seeder
                 'page_id' => 0,
                 'group' => 'twig',
                 'name' => 'layout.twig',
-                'content' => '',
+                'content' => (file_exists(public_path($theme->location.'/layout.twig')))?file_get_contents(public_path($theme->location.'/layout.twig')):'',
                 'sort' => 1,
             ];
 
-            $pages = DB::table('pages')->where('panel_id', 1)->where('is_editable', 'Yes')->get();
+            $pages = DB::table('pages')->where('panel_id', 1)->get();
             foreach ($pages as $page) {
                 $themePageData[] = [
                     'panel_id' => 1,
                     'theme_id' => $theme->id,
                     'page_id' => $page->id,
                     'group' => 'twig',
-                    'name' => strtolower($page->name).'.twig',
-                    'content' => defaultThemePageContent(),
+                    'name' => Str::slug($page->name, '-').'.twig',
+                    'content' => (file_exists(public_path($theme->location.'/'.Str::slug($page->name, '-').'.twig')))?file_get_contents(public_path($theme->location.'/'.Str::slug($page->name, '-').'.twig')):'',
                     'sort' => 2,
                 ];
             }
@@ -109,7 +108,7 @@ class PanelAdminSeeder extends Seeder
                 'page_id' => 0,
                 'group' => 'css',
                 'name' => 'style.css',
-                'content' => '',
+                'content' => (file_exists(public_path($theme->location.'/style.css')))?file_get_contents(public_path($theme->location.'/style.css')):'',
                 'sort' => 3,
             ];
             $themePageData[] = [
@@ -118,7 +117,7 @@ class PanelAdminSeeder extends Seeder
                 'page_id' => 0,
                 'group' => 'js',
                 'name' => 'custom.js',
-                'content' => '',
+                'content' => (file_exists(public_path($theme->location.'/custom.js')))?file_get_contents(public_path($theme->location.'/custom.js')):'',
                 'sort' => 4,
             ];
         }

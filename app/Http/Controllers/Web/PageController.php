@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\ThemePage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class PageController extends Controller
 {
