@@ -32,7 +32,7 @@ class MediaController
         $data['mime_type'] = $file->getMimeType();
         $data['ext'] = $file->getClientOriginalExtension();
         $data['url'] = url($this->storageFolder.$this->originalPath.$data['name']);
-        
+
         Storage::putFileAs($this->originalPath, $file, $data['name']);
 
         if ($this->thumb) {
@@ -48,12 +48,12 @@ class MediaController
     {
         //Path Create...
         $realPath = $this->basePath.$path.'/';
-        if (!Storage::exists($realPath)) { 
-            Storage::makeDirectory($realPath); 
+        if (!Storage::exists($realPath)) {
+            Storage::makeDirectory($realPath);
         }
 
-        if (!Storage::exists($realPath.'thumb') && $thumb) { 
-            Storage::makeDirectory($realPath.'thumb'); 
+        if (!Storage::exists($realPath.'thumb') && $thumb) {
+            Storage::makeDirectory($realPath.'thumb');
         }
 
         $this->file = $requestFile;
@@ -69,8 +69,8 @@ class MediaController
     {
         //Path Create...
         $realPath = $this->basePath.$path.'/';
-        if (!Storage::exists($realPath)) { 
-            Storage::makeDirectory($realPath); 
+        if (!Storage::exists($realPath)) {
+            Storage::makeDirectory($realPath);
         }
 
         $this->file = $requestFile;
@@ -84,8 +84,8 @@ class MediaController
     {
         //Path Create...
         $realPath = $this->basePath.$path.'/';
-        if (!Storage::exists($realPath)) { 
-            Storage::makeDirectory($realPath); 
+        if (!Storage::exists($realPath)) {
+            Storage::makeDirectory($realPath);
         }
 
         $this->file = $requestFile;
@@ -102,8 +102,8 @@ class MediaController
             $thumbPath = $this->basePath.$path.'/thumb';
         }
 
-        if (!Storage::exists($thumbPath)) { 
-            Storage::makeDirectory($thumbPath); 
+        if (!Storage::exists($thumbPath)) {
+            Storage::makeDirectory($thumbPath);
         }
 
         $img = Image::make($this->storageFolder.$realPath.'/'.$file)
@@ -121,7 +121,7 @@ class MediaController
     public function delete($path, $file, $thumb = false)
     {
         $path = $this->basePath.$path.'/';
-        if (file_exists($path.'/'.$file)) {
+        if (Storage::exists($path.'/'.$file)) {
             Storage::delete($path.'/'.$file);
 
             if ($thumb) {
