@@ -19,9 +19,9 @@ class CreateMenusTable extends Migration
             $table->string('menu_name');
             $table->string('external_link')->nullable();
             $table->integer('menu_link_id');
-            $table->enum('menu_link_type', ['yes', 'no']);
+            $table->enum('menu_link_type', ['Yes', 'No']);
             $table->integer('sort')->default(0);
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
