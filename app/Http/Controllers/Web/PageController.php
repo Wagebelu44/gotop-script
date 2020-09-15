@@ -38,12 +38,12 @@ class PageController extends Controller
         }])
         ->select('menu_link_id', 'menu_name', 'external_link')
         ->where('panel_id', $panelId)
-        ->where('status', 'active')
+        ->where('status', 'Active')
         ->orderBy('sort', 'ASC');
         if (Auth::check()) {
-            $sql->where('menu_link_type', 'no');
+            $sql->where('menu_link_type', 'No');
         } else {
-            $sql->where('menu_link_type', 'yes');
+            $sql->where('menu_link_type', 'Yes');
         }
         $menus = $sql->get();
 

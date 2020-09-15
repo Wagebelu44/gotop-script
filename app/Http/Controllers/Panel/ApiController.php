@@ -84,7 +84,6 @@ class ApiController extends Controller
         $user->assignRole('Super Admin');
 
         //Setting table create or update...
-        activity()->disableLogging();
         DB::table('setting_generals')->updateOrInsert(['panel_id' => $user->panel_id], [
             'updated_by' => $user->id,
             'status' => $request->status,
@@ -112,6 +111,19 @@ class ApiController extends Controller
             ];
         }
         DB::table('pages')->insert($pageData);
+
+        //Added menu to panel...        
+        $menuData = [];
+        $pages = DB::table('pages')->where('panel_id', $user->panel_id)->get();
+        foreach ($pages as $page) {
+            $menuData[] = [
+                'panel_id' => $user->panel_id,
+                'menu_name' => $page->name,
+                'menu_link_id' => $page->id,
+                'menu_link_type' => $page->is_public,
+            ];
+        }
+        DB::table('menus')->insert($menuData);
         
         //Added theme to panel...
         $themeData = [];
@@ -139,7 +151,7 @@ class ApiController extends Controller
                 'page_id' => 0,
                 'group' => 'twig',
                 'name' => 'layout.twig',
-                'content' => '',
+                'content' => (file_exists(public_path($theme->location.'/layout.twig')))?file_get_contents(public_path($theme->location.'/layout.twig')):'',
                 'sort' => 1,
             ];
 
@@ -151,7 +163,7 @@ class ApiController extends Controller
                     'page_id' => $page->id,
                     'group' => 'twig',
                     'name' => strtolower($page->name).'.twig',
-                    'content' => defaultThemePageContent(),
+                    'content' => (file_exists(public_path($theme->location.'/'.Str::slug($page->name, '-').'.twig')))?file_get_contents(public_path($theme->location.'/'.Str::slug($page->name, '-').'.twig')):'',
                     'sort' => 2,
                 ];
             }
@@ -161,7 +173,7 @@ class ApiController extends Controller
                 'page_id' => 0,
                 'group' => 'css',
                 'name' => 'style.css',
-                'content' => '',
+                'content' => (file_exists(public_path($theme->location.'/style.css')))?file_get_contents(public_path($theme->location.'/style.css')):'',
                 'sort' => 3,
             ];
             $themePageData[] = [
@@ -170,7 +182,7 @@ class ApiController extends Controller
                 'page_id' => 0,
                 'group' => 'js',
                 'name' => 'custom.js',
-                'content' => '',
+                'content' => (file_exists(public_path($theme->location.'/custom.js')))?file_get_contents(public_path($theme->location.'/custom.js')):'',
                 'sort' => 4,
             ];
         }

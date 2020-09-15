@@ -30,7 +30,7 @@
             @guest
                 @if(!empty($menus))
                     @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'yes')
+                        @if($menu->menu_link_type == 'Yes')
                             <li class="nav-item menu-border">
                                 <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                             </li>
@@ -40,7 +40,7 @@
             @else
                 @if(!empty($menus))
                     @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'no')
+                        @if($menu->menu_link_type == 'No')
                             <li class="nav-item menu-border">
                                 <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                             </li>
@@ -75,7 +75,7 @@
                     @guest
                         @if(!empty($menus))
                             @foreach($menus as $menu)
-                                @if($menu->menu_link_type == 'yes')
+                                @if($menu->menu_link_type == 'Yes')
                                     <li class="nav-item">
                                         <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                                     </li>
@@ -85,7 +85,7 @@
                     @else
                         @if(!empty($menus))
                             @foreach($menus as $menu)
-                                @if($menu->menu_link_type == 'no')
+                                @if($menu->menu_link_type == 'No')
                                     <li class="nav-item">
                                         <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                                     </li>

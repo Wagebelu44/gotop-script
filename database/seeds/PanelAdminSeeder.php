@@ -14,10 +14,11 @@ class PanelAdminSeeder extends Seeder
      */
     public function run()
     {
+        $panelId = 1;
         //Panel admin create...
         PanelAdmin::create([
             'uuid' => Str::uuid(),
-            'panel_id' => 1,
+            'panel_id' => $panelId,
             'name' => 'Test Admin',
             'email' => 'admin@test.com',
             'password' => bcrypt('12345678'),
@@ -33,7 +34,7 @@ class PanelAdminSeeder extends Seeder
         ]);
         
         //Setting table create or update...
-        DB::table('setting_generals')->updateOrInsert(['panel_id' => 1], [
+        DB::table('setting_generals')->updateOrInsert(['panel_id' => $panelId], [
             'updated_by' => 1,
             'status' => 'Active',
             'currency' => 'USD',
@@ -45,7 +46,7 @@ class PanelAdminSeeder extends Seeder
         $pages = DB::table('global_pages')->get();
         foreach ($pages as $page) {
             $pageData[] = [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'global_page_id' => $page->id,
                 'name' => $page->name,
                 'url' => $page->url,
@@ -59,13 +60,26 @@ class PanelAdminSeeder extends Seeder
             ];
         }
         DB::table('pages')->insert($pageData);
+
+        //Added menu to panel...        
+        $menuData = [];
+        $pages = DB::table('pages')->where('panel_id', $panelId)->get();
+        foreach ($pages as $page) {
+            $menuData[] = [
+                'panel_id' => $panelId,
+                'menu_name' => $page->name,
+                'menu_link_id' => $page->id,
+                'menu_link_type' => $page->is_public,
+            ];
+        }
+        DB::table('menus')->insert($menuData);
         
         //Added theme to panel...
         $themeData = [];
         $themes = DB::table('global_themes')->get();
         foreach ($themes as $theme) {
             $themeData[] = [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'global_theme_id' => $theme->id,
                 'name' => $theme->name,
                 'location' => $theme->location,
@@ -78,10 +92,10 @@ class PanelAdminSeeder extends Seeder
 
         
         //Added theme page to panel...
-        $themes = DB::table('themes')->where('panel_id', 1)->get();
+        $themes = DB::table('themes')->where('panel_id', $panelId)->get();
         foreach ($themes as $theme) {
             $themePageData[] = [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'theme_id' => $theme->id,
                 'page_id' => 0,
                 'group' => 'twig',
@@ -90,10 +104,10 @@ class PanelAdminSeeder extends Seeder
                 'sort' => 1,
             ];
 
-            $pages = DB::table('pages')->where('panel_id', 1)->get();
+            $pages = DB::table('pages')->where('panel_id', $panelId)->get();
             foreach ($pages as $page) {
                 $themePageData[] = [
-                    'panel_id' => 1,
+                    'panel_id' => $panelId,
                     'theme_id' => $theme->id,
                     'page_id' => $page->id,
                     'group' => 'twig',
@@ -103,7 +117,7 @@ class PanelAdminSeeder extends Seeder
                 ];
             }
             $themePageData[] = [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'theme_id' => $theme->id,
                 'page_id' => 0,
                 'group' => 'css',
@@ -112,7 +126,7 @@ class PanelAdminSeeder extends Seeder
                 'sort' => 3,
             ];
             $themePageData[] = [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'theme_id' => $theme->id,
                 'page_id' => 0,
                 'group' => 'js',
@@ -127,7 +141,7 @@ class PanelAdminSeeder extends Seeder
         //Added notification to panel...
         DB::table('setting_notifications')->insert([
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'Welcome',
                 'body' =>  'Hello,
 Thank you for signing up.
@@ -142,7 +156,7 @@ Use it to sign in to {{ panel.url }}',
                 'updated_at' => now(),
             ],
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'Welcome',
                 'body' =>  'Hello,
 You requested a password change. To change your password follow the link below: {{ resetpassword.url }}',
@@ -155,7 +169,7 @@ You requested a password change. To change your password follow the link below: 
                 'updated_at' => now(),
             ],
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'New message',
                 'body' =>   'Hello,
 You have a new message in the ticket.
@@ -169,7 +183,7 @@ Follow the link below to see the message: {{ ticket.url }}',
                 'updated_at' => now(),
             ],
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'Payment received',
                 'body' => 'New payment #{{ payment.id }} received.
 View payment in admin panel: {{ payment.admin_url }}',
@@ -182,7 +196,7 @@ View payment in admin panel: {{ payment.admin_url }}',
                 'updated_at' => now(),
             ],
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'New manual orders',
                 'body' =>   'New manual order(s) received. Total pending manual orders: {{ orders.manual.pending_number }}
 View all manual orders in admin panel: {{ orders.manual.url }}',
@@ -195,7 +209,7 @@ View all manual orders in admin panel: {{ orders.manual.url }}',
                 'updated_at' => now(),
             ],
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'Fail orders',
                 'body' =>   'Order(s) got Fail status. Total orders with Fail status: {{ orders.fail_number }}
 View Fail orders in admin panel: {{ orders.fail_url }}',
@@ -208,7 +222,7 @@ View Fail orders in admin panel: {{ orders.fail_url }}',
                 'updated_at' => now(),
             ],
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'New messages',
                 'body' =>   'New message(s) received. Total unread tickets: {{ tickets.unread_number }}
 View tickets in admin panel: {{ tickets.url }}',
@@ -221,7 +235,7 @@ View tickets in admin panel: {{ tickets.url }}',
                 'updated_at' => now(),
             ],
             [
-                'panel_id' => 1,
+                'panel_id' => $panelId,
                 'subject' => 'New manual payout',
                 'body' =>   'New manual payout request received.
 View Payouts in admin panel: {{ affiliates.payouts }}',
