@@ -74,7 +74,7 @@
                                             <div class="col-md-2">
                                                 <img style="width: 100px" id="preview" src="">
                                                 @if(isset($data->image))
-                                                    <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog-post/'.$data->image) }}">
+                                                    <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog/'.$data->image) }}">
                                                 @endif
                                             </div>
                                         </div>

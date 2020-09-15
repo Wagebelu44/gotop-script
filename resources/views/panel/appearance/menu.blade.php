@@ -200,8 +200,8 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script>
-
         $(function () {
             $( ".tablecontents" ).sortable({
                 items: "tr",

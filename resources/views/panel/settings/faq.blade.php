@@ -104,6 +104,7 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script type="text/javascript">
         @if($page == 'index')
             $(function () {
