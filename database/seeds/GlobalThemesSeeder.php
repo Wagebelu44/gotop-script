@@ -15,13 +15,13 @@ class GlobalThemesSeeder extends Seeder
         $themes = [
             [
                 'name' => 'Default',
-                'location' => public_path('themes/default'),
+                'location' => 'themes/default',
                 'snapshot' => '',
                 'status' => 'Active',
             ],
             [
                 'name' => 'Premium',
-                'location' => public_path('themes/premium'),
+                'location' => 'themes/premium',
                 'snapshot' => '',
                 'status' => 'Deactivated',
             ]
