@@ -6,9 +6,10 @@ use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Service;
-use App\Models\SettingFaq;
 use App\Models\ThemePage;
+use App\Models\SettingFaq;
 use Illuminate\Http\Request;
+use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
@@ -142,6 +143,28 @@ class PageController extends Controller
                 $orders = $order->orderBy('orders.id', 'DESC')->get()->toArray();
             }
             $site['orderList'] = $orders;
+            $site['url'] = $url;
+            $site['status'] = $input['status']??'all';
+        }
+        elseif ( $url ==  'drip-feed')
+        {
+            $date = (new \DateTime())->format('Y-m-d H:i:s');
+        $d_feeds = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
+            ->join('users','users.id','=','drip_feed_orders.user_id')
+            ->join(\DB::raw('(SELECT COUNT(orders.drip_feed_id) AS totalOrders, orders.drip_feed_id, GROUP_CONCAT(DISTINCT(orders.link)) AS orders_link,
+            GROUP_CONCAT(DISTINCT(services.name)) AS service_name, GROUP_CONCAT(DISTINCT(orders.quantity)) AS service_quantity FROM orders INNER JOIN services
+            ON services.id = orders.service_id GROUP BY orders.drip_feed_id) as A'), 'drip_feed_orders.id', '=', 'A.drip_feed_id') 
+            ->leftJoin(\DB::raw("(SELECT drip_feed_id, COUNT(drip_feed_id) AS runOrders FROM orders
+            WHERE order_viewable_time <='".$date."' GROUP BY drip_feed_id) AS B"), 'drip_feed_orders.id', '=', 'B.drip_feed_id');
+
+        if (isset($request->status))
+        {
+            if($request->status != 'all')
+            $d_feeds->where('drip_feed_orders.status',$request->status);
+        }
+
+            $drip_feeds = $d_feeds->OrderBy('id', 'DESC')->get()->toArray();
+            $site['orderList'] = $drip_feeds;
             $site['url'] = $url;
             $site['status'] = $input['status']??'all';
         }

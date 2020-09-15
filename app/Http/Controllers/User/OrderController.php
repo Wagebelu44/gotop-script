@@ -37,6 +37,28 @@ class OrderController extends Controller
         ->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
     }
 
+    public function dripFeed(Request $r)
+    {
+        $date = (new \DateTime())->format('Y-m-d H:i:s');
+        $d_feeds = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
+            ->join('users','users.id','=','drip_feed_orders.user_id')
+            ->join(\DB::raw('(SELECT COUNT(orders.drip_feed_id) AS totalOrders, orders.drip_feed_id, GROUP_CONCAT(DISTINCT(orders.link)) AS orders_link,
+            GROUP_CONCAT(DISTINCT(services.name)) AS service_name, GROUP_CONCAT(DISTINCT(orders.quantity)) AS service_quantity FROM orders INNER JOIN services
+            ON services.id = orders.service_id GROUP BY orders.drip_feed_id) as A'), 'drip_feed_orders.id', '=', 'A.drip_feed_id') 
+            ->leftJoin(\DB::raw("(SELECT drip_feed_id, COUNT(drip_feed_id) AS runOrders FROM orders
+            WHERE order_viewable_time <='".$date."' GROUP BY drip_feed_id) AS B"), 'drip_feed_orders.id', '=', 'B.drip_feed_id');
+
+        if (isset($r->status))
+        {
+            if($r->status != 'all')
+            $d_feeds->where('drip_feed_orders.status',$r->status);
+        }
+
+        $drip_feeds = $d_feeds->OrderBy('id', 'DESC')->get();
+        //dd($drip_feeds);
+
+        return view('reseller.order.drip_feed', compact('drip_feeds'));
+    }
     public function orderLists(Request $r)
     {
         $input = $r->all();
