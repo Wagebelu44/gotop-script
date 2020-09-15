@@ -124,8 +124,6 @@ a.article:hover {
 
 #content {
     width: 100%;
-    padding: 20px;
-    padding-top: 0!important;
     min-height: 100vh;
     transition: all 0.3s;
 }
@@ -145,8 +143,5 @@ a.article:hover {
     }
     #sidebar.active {
         margin-left: 0;
-    }
-    #sidebarCollapse span {
-        display: none;
     }
 }
