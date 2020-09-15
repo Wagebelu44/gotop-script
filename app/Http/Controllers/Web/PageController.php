@@ -101,7 +101,7 @@ class PageController extends Controller
                 $site['error'] = Session::get('error');
              }
              if (Session::has('success')) {
-                $site['success'] = Session::get('error');
+                $site['success'] = Session::get('success');
              }
         }
 
