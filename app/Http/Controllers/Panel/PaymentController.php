@@ -66,7 +66,7 @@ class PaymentController extends Controller
                 ->orderBy($sort_by, $order_by);
                 $payments = $local_payments->paginate($show_page);
                 $total_payments = $local_payments->count();
-                $globalMethods = GlobalPaymentMethod::where('status', 'active')->get();
+                $globalMethods = GlobalPaymentMethod::where('status', 'Active')->get();
                 $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get(); 
             $data = [
                 'payments' => $payments,

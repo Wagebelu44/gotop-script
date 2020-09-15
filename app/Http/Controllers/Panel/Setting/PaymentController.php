@@ -22,7 +22,7 @@ class PaymentController extends Controller
                 ->whereNotIn('id', function ($query) {
                     $query->select('global_payment_method_id')->from('payment_methods')->where('panel_id', Auth::user()->panel_id);
                 })
-                ->where('global_payment_methods.status', 'active')
+                ->where('global_payment_methods.status', 'Active')
                 ->select('*')
                 ->get();
 

@@ -67,8 +67,8 @@
                                                 <button class="btn  dropdown-toggle  custom-dropdown-button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status</button>
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item type-dropdown-item" @click="statusFilter('')" href="">All</a>
-                                                    <a class="dropdown-item type-dropdown-item" @click="statusFilter('active')" href="javascript:void(0)">Active</a>
-                                                    <a class="dropdown-item type-dropdown-item" @click="statusFilter('inactive')" href="javascript:void(0)">Inactive</a>
+                                                    <a class="dropdown-item type-dropdown-item" @click="statusFilter('Active')" href="javascript:void(0)">Active</a>
+                                                    <a class="dropdown-item type-dropdown-item" @click="statusFilter('Deactivated')" href="javascript:void(0)">Deactivated</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -174,12 +174,12 @@
                                                     <label class="custom-control-label" for="customControlValidation1">Pending</label>
                                                 </div>
                                                 <div class="custom-control custom-radio custom-control-inline mt-1">
-                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation2"  v-model="formUser.status"  value="active" required="" />
+                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation2"  v-model="formUser.status"  value="Active" required="" />
                                                     <label class="custom-control-label" for="customControlValidation2">Active</label>
                                                 </div>
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation3"  v-model="formUser.status"  value="inactive" required="" />
-                                                    <label class="custom-control-label" for="customControlValidation3">Inactive</label>
+                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation3"  v-model="formUser.status"  value="Deactivated" required="" />
+                                                    <label class="custom-control-label" for="customControlValidation3">Deactivated</label>
                                                 </div>
                                             </div>
                                             <div v-if="validationErros.length>0" v-for="err in validationErros" class="alert alert-danger alert-dismissible fade show" role="alert">
