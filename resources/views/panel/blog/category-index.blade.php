@@ -62,8 +62,8 @@
                             <div class="form-group">
                                 <label class="form-control-label">Status</label>
                                 <select class="form-control @error('status') is-invalid @enderror" name="status" id="status">
-                                    <option value="active" {{ isset($data) && $data->status == 'active' ? 'selected':'' }}>Active</option>
-                                    <option value="inactive" {{ isset($data) && $data->status == 'inactive' ? 'selected':'' }}>Inactive</option>
+                                    <option value="Active" {{ isset($data) && $data->status == 'Active' ? 'selected':'' }}>Active</option>
+                                    <option value="Deactivated" {{ isset($data) && $data->status == 'Deactivated' ? 'selected':'' }}>Deactivated</option>
                                 </select>
                                 @error('answer')
                                 <span class="invalid-feedback" role="alert">

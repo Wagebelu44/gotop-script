@@ -17,11 +17,11 @@ class CreateStaffEmailsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('panel_id');
             $table->string('email');
-            $table->enum('payment_received', ['0', '1'])->default('0')->comment('0 = Inactive, 1 = Active');
-            $table->enum('new_manual_orders', ['0', '1'])->default('0')->comment('0 = Inactive, 1 = Active');
-            $table->enum('fail_orders', ['0', '1'])->default('0')->comment('0 = Inactive, 1 = Active');
-            $table->enum('new_messages', ['0', '1'])->default('0')->comment('0 = Inactive, 1 = Active');
-            $table->enum('new_manual_payout', ['0', '1'])->default('0')->comment('0 = Inactive, 1 = Active');
+            $table->enum('payment_received', ['0', '1'])->default('0')->comment('0 = Deactivated, 1 = Active');
+            $table->enum('new_manual_orders', ['0', '1'])->default('0')->comment('0 = Deactivated, 1 = Active');
+            $table->enum('fail_orders', ['0', '1'])->default('0')->comment('0 = Deactivated, 1 = Active');
+            $table->enum('new_messages', ['0', '1'])->default('0')->comment('0 = Deactivated, 1 = Active');
+            $table->enum('new_manual_payout', ['0', '1'])->default('0')->comment('0 = Deactivated, 1 = Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

@@ -187,12 +187,12 @@
                 data: {'id': id, "_token": "{{ csrf_token() }}"},
                 success: function (response) {
                     var newUser = '<option value="">Select New Users</opton>';
-                    if (response.payment_method.new_user_status === 'active') {
-                        newUser += '<option value="active" selected>Allowed</option>'+
-                            '<option value="inactive">Not Allowed</option>';
+                    if (response.payment_method.new_user_status === 'Active') {
+                        newUser += '<option value="Active" selected>Allowed</option>'+
+                            '<option value="Deactivated">Not Allowed</option>';
                     } else {
-                        newUser += '<option value="active">Allowed</option>'+
-                            '<option value="inactive" selected>Not Allowed</option>';
+                        newUser += '<option value="Active">Allowed</option>'+
+                            '<option value="Deactivated" selected>Not Allowed</option>';
                     }
                     var parametersHTMl = '';
                     for (var i = 0; i < response.payment_details.length; i++) {
