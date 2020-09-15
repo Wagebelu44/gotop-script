@@ -94,6 +94,16 @@ class PageController extends Controller
             $site['service_count'] = $service->count();
             $site['service_lists'] = $service->get()->toArray();
         }
+        elseif ( $url ==  'mass-order')
+        {
+             $site['url'] = route('massOrder.store');
+             if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+             }
+             if (Session::has('success')) {
+                $site['success'] = Session::get('error');
+             }
+        }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
             'base.html' => str_replace('{{ content }}', '{% block content %}{% endblock %}', $layout->content),
