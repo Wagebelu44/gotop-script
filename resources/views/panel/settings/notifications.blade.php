@@ -408,8 +408,8 @@
                             <div class="form-group">
                                 <label class="control-label" for="status">Status</label>
                                 <select class="form-control" name="status" id="status" required>
-                                    <option value="active" {{ old('status', isset($data) ? $data->status : '') == 'active' ? 'selected' : '' }}>Enabled</option>
-                                    <option value="inactive" {{ old('status', isset($data) ? $data->status : '') == 'inactive' ? 'selected' : '' }}>Disabled</option>
+                                    <option value="Active" {{ old('status', isset($data) ? $data->status : '') == 'Active' ? 'selected' : '' }}>Enabled</option>
+                                    <option value="Deactivated" {{ old('status', isset($data) ? $data->status : '') == 'Deactivated' ? 'selected' : '' }}>Disabled</option>
                                 </select>
                                 @error('status')
                                 <span role="alert">

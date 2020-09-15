@@ -7,6 +7,7 @@ use App\Models\SettingGeneral;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
+use App\Models\SettingFaq;
 use App\Models\ThemePage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -61,6 +62,10 @@ class PageController extends Controller
             asset('assets/js/bootstrap.js'),
             asset('assets/js/custom.js'),
         ];
+
+        if ($url == 'faq') {
+            $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
+        }
 
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
