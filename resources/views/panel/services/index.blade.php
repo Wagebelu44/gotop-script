@@ -956,6 +956,10 @@
                                                 </div>
                                                 <div class="__service_td __service_td_span_type" id="sType">
                                                     @{{service.service_type}} 
+                                                        <span v-if="service.drip_feed_status === 'allow'">
+                                                            <i class="fas fa-tint"></i>
+                                                        </span>
+                                                        
                                                 </div>
                                                 <div class="__service_td __service_td_span_mode" id="sMode">
                                                     @{{service.mode}} 
