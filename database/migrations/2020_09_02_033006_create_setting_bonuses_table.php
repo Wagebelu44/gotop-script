@@ -19,7 +19,7 @@ class CreateSettingBonusesTable extends Migration
             $table->unsignedBigInteger('global_payment_method_id');
             $table->decimal('bonus_amount', 10, 2);
             $table->decimal('deposit_from', 10,2);
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

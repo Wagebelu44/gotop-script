@@ -21,7 +21,7 @@ class CreateSettingNotificationsTable extends Migration
             $table->string('title');
             $table->longText('description');
             $table->enum('type', ['1', '2'])->comment('1 = Users notifications, 2 = Staff notifications');
-            $table->enum('status', ['active', 'inactive'])->default('inactive');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

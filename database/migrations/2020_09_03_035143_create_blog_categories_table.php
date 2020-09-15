@@ -17,7 +17,7 @@ class CreateBlogCategoriesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('panel_id');
             $table->string('name');
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
