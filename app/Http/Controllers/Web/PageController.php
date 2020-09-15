@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\ThemePage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class PageController extends Controller
 {
@@ -60,6 +61,7 @@ class PageController extends Controller
             asset('assets/js/bootstrap.js'),
             asset('assets/js/custom.js'),
         ];
+
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
