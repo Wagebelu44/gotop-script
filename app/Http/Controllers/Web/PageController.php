@@ -62,6 +62,7 @@ class PageController extends Controller
             asset('assets/js/custom.js'),
         ];
 
+
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
 
