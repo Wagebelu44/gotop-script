@@ -1,8 +1,8 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <div class="well well-float">
-                <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
+            <div class="card card-body">
+                <table class="table table-bordered table-striped">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -10,42 +10,33 @@
                         <th class="nowrap">Rate</th>
                         <th class="nowrap">Minimum quantity</th>
                         <th class="nowrap">Maximum quantity</th>
-                        {% if site['average_time'] %}
-                            <th class="nowrap">Average time
-                                <span class="fa fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Description"></span>
-                            </th>
-                        {% endif %}
-                        {% if serviceDescription %}
-                            <th class="hidden-xs hidden-sm service-description__th">Description</th>
-                        {% endif %}
+                        <th class="nowrap">Average time
+                            <span class="fa fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Description"></span>
+                        </th>
+                        <th class="hidden-xs hidden-sm service-description__th">Description</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for category in serviceCategoryList %}
-                        {% if category['name'] %}
-                            <tr>
-                                <td colspan="6"><strong>{{ category['name'] }}</strong></td>
-                            </tr>
-                        {% endif %}
-                        {% for service in category['services'] %}
-                            <tr>
-                            <td>{{ service['id'] }}</td>
-                            <td class="service-name">{{ service['name'] }}</td>
-                            <td>{{ service['rate'] }}</td>
-                            <td>{{ service['min'] }}</td>
-                            <td>{{ service['max'] }}</td>
-                            {% if site['average_time'] %}
-                                <td class="nowrap">{{ service['average_time'] }}</td>
-                            {% endif %}
-                            {% if serviceDescription %}
-                                <td class="hidden-xs hidden-sm service-description">{{service['description']}}</td>
-                                <tr class="visible-xs visible-sm service-description">
-                                    <td colspan="6">{{service['description']}}</td>
+                    {% if site['service_count'] > 0 %}
+                        {% for category in site['service_lists'] %}
+                            {% if category['name'] %}
+                                <tr>
+                                    <td colspan="7"><strong>{{ category['name'] }}</strong></td>
                                 </tr>
                             {% endif %}
-                            </tr>
-                        {% endfor %}
-                    {% endfor%}
+                                {% for service in category['services'] %}
+                                    <tr>
+                                    <td>{{ service['id'] }}</td>
+                                    <td class="service-name">{{ service['name'] }}</td>
+                                    <td>{{ service['price'] }}</td>
+                                    <td>{{ service['min_quantity'] }}</td>
+                                    <td>{{ service['max_quantity'] }}</td>
+                                    <td class="nowrap">{{ service['service_average_time'] }}</td>
+                                    <td>{{ service['description'] }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
