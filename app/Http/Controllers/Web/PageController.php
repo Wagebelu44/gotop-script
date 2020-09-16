@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
+use App\Models\Ticket;
 use App\Models\Service;
 use App\Models\ThemePage;
 use App\Models\SettingFaq;
@@ -60,6 +61,8 @@ class PageController extends Controller
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
         $site['csrf_field'] = csrf_field();
+        $site['csrf_token'] = csrf_token();
+        $site['app_url'] = env('APP_URL');
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/style.css'),
@@ -67,6 +70,7 @@ class PageController extends Controller
         $site['scripts'] = [
             asset('assets/js/jquery.js'),
             asset('assets/js/bootstrap.js'),
+            asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
         ];
 
@@ -167,6 +171,38 @@ class PageController extends Controller
             $site['dripFeedOrderList'] = $drip_feeds;
             $site['url'] = $url;
             $site['status'] = $input['status']??'all';
+        }
+        elseif ( $url ==  'tickets')
+        {
+            $site['url'] = route('ticket.store');
+            $site['scripts'] = [
+                asset('assets/js/vue.js'),
+                asset('user-assets/vue-scripts/ticket-vue.js'),
+            ];
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+             }
+             if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+             }
+             $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
+             $site['ticketLists'] = $ticketLists;
+        }
+        elseif ( $url ==  'new-order')
+        {
+            $site['url'] = route('make.single.order');
+            $site['scripts'] = [
+                asset('assets/js/vue.js'),
+                asset('user-assets/vue-scripts/single-order.js'),
+            ];
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+             }
+             if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+             }
+            //  $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
+            //  $site['ticketLists'] = $ticketLists;
         }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
