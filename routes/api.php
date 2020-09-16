@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/', 'Panel\ApiController@index');
+Route::get('/test', 'Panel\ApiController@index');
 Route::get('/post-log-name', 'Panel\ApiController@sentLogName');
 Route::get('/post-active-log', 'Panel\ApiController@sentActiveLog');
 Route::post('/post-permissions', 'Panel\ApiController@postPermissions');
