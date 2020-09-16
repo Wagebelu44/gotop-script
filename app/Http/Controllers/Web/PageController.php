@@ -166,6 +166,8 @@ class PageController extends Controller
         {
             $site['url'] = route('ticket.store');
             $site['scripts'] = [
+                asset('assets/js/jquery.js'),
+                asset('assets/js/bootstrap.js'),
                 asset('assets/js/vue.js'),
                 asset('user-assets/vue-scripts/ticket-vue.js'),
             ];
@@ -203,6 +205,11 @@ class PageController extends Controller
              }
             //  $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
             //  $site['ticketLists'] = $ticketLists;
+        }
+        elseif ( $url ==  'api')
+        {
+            $site['url'] = url('/');
+            $site['api_key'] = auth()->user()->api_key;
         }
 
         $loader1 = new \Twig\Loader\ArrayLoader([

@@ -37,49 +37,51 @@
                 <a class="nav-link {% if site['status'] =='Canceled' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Canceled">Canceled</a>
             </nav>
             <div class="card card-body">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>date</th>
-                        <th class="width-40">link</th>
-                        <th>charge</th>
-                        <th class="nowrap">startcount</th>
-                        <th>quantity</th>
-                        <th>service</th>
-                        <th>status</th>
-                        <th>remains</th>
-                        {% if task == 1 %}<th>&nbsp;</th>{% endif %}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for order in site['orderList'] %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
                         <tr>
-                            <td>{{ order['id'] }}</td>
-                            <td>{{ order['created_at'] }}</td>
-                            <td class="width-40">{{ order['link'] }}</td>
-                            <td>{{ order['charges'] }}</td>
-                            <td class="nowrap">{{ order['start_counter'] }}</td>
-                            <td>{{ order['quantity'] }}</td>
-                            <td>{{ order['service_name'] }}</td>
-                            <td>{{ order['status'] }}</td>
-                            <td>{{ order['remains'] }}</td>
-                            {% if task == 1 %}
-                                <td>
-                                    <div class="order-actions">
-                                        {% if order['refilling'] == 1 %}
-                                            refilling
-                                        {% else %}
-                                            {% if order['refill'] == 1 %}<a href="{{ page['url'] }}/{{order['id']}}/refill" class="btn btn-xs btn-primary">Refill</a>{% endif %}
-                                            {% if order['cancel'] == 1 %}<a href="{{ page['url'] }}/{{order['id']}}/cancel" class="btn btn-xs btn-default">Cancel</a>{% endif %}
-                                        {% endif %}
-                                    </div>
-                                </td>
-                            {% endif %}
+                            <th>id</th>
+                            <th>date</th>
+                            <th class="width-40">link</th>
+                            <th>charge</th>
+                            <th class="nowrap">startcount</th>
+                            <th>quantity</th>
+                            <th>service</th>
+                            <th>status</th>
+                            <th>remains</th>
+                            {% if task == 1 %}<th>&nbsp;</th>{% endif %}
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {% for order in site['orderList'] %}
+                            <tr>
+                                <td>{{ order['id'] }}</td>
+                                <td>{{ order['created_at'] }}</td>
+                                <td class="width-40">{{ order['link'] }}</td>
+                                <td>{{ order['charges'] }}</td>
+                                <td class="nowrap">{{ order['start_counter'] }}</td>
+                                <td>{{ order['quantity'] }}</td>
+                                <td>{{ order['service_name'] }}</td>
+                                <td>{{ order['status'] }}</td>
+                                <td>{{ order['remains'] }}</td>
+                                {% if task == 1 %}
+                                    <td>
+                                        <div class="order-actions">
+                                            {% if order['refilling'] == 1 %}
+                                                refilling
+                                            {% else %}
+                                                {% if order['refill'] == 1 %}<a href="{{ page['url'] }}/{{order['id']}}/refill" class="btn btn-xs btn-primary">Refill</a>{% endif %}
+                                                {% if order['cancel'] == 1 %}<a href="{{ page['url'] }}/{{order['id']}}/cancel" class="btn btn-xs btn-default">Cancel</a>{% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {% if pagination['count'] > 100 %}
