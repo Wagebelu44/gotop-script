@@ -169,12 +169,12 @@
 
                             </div>
                         </div>
-
                         <input type="hidden" value="" name="menu_type" id="menu_type">
+                    </form>
                         <div class="modal-footer">
                             <div class="col-md-6 submit-update-section">
                                 <div class="form-actions">
-                                    <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Update</button>
+                                    <button type="button" onclick="document.getElementById('menuEditForm').submit();" class="btn btn-success"> <i class="fa fa-check"></i> Update</button>
                                     <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
@@ -191,7 +191,6 @@
                             </div>
                         </div>
 
-                    </form>
                 </div>
                 <!-- /.modal-content -->
             </div>
@@ -295,7 +294,7 @@
                         }else {
                             $('#edit_external_link').hide();
                         }
-                        let updateUrl = "{{ url('admin/menu') }}/"+id;
+                        let updateUrl = "{{ url('admin/appearance/menu') }}/"+id;
                         $('#menuEditForm').attr('action', updateUrl);
                         $('#deleteFormPro').attr('action', updateUrl);
                     }
