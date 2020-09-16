@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Service;
+use App\Models\UserPaymentMethod;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -15,20 +16,20 @@ class User extends Authenticatable
     use Notifiable, SoftDeletes, LogsActivity;
 
     protected $table = 'users';
-    
+
     protected $fillable = [
         'panel_id', 'username', 'skype_name', 'phone', 'balance', 'email', 'api_key', 'referral_key', 'email_verified_at', 'password', 'status',
     ];
 
     protected $appends = ['balance'];
-    
+
     protected $hidden = [
         'password', 'remember_token',
     ];
-    
+
     protected $casts = [
         'email_verified_at' => 'datetime',
-    ];  
+    ];
 
     public function balance()
     {
@@ -57,5 +58,9 @@ class User extends Authenticatable
     {
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
+    }
+
+    public function paymentMethods(){
+        return $this->hasMany(UserPaymentMethod::class, 'user_id', 'id');
     }
 }
