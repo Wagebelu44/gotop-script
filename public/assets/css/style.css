@@ -145,3 +145,33 @@ a.article:hover {
         margin-left: 0;
     }
 }
+
+
+/* web panel style begin here */
+
+.card-header{
+    display: flex;
+    padding: 0px;
+} 
+.card-header .tab-bar{
+    cursor: pointer;
+    flex-basis: 50%;
+    padding: 20px 15px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    font-size: 18px;
+}
+
+.card-header .tab-bar:first-child{
+    border-right: 1px solid #d3d3d3;
+}
+.news-list-panel{
+    padding-top: 20px;
+    min-height: 550px;
+}
+.news-tab-active
+{
+    border-bottom:3px solid #77B243;
+    color: #000;
+}

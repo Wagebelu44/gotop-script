@@ -1,137 +1,1568 @@
 <div class="container">
-    <div class="row">
-        <div class="col">
-            <div id="vueHolder">
-                <form action="{{ site['url'] }}" method="post"  id="order-form-gotop" class="has-validation-callback">
-                {{ site['csrf_field'] | raw }}
-                <div class="form-group">
-                <label for="orderform-category">Category:</label>
-                    <select class="form-control" id="category_id" name="category_id" @change="categoryChanges">
-                        <option value="" >Select a Category</option>
-                        <option :value="c.id" v-for="(c,i) in categoryjs">${c.name}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="orderform-service">Service: </label>
-                    <select class="form-control" id="service_id" name="service_id" v-model="service_id">
-                        <div v-if="services.length !== 0">
-                            <option v-for="serv in services" :value="serv.id">${serv.display_name}</option>
-                        </div>
-                    </select>
-                    <input type="hidden" name="service_mode" v-model="service_mode" >
-                </div>
-                <div class="description hidden fields" id="service_description">
-                    <div class="service-description-split"></div>
-                </div>
-                <div class="description">
-                    <div class="form-group">
-                        <label for="description" class="control-label">Details: 📝 (Read before order)</label>
-                        <div v-html="serviceDesc" readonly style="height: 250px; overflow-y: scroll"  class="form-control"></div>
-                    </div>
-                </div>
-                <div class="form-group  fields" id="order_link">
-                    <label class="control-label" for="field-orderform-fields-link">Link: 📌 (Must be public) </label>
-                    <input class="form-control" name="link" value="" type="text" id="link">
-                </div>
-                <div class="description" v-if="comments_visible">
-                    <div class="form-group">
-                        <label for="comments" class="control-label">Comments: (1 per line)</label>
-                        <textarea  name="text_area_1" @keydown='countPerLine' id="comments" rows="5" style="height: 250px" class="form-control" placeholder="comments"></textarea>
-                    </div>
-                </div>
-                <div class="description" v-if="keyword_visible">
-                    <div class="form-group">
-                        <label for="keywords" class="control-label">Keywords: (1 per line)</label>
-                        <textarea  name="text_area_1" @keydown='countPerLine' id="keywords" rows="5" style="height: 250px" class="form-control" placeholder="Key words"></textarea>
-                    </div>
-                </div>
-                <div class="description" v-if="perline_username_visible">
-                    <div class="form-group">
-                        <label for="keywords" class="control-label">Username: (1 per line)</label>
-                        <textarea  name="text_area_1" @keydown='countPerLine' id="per_line_username" rows="5" style="height: 250px" class="form-control" placeholder="Username per line"></textarea>
-                    </div>
-                </div>
-                <div class="description" v-if="hastags_visible">
-                    <div class="form-group">
-                        <label for="hastags" class="control-label">Hastags: (1 per line)</label>
-                        <textarea  name="text_area_2" id="hastags" rows="5" style="height: 250px" class="form-control" placeholder="Hastags"></textarea>
-                    </div>
-                </div>
-                <div class="form-group  fields" v-if="additional_username_visible" >
-                    <label class="control-label" for="field-orderform-fields-link">Username: </label>
-                    <input class="form-control" name="additional_inputs" value="" type="text" id="username">
-                </div>
-                <div class="form-group  fields" v-if="additional_email_visible">
-                    <label class="control-label" for="field-orderform-fields-link">Email: </label>
-                    <input class="form-control" name="additional_inputs" value="" type="text" id="email">
-                </div>
-                <div class="form-group  fields" v-if="additional_comment_owner_username_visible">
-                    <label class="control-label" for="field-orderform-fields-link">Username of the comment owner </label>
-                    <input class="form-control" name="additional_inputs" value="" type="text" id="owner_username">
-                </div>
-                <div class="form-group  fields"  v-if="additional_hashtags_visible">
-                    <label class="control-label" for="field-orderform-fields-link">Hashtag</label>
-                    <input class="form-control" name="additional_inputs" value="" type="text" id="hashtag">
-                </div>
-                <div class="form-group  fields" v-if="additional_media_url_visible">
-                    <label class="control-label" for="field-orderform-fields-link">Media URL</label>
-                    <input class="form-control" name="additional_inputs" value="" type="text" id="media_url">
-                </div>
-                <div class="form-group  fields" v-if="additional_answer_number_visible" >
-                    <label class="control-label" for="field-orderform-fields-link">Answer Number</label>
-                    <input class="form-control" name="additional_inputs" value="" type="text" id="answer_number">
-                </div>
-                <div class="form-group  fields" id="order_quantity" v-if="quantity_visibility">
-                    <label class="control-label" for="field-orderform-fields-quantity">Quantity: 🔢</label>
-                    <input class="form-control" :class="{ 'input-disabled' : inputDisable}" name="quantity" v-model="quantity" type="number">
-                </div>
-                <span v-if="!quantity_visibility">
-                    <input  name="quantity" v-model="quantity" type="hidden">
-                </span>
-                <div class="order_quantity_validation" v-if="quantity_validation">
-                        <p class="text-danger">${quantity_validation_msg}</p>
-                </div>
-                <div class="form-group" id="drip_feed" v-if="drip_feed_available">
-                    <input type="checkbox" v-model="drip_feed" id="exampleCheck1"  name="drip_feed">
-                    <label class="form-check-label" for="exampleCheck1">Drip-feed</label>
-                </div>
-                <div id="drip_field" class="" v-if="drip_feed_content">
-                    <div class="form-group  fields" id="order_runs">
-                        <label class="control-label" for="field-orderform-fields-runs">Runs: </label>
-                        <input class="form-control" name="runs" v-model="runs" type="number">
-                    </div>
-                    <div class="form-group  fields" id="order_interval">
-                        <label class="control-label" for="field-orderform-fields-interval">Interval (minutes): </label>
-                        <input class="form-control" name="interval" v-model="interval"  type="number">
-                    </div>
-                    <div class="form-group  fields" id="order_total_quantity">
-                        <label class="control-label" for="field-orderform-fields-total_quantity">Total quantity: </label>
-                        <input class="form-control" readonly name="total_quantity"  v-model="total_quantity" type="number" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="card card-mini price bg-light">
-                        <div class="card-body">
-                            <span class="card-text">
-                            <b>Charge: 💰</b></span>
-                            <p>$<span id="order_total">${ charge }</span></p>
-                            <input type="hidden" name="charge" :value="charge">
-                            <p id="not-enough-funds" style="display:none;color:red">Order amount exceeds available funds</p>
-                        </div>
-                    </div>
-                    <span v-if="current_service_type !== 'Package'">
-                        <small class="help-block min-max">Min: <span id="min-q">${min}</span> - Max: <span id="max-q">${max}</span></small>
-                    </span>
-                </div>
-                <div class="form-group" id="custom-comments-div" style="display: none">
-                    <label for="custom_comments" class="control-label">Custom Data</label>
-                    <textarea class="form-control" id="custom_comments" style="height: 150px;" placeholder="1 on each line" name="custom_comments"></textarea>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-primary btn-block" id="btn-proceed" type="submit">Submit</button>
-                </div>
-                </form>
+   <div class="row">
+      <div class="col-md-4 col-sm-12 col-xs-12">
+         <div class="card order-dashboard">
+            <div class="card-body">
+               <div class="table-cell">
+                  <div class="icon rounded-circle">
+                     <i class="fas fa-shipping-fast"></i>
+                  </div>
+               </div>
+               <div class="table-cell">
+                  <div class="content-box">
+                     <div class="title">Total Orders on TSMG</div>
+                     <div class="numbers"> 1245.000</div>
+                     <div class="des-sec">5+ years experience providing SMM services! 🥇</div>
+                  </div>
+               </div>
             </div>
-        </div>
-    </div>
+            <a href="#" class="btn btn-overlay-test bg-green"> <span> View your Orders!️️ </span></a>
+         </div>
+      </div>
+      <div class="col-md-4 col-sm-12 col-xs-12">
+         <div class="card order-dashboard">
+            <div class="card-body">
+               <div class="table-cell">
+                  <div class="icon rounded-circle">
+                     <i class="fas fa-coins"></i>
+                  </div>
+               </div>
+               <div class="table-cell">
+                  <div class="content-box">
+                     <div class="title">Current Balance</div>
+                     <div class="numbers">$15487</div>
+                     <div class="des-sec">Spend your balance and enjoy our services! 🤗</div>
+                  </div>
+               </div>
+            </div>
+            <a href="#" class="btn btn-overlay-test bg-green"> <span>Deposit now!</span> </a>
+         </div>
+      </div>
+      <div class="col-md-4 col-sm-12 col-xs-12">
+         <div class="card order-dashboard">
+            <div class="card-body">
+               <div class="table-cell">
+                  <div class="icon rounded-circle" >
+                     <i class="fa fa-child"></i>
+                  </div>
+               </div>
+               <div class="table-cell">
+                  <div class="content-box" style="cursor: pointer;" onclick="openAccountStatus();" >
+                     <div class="title" >view your Account Status</div>
+                     <div class="numbers">145</div>
+                     <div class="des-sec">Your total spending:  $45784 💰</div>
+                  </div>
+               </div>
+            </div>
+            <a href="#" data-toggle="modal" data-target="#exampleModal"class="btn btn-overlay-test bg-green"> <span>View your Account Status!</span></a>
+         </div>
+      </div>
+      <div class="container custom-space-height mesage-space-height">
+         <div class="row">
+            <div class="col-md-12" style="min-height: 30px; width: 100%">
+               {% if site['error']  %}
+               <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Error!</strong> {{site['error']}}.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               {% endif %}
+               {% if site['success']  %}
+               <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <strong>Success!</strong> {{site['success']}}.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               {% endif %}
+               {% if site['validation_error'] > 0 %}
+               {% for error in site['errors'] %}
+               <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Error!</strong> {{error}}.
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
+               </div>
+               {% endfor %}
+               {% endif %}
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-6">
+         <div class="card">
+            <div class="card-header custom-card-header" id="card-header-order">
+               <span  class="tab-bar order_active" data-id="new-order"> New Order </span>
+               <span  class="tab-bar" data-id="mass-order"> Mass Order</span>
+            </div>
+            <div class="card-body">
+               <div id='new_order'>
+                  <div id="vueHolder">
+                     <form action="{{ site['single_order_url'] }}" method="post"  id="order-form-gotop" class="has-validation-callback">
+                        {{ site['csrf_field'] | raw }}
+                        <div class="form-group">
+                           <label for="orderform-category">Category:</label>
+                           <select class="form-control" id="category_id" name="category_id" @change="categoryChanges">
+                              <option value="" >Select a Category</option>
+                              <option :value="c.id" v-for="(c,i) in categoryjs">${c.name}</option>
+                           </select>
+                        </div>
+                        <div class="form-group">
+                           <label for="orderform-service">Service: </label>
+                           <select class="form-control" id="service_id" name="service_id" v-model="service_id">
+                              <div v-if="services.length !== 0">
+                                 <option v-for="serv in services" :value="serv.id">${serv.display_name}</option>
+                              </div>
+                           </select>
+                           <input type="hidden" name="service_mode" v-model="service_mode" >
+                        </div>
+                        <div class="description hidden fields" id="service_description">
+                           <div class="service-description-split"></div>
+                        </div>
+                        <div class="description">
+                           <div class="form-group">
+                              <label for="description" class="control-label">Details: 📝 (Read before order)</label>
+                              <div v-html="serviceDesc" readonly style="height: 250px; overflow-y: scroll"  class="form-control"></div>
+                           </div>
+                        </div>
+                        <div class="form-group  fields" id="order_link">
+                           <label class="control-label" for="field-orderform-fields-link">Link: 📌 (Must be public) </label>
+                           <input class="form-control" name="link" value="" type="text" id="link">
+                        </div>
+                        <div class="description" v-if="comments_visible">
+                           <div class="form-group">
+                              <label for="comments" class="control-label">Comments: (1 per line)</label>
+                              <textarea  name="text_area_1" @keydown='countPerLine' id="comments" rows="5" style="height: 250px" class="form-control" placeholder="comments"></textarea>
+                           </div>
+                        </div>
+                        <div class="description" v-if="keyword_visible">
+                           <div class="form-group">
+                              <label for="keywords" class="control-label">Keywords: (1 per line)</label>
+                              <textarea  name="text_area_1" @keydown='countPerLine' id="keywords" rows="5" style="height: 250px" class="form-control" placeholder="Key words"></textarea>
+                           </div>
+                        </div>
+                        <div class="description" v-if="perline_username_visible">
+                           <div class="form-group">
+                              <label for="keywords" class="control-label">Username: (1 per line)</label>
+                              <textarea  name="text_area_1" @keydown='countPerLine' id="per_line_username" rows="5" style="height: 250px" class="form-control" placeholder="Username per line"></textarea>
+                           </div>
+                        </div>
+                        <div class="description" v-if="hastags_visible">
+                           <div class="form-group">
+                              <label for="hastags" class="control-label">Hastags: (1 per line)</label>
+                              <textarea  name="text_area_2" id="hastags" rows="5" style="height: 250px" class="form-control" placeholder="Hastags"></textarea>
+                           </div>
+                        </div>
+                        <div class="form-group  fields" v-if="additional_username_visible" >
+                           <label class="control-label" for="field-orderform-fields-link">Username: </label>
+                           <input class="form-control" name="additional_inputs" value="" type="text" id="username">
+                        </div>
+                        <div class="form-group  fields" v-if="additional_email_visible">
+                           <label class="control-label" for="field-orderform-fields-link">Email: </label>
+                           <input class="form-control" name="additional_inputs" value="" type="text" id="email">
+                        </div>
+                        <div class="form-group  fields" v-if="additional_comment_owner_username_visible">
+                           <label class="control-label" for="field-orderform-fields-link">Username of the comment owner </label>
+                           <input class="form-control" name="additional_inputs" value="" type="text" id="owner_username">
+                        </div>
+                        <div class="form-group  fields"  v-if="additional_hashtags_visible">
+                           <label class="control-label" for="field-orderform-fields-link">Hashtag</label>
+                           <input class="form-control" name="additional_inputs" value="" type="text" id="hashtag">
+                        </div>
+                        <div class="form-group  fields" v-if="additional_media_url_visible">
+                           <label class="control-label" for="field-orderform-fields-link">Media URL</label>
+                           <input class="form-control" name="additional_inputs" value="" type="text" id="media_url">
+                        </div>
+                        <div class="form-group  fields" v-if="additional_answer_number_visible" >
+                           <label class="control-label" for="field-orderform-fields-link">Answer Number</label>
+                           <input class="form-control" name="additional_inputs" value="" type="text" id="answer_number">
+                        </div>
+                        <div class="form-group  fields" id="order_quantity" v-if="quantity_visibility">
+                           <label class="control-label" for="field-orderform-fields-quantity">Quantity: 🔢</label>
+                           <input class="form-control" :class="{ 'input-disabled' : inputDisable}" name="quantity" v-model="quantity" type="number">
+                        </div>
+                        <span v-if="!quantity_visibility">
+                        <input  name="quantity" v-model="quantity" type="hidden">
+                        </span>
+                        <div class="order_quantity_validation" v-if="quantity_validation">
+                           <p class="text-danger">${quantity_validation_msg}</p>
+                        </div>
+                        <div class="form-group" id="drip_feed" v-if="drip_feed_available">
+                           <input type="checkbox" v-model="drip_feed" id="exampleCheck1"  name="drip_feed">
+                           <label class="form-check-label" for="exampleCheck1">Drip-feed</label>
+                        </div>
+                        <div id="drip_field" class="" v-if="drip_feed_content">
+                           <div class="form-group  fields" id="order_runs">
+                              <label class="control-label" for="field-orderform-fields-runs">Runs: </label>
+                              <input class="form-control" name="runs" v-model="runs" type="number">
+                           </div>
+                           <div class="form-group  fields" id="order_interval">
+                              <label class="control-label" for="field-orderform-fields-interval">Interval (minutes): </label>
+                              <input class="form-control" name="interval" v-model="interval"  type="number">
+                           </div>
+                           <div class="form-group  fields" id="order_total_quantity">
+                              <label class="control-label" for="field-orderform-fields-total_quantity">Total quantity: </label>
+                              <input class="form-control" readonly name="total_quantity"  v-model="total_quantity" type="number" >
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="card card-mini price bg-light">
+                              <div class="card-body">
+                                 <span class="card-text">
+                                 <b>Charge: 💰</b></span>
+                                 <p>$<span id="order_total">${ charge }</span></p>
+                                 <input type="hidden" name="charge" :value="charge">
+                                 <p id="not-enough-funds" style="display:none;color:red">Order amount exceeds available funds</p>
+                              </div>
+                           </div>
+                           <span v-if="current_service_type !== 'Package'">
+                           <small class="help-block min-max">Min: <span id="min-q">${min}</span> - Max: <span id="max-q">${max}</span></small>
+                           </span>
+                        </div>
+                        <div class="form-group" id="custom-comments-div" style="display: none">
+                           <label for="custom_comments" class="control-label">Custom Data</label>
+                           <textarea class="form-control" id="custom_comments" style="height: 150px;" placeholder="1 on each line" name="custom_comments"></textarea>
+                        </div>
+                        <div class="form-group">
+                           <button class="btn btn-primary btn-block" id="btn-proceed" type="submit">Submit</button>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+               <div id='mass_order' style="display:none">
+                  <form method="post" action="{{ site['mass_order_url'] }}" id="mass_order" class="has-validation-callback">
+                     {{ site['csrf_field'] | raw }}
+                     <div class="form-group">
+                        <label for="links">One order per line in format</label>
+                        <textarea class="form-control" name="content" rows="15" id="content" placeholder="service_id|quantity|link"></textarea>
+                     </div>
+                     <div class="form-group">
+                        <button class="btn btn-block btn-primary" type="submit">Submit</button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="col-6">
+         <div class="col-md">
+                <div class="card bg-white">
+                    <div class="card-header custom-card-header" id="card-header-id">
+                        <span class="tab-bar news-tab-active" data-id="latestNews"> 
+                        Important News
+                        </span>
+                        <span class="tab-bar" data-id="genralnews"> 
+                          Service Updates
+                        </span>
+                    </div>
+                </div>
+                <div class="card bg-white latest-news-panel radious-control">
+                    <div id="latest-news">
+                        <div class="card-body">
+                        <p>
+                            </p><p><i class="green"><b>Join our Premium WhatsApp Group and Earn Money Every Weekend! </b>💰</i></p>
+                            To provide further assistance to help you reach your social media marketing goals, we have a WhatsApp group where all our customers can join.
+                            <br>
+                            <br>Every user who joins the group is added to a list which makes them eligible to <strong>win $5 on their balance every Sunday at 10pm GMT.</strong> We also share important website updates on the group such as:</b>                           
+                            <br>
+                            <br><i class="fas fa-arrow-alt-circle-right"style="color:#77b243;"></i> <strong>Our Best Performing Services!</strong>
+                            <br><i class="fas fa-arrow-alt-circle-right"style="color:#77b243;"></i> <strong>Every Time We Add a New Category or Service!</strong>
+                            <br><i class="fas fa-arrow-alt-circle-right"style="color:#77b243;"></i> <strong>Every Time We are Giving out Deposit Bonus!</strong>
+                            <br>
+                            <br>Also, all users who are in groups will be notified about everything that is happening on the website.
+                            <br>
+                            <br>In order to join all you have to do is to <u>click the link below</u>&nbsp;and join our <strong>Premium Group</strong>&nbsp;👇
+						
+
+                            <p><b></b></p>
+                            <p></p>
+                            <p><b><i class="fas fa-arrow-alt-circle-right"style="color:#77b243;"></i></b><a target="_blank" rel="nofollow" href="https://chat.whatsapp.com/JiePvtsXX1k6BYBs9ni4pN"><b> bit.ly/Premium-WhatsApp </b><i class="fas fa-arrow-alt-circle-left"style="color:#77b243;"></i></a><b></b></p>
+                            <p></p>
+                            <p><i class="green">-The Social Media Growth Team-</i></p>
+                        </div>
+                    </div>
+                    <div  id="general-news" class="card-body" style="display: none">
+                        <div class="news-list-panel">
+                            <div class="news-list-item"><span class="badge badge-green date">17 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram Package {Followers + Likes + Comments + Views} [LARGE] 📦📅 - $80</li>
+                                            <li class="list-item">
+                                                108 - Youtube - Subscribers 🙍🙍‍📅 - $40</li>
+                                            <li class="list-item">
+                                                109 - Twitter - Retweets 🔁📅 - $40</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">11 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">130 - Instagram Package {Followers + Likes + Comments + Views} [SMALL] 📦 - $50</li>
+                                            <li class="list-item">
+                                                138 - Instagram Package {Followers + Likes + Comments + Views} [MEDIUM] 📦 - $80</li>
+                                            <li class="list-item">
+                                                139 - Instagram Package {Followers + Likes + Comments + Views} [SMALL] 📦 - $100</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">13 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes [POWER LIKES] 🔥📅 - $6</li>
+                                            <li class="list-item">
+                                                108 - Youtube - Views 👀📅 - $6</li>
+                                            <li class="list-item">
+                                                109 - Facebook - Post Likes 👍📅 - $10</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">11 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes [POWER LIKES] 🔥📅 - $6</li>
+                                            <li class="list-item">
+                                                108 - Youtube - Views 👀📅 - $6</li>
+                                            <li class="list-item">
+                                                109 - Facebook - Post Likes 👍📅 - $10</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">9 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">134 - Youtube Views - Watch Time Booster { Increase Your Monetization Matter } 📺 - $19.97</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">7 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                7 - Instagram - Followers [3K] ⚡️♻ - Price for 1K - $9.8 (Price increased from $9)</li>
+                                            <li class="list-item">
+                                                8 - Instagram - Followers [5K] ⚡️♻ - Price for 1K - $9.6 (Price increased from $8.75)</li>
+                                            <li class="list-item">
+                                                9 - Instagram - Followers [10K] ⚡️♻ - Price for 1K - $9.4 (Price increased from $8.5)</li>
+                                            <li class="list-item">
+                                                10 - Instagram - Followers [15K] ⚡️♻ - Price for 1K - $9.2 (Price increased from $8.25)</li>
+                                            <li class="list-item">
+                                                11 - Instagram - Followers [20K] ⚡️♻ - Price for 1K - $9 (Price increased from $8)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">6 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram Package {Followers + Likes + Comments + Views} 📦📅 - $40</li>
+                                            <li class="list-item">
+                                                108 - Instagram Views [ULTRA FAST] 💯📅 - $0.5</li>
+                                            <li class="list-item">
+                                                109 - Instagram - Comments [RANDOM] ❓📅 - $25</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">4 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram Package {Followers + Likes + Comments + Views} 📦📅 - $40</li>
+                                            <li class="list-item">
+                                                108 - Instagram Views [ULTRA FAST] 💯📅 - $0.5</li>
+                                            <li class="list-item">
+                                                109 - Instagram - Comments [RANDOM] ❓📅 - $25</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">3 April 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">130 - Instagram Package {Followers + Likes + Comments + Views} 📦 - $50</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">31 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">124 - Netflix 4 Screen UHD Account [Per Month] 🎞️ - $8</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">30 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">125 - PUBG UC 35 Cash - No Hack [Instant Delivery] 🔫 - $2</li>
+                                            <li class="list-item">
+                                                126 - PUBG UC 75 Cash - No Hack [Instant Delivery] 🔫 - $3.5</li>
+                                            <li class="list-item">
+                                                127 - PUBG UC 220 Cash - No Hack [Instant Delivery] 🔫 - $8</li>
+                                            <li class="list-item">
+                                                128 - PUBG UC 770 Cash - No Hack [Instant Delivery] 🔫 - $20</li>
+                                            <li class="list-item">
+                                                129 - PUBG UC 2010 Cash - No Hack [Instant Delivery] 🔫 - $50</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">30 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes [FAST] 👍📅 - $2</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Followers [FAST] 🌐📅 - $8</li>
+                                            <li class="list-item">
+                                                109 - Twitter - Favourites 💗📅- $8</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">28 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes [FAST] 👍📅 - $2</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Followers [FAST] 🌐📅 - $8</li>
+                                            <li class="list-item">
+                                                109 - Twitter - Favourites 💗📅- $8</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">24 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                48 - Facebook - Page likes 👍 - $19.99 (Price reduced from $29.99)</li>
+                                            <li class="list-item">
+                                                49 - Facebook - Post Likes 👍 - $14.99 (Price reduced from $19.99)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">23 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Youtube - Subscribers 🙍📅 - 35$</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Impressions 💥📅 - $1</li>
+                                            <li class="list-item">
+                                                109 - TikTok - Likes 👍📅- $10</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">21 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Youtube - Subscribers 🙍📅 - 35$</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Impressions 💥📅 - $1</li>
+                                            <li class="list-item">
+                                                109 - TikTok - Likes 👍📅- $10</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">18 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                41 - Youtube - Subscribers 🙍🙍 - $49.99 (Price reduced from $59.99)</li>
+                                            <li class="list-item">
+                                                42 - Youtube - Likes 👍 - $24.99 (Price reduced from $39.99)</li>
+                                            <li class="list-item">
+                                                47 - Youtube - Views 👀 - $7.99 (Price reduced from $9.99)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">16 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                We improved like's quality on the next services:</li>
+                                            <li class="list-item">
+                                                18 - Instagram - Likes INSTANT ⚡💨 - $5.49 (Quality improved!)</li>
+                                            <li class="list-item">
+                                                19 - Instagram - Likes [LIKES + IMPRESSION] 👍😄 - $7.49 (Quality improved!)</li>
+                                            <li class="list-item">
+                                                21 - Instagram - Likes [MALE] 👍👨 - $7.99 (Quality improved!)</li>
+                                            <li class="list-item"></li>
+                                            <li class="list-item">
+                                                22 - Instagram - Likes [FEMALE] 👍👩 - $7.99 (Quality improved!)
+                                            </li>
+                                            <li class="list-item">
+                                                23 - Instagram - Likes [USA] 👍🌎 - $7.99 (Quality improved!)
+                                            </li>
+                                            <li class="list-item">
+                                                24 - Instagram - Likes [EUROPE] 👍🌍- $7.99 (Quality improved!)
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">14 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                43 - Youtube - Dislikes 👎 - $29.99</li>
+                                        </ul>
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">50 - Facebook - Post Likes [EMOJI] 👍😄</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">14 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram shout-out on 6 pages (1M followers network) 📢📅 - 10$</li>
+                                            <li class="list-item">
+                                                108 - Facebook - Post Likes 👍📅 - $14.99</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Views 👀📅 - $7.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">14 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram shout-out on 6 pages (1M followers network) 📢📅 - 10$</li>
+                                            <li class="list-item">
+                                                108 - Facebook - Post Likes 👍📅 - $14.99</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Views 👀📅 - $7.99</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">9 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Followers [ORGANIC] 👍📅 - 8.97$</li>
+                                            <li class="list-item">
+                                                108 - Youtube - Views [HIGH QUALITY] 👀📅 - $7.99</li>
+                                            <li class="list-item">
+                                                109 - TikTok - Followers [BEST WORKING] 🙋️📅 - $15.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">8 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">30 - Instagram - Comments [CUSTOM] 💬✍️ - $44.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">7 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Followers [ORGANIC] 👍📅 - 8.97$</li>
+                                            <li class="list-item">
+                                                108 - Youtube - Views [HIGH QUALITY] 👀📅 - $7.99</li>
+                                            <li class="list-item">
+                                                109 - TikTok - Followers [BEST WORKING] 🙋️📅 - $15.99</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">4 March 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                74 - Instagram Followers [1 CLICK DELIVERY] 🔥🔥 - $9.50 (Quality improved!)</li>
+                                            <li class="list-item">
+                                                1 - Instagram - Premium Followers [ORGANIC] 💧🙎 - $19.97 (Quality improved!)</li>
+                                            <li class="list-item">
+                                                13 - Instagram - Followers [MALE] 👨 - $19.97 (Quality improved!)</li>
+                                            <li class="list-item">
+                                                14 - Instagram - Followers [FEMALE] 👩 - $19.97 (Quality improved!)</li>
+                                            <li class="list-item"></li>
+                                            <li class="list-item">
+                                                15 - Instagram - Followers [USA] 🌎 - $24.97 (Quality improved!)
+                                            </li>
+                                            <li class="list-item">
+                                                16 - Instagram - Followers [EUROPE] 🌍 - $24.97 (Quality improved!)
+                                            </li>
+                                            <li class="list-item">
+                                                67 - Instagram - Followers INSTANT ⚡💨 🌎 - $12.97 (Quality improved!)
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">24 February 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes 👍📅 - 3.97$</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Comments [RANDOM] 💬📅 - $29.97</li>
+                                            <li class="list-item">
+                                                109 - Instagram - Views 👀📅 - $0.90</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">22 February 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes 👍📅 - 3.97$</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Comments [RANDOM] 💬📅 - $29.97</li>
+                                            <li class="list-item">
+                                                109 - Instagram - Views 👀📅 - $0.90</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">16 February 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">Instagram Followers Packages 💎 [REAL THROUGH ADS]</li>
+                                            <li class="list-item">
+                                                111 - Instagram Followers [Real Ads Method] 💎 [500 Followers] - 20$</li>
+                                            <li class="list-item">
+                                                112 - Instagram Followers [Real Ads Method] 💎 [1000 Followers] - 35$</li>
+                                            <li class="list-item">
+                                                114 - Instagram Followers [Real Ads Method] 💎 [2000 Followers] - 60$</li>
+                                            <li class="list-item">
+                                                115 - Instagram Followers [Real Ads Method] 💎 [5000 Followers] - 125$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">5 February 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">5 - Instagram - Premium Likes [ORGANIC] 💧👍 (Quality Increased)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">3 February 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Youtube - Subscribers 🙍🙍‍♂️📅 - 44.47$</li>
+                                            <li class="list-item">
+                                                108 - Youtube - Likes 👍 📅 - $29.97</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Views 👀📅 - $6.97</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">1 February 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Youtube - Subscribers 🙍🙍‍♂️📅 - 44.47$</li>
+                                            <li class="list-item">
+                                                108 - Youtube - Likes 👍 📅 - $29.97</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Views 👀📅 - $6.97</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">30 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">Instagram Shout-outs 📢</li>
+                                            <li class="list-item">
+                                                70 - Instagram shout-out on page between 10k - 30k followers 📢 - $5</li>
+                                            <li class="list-item">
+                                                71 - Instagram shout-out on page between 50k - 100k followers 📢 - $10</li>
+                                            <li class="list-item">
+                                                72 - Instagram shout-out on page between 100k - 200k followers 📢 - $20</li>
+                                            <li class="list-item">
+                                                73 - Instagram shout-out on 6 pages (1M followers network) 📢 - $25</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">28 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">🔥 Instagram POWER Likes 🔥</li>
+                                            <li class="list-item">
+                                                110 - Instagram - POWER Likes [INSTANT] 👍🔥 - $9.97</li>
+                                            <li class="list-item">
+                                                2 - Instagram - Premium POWER Likes [TOP IN MARKET] 🔥 - $11.99</li>
+                                            <li class="list-item">20 - Instagram - Likes [POWER LIKES] 👍🔥 - 9.97$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">26 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - IGTV Views 👀📺📅 - $2.47</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Comments [POSITIVE] 💬🙌📅 - $29.99</li>
+                                            <li class="list-item">
+                                                109 - TikTok Followers 🙋‍♂‍🙋‍♀📅 - $14.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">24 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - IGTV Views 👀📺📅 - $2.47</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Comments [POSITIVE] 💬🙌📅 - $29.99</li>
+                                            <li class="list-item">
+                                                109 - TikTok Followers 🙋‍♂‍🙋‍♀📅 - $14.99</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">24 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                75 - Instagram Emergency Likes [SUPER FAST] ⚡⚡- $6.49 (Price reduced from $6.99)</li>
+                                            <li class="list-item">
+                                                5 - Instagram - Premium Likes [ORGANIC] 💧👍 - $9.47 (Price reduced from $9.97)</li>
+                                            <li class="list-item">
+                                                7 - Instagram - Likes 👍 - $4.49 (Price reduced from $4.99)</li>
+                                            <li class="list-item">
+                                                18 -Instagram - Likes INSTANT ⚡💨 - $5.49 (Price reduced from $5.99)</li>
+                                            <li class="list-item"></li>
+                                            <li class="list-item">
+                                                All other Likes services are also discounted, make sure to check it out!
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">19 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                113 - Instagram - IGTV Likes 👍📺 - $9.97</li>
+
+                                        </ul>
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                6 - Instagram - Premium IGTV Views 👀📺🔥 - $4.97</li>
+                                            <li class="list-item">
+                                                35 - Instagram - IGTV Views 👀📺 - $4.49</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">19 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Followers [INSTANT START] 🙍🙍‍♂️📅 - $5.99</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Views 👀📅 - $0.80</li>
+                                            <li class="list-item">
+                                                109 - Facebook - Post Likes 👍📅 - $14.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">17 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Followers [INSTANT START] 🙍🙍‍♂️📅 - $5.99</li>
+                                            <li class="list-item">
+                                                108 - Instagram - Views 👀📅 - $0.80</li>
+                                            <li class="list-item">
+                                                109 - Facebook - Post Likes 👍📅 - $14.99</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">12 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes [INSTANT] ⚡💨📅 - $3.99</li>
+                                            <li class="list-item">
+                                                108 - Twitter - Followers 🙋🙋️📅 - $19.99</li>
+                                            <li class="list-item">
+                                                109 - Pinterest - Followers [BOARD] 🙎️📅 - $8.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">10 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes [INSTANT] ⚡💨📅 - $3.99</li>
+                                            <li class="list-item">
+                                                108 - Twitter - Followers 🙋🙋️📅 - $19.99</li>
+                                            <li class="list-item">
+                                                109 - Pinterest - Followers [BOARD] 🙎️📅 - $8.99</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">5 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Followers 🙍🙍📅 - $7.49</li>
+                                            <li class="list-item">
+                                                108 - Facebook - Post likes 👍📅 - $19.99</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Views 👀📅 - $2.49</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">4 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">🎅 New Year Services 🎅 </li>
+                                            <li class="list-item">
+                                                110 - 🎄 Instagram - Followers 🎄 [1K] - $6.49</li>
+                                            <li class="list-item">
+                                                111 - 🎄 Instagram - Likes 🎄 [1K] - $3.49</li>
+                                            <li class="list-item">
+                                                112 - 🎄 Instagram - Comments 🎄 [1K] - $29.99</li>
+                                            <li class="list-item">
+                                                113 - 🎄Instagram - Views 🎄 [1K] - $0.99</li>
+                                            <li class="list-item">
+                                                114 - 🎁 Facebook - Page Likes 🎁 [1K] - $24.99</li>
+                                            <li class="list-item">
+                                                115 - 🎁 Facebook - Post Likes 🎁 [1K] - $14.99</li>
+                                            <li class="list-item">
+                                                116 - 🎅🏽 Youtube - Subscribers 🎅🏽 [1K] - $44.99</li>
+                                            <li class="list-item">
+                                                117 - 🎅🏽 Youtube - Likes 🎅🏽 [1K] - $29.99</li>
+                                            <li class="list-item">
+                                                118 - 🎅🏽 Youtube - Views 🎅🏽 [1K] - $0.79</li>
+                                            <li class="list-item">
+                                                119 - 🧨 Twitter - Followers 🧨 [1K] - $24.99</li>
+                                            <li class="list-item">
+                                                120 - 🧨 Twitter - Favorites 🧨 [1K] - $7.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">3 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Followers 🙍🙍📅 - $7.49</li>
+                                            <li class="list-item">
+                                                108 - Facebook - Post likes 👍📅 - $19.99</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Views 👀📅 - $2.49</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">1 January 2020</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">🎅 New Year Services 🎅</li>
+                                            <li class="list-item">
+                                                110 - 🎄 Instagram - Followers 🎄 [1K] - $6.49</li>
+                                            <li class="list-item">
+                                                111 - 🎄 Instagram - Likes 🎄 [1K] - $3.49</li>
+                                            <li class="list-item">
+                                                112 - 🎄 Instagram - Comments 🎄 [1K] - $29.99</li>
+                                            <li class="list-item">
+                                                113 - 🎄Instagram - Views 🎄 [1K] - $0.99</li>
+                                            <li class="list-item">
+                                                114 - 🎁 Facebook - Page Likes 🎁 [1K] - $24.99</li>
+                                            <li class="list-item">
+                                                115 - 🎁 Facebook - Post Likes 🎁 [1K] - $14.99</li>
+                                            <li class="list-item">
+                                                116 - 🎅🏽 Youtube - Subscribers 🎅🏽 [1K] - $44.99</li>
+                                            <li class="list-item">
+                                                117 - 🎅🏽 Youtube - Likes 🎅🏽 [1K] - $29.99</li>
+                                            <li class="list-item">
+                                                118 - 🎅🏽 Youtube - Views 🎅🏽 [1K] - $0.79</li>
+                                            <li class="list-item">
+                                                119 - 🧨 Twitter - Followers 🧨 [1K] - $24.99</li>
+                                            <li class="list-item">
+                                                120 - 🧨 Twitter - Favorites 🧨 [1K] - $7.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">29 December 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes 👍📅 - $3.49</li>
+                                            <li class="list-item">
+                                                108 - Facebook - Page likes 👍📅 - $19.99</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Subscribers 🙍🙍‍♂‍ 📅 - $44.99</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">27 December 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">📅 Weekly Special Services 📅</li>
+                                            <li class="list-item">
+                                                107 - Instagram - Likes 👍📅 - $3.49</li>
+                                            <li class="list-item">
+                                                108 - Facebook - Page likes 👍📅 - $19.99</li>
+                                            <li class="list-item">
+                                                109 - Youtube - Subscribers 🙍🙍‍♂‍ 📅 - $44.99</li>
+                                            <li class="list-item">
+                                                This category will be enabled only on Sunday and Saturday, and every weekend we will change services and put a discount on random services! ⚙️
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">28 November 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">
+                                                💣💣BLACK FRIDAY DISCOUNT💣💣</li>
+                                            <li class="list-item">
+                                                Prices for all services in this category are reduced up to 70%!</li>
+                                            <li class="list-item">
+                                                It's a Limited Time Offer, so make sure to use it until Expire! </li>
+                                            <li class="list-item">
+                                                The more you buy, the more money you save. ✅
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">7 November 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">NEW CATEGORY: ⚡👑Best working services [INSTANT] 👑⚡</li>
+                                            <li class="list-item">74 - Instagram Followers [1 CLICK DELIVERY] 🔥🔥 [1K] - 9.5$</li>
+                                            <li class="list-item">75 - Instagram Emergency Likes [SUPER FAST] ⚡⚡ [1K] - 7$</li>
+                                            <li class="list-item">76 - Instagram Views [ULTRA FAST] 💯💯 [1K] - 1.5$</li>
+                                            <li class="list-item">77 - Instagram Comments [INSTANT] 👑👑 [1K] - 35$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">28 October 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">⏳ All services will expire after 1 week, don't waste time !!! ⏳</li>
+                                            <li class="list-item">🤡Instagram shout-out on 6 pages (1M followers network) 🤡 - 25$</li>
+                                            <li class="list-item">🎃Instagram Followers - Cheapest 🎃 - 8$</li>
+                                            <li class="list-item">🎃Instagram Likes - Cheapest 🎃 - 6$</li>
+                                            <li class="list-item">🎃Instagram Views - Cheapest 🎃 - 1$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">22 September 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title green">Updated</div>
+                                        <ul class="list">
+                                            <li class="list-item">1 - Instagram - Premium Followers [ORGANIC] 💧🙎‍♂‍ - 19.97$ (Price reduced from $29.97)</li>
+                                            <li class="list-item">3 - Instagram - Premium Power Views [1K] 🔥📸 - 2.49$ (Price reduced from $4.97)</li>
+                                            <li class="list-item">5 - Instagram - Premium Likes [ORGANIC] [1K] 💧👍 - 6.99$ (Price reduced from $9.97)</li>
+                                            <li class="list-item">12 - Instagram - Followers [WORLDWIDE] [1K] 🌐 - 9.97$ (Price reduced from $14.99)</li>
+                                            <li class="list-item">67 - Instagram - Followers INSTANT [1K] ⚡💨 12.97$ (Price reduced from $19.97)</li>
+                                            <li class="list-item">17 - Instagram - Likes [1K] 👍 - 4.99$ (Price reduced from $6.99)</li>
+                                            <li class="list-item">18 - Instagram - Likes INSTANT [1K] ⚡💨 5.99$ (Price reduced from $8.99)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">7 September 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">NEW: Limited time offers (HUGE DISCOUNT) 🚀🔥</li>
+                                            <li class="list-item">68 - NEW: Instagram - Followers [Cheapest &amp; Instant] 💯💯 - 10$</li>
+                                            <li class="list-item">69 - NEW: Instagram - Likes [Cheapest &amp; Instant] 💯💯 - 5$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">4 September 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">NEW: Limited time offers (HUGE DISCOUNT) 🚀🔥</li>
+                                            <li class="list-item">68 - NEW: Instagram - Followers [Cheapest &amp; Instant] 💯💯 - 10$</li>
+                                            <li class="list-item">69 - NEW: Instagram - Likes [Cheapest &amp; Instant] 💯💯 - 5$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">15 August 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">Premium Services !!! 👑🔥</li>
+                                            <li class="list-item">1 - Instagram - Premium Followers [ORGANIC] 💧🙎️ - 29.97$</li>
+                                            <li class="list-item">5 - Instagram - Premium Likes [ORGANIC] [1K] 💧👍 - 9.97$</li>
+                                            <li class="list-item">3 - Instagram - Premium Power Views [1K] 🔥📸 - 4.97$</li>
+                                            <li class="list-item">4 - Instagram - Premium Power Comments [1K] 🔥💬 - 29.97$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">12 August 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title red">Disabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">132 - Instagram Likes [1H] ⚡️ - 3$</li>
+                                            <li class="list-item">116 - Instagram Followers [10K] 🙎️ - 15$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">6 August 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">12 - Instagram - Followers [WORLDWIDE] [1K] 🌐 - 14.97$ (Price reduced from 20$)</li>
+                                            <li class="list-item">13 - Instagram - Followers [MALE] [1K] 👨 - 19.97$ (Price reduced from 25$)
+                                                <br>
+                                            </li>
+                                            <li class="list-item">18 - Instagram - Likes INSTANT [1K] ⚡💨 - 8.99$ (Price reduced from 10$)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">28 July 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">28 - Instagram - Comments [MALE] [1K] 💬🙎 - 29.99$</li>
+                                            <li class="list-item">29 - Instagram - Comments [FEMALE] [1K] 💬🙎 - 29.99$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">21 July 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">32 - Instagram - Views [POWERVIEWS] [1K] 👀🔥 - 4.97$</li>
+                                            <li class="list-item">33 - Instagram - Views [EUROPE] [1K] 👀🌍 - 2.99$</li>
+                                            <li class="list-item">34 - Instagram - Views [USA] [1K] 👀🌎 - 2.99$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">17 July 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">46 - Youtube - Shares [1K] 🔗 - 9.99$</li>
+                                            <li class="list-item">48 - Facebook - Page likes [1K] 👍 - 29.99$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">10 July 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">53 - Facebook - Views [1K] 👀 - 9.99$ (Price increased from 5$)</li>
+                                            <li class="list-item">55 - Twitter - Followers [1K] 🙋🙋 - 99.99$ (Price reduced from 110$)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">5 July 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">56 - Twitter - Retweets [1K] 🔁 - 49.99$</li>
+                                            <li class="list-item">57 - Twitter - Favourites [1K] 💗 - 9.99$</li>
+                                            <li class="list-item">58 - Twitter - Views [1K] 👀 - 4.99$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="news-list-item"><span class="badge badge-green date">2 July 2019</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        <ul class="list">
+                                            <li class="list-item">114 - Youtube Views [100M] 👀 - 15$</li>
+                                            <li class="list-item">225 - Facebook Post Likes [15K] 🙋🙋 - 10$</li>
+                                            <li class="list-item">273 - Instagram Likes [2K] ⛔ - 2$</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+      </div>
+   </div>
 </div>
