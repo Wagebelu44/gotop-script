@@ -20,7 +20,7 @@ class CreatePaymentMethodsTable extends Migration
             $table->string('method_name');
             $table->decimal('minimum', 8, 2)->default(0.00);
             $table->decimal('maximum', 8, 2)->default(0.00);
-            $table->enum('new_user_status', ['active', 'inactive'])->default('inactive');
+            $table->enum('new_user_status', ['Active', 'Deactivated'])->default('Deactivated');
             $table->enum('visibility', ['disabled', 'enabled'])->default('disabled');
             $table->longText('details')->nullable();
             $table->unsignedInteger('sort')->default(0);

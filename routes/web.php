@@ -22,7 +22,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
         /* User order module */
         Route::get('/order/{order_id?}', 'User\OrderController@index')->name('order');
         Route::get('/get-category-services', 'User\OrderController@getCateServices');
-        Route::get('/orders', 'User\OrderController@orderLists');
+      /*   Route::get('/orders', 'User\OrderController@orderLists'); */
         Route::post('/make_new_order', 'User\OrderController@store');
         Route::post('statusChanges', 'User\OrderController@refillStatusChange')->name('user.changeRefillStatus');
         Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
@@ -182,4 +182,12 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
     Route::get('/{url}', 'Web\PageController@page')->name('route');
+
+       // Authentication Routes...
+ /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
+       Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
+
+       Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
+       Route::post('/register', 'Panel\Auth\RegisterController@register'); */
+
 });

@@ -19,7 +19,7 @@ class CreateBlogSlidersTable extends Migration
             $table->string('title');
             $table->string('read_more')->nullable();
             $table->string('image')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

@@ -17,13 +17,13 @@
                                     <tbody class="tablecontents" id="public_menu">
                                     @if(!empty($menus))
                                         @foreach($menus as $key => $public_menu)
-                                            @if ($public_menu->menu_link_type == 'yes')
+                                            @if ($public_menu->menu_link_type == 'Yes')
                                                 <tr class="row1" data-id="{{ $public_menu->id }}">
                                                     <td>
                                                         <div class="settings-menu-drag">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
                                                         </div>
-                                                        {{ $public_menu->menu_name }}
+                                                        <a href="{{ url($public_menu->page->url) }}" target="_blank">{{ $public_menu->menu_name }}</a>
                                                     </td>
                                                     <td class="p-r text-right">
                                                         <button data-url="{{ route('admin.appearance.menu.edit', $public_menu->id) }}" data-id="{!! $public_menu->id !!}" class="edit btn btn-default m-t-20">
@@ -49,13 +49,13 @@
                                     <tbody class="tablecontents" id="signed_menu">
                                     @if(!empty($menus))
                                         @foreach($menus as $key => $menu)
-                                            @if ($menu->menu_link_type == 'no')
+                                            @if ($menu->menu_link_type == 'No')
                                                 <tr class="row1" data-id="{{ $menu->id }}">
                                                     <td>
                                                         <div class="settings-menu-drag">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
                                                         </div>
-                                                        {{ $menu->menu_name }}
+                                                        <a href="{{ url($menu->page->url) }}" target="_blank">{{ $menu->menu_name }}</a>
                                                     </td>
                                                     <td class="p-r text-right">
                                                         <button data-url="{{ route('admin.appearance.menu.edit', $menu->id) }}" data-id="{!! $menu->id !!}" class="edit btn btn-default m-t-20">
@@ -200,8 +200,8 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script>
-
         $(function () {
             $( ".tablecontents" ).sortable({
                 items: "tr",

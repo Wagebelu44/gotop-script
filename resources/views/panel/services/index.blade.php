@@ -890,8 +890,8 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"  id="status_type_filter">
                                             <a data-key="all" class="dropdown-item type-dropdown-item">All</a>
-                                            <a data-key="inactive" class="dropdown-item type-dropdown-item">Disabled</a>
-                                            <a data-key="active" class="dropdown-item type-dropdown-item">Enabled</a>
+                                            <a data-key="Deactivated" class="dropdown-item type-dropdown-item">Disabled</a>
+                                            <a data-key="Active" class="dropdown-item type-dropdown-item">Enabled</a>
                                         </div>
 
                                     </div>

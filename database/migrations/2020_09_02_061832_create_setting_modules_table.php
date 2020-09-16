@@ -22,7 +22,7 @@ class CreateSettingModulesTable extends Migration
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->enum('type', ['affiliate', 'child_panels', 'free_balance'])->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

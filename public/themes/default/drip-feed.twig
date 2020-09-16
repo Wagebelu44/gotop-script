@@ -1,23 +1,19 @@
-<div class="container-fluid">
+<div class="container">
+  <style>
+    .filter-active {
+        background-color: blue;
+        color: #fff;
+    }
+    </style>
     <div class="row">
         <div class="col-lg-12">
-            <ul class="nav nav-pills {% if site['rtl'] %} rtl-nav {% endif %}">
-                <li {% if 'all' == status %}class="active"{% endif %}><a href="{{ page['url'] }}">All</a></li>
-                <li {% if 'active' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/active">Active</a></li>
-                <li {% if 'completed' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/completed">Completed</a></li>
-                <li {% if 'canceled' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/canceled">Canceled</a></li>
-                <li class="pull-right search">
-                    <form action="{{ page['url'] }}" method="get" id="history-search">
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Search" value="{{search}}">
-                            <span class="input-group-btn">
-                <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-              </span>
-                        </div>
-                    </form>
-                </li>
-            </ul>
-            <div class="well well-float">
+            <nav class="nav">
+                <a class="nav-link {% if site['status'] =='all' %} filter-active  {% endif %}" href="{{ site['url'] }}">All</a>
+                <a class="nav-link  {% if site['status'] =='active' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=active">Active</a>
+                <a class="nav-link {% if site['status'] =='Completed' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Completed">Completed</a>
+                <a class="nav-link {% if site['status'] =='Canceled' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Canceled">Canceled</a>
+            </nav>
+            <div class="card card-body">
                 <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
                     <thead>
                     <tr>
@@ -36,26 +32,20 @@
                     </thead>
                     <tbody>
 
-                    {% for dripFeed in dripFeedList %}
+                    {% for dripFeed in site['dripFeedOrderList'] %}
                         <tr>
                             <td>{{ dripFeed['id'] }}</td>
-                            <td>{{ dripFeed['date'] }}</td>
-                            <td class="link">{{ dripFeed['link'] }}</td>
+                            <td>{{ dripFeed['created_at'] }}</td>
+                            <td class="link">{{ dripFeed['orders_link'] }}</td>
                             <td nowrap="">{{ dripFeed['total_charges'] }}</td>
-                            <td>{{ dripFeed['quantity'] }}</td>
-                            <td>{{ dripFeed['service'] }}</td>
+                            <td>{{ dripFeed['service_quantity'] }}</td>
+                            <td>{{ dripFeed['service_name'] }}</td>
                             <td class="nowrap">
-                                {% if dripFeed['runs_current'] %}
-                                    <a href="#?drip-feed={{ dripFeed['id'] }}">
-                                        {{ dripFeed['runs_current'] }}
-                                    </a>
-                                {% else %}
-                                    {{ dripFeed['runs_current'] }}
-                                {% endif %} / {{ dripFeed['runs_all'] }}
+                              {{ dripFeed['runOrders'] }} /  {{ dripFeed['total_quantity'] }} 
                             </td>
                             <td>{{ dripFeed['interval'] }}</td>
                             <td>{{ dripFeed['total_quantity'] }}</td>
-                            <td>{{ dripFeed['status_name'] }}</td>
+                            <td>{{ dripFeed['status'] }}</td>
                         </tr>
                     {% endfor %}
 

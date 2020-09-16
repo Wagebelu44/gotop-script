@@ -53,7 +53,7 @@ class UserController extends Controller
             'username'    => 'nullable|string|max:255|unique:users',
             'email'       => 'required|string|email|max:255|unique:users',
             'skype_name'  => 'nullable|string|max:255|unique:users',
-            'status'      => 'required|in:pending,active,inactive',
+            'status'      => 'required|in:Pending,Active,Deactivated',
             'password'    => 'required|string|min:8|confirmed',
         ];
         $validator = Validator::make($credentials, $rules);
@@ -96,7 +96,7 @@ class UserController extends Controller
 
         try {
             $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $user_id)->first();
-            $user->update(['status' => $user->status == 'active' ? 'inactive' : 'active']);
+            $user->update(['status' => $user->status == 'Active' ? 'Deactivated' : 'Active']);
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
@@ -148,8 +148,8 @@ class UserController extends Controller
     public function getCategoryService()
     {
         return ServiceCategory::with(['services'=>function($q){
-            $q->where('status', 'active');
-        }])->where('status', 'active')->orderBy('id', 'ASC')->get();
+            $q->where('status', 'Active');
+        }])->where('status', 'Active')->orderBy('id', 'ASC')->get();
     }
     public function getUserServices($user_id)
     {
@@ -208,14 +208,14 @@ class UserController extends Controller
                 $user->servicesList()->detach();
             }
         }
-        elseif ($data['status'] == 'active') {
+        elseif ($data['status'] == 'Active') {
             User::whereIn('id', $data['user_ids'])->update([
-                'status' => 'active'
+                'status' => 'Active'
             ]);
         }
-        elseif ($data['status'] == 'inactive') {
+        elseif ($data['status'] == 'Deactivated') {
             User::whereIn('id', $data['user_ids'])->update([
-                'status' => 'inactive'
+                'status' => 'Deactivated'
             ]);
         }
         return response()->json(['status' => true, 'data'=> 'Bulk users update'], 200);

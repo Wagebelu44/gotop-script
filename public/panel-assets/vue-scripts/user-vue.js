@@ -500,7 +500,7 @@ const userModule = new Vue({
                     },
                     credentials: "same-origin",
                     method: "POST",
-                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'inactive'}),
+                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'Deactivated'}),
                 }).then(res => {
                     if (!res.ok) {
                         throw res;

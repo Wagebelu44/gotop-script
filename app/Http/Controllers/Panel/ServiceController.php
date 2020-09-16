@@ -126,7 +126,7 @@ class ServiceController extends Controller
 
             if (!$request->has('edit_id'))
             {
-                $data['status'] = 'active';
+                $data['status'] = 'Active';
             }
 
             if ($request->has('edit_id') && $request->has('edit_mode'))
@@ -180,7 +180,7 @@ class ServiceController extends Controller
 
     public function enableService($id){
         $servcie = Service::find($id);
-        $servcie->status = ($servcie->status =='active') ? 'inactive':'active';
+        $servcie->status = ($servcie->status =='Active') ? 'Deactivated':'Active';
         if ($servcie->save())
         {
             return response()->json(['status' => 200, 'message' => 'Service updated successfully.', 'data' => $servcie]);
@@ -241,7 +241,7 @@ class ServiceController extends Controller
     public function bulkEnable(Request $request)
     {
         Service::whereIn('id',explode(',',$request->service_ids))->update([
-            'status' => 'active'
+            'status' => 'Active'
         ]);
         return response()->json(['status'=>200,'message'=>'successfully enabled all']);
 
@@ -249,7 +249,7 @@ class ServiceController extends Controller
     public function bulkDisable(Request $request)
     {
         Service::whereIn('id',explode(',',$request->service_ids))->update([
-            'status' => 'inactive'
+            'status' => 'Deactivated'
         ]);
         return response()->json(['status'=>200,'message'=>'successfully disabled all']);
     }
@@ -294,7 +294,7 @@ class ServiceController extends Controller
     public function enablingCategory(Request $request, $id)
     {
         $category = ServiceCategory::find($id);
-        $category->status = $category->status == 'active'?'inactive':'active';
+        $category->status = $category->status == 'Active'?'Deactivated':'Active';
         if($category->save())
             return response()->json(['status'=>200,'data'=> $category, 'message'=>'Category Updated successfully.']);
         else

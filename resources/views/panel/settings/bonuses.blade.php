@@ -43,7 +43,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if( $bonuse->status === 'active' )
+                                    @if( $bonuse->status === 'Active' )
                                         Enabled
                                     @else
                                         Disabled
@@ -115,8 +115,8 @@
                             <div class="form-group">
                                 <label class="control-label" for="status">Status</label>
                                 <select class="form-control" name="status" id="status" aria-required="true">
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Deactivated">Deactivated</option>
                                 </select>
                                 @error('status')
                                 <span role="alert">
@@ -134,12 +134,9 @@
                         </div>
                         <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Close</button>
                     </div>
-
                 </form>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
     <!--End:Create Modal-->
 
@@ -187,8 +184,8 @@
                             <div class="form-group">
                                 <label class="control-label" for="status">Status</label>
                                 <select class="form-control" name="status" id="edit_status" aria-required="true">
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Deactivated">Deactivated</option>
                                 </select>
                                 <span role="alert">
                                 <strong id="error_status"></strong>
@@ -205,11 +202,8 @@
                     </div>
                 </form>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
-    <!--End:Edit Modal-->
 @endsection
 
 @section('scripts')

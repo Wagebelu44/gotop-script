@@ -74,7 +74,7 @@
                                             <div class="col-md-2">
                                                 <img style="width: 100px" id="preview" src="">
                                                 @if(isset($data->image))
-                                                    <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog-post/'.$data->image) }}">
+                                                    <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog/'.$data->image) }}">
                                                 @endif
                                             </div>
                                         </div>
@@ -164,8 +164,8 @@
                                 <div class="form-group">
                                     <label class="control-label" for="is_visibility">Status</label>
                                     <select class="form-control is-public" name="status" id="status" required>
-                                        <option value="active" {{ old('status', isset($data) ? $data->status : '') == 'active' ? 'selected' : '' }}>Active</option>
-                                        <option value="inactive" {{ old('status', isset($data) ? $data->status : '') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                        <option value="Active" {{ old('status', isset($data) ? $data->status : '') == 'Active' ? 'selected' : '' }}>Active</option>
+                                        <option value="Deactivated" {{ old('status', isset($data) ? $data->status : '') == 'Deactivated' ? 'selected' : '' }}>Deactivated</option>
                                     </select>
                                     @error('status')
                                     <span role="alert">

@@ -18,7 +18,7 @@ class CreateServiceCategoriesTable extends Migration
             $table->unsignedBigInteger('panel_id'); 
             $table->unsignedInteger('sort')->nullable();
             $table->string('name');
-            $table->enum('status', ['active', 'inactive']);
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->foreign('panel_id')->on('panel_admins')->references('id')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();

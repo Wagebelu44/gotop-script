@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->string('status')->nullable()->comment("['pending', 'active', 'inactive']");
+            $table->enum('status', ['Pending', 'Active', 'Deactivated'])->default('Pending');
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
             $table->softDeletes();

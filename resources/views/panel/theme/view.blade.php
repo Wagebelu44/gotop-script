@@ -29,7 +29,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <ul class="list-style-none" style="max-height:500px; overflow:auto;">
+                                    <ul class="list-style-none" style="height:565px; overflow:auto;">
                                         @foreach($pages as $k => $gr)
                                         <li>
                                             <a href="javascript:void(0)" onclick="hideShow({{ $k }})"><i class="fa fa-folder text-info"></i> {{ strtoupper($gr->group) }}</a>
@@ -98,6 +98,8 @@
                     }
                 }
             });
+            editor.setSize(null, 500);
+
 
             $("#full-screen").click(function() {
                 editor.setOption("fullScreen", true);
