@@ -71,8 +71,7 @@ class PageController extends Controller
         ];
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
-        if ($url == 'sign-in') 
-        {
+        if ($page->default_url == 'sign-in') {
             $site['url'] = route('login');
            
             $site['validation_error'] = 0;
@@ -81,19 +80,16 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
-        }
-        elseif ($url == 'sign-up') 
-        {
+        } elseif ($page->default_url == 'sign-up') {
             $site['url'] = route('register');
             $site['validation_error'] = 0;
+
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
-        }
-        elseif ( $url ==  'services')
-        {
+        } elseif ($page->default_url == 'services') {
             $service = ServiceCategory::with(['services'=> function($q) use($panelId) {
                 $q->where('panel_id', $panelId);
                 $q->where('status', 'active');
@@ -102,6 +98,7 @@ class PageController extends Controller
             ->where('status', 'active')
             ->where('panel_id', $panelId)
             ->orderBy('id', 'ASC');
+
            if (auth()->check()) {
              $user_service_prices = auth()->user()->servicesList()->get();
              $categories = $service->get();
@@ -120,56 +117,47 @@ class PageController extends Controller
                         }
         
                     }
-                    $categories =  json_decode(json_encode($cate));
+                    $categories = json_decode(json_encode($cate));
                 }
+
                 $site['service_count'] = count($cate);
                 $site['service_lists'] = $cate;
-           }
-           else
-           {
-            $site['service_count'] = $service->count();
-            $site['service_lists'] = $service->get()->toArray();
-           }
-          
-           
-        }
-        elseif ( $url ==  'orders')
-        {
+            } else {
+                $site['service_count'] = $service->count();
+                $site['service_lists'] = $service->get()->toArray();
+            }
+        } elseif ($page->default_url == 'orders') {
             $input = $request->all();
             $order = Order::select('orders.*', 'services.name as service_name')
             ->where('orders.user_id', auth()->user()->id)
             ->where('orders.refill_status', 0)
             ->join('services', 'services.id', '=', 'orders.service_id');
-            if(isset($input['status']))
-            {
+
+            if (isset($input['status'])) {
                 $orders =  $order->where('orders.status', $input['status'])->orderBy('orders.id', 'DESC')->get()->toArray();
             }
-            if(isset($input['query']))
-            {
+            if (isset($input['query'])) {
                 $orders =  $order->where('orders.status', $input['query'])->orderBy('orders.id', 'DESC')->get()->toArray();
-            }
-            elseif (isset($input['user_search_keyword'])) {
+            } elseif (isset($input['user_search_keyword'])) {
                 if ($input['status'] !='all') {
                     $order->where('orders.status', $input['status']);
                 }
-                $q_string = $input['user_search_keyword'];
-                $orders =  $order->where(function($q) use($q_string) {
-                        $q->where('orders.id', 'LIKE', '%' . $q_string . '%');
-                        $q->orWhere('orders.link', 'LIKE', '%' . $q_string . '%');
-                        $q->orWhere('orders.service_id', 'LIKE', '%' . $q_string . '%');
-                        $q->orWhere('orders.status', 'LIKE', '%' . $q_string . '%');
+                $qString = $input['user_search_keyword'];
+
+                $orders =  $order->where(function($q) use($qString) {
+                    $q->where('orders.id', 'LIKE', '%' . $qString . '%');
+                    $q->orWhere('orders.link', 'LIKE', '%' . $qString . '%');
+                    $q->orWhere('orders.service_id', 'LIKE', '%' . $qString . '%');
+                    $q->orWhere('orders.status', 'LIKE', '%' . $qString . '%');
                 })->orderBy('orders.id', 'DESC')->get()->toArray();
-            }
-            else
-            {
+            } else {
                 $orders = $order->orderBy('orders.id', 'DESC')->get()->toArray();
             }
+
             $site['orderList'] = $orders;
             $site['url'] = $url;
-            $site['status'] = $input['status']??'all';
-        }
-        elseif ( $url ==  'drip-feed')
-        {
+            $site['status'] = $input['status'] ?? 'all';
+        } elseif ($page->default_url ==  'drip-feed') {
             $date = (new \DateTime())->format('Y-m-d H:i:s');
             $d_feeds = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
             ->join('users','users.id','=','drip_feed_orders.user_id')
@@ -179,19 +167,17 @@ class PageController extends Controller
             ->leftJoin(\DB::raw("(SELECT drip_feed_id, COUNT(drip_feed_id) AS runOrders FROM orders
             WHERE order_viewable_time <='".$date."' GROUP BY drip_feed_id) AS B"), 'drip_feed_orders.id', '=', 'B.drip_feed_id');
 
-            if (isset($request->status))
-            {
-                if($request->status != 'all')
-                $d_feeds->where('drip_feed_orders.status',$request->status);
+            if (isset($request->status)) {
+                if ($request->status != 'all') {
+                    $d_feeds->where('drip_feed_orders.status', $request->status);
+                }
             }
 
             $drip_feeds = $d_feeds->OrderBy('id', 'DESC')->get()->toArray();
             $site['dripFeedOrderList'] = $drip_feeds;
             $site['url'] = $url;
             $site['status'] = $input['status']??'all';
-        }
-        elseif ( $url ==  'tickets')
-        {
+        } elseif ($page->default_url == 'tickets') {
             $site['url'] = route('ticket.store');
             $site['scripts'] = [
                 asset('assets/js/jquery.js'),
@@ -199,17 +185,18 @@ class PageController extends Controller
                 asset('assets/js/vue.js'),
                 asset('user-assets/vue-scripts/ticket-vue.js'),
             ];
+
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');
-             }
-             if (Session::has('success')) {
+            }
+             
+            if (Session::has('success')) {
                 $site['success'] = Session::get('success');
-             }
-             $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
-             $site['ticketLists'] = $ticketLists;
-        }
-        elseif ( $url ==  'new-order' || $url ==  'mass-order')
-        {
+            }
+
+            $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
+            $site['ticketLists'] = $ticketLists;
+        } elseif ($page->default_url == 'new-order' || $page->default_url == 'mass-order') {
             $site['single_order_url'] = route('make.single.order');
             $site['mass_order_url'] = route('massOrder.store');
             $site['scripts'] = [
@@ -219,28 +206,29 @@ class PageController extends Controller
                 asset('user-assets/vue-scripts/single-order.js'),
                 asset('assets/js/custom.js'),
             ];
+
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');
-             }
-             if (Session::has('success')) {
+            }
+
+            if (Session::has('success')) {
                 $site['success'] = Session::get('success');
-             }
-             $site['validation_error'] = 0;
-             if (Session::has('errors')) {
-                 $error = Session::get('errors');
-                 $site['errors'] = $error->all();
-                 $site['validation_error'] = $error->count();
-             }
-            //  $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
-            //  $site['ticketLists'] = $ticketLists;
-        }
-        elseif ( $url ==  'api')
-        {
+            }
+
+            $site['validation_error'] = 0;
+
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+
+            $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
+            $site['ticketLists'] = $ticketLists;
+        } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
-        }
-        elseif ( $url ==  'add-funds')
-        {
+        } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
             $site['bitcoin'] = asset('assets/img/bit-icon.png');
             $site['FreeReviewCopy'] = asset('assets/img/FreeReviewCopy.png');
@@ -249,8 +237,7 @@ class PageController extends Controller
             $site['skrill2'] = asset('assets/img/skrill2.png');
             $site['visa1'] = asset('assets/img/visa1.png');
             $site['payop'] = asset('assets/img/payop.png');
-        }
-        elseif ($url == 'faq') {
+        } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
         }
 
