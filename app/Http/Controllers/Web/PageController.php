@@ -28,7 +28,6 @@ class PageController extends Controller
     public function page(Request $request, $url)
     {
         $panelId = session('panel');
-
         $page = Page::where('panel_id', $panelId)->where('url', $url)->first();
         
         if (empty($page)) {
@@ -70,12 +69,6 @@ class PageController extends Controller
             asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
         ];
-
-        if ($url == 'faq') {
-            $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
-        }
-
-
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
         if ($url == 'sign-in') 
@@ -101,17 +94,44 @@ class PageController extends Controller
         }
         elseif ( $url ==  'services')
         {
-
-            $service = ServiceCategory::with(['services'=> function($q){
-                //$q->where('panel_id', auth()->user()->panel_id);
+            $service = ServiceCategory::with(['services'=> function($q) use($panelId) {
+                $q->where('panel_id', $panelId);
                 $q->where('status', 'active');
                 $q->orderBy('id', 'ASC');
             }])
             ->where('status', 'active')
-            //->where('panel_id', auth()->user()->panel_id)
+            ->where('panel_id', $panelId)
             ->orderBy('id', 'ASC');
+           if (auth()->check()) {
+             $user_service_prices = auth()->user()->servicesList()->get();
+             $categories = $service->get();
+                $cate = [];
+                if (count($user_service_prices) > 0) {
+                    foreach ($user_service_prices as $user_price) {
+                        foreach ($categories as $key => &$category) {
+                            $cate[$key] =  $category->toArray();
+                            foreach ($category->services as $k => &$cs) {
+                                $cate[$key]['services'][$k] =  $cs->toArray();
+                                if ($cs->id == $user_price->id) {
+                                    $cate[$key]['services'][$k]['price'] =  $user_price->pivot->price;
+                                    $cs->price  = $user_price->pivot->price;
+                                }
+                            }
+                        }
+        
+                    }
+                    $categories =  json_decode(json_encode($cate));
+                }
+                $site['service_count'] = count($cate);
+                $site['service_lists'] = $cate;
+           }
+           else
+           {
             $site['service_count'] = $service->count();
             $site['service_lists'] = $service->get()->toArray();
+           }
+          
+           
         }
         elseif ( $url ==  'orders')
         {
@@ -229,6 +249,9 @@ class PageController extends Controller
             $site['skrill2'] = asset('assets/img/skrill2.png');
             $site['visa1'] = asset('assets/img/visa1.png');
             $site['payop'] = asset('assets/img/payop.png');
+        }
+        elseif ($url == 'faq') {
+            $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
         }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
