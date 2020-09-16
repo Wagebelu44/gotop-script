@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\GlobalPaymentMethod;
 use Illuminate\Http\Request;
 use App\PanelAdmin;
 use Illuminate\Support\Facades\DB;
@@ -106,5 +107,31 @@ class ApiController extends Controller
             return response()->json(['success' => true]);
         }
         return response()->json(['success' => $request->user]);
+    }
+
+    public function saveMethod(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        GlobalPaymentMethod::updateOrCreate([
+            'uuid', $request->method['uuid']
+        ], $request->method);
+        return response()->json(['success' => true]);
+    }
+
+    public function deleteMethod(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $method = GlobalPaymentMethod::where('uuid', $request->method['uuid'])->first();
+        if (!empty($method)) {
+            $method->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 }

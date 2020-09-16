@@ -9,7 +9,12 @@
     {% if site['favicon'] %}
       <link rel="shortcut icon" type="image/ico" href="{{ site['favicon'] }}" />
     {% endif %}
-
+    <script>
+         /* global instances */
+            window.CSRF_TOKEN = "{{site['csrf_token']}}";
+            window.base_url = "{{site['app_url']}}";
+        /* end of global instances */
+    </script>
 	{% for style in site['styles'] %}
     	<link rel="stylesheet" type="text/css" href="{{ style }}">
   	{% endfor %}
@@ -38,11 +43,11 @@
                         </li>
                     {% endfor %}
 					<li class="nav-item" >
-                            <a class="nav-link" href="/logout" 								onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            <a class="nav-link" href="{{ site['logout_url']  }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                 Logout
                             </a>
                         </li>
-  							<form id="logout-form" action="/logout" method="POST" class="d-none">
+  							<form id="logout-form" action="{{ site['logout_url']  }}" method="POST" class="d-none">
                             {{ site['csrf_field'] | raw }}
                                 </form>
                 {% else %}

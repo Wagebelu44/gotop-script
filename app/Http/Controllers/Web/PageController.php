@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
+use App\Models\Ticket;
 use App\Models\Service;
 use App\Models\ThemePage;
 use App\Models\SettingFaq;
@@ -19,13 +20,9 @@ use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $panelId = session('panel');
-
-        $menus = Menu::where('panel_id', $panelId)->orderBy('sort', 'asc')->get();
-        $settingGeneral = SettingGeneral::where('panel_id', $panelId)->first();
-        return view('web.home', compact('menus', 'settingGeneral'));
+        return $this->page($request, 'sign-in');
     }
 
     public function page(Request $request, $url)
@@ -57,9 +54,12 @@ class PageController extends Controller
         $site['auth'] = (Auth::check()) ? true : false;
         $site['menuActive'] = (Auth::check()) ? true : false;
         $site['title'] = 'ASDF';
+        $site['logout_url'] = route('logout');
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
         $site['csrf_field'] = csrf_field();
+        $site['csrf_token'] = csrf_token();
+        $site['app_url'] = env('APP_URL');
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/style.css'),
@@ -67,6 +67,7 @@ class PageController extends Controller
         $site['scripts'] = [
             asset('assets/js/jquery.js'),
             asset('assets/js/bootstrap.js'),
+            asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
         ];
 
@@ -88,28 +89,29 @@ class PageController extends Controller
                 $site['validation_error'] = $error->count();
             }
         }
+        elseif ($url == 'sign-up') 
+        {
+            $site['url'] = route('register');
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+        }
         elseif ( $url ==  'services')
         {
+
             $service = ServiceCategory::with(['services'=> function($q){
-                $q->where('panel_id', auth()->user()->panel_id);
+                //$q->where('panel_id', auth()->user()->panel_id);
                 $q->where('status', 'active');
                 $q->orderBy('id', 'ASC');
             }])
             ->where('status', 'active')
-            ->where('panel_id', auth()->user()->panel_id)
+            //->where('panel_id', auth()->user()->panel_id)
             ->orderBy('id', 'ASC');
             $site['service_count'] = $service->count();
             $site['service_lists'] = $service->get()->toArray();
-        }
-        elseif ( $url ==  'mass-order')
-        {
-             $site['url'] = route('massOrder.store');
-             if (Session::has('error')) {
-                $site['error'] = Session::get('error');
-             }
-             if (Session::has('success')) {
-                $site['success'] = Session::get('success');
-             }
         }
         elseif ( $url ==  'orders')
         {
@@ -167,6 +169,66 @@ class PageController extends Controller
             $site['dripFeedOrderList'] = $drip_feeds;
             $site['url'] = $url;
             $site['status'] = $input['status']??'all';
+        }
+        elseif ( $url ==  'tickets')
+        {
+            $site['url'] = route('ticket.store');
+            $site['scripts'] = [
+                asset('assets/js/jquery.js'),
+                asset('assets/js/bootstrap.js'),
+                asset('assets/js/vue.js'),
+                asset('user-assets/vue-scripts/ticket-vue.js'),
+            ];
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+             }
+             if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+             }
+             $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
+             $site['ticketLists'] = $ticketLists;
+        }
+        elseif ( $url ==  'new-order' || $url ==  'mass-order')
+        {
+            $site['single_order_url'] = route('make.single.order');
+            $site['mass_order_url'] = route('massOrder.store');
+            $site['scripts'] = [
+                asset('assets/js/jquery.js'),
+                asset('assets/js/bootstrap.js'),
+                asset('assets/js/vue.js'),
+                asset('user-assets/vue-scripts/single-order.js'),
+                asset('assets/js/custom.js'),
+            ];
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+             }
+             if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+             }
+             $site['validation_error'] = 0;
+             if (Session::has('errors')) {
+                 $error = Session::get('errors');
+                 $site['errors'] = $error->all();
+                 $site['validation_error'] = $error->count();
+             }
+            //  $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
+            //  $site['ticketLists'] = $ticketLists;
+        }
+        elseif ( $url ==  'api')
+        {
+            $site['url'] = url('/');
+            $site['api_key'] = auth()->user()->api_key;
+        }
+        elseif ( $url ==  'add-funds')
+        {
+            $site['url'] = url('/');
+            $site['bitcoin'] = asset('assets/img/bit-icon.png');
+            $site['FreeReviewCopy'] = asset('assets/img/FreeReviewCopy.png');
+            $site['payoneer1'] = asset('assets/img/payoneer1.png');
+            $site['pp-icon'] = asset('assets/img/pp-icon.png');
+            $site['skrill2'] = asset('assets/img/skrill2.png');
+            $site['visa1'] = asset('assets/img/visa1.png');
+            $site['payop'] = asset('assets/img/payop.png');
         }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
