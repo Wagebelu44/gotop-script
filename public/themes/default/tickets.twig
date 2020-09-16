@@ -1,120 +1,168 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="well">
-                <form {% if site['rtl'] %}class="rtl-form"{% endif %} method="post" action="" id="ticketsend">
-                    <div class="alert alert-dismissible alert-danger ticket-danger {% if site['rtl'] %} rtl-alert {% endif %}" style="display: none">
-                        <button type="button" class="close">&times;</button>
-                        <div></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="subject" class="control-label">Subject</label>
-                        <input type="text" class="form-control" id="subject" name="TicketForm[subject]">
-                    </div>
-                    <div class="form-group">
-                        <label for="message" class="control-label">Message</label>
-                        <textarea class="form-control" rows="7" id="message" name="TicketForm[message]"></textarea>
-                    </div>
-                    <input type="hidden" name="_csrf" value="{{csrftoken}}">
-                    <button type="submit" class="btn btn-primary">Button</button>
-                </form>
+<div class="container-fluid" id="support_ticket_panel">
+      <div class="row payments-panel ticket-panel" id="support_ticket_panel">
+         <div class="col-lg-6">
+            <div class="card help-panel mb-3">
+              <div class="card-body">
+                <div class="card-title">
+                  Please read the FAQ page before opening a ticket.&nbsp;<br>
+                </div>
+                <a href="/faq" class="btn btn-green">FAQ</a>
+              </div>
             </div>
-            {% if ticketList or search %}
-                <div class="row">
-                    <div class="col-md-4 {% if site['rtl'] == '0' %} col-md-offset-8 {% endif %}">
-                        <div class="nav-pills {% if site['rtl'] %} rtl-search {% endif %}">
-                            <form action="{{ page['url'] }}" method="get" id="history-search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" value="{{ search }}" name="search" placeholder="placeholder">
-                                    <span class="input-group-btn">
-                   <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
-                </span>
-                                </div>
-                            </form>
+            <div class="card">
+               <div class="card-body">
+                    {% if site['error']  %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> {{site['error']}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if ticketList %}
-                <div class="well">
-                    <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
-                        <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>subject</th>
-                            <th>status</th>
-                            <th class="nowrap">updated</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for ticket in ticketList %}
-                            <tr>
-                                <td>{{ ticket['id'] }}</td>
-                                {% if ticket['new'] == 1 %}
-                                    <td><a href="#"><strong>{{ ticket['theme'] }}</strong></a></td>
-                                {% else %}
-                                    <td><a href="#">{{ticket['theme']}}</a></td>
-                                {% endif %}
-                                <td>{{ ticket['status'] }}</td>
-                                <td><span class="nowrap">{{ ticket['time'] }}</span></td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endif %}
-            {% if pagination['count'] > 50 %}
-                <div class="nav-pills">
-                    <ul class="pagination {% if site['rtl'] %} rtl-pagination {% endif %}">
-                        {% if pagination['current'] != 1 %}
-                            <li>
-                                <a href="{{ page['url'] }}/{{ pagination['last'] }}" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-
-                        {% set r, l = 3, 3 %}
-
-                        {% if pagination['current'] == 1 %}
-                            {% set r = 6 %}
-                        {% endif %}
-
-                        {% if pagination['current'] == 2 %}
-                            {% set r = 5 %}
-                        {% endif %}
-
-                        {% if pagination['current'] >= pagination['pages'] %}
-                            {% set l = 5 %}
-                        {% endif %}
-
-                        {# {% for i in 1..ceil(pagination['pages']) %}
-              {% if i >= (pagination['current']-l) and i <= (pagination['current']+r) %}
-                <li{% if i == pagination['current'] %} class="active"{% endif %}><a href="{{ page['url'] }}/{{i}}">{{i}}</a></li>
-              {% endif %}
-              {% endfor %} #}
-
-                        {% if pagination['current'] < pagination['pages'] %}
-                            <li>
-                                <a href="{{ page['url'] }}/{{ pagination['next'] }}" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-{% if ticketsText %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="well {% if site['rtl'] %} rtl-content {% endif %}">
-                    {{ ticketsText }}
-                </div>
+                    {% endif %}
+                    {% if site['success']  %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Success!</strong> {{site['success']}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                  <form role="form" method="post" action="{{ site['url'] }}" id="ticketsend">
+                      	{{ site['csrf_field'] | raw }}
+                     <div class="alert alert-dismissible alert-danger ticket-danger " style="display: none">
+                        <button type="button" class="close">×</button>
+                        <div></div>
+                     </div>
+                     <div class="form-group subject-panel" >
+                        <label for="subject">Subject:</label>
+                        <div class="row">
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input subject ticket-options" id="subjectOrder" v-model="ticket_subject" name="subject" value="order">
+                              <label class="custom-control-label ticket-options-label" for="subjectOrder">Order</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input subject ticket-options" v-model="ticket_subject" id="subjectPayment" name="subject" value="payment">
+                              <label class="custom-control-label ticket-options-label" for="subjectPayment">Payment</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input subject ticket-options" id="subjectService" v-model="ticket_subject" name="subject" value="service">
+                              <label class="custom-control-label ticket-options-label" for="subjectService">Service</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input subject ticket-options" id="subjectOther" v-model="ticket_subject" name="subject" value="other">
+                              <label class="custom-control-label ticket-options-label" for="subjectOther">Other</label>
+                              </span>
+                           </div>
+                        </div>
+                     </div>
+                     <div v-if="order_ids" class="form-group">
+                        <label for="ordernumbers">Order ID: </label>
+                        <input id="ordernumbers" type="text" class="form-control" name="order_ids" placeholder="For multiple orders, please separate them using comma. (example: 12345,12345,12345)">
+                     </div>
+                     <div class="form-group" v-if="transaction_ids">
+                        <label for="transactionid">Transaction ID: </label>
+                        <input id="description" type="text"  name="transaction_id" class="form-control" placeholder="Enter the Transaction ID">
+                     </div>
+                     <div class="form-group therequest" v-if="order_types">
+                        <label for="type">Request</label>
+                        <div class="row">
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="requestRefill" name="order_type" value="Refill" v-model='payment_type_value'>
+                              <label class="custom-control-label" for="requestRefill">Refill</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="requestCancellation" name="order_type" value="Cancellation" v-model='payment_type_value'>
+                              <label class="custom-control-label" for="requestCancellation">Cancellation</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="requestSpeed" name="order_type" value="Speed Up" v-model='payment_type_value'>
+                              <label class="custom-control-label" for="requestSpeed">Speed Up</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="requestOther" name="order_type" value="Other" v-model='payment_type_value'>
+                              <label class="custom-control-label" for="requestOther">Other</label>
+                              </span>
+                           </div>
+                        </div>
+                     </div>
+                     <div  class="form-group" v-if="payment_types">
+                        <label for="payment">Payment</label>
+                        <div class="row">
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="paymentPaypal" name="payment_types" value="Paypal">
+                              <label class="custom-control-label" for="paymentPaypal">Paypal</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="paymentPerfect" name="payment_types" value="Perfect Money">
+                              <label class="custom-control-label" for="paymentPerfect">Crypto Currency</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="paymentCrypto" name="payment_types" value="Crypto Currency">
+                              <label class="custom-control-label" for="paymentCrypto">Skrill</label>
+                              </span>
+                           </div>
+                           <div class="col">
+                              <span class="custom-control">
+                              <input type="radio" class="custom-control-input second-options" id="paymentOther" name="payment_types" value="Other">
+                              <label class="custom-control-label" for="paymentOther">Other</label>
+                              </span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="form-group form-group">
+                        <label for="message">Message</label>
+                        <textarea class="form-control" rows="7" id="description" name="description"></textarea>
+                     </div>
+                     <button type="submit" class="btn btn-success btn-block">Submit ticket</button>
+                  </form>
+               </div>
             </div>
-        </div>
-    </div>
-{% endif %}
+         </div>
+           <div class="col-lg-6">
+            <div class="card my-orders-panel dripfeed-panel" style="overflow-y:auto;height:733px;">
+               <div class="card-body">
+                  <table class="table ">
+                     <thead>
+                        <tr>
+                           <th></th>
+                           <th>Subject</th>
+                           <!--<th>Status</th>-->
+                           <th>New Message</th>
+                           <th class="nowrap">Last update</th>
+                        </tr>
+                     </thead>
+                     <tbody class="ticket-list">
+                      {% for ticket in site['ticketLists'] %}
+                        <tr>
+                            <td>{{ ticket['id'] }}</td>
+                            <td>{{ ticket['subject'] }}</td>
+                            <td>0</td>
+                            <td>{{ ticket['created_at'] }}</td>
+                        </tr>
+                    {% endfor %}      
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
