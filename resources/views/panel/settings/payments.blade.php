@@ -151,7 +151,7 @@
                     <div class="modal-footer">
                         <div class="col-md-12 submit-update-section">
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary"> <i class="fa fa-check"></i> Add Method</button>
+                                <button type="submit" class="btn btn-primary"> <i class="fa fa-check"></i> Update</button>
                                 <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" >Cancel</button>
                             </div>
                         </div>

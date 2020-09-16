@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
-
     public function index()
     {
         return view('panel.payments.index');

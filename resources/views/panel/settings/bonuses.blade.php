@@ -196,7 +196,7 @@
                     </div>
                     <div class="modal-footer">
                         <div class="form-actions">
-                            <button type="button" onclick="document.getElementById('editFormBonus').submit();" class="btn btn-primary"> <i class="fa fa-check"></i> Update Provider</button>
+                            <button type="button" onclick="document.getElementById('editFormBonus').submit();" class="btn btn-primary"> <i class="fa fa-check"></i> Update</button>
                         </div>
                         <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Close</button>
                     </div>
