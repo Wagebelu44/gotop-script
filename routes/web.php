@@ -181,6 +181,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
+    Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
 
        // Authentication Routes...
