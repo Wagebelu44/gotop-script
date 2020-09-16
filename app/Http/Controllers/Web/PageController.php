@@ -22,6 +22,7 @@ class PageController extends Controller
 {
     public function index()
     {
+        return redirect('/sign-in');
         $panelId = session('panel');
 
         $menus = Menu::where('panel_id', $panelId)->orderBy('sort', 'asc')->get();
@@ -58,6 +59,7 @@ class PageController extends Controller
         $site['auth'] = (Auth::check()) ? true : false;
         $site['menuActive'] = (Auth::check()) ? true : false;
         $site['title'] = 'ASDF';
+        $site['logout_url'] = route('logout');
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
         $site['csrf_field'] = csrf_field();
@@ -85,6 +87,16 @@ class PageController extends Controller
         {
             $site['url'] = route('login');
            
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+        }
+        elseif ($url == 'sign-up') 
+        {
+            $site['url'] = route('register');
             $site['validation_error'] = 0;
             if (Session::has('errors')) {
                 $error = Session::get('errors');
