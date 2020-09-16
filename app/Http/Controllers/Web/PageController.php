@@ -20,14 +20,9 @@ use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return redirect('/sign-in');
-        $panelId = session('panel');
-
-        $menus = Menu::where('panel_id', $panelId)->orderBy('sort', 'asc')->get();
-        $settingGeneral = SettingGeneral::where('panel_id', $panelId)->first();
-        return view('web.home', compact('menus', 'settingGeneral'));
+        return $this->page($request, 'sign-in');
     }
 
     public function page(Request $request, $url)
