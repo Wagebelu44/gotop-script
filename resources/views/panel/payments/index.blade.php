@@ -13,7 +13,7 @@
                             <div class="col-md-6">
                                 <form class="d-flex pull-right" method="get" action="">
                                     <div>
-                                        <a href="" class="btn btn-link">Export</a>
+                                        {{-- <a href="" class="btn btn-link">Export</a> --}}
                                     </div>
                                     <div class="form-group mb-2 mr-0">
                                         <input type="search" name="search" class="form-control" placeholder="search...">
@@ -127,7 +127,7 @@
                                                 <label for=""><strong>Payment Method</strong></label>
                                                 <select name="reseller_payment_methods_setting_id" v-model='payment_obj.reseller_payment_methods_setting_id' id="reseller_payment_methods_setting_id" class="form-control custom-form-control" required >
                                                     <option disabled selected>Choose payment method</option>
-                                                <option :value="gp.id" v-for="(gp, i) in global_payments">@{{gp.name}}</option>
+                                                <option :value="gp.id" v-for="(gp, i) in global_payments">@{{gp.method_name}}</option>
                                                 </select>
                                             </div>
                                             <div class="form-group">

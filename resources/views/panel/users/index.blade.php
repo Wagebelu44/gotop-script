@@ -18,8 +18,8 @@
                                     <div class="form-group mb-2 mr-0">
                                         <input type="text" name="keyword" class="form-control" v-model="filter.search" placeholder="Search User" value="">
                                     </div>
-                                    <button type="submit" class="btn btn-default mb-2" style="border:1px solid #eeeff0;"> 
-                                        <i class="fa fa-search" aria-hidden="true"></i> 
+                                    <button type="submit" class="btn btn-default mb-2" style="border:1px solid #eeeff0;">
+                                        <i class="fa fa-search" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             </div>
@@ -58,7 +58,7 @@
                                     <th>ID</th>
                                     <th>Username</th>
                                     <th>Email</th>
-                                    <th>Whatsapp</th>
+                                    <th>Skype</th>
                                     <th>Balance</th>
                                     <th>Spent</th>
                                     <th>
@@ -94,7 +94,7 @@
                                         <td>@{{user.created_at}}</td>
                                         <td>@{{user.last_login_at}}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate(user.id)" 
+                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate(user.id)"
                                         title="Services custom rates">custom rates (<span v-if="user.services_list.length>0">@{{user.services_list.length}}</span> <span v-else>0</span>)</a>
                                         </td>
                                         <td>
@@ -115,7 +115,7 @@
                                 <div class="text-center mt-4" v-if="users===null">No data available in table</div>
                             </table>
                         </div>
-                        
+
 
                         <div class="row mt-4">
                             <div class="col-md-6">
@@ -133,7 +133,7 @@
                                 </form>
                             </div> --}}
                         </div>
-                        
+
 
 
                         {{-- modal start from here --}}
@@ -143,7 +143,7 @@
                                     <form  id="user-form" method="post" @submit.prevent="formFunc">
                                         @csrf
                                         <div class="modal-header">
-                                        <h4 class="modal-title" id="userModalLabel">Add user</h4>
+                                        <h4 class="modal-title" id="userModalLabel">Add user  </h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
@@ -156,7 +156,7 @@
                                             <div class="form-group">
                                                 <input type="text" name="skype_name" v-model="formUser.skype_name" class="form-control custom-form-control" placeholder="Skype" />
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group" >
                                                 <input type="password" name="password" v-model="formUser.password" class="form-control custom-form-control" placeholder="Password">
                                             </div>
                                             <div class="form-group">
@@ -166,11 +166,14 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="">Allowed payment methods</label><br>
-                                                <input type="checkbox" name="payment_methods[]" value="" checked> Allowed payment methods
+
+                                                <label v-for="payment in global_payment_methods">
+                                                    <input type="checkbox" name="payment_methods[]" v-model="formUser.payment_methods" :value="payment.id"> @{{ payment.method_name }} &nbsp;&nbsp;&nbsp;&nbsp;
+                                                </label>
                                             </div>
                                             <div class="form-group">
                                                 <div class="custom-control custom-radio custom-control-inline mt-1">
-                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation1" v-model="formUser.status"  value="pending" required="" />
+                                                    <input type="radio" name="status" class="custom-control-input" id="customControlValidation1" v-model="formUser.status"  value="Pending" required="" />
                                                     <label class="custom-control-label" for="customControlValidation1">Pending</label>
                                                 </div>
                                                 <div class="custom-control custom-radio custom-control-inline mt-1">
@@ -256,15 +259,15 @@
                                                             </button>
                                                             <div class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuButton">
                                                                 <div id="user_filter_type" v-for="(cs, ind) in categoryServices">
-                                                                        <div 
-                                                                        class="dropdown-item type-dropdown-item" 
+                                                                        <div
+                                                                        class="dropdown-item type-dropdown-item"
                                                                         style="font-weight: 700; pointer-events: none">
                                                                             @{{cs.name}}
                                                                         </div>
-                                                                        <div v-for="(service, i) in cs.services" class="dropdown-item type-dropdown-item" 
+                                                                        <div v-for="(service, i) in cs.services" class="dropdown-item type-dropdown-item"
                                                                         style="padding-left: 50px;" @click="addCustomRate(service)">
                                                                             <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700; ">@{{service.id}}</span>
-                                                                            <span>@{{ service.name }}</span> 
+                                                                            <span>@{{ service.name }}</span>
                                                                             <span style="padding: 2px; border: 1px solid rgba(0,0,0,0.7); font-size:10px; font-weight: 700;">@{{service.price}}</span>
                                                                         </div>
                                                                 </div>
@@ -293,9 +296,9 @@
                                                                     <td >@{{ser.price}}</td>
                                                                     <td style="width: 30%">
                                                                         <div class="input-group">
-                                                                            <input step="any"  
-                                                                            type="number" name="price"  
-                                                                            @keyup="updateInput($event, ser.service_id)" 
+                                                                            <input step="any"
+                                                                            type="number" name="price"
+                                                                            @keyup="updateInput($event, ser.service_id)"
                                                                             class="form-control" placeholder="Price" :value="ser.price">
                                                                             <input type="hidden" name="percentage"  value="0">
                                                                             <div class="input-group-append">
@@ -305,7 +308,7 @@
                                                                         <small class="mt-0 pt-0 d-block sub-price">$14</small>
                                                                     </td>
                                                                     <td>
-                                                                        <button type="button" @click="removeCustomRate(ser.service_id)" 
+                                                                        <button type="button" @click="removeCustomRate(ser.service_id)"
                                                                         class="btn btn-danger"> <i class="fa fa-trash"></i> </button>
                                                                     </td>
                                                                 </tr>

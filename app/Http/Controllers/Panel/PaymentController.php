@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use App\Models\SettingBonuse;
 use App\Models\GlobalPaymentMethod;
 use App\Http\Controllers\Controller;
@@ -25,23 +26,23 @@ class PaymentController extends Controller
             $input['keyword'] = isset($input['keyword']) ? $input['keyword'] : '';
             $sort_by = isset($input['sort_by']) ? $input['sort_by'] : 'id';
             $order_by = isset($input['order_by']) ? $input['order_by'] : 'desc';
-    
+
             $show_page = 100;
             if (isset($request->page_size)) {
                 $show_page = $request->page_size;
             }
             $local_payments = Transaction::select('transactions.*', 'users.username', 'global_payment_methods.name as payment_method_name')
             ->where('transactions.panel_id', auth()->user()->panel_id)
-            ->where(function ($q) use ($input) 
+            ->where(function ($q) use ($input)
             {
-                if ($input['keyword'] && $input['keyword']=='user') 
+                if ($input['keyword'] && $input['keyword']=='user')
                 {
                     $q->whereHas('user', function($q) use ($input){
                             $q->where('username', 'like', '%' . $input['search'] . '%');
                     });
                 }
-    
-                if ($input['keyword'] && $input['keyword']=='memo') 
+
+                if ($input['keyword'] && $input['keyword']=='memo')
                 {
                     $q->where('transactions.memo', 'like', '%' . $input['search'] . '%');
                     $q->orWhere('transactions.tnx_id', 'like', '%' . $input['search'] . '%');
@@ -66,8 +67,10 @@ class PaymentController extends Controller
                 ->orderBy($sort_by, $order_by);
                 $payments = $local_payments->paginate($show_page);
                 $total_payments = $local_payments->count();
-                $globalMethods = GlobalPaymentMethod::where('status', 'Active')->get();
-                $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get(); 
+                $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
+                ->where('visibility', 'enabled')
+                ->get();
+                $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
             $data = [
                 'payments' => $payments,
                 'total_payments' => $total_payments,
@@ -82,7 +85,7 @@ class PaymentController extends Controller
             ];
             return response()->json($data, 200);
         }
-       
+
     }
     public function create()
     {
@@ -110,7 +113,7 @@ class PaymentController extends Controller
             ]);
         }
         try {
-          
+
             $data['panel_id'] =  auth()->user()->panel_id;
             $data['mode'] = 'manual';
             $payment_data = [
@@ -176,7 +179,7 @@ class PaymentController extends Controller
                     }
                 }
             }
-            
+
 
             $user = User::find($request->user_id);
             $user->balance += $request->amount;
