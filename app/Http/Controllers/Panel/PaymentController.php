@@ -6,7 +6,7 @@ use App\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\SettingBonuse;
-use App\Models\GlobalPaymentMethod;
+use App\Models\G\GlobalPaymentMethod;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 

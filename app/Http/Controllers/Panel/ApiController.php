@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
-use App\Models\GlobalPaymentMethod;
+use App\Models\G\GlobalPaymentMethod;
 use Illuminate\Http\Request;
 use App\PanelAdmin;
-use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 
@@ -116,8 +115,12 @@ class ApiController extends Controller
         }
         
         GlobalPaymentMethod::updateOrCreate([
-            'uuid', $request->method['uuid']
-        ], $request->method);
+            'uuid' => $request->uuid
+        ], [
+            'uuid' => $request->uuid,
+            'name' => $request->name,
+            'fields' => json_encode($request->fields),
+        ]);
         return response()->json(['success' => true]);
     }
 
@@ -127,7 +130,7 @@ class ApiController extends Controller
             return false;
         }
         
-        $method = GlobalPaymentMethod::where('uuid', $request->method['uuid'])->first();
+        $method = GlobalPaymentMethod::where('uuid', $request->uuid)->first();
         if (!empty($method)) {
             $method->delete();
             return response()->json(['success' => true]);
