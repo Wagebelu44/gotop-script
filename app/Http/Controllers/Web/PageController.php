@@ -211,6 +211,17 @@ class PageController extends Controller
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
         }
+        elseif ( $url ==  'add-funds')
+        {
+            $site['url'] = url('/');
+            $site['bitcoin'] = asset('assets/img/bit-icon.png');
+            $site['FreeReviewCopy'] = asset('assets/img/FreeReviewCopy.png');
+            $site['payoneer1'] = asset('assets/img/payoneer1.png');
+            $site['pp-icon'] = asset('assets/img/pp-icon.png');
+            $site['skrill2'] = asset('assets/img/skrill2.png');
+            $site['visa1'] = asset('assets/img/visa1.png');
+            $site['payop'] = asset('assets/img/payop.png');
+        }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
             'base.html' => str_replace('{{ content }}', '{% block content %}{% endblock %}', $layout->content),

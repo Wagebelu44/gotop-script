@@ -223,3 +223,33 @@ a.article:hover {
 pre {
     background-color: #203e05e6 !important;
 }
+#deposite-section .card-header .tabs-wrapper {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+#deposite-section .card-header .tabs-wrapper .nav-item .nav-link {
+    padding: 20px;
+}
+
+.inner-page-common .nav-tabs .nav-item .nav-link {
+    font-size: 15px;
+    color: #1f2324;
+    opacity: 1;
+    font-weight: 600;
+    padding: 18px 15px;
+    white-space: nowrap;
+    min-width: 100px;
+    text-transform: capitalize;
+}
+#deposite-section .card-header .tabs-wrapper .nav-item .nav-link img {
+    width: 78%;
+    object-fit: contain;
+}
+img {
+    vertical-align: middle;
+    border-style: none;
+    max-width: 100%;
+}
