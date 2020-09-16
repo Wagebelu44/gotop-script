@@ -106,13 +106,14 @@ class PageController extends Controller
         }
         elseif ( $url ==  'services')
         {
+
             $service = ServiceCategory::with(['services'=> function($q){
-                $q->where('panel_id', auth()->user()->panel_id);
+                //$q->where('panel_id', auth()->user()->panel_id);
                 $q->where('status', 'active');
                 $q->orderBy('id', 'ASC');
             }])
             ->where('status', 'active')
-            ->where('panel_id', auth()->user()->panel_id)
+            //->where('panel_id', auth()->user()->panel_id)
             ->orderBy('id', 'ASC');
             $site['service_count'] = $service->count();
             $site['service_lists'] = $service->get()->toArray();
