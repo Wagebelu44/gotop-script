@@ -1,5 +1,6 @@
 const NewOrder = new Vue({
     el: '#vueHolder',
+    delimiters: ['${', '}'],
     data: {
         categoryjs : [],
         category_id: null,
