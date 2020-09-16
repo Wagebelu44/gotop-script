@@ -14,7 +14,7 @@ class GlobalPaymentMethod extends Model
     protected $table = 'global_payment_methods';
 
     protected $fillable = [
-        'name', 'fields', 'status'
+        'uuid', 'name', 'fields', 'status'
     ];
 
     public function settingBonus() 
