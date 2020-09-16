@@ -105,16 +105,6 @@ class PageController extends Controller
             $site['service_count'] = $service->count();
             $site['service_lists'] = $service->get()->toArray();
         }
-        elseif ( $url ==  'mass-order')
-        {
-             $site['url'] = route('massOrder.store');
-             if (Session::has('error')) {
-                $site['error'] = Session::get('error');
-             }
-             if (Session::has('success')) {
-                $site['success'] = Session::get('success');
-             }
-        }
         elseif ( $url ==  'orders')
         {
             $input = $request->all();
@@ -176,6 +166,8 @@ class PageController extends Controller
         {
             $site['url'] = route('ticket.store');
             $site['scripts'] = [
+                asset('assets/js/jquery.js'),
+                asset('assets/js/bootstrap.js'),
                 asset('assets/js/vue.js'),
                 asset('user-assets/vue-scripts/ticket-vue.js'),
             ];
@@ -188,12 +180,16 @@ class PageController extends Controller
              $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
              $site['ticketLists'] = $ticketLists;
         }
-        elseif ( $url ==  'new-order')
+        elseif ( $url ==  'new-order' || $url ==  'mass-order')
         {
-            $site['url'] = route('make.single.order');
+            $site['single_order_url'] = route('make.single.order');
+            $site['mass_order_url'] = route('massOrder.store');
             $site['scripts'] = [
+                asset('assets/js/jquery.js'),
+                asset('assets/js/bootstrap.js'),
                 asset('assets/js/vue.js'),
                 asset('user-assets/vue-scripts/single-order.js'),
+                asset('assets/js/custom.js'),
             ];
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');
@@ -201,8 +197,30 @@ class PageController extends Controller
              if (Session::has('success')) {
                 $site['success'] = Session::get('success');
              }
+             $site['validation_error'] = 0;
+             if (Session::has('errors')) {
+                 $error = Session::get('errors');
+                 $site['errors'] = $error->all();
+                 $site['validation_error'] = $error->count();
+             }
             //  $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
             //  $site['ticketLists'] = $ticketLists;
+        }
+        elseif ( $url ==  'api')
+        {
+            $site['url'] = url('/');
+            $site['api_key'] = auth()->user()->api_key;
+        }
+        elseif ( $url ==  'add-funds')
+        {
+            $site['url'] = url('/');
+            $site['bitcoin'] = asset('assets/img/bit-icon.png');
+            $site['FreeReviewCopy'] = asset('assets/img/FreeReviewCopy.png');
+            $site['payoneer1'] = asset('assets/img/payoneer1.png');
+            $site['pp-icon'] = asset('assets/img/pp-icon.png');
+            $site['skrill2'] = asset('assets/img/skrill2.png');
+            $site['visa1'] = asset('assets/img/visa1.png');
+            $site['payop'] = asset('assets/img/payop.png');
         }
 
         $loader1 = new \Twig\Loader\ArrayLoader([
