@@ -15,6 +15,8 @@ class MediaController
     public $thumbPath = '';
     public $thumb = false;
     public $storageFolder = 'storage/';
+    public $imageResize = [];
+    public $thumbResize = [300, 300];
 
     //Common File Upload Function...
     private function upload()
@@ -33,18 +35,24 @@ class MediaController
         $data['ext'] = $file->getClientOriginalExtension();
         $data['url'] = url($this->storageFolder.$this->originalPath.$data['name']);
 
-        Storage::putFileAs($this->originalPath, $file, $data['name']);
+        //If real image need to resize...
+        if (!empty($this->imageResize)) {
+            $file = Image::make($file)->resize($this->imageResize[0], $this->imageResize[1]);
+            Storage::put($this->originalPath.'/'.$fileName, (string) $file->encode());
+        } else {
+            Storage::putFileAs($this->originalPath, $file, $data['name']);
+        }
 
         if ($this->thumb) {
             Image::make($this->storageFolder.$this->originalPath.$data['name'])
-            ->resize(300, 300)
+            ->resize($this->thumbResize[0], $this->thumbResize[1])
             ->save($this->storageFolder.$this->thumbPath.'/'.$data['name']);
         }
         return $data;
     }
 
     //Upload Image ("$definePath" and "$definePath/thumb") folder....
-    public function imageUpload($requestFile, $path, $thumb = false, $name = null)
+    public function imageUpload($requestFile, $path, $thumb = false, $name = null, $imageResize = [], $thumbResize = [300, 300])
     {
         //Path Create...
         $realPath = $this->basePath.$path.'/';
@@ -61,6 +69,8 @@ class MediaController
         $this->thumbPath = $realPath.'thumb';
         $this->thumb = $thumb;
         $this->name = $name;
+        $this->imageResize = $imageResize;
+        $this->thumbResize = $thumbResize;
         return $this->upload();
     }
 
@@ -95,7 +105,7 @@ class MediaController
     }
 
     //Only thumb image create in "$definePath/thumb" folder....
-    public function thumb($path, $file, $thumbPath = false)
+    public function thumb($path, $file, $thumbPath = false, $thumbWidth = 300, $thumbHeight = 300)
     {
         $realPath = $this->basePath.$path;
         if (!$thumbPath) {
@@ -107,7 +117,7 @@ class MediaController
         }
 
         $img = Image::make($this->storageFolder.$realPath.'/'.$file)
-        ->resize(300, 300)
+        ->resize($thumbWidth, $thumbHeight)
         ->save($this->storageFolder.$thumbPath.'/'.$file);
 
         if (isset($img->filename)) {

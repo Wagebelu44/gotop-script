@@ -53,6 +53,7 @@ class PanelSeedController
                 'panel_id' => $user->panel_id,
                 'global_page_id' => $page->id,
                 'name' => $page->name,
+                'default_url' => $page->url,
                 'url' => $page->url,
                 'content' => $page->content,
                 'meta_title' => $page->meta_title,

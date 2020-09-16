@@ -7,11 +7,8 @@ use App\Http\Controllers\MediaController;
 use App\Models\Blog;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
-use Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Image;
-use Validator;
+use Auth;
 
 class BlogController extends Controller
 {
@@ -52,7 +49,7 @@ class BlogController extends Controller
 
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
-                $image = (new MediaController())->imageUpload($file, 'images/blog', 1);
+                $image = (new MediaController())->imageUpload($file, 'images/blog', 1, null, [800, 450]);
             }
             Blog::create([
                 'panel_id'          => Auth::user()->panel_id,
@@ -106,7 +103,7 @@ class BlogController extends Controller
                     (new MediaController())->delete('images/blog', $checkBlogPostImage->image, 1);
                 }
                 $file = $request->file('image');
-                $image = (new MediaController())->imageUpload($file, 'images/blog', 1);
+                $image = (new MediaController())->imageUpload($file, 'images/blog', 1, null, [800, 450]);
             }
 
             Blog::find($id)->update([
