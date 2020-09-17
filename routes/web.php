@@ -191,6 +191,14 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/payment/add-funds/paypal/cancel', 'User\PaypalController@cancel');
     Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
 
+
+    
+    //Route::get('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@showForm');
+    Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');
+    Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');
+    Route::get('/payment/add-funds/bitcoin/success', 'User\CoinPaymentsController@success');
+    Route::post('/payment/add-funds/bitcoin/bit-ipn', 'User\CoinPaymentsController@ipn');
+
        // Authentication Routes...
  /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
        Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
