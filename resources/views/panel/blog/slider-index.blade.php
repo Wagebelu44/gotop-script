@@ -64,7 +64,7 @@
                                     <div class="form-group">
                                         <label class="form-control-label">Slider image</label><br/>
                                         <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" id="image" accept="image/*" onchange="preview_image(event)">
-                                        <span>1880 x 1254px recommended</span>
+                                        <span>1880 x 600px recommended</span>
                                     </div>
                                     @error('image')
                                     <span class="invalid-feedback" role="alert">
@@ -75,7 +75,7 @@
                                 <div class="col-md-2">
                                     <img style="width: 200px" id="preview" class="img-thumbnail" src="">
                                     @if(isset($data->image))
-                                        <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog/'.$data->image) }}">
+                                        <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog-slider/'.$data->image) }}">
                                     @endif
                                 </div>
                             </div>
