@@ -1,65 +1,63 @@
-{% if blog %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="well {% if site['rtl'] %} rtl-content {% endif %}">
-                    {{ blog }}
+
+{% if site['postSliders'] %}
+<div id="carouselExampleControls" class="carousel slide" data-ride="carousel" style="margin: -37px 0 30px 0;">
+    <div class="carousel-inner">
+        {% for key, slider in site['postSliders'] %}
+        <div class="carousel-item {% if key == 0 %} active {% endif %}">
+            <img class="d-block w-100" src="{{ site['postsImgUrl'] }}-slider/{{ slider['image'] }}" alt="First slide">
+        </div>
+        {% endfor %}
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+{% endif %}
+
+<div class="container">
+    <div class="row">
+        {% if site['post'] %}
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <img class="card-img-top img-fluid" src="{{ site['postsImgUrl'] }}/{{ site['post']['image'] }}" >
+                    <div class="card-body">
+                        <h4 class="card-text">
+                            {{ site['post']['title'] }}
+                        </h4>
+                        <div>
+                            {{ site['post']['content'] | raw }}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-{% endif %}
-{% if posts %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                {% for post in posts %}
-                    <div class="well">
-                        <h4>{{ post['title'] }}</h4>
-                        {% if post['image'] %} <p><img src="{{ post['image'] }}" alt="{{ post['title'] }}" class="img-responsive"></p> {% endif %}
-                        <div>{{ post['content'] }}</div>
-                        <a href="#/{{ post['url'] }}" class="btn btn-primary">Link</a>
+            <div class="col-md-2"></div>
+        {% endif %}
+
+        {% if site['posts'] %}
+            {% for post in site['posts'] %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img class="card-img-top img-fluid" src="{{ site['postsImgUrl'] }}/{{ post['image'] }}" >
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{ post['title']|length > 50 ? post['title']|slice(0, 50) ~ '...' : post['title']  }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a href="{{ site['url'] }}?details={{ post['id'] }}" class="btn btn-sm btn-outline-secondary">View</a>
+                                </div>
+                                <small class="text-muted">9 mins</small>
+                            </div>
+                        </div>
                     </div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                {% if pagination['count'] > 10 %}
-                    <ul class="pagination {% if site['rtl'] %} rtl-pagination {% endif %}">
-                        {% if pagination['current'] != 1 %}
-                            <li>
-                                <a href="{{ page['url'] }}/{{ pagination['last'] }}{{ params }}" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% set r, l = 3, 3 %}
-                        {% if pagination['current'] == 1 %}
-                            {% set r = 6 %}
-                        {% endif %}
-                        {% if pagination['current'] == 2 %}
-                            {% set r = 5 %}
-                        {% endif %}
-                        {% if pagination['current'] >= pagination['pages'] %}
-                            {% set l = 5 %}
-                        {% endif %}
-                        {#{% for i in 1..ceil(pagination['pages']) %}
-                        {% if i >= (pagination['current']-l) and i <= (pagination['current']+r) %}
-                            <li{% if i == pagination['current'] %} class="active"{% endif %}><a href="{{ page['url'] }}/{{i}}{{ params }}">{{i}}</a></li>
-                        {%endif%}
-                    {% endfor %}
-                        #}
-                        {% if pagination['current'] < pagination['pages'] %}
-                            <li>
-                                <a href="{{ page['url'] }}/{{ pagination['next'] }}{{ params }}" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                {% endif %}
-            </div>
-        </div>
+                </div>
+            {% endfor %}
+        {% endif %}
     </div>
-{% endif %}
+</div>

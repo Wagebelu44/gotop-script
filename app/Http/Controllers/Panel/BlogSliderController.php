@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MediaController;
 use App\Models\BlogSlider;
 use Illuminate\Http\Request;
 use Auth;
@@ -43,29 +44,17 @@ class BlogSliderController extends Controller
                 'image'     => 'required',
                 'status'    => 'required'
             ]);
-            $checkBlogImage = BlogSlider::where('panel_id', Auth::user()->panel_id)->first();
-            if ($request->hasFile('image')) {
-                if (!empty($checkBlogImage->image)) {
-                    deleteFile('./storage/images/blog/', $checkBlogImage->image);
-                }
-                $image = $request->file('image');
-                $mime= $image->getClientOriginalExtension();
-                $imageName = time()."_blog.".$mime;
-                $image = Image::make($image)->resize(1880, 1254);
-                Storage::disk('public')->put("images/blog/".$imageName, (string) $image->encode());
-            }
 
-            if (isset($imageName)) {
-                $image =  $imageName;
-            } else {
-                $image = isset($checkBlogImage->image) ? $checkBlogImage->image:null;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $image = (new MediaController())->imageUpload($file, 'images/blog-slider', 1, null, [1880, 600]);
             }
 
             BlogSlider::create([
                 'panel_id'      => Auth::user()->panel_id,
                 'title'         => $request->title,
                 'read_more'     => $request->read_more,
-                'image'         => $image,
+                'image'         => isset($image) ? $image['name']:'',
                 'status'        => $request->status,
                 'created_by'    => Auth::user()->id,
             ]);
@@ -99,23 +88,21 @@ class BlogSliderController extends Controller
                 'image'     => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:1024',
                 'status'    => 'required'
             ]);
-            $checkBlogImage = BlogSlider::select('image')->where('panel_id', Auth::user()->panel_id)->first();
+
             if ($request->hasFile('image')) {
+                $checkBlogImage = BlogSlider::select('image')->where('panel_id', Auth::user()->panel_id)->first();
                 if (!empty($checkBlogImage->image)) {
-                    deleteFile('./storage/images/setting/', $checkBlogImage->image);
+                    (new MediaController())->delete('images/blog-slider', $checkBlogImage->image, 1);
                 }
-                $image = $request->file('image');
-                $mime= $image->getClientOriginalExtension();
-                $imageName = time()."_blog.".$mime;
-                $image = Image::make($image)->resize(1880, 1254);
-                Storage::disk('public')->put("images/blog/".$imageName, (string) $image->encode());
+                $file = $request->file('image');
+                $image = (new MediaController())->imageUpload($file, 'images/blog-slider', 1, null, [1880, 600]);
             }
 
             BlogSlider::find($id)->update([
                 'panel_id'      => Auth::user()->panel_id,
                 'title'         => $request->title,
                 'read_more'     => $request->read_more,
-                'image'         => $imageName,
+                'image'         => isset($image) ? $image['name']:'',
                 'status'        => $request->status,
                 'updated_by'    => Auth::user()->id,
             ]);
@@ -133,8 +120,11 @@ class BlogSliderController extends Controller
             if (empty($data)) {
                 return redirect()->route('admin.blog-slider.index');
             }
-            $data->delete();
 
+            if (!empty($data->image)) {
+                (new MediaController())->delete('images/blog-slider', $data->image, 1);
+            }
+            $data->delete();
             return redirect(route('admin.blog-slider.index'))->with('success', 'blog slider delete successfully !!');
         }else{
             return view('panel.permission');

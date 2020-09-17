@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\Blog;
+use App\Models\BlogSlider;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
@@ -29,7 +31,7 @@ class PageController extends Controller
     {
         $panelId = session('panel');
         $page = Page::where('panel_id', $panelId)->where('url', $url)->first();
-        
+
         if (empty($page)) {
             return 1;
         }
@@ -73,7 +75,7 @@ class PageController extends Controller
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
         if ($page->default_url == 'sign-in') {
             $site['url'] = route('login');
-           
+
             $site['validation_error'] = 0;
             if (Session::has('errors')) {
                 $error = Session::get('errors');
@@ -89,6 +91,15 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
+        } elseif ($page->default_url == 'blog') {
+            $site['url'] = url('/blog');
+            $site['postsImgUrl'] = asset('./storage/images/blog/');
+            if ($request->details > 0) {
+                $site['post'] = Blog::where('panel_id', $panelId)->where('id', $request->details)->first();
+            } else {
+                $site['posts'] = Blog::where('panel_id', $panelId)->orderBy('id', 'desc')->paginate(15);
+            }
+            $site['postSliders']  = BlogSlider::where('panel_id', $panelId)->orderBy('id', 'desc')->get();
         } elseif ($page->default_url == 'services') {
             $service = ServiceCategory::with(['services'=> function($q) use($panelId) {
                 $q->where('panel_id', $panelId);
@@ -115,7 +126,7 @@ class PageController extends Controller
                                 }
                             }
                         }
-        
+
                     }
                     $categories = json_decode(json_encode($cate));
                 }
@@ -163,7 +174,7 @@ class PageController extends Controller
             ->join('users','users.id','=','drip_feed_orders.user_id')
             ->join(\DB::raw('(SELECT COUNT(orders.drip_feed_id) AS totalOrders, orders.drip_feed_id, GROUP_CONCAT(DISTINCT(orders.link)) AS orders_link,
             GROUP_CONCAT(DISTINCT(services.name)) AS service_name, GROUP_CONCAT(DISTINCT(orders.quantity)) AS service_quantity FROM orders INNER JOIN services
-            ON services.id = orders.service_id GROUP BY orders.drip_feed_id) as A'), 'drip_feed_orders.id', '=', 'A.drip_feed_id') 
+            ON services.id = orders.service_id GROUP BY orders.drip_feed_id) as A'), 'drip_feed_orders.id', '=', 'A.drip_feed_id')
             ->leftJoin(\DB::raw("(SELECT drip_feed_id, COUNT(drip_feed_id) AS runOrders FROM orders
             WHERE order_viewable_time <='".$date."' GROUP BY drip_feed_id) AS B"), 'drip_feed_orders.id', '=', 'B.drip_feed_id');
 
@@ -189,7 +200,7 @@ class PageController extends Controller
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');
             }
-             
+
             if (Session::has('success')) {
                 $site['success'] = Session::get('success');
             }
@@ -259,7 +270,7 @@ class PageController extends Controller
 
         $loader = new \Twig\Loader\ChainLoader([$loader1, $loader2]);
         $twig = new \Twig\Environment($loader);
-        
+
         return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site, 'menus' => $menus->toArray()]);
     }
 }
