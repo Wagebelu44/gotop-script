@@ -86,7 +86,7 @@
                         <form id="payment-form"
                            role="form"
                            method="POST"
-                           action="#">
+                           action="{{ site['bit_coin_store'] }}">
                            {{ site['csrf_field'] | raw }}
                            <fieldset class="scheduler-border">
                               <div class="title" id="form_payment_name"></div>
@@ -102,7 +102,7 @@
                                     type="text">
                               </div>
                               <div class="form-group" style="margin-top:15px;">
-                                 <button type="submit" class="btn btn-green btn-block">Pay</button>
+                                 <button type="submit" class="btn btn-success btn-block">Pay</button>
                               </div>
                            </fieldset>
                         </form>
@@ -111,7 +111,7 @@
                         <div class="title">paypal express checkout (min 10$)</div>
 
                        
-                        <form id="payment-form" role="form" method="POST" action="#">
+                        <form id="payment-form" role="form" method="POST" action="{{site['pay_pal_store']}}">
                            {{ site['csrf_field'] | raw }}
                            <fieldset class="scheduler-border">
                               <div class="form-group">
@@ -126,7 +126,7 @@
                                     type="text">
                               </div>
                               <div class="form-group" style="margin-top:15px;">
-                                 <button type="submit" class="btn btn-green btn-block">Pay</button>
+                                 <button type="submit" class="btn btn-success btn-block">Pay</button>
                               </div>
                            </fieldset>
                         </form>
@@ -139,7 +139,7 @@
                         <div style="text-align: left;">
                            <img src="{{ site['payop'] }}">
                         </div>
-                        <form action="#" method="post">
+                        <form action="{{ site['pay_op_store'] }}" method="post">
                              {{ site['csrf_field'] | raw }}
                            <fieldset class="scheduler-border">
                               <div class="form-group">
@@ -151,7 +151,7 @@
                                 
                               </div>
                               <div class="form-group" style="margin-top:15px;">
-                                 <button type="submit" class="btn btn-green btn-block">Pay</button>
+                                 <button type="submit" class="btn btn-success btn-block">Pay</button>
                               </div>
                            </fieldset>
                         </form>
