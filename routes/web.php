@@ -199,6 +199,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/payment/add-funds/bitcoin/success', 'User\CoinPaymentsController@success');
     Route::post('/payment/add-funds/bitcoin/bit-ipn', 'User\CoinPaymentsController@ipn');
 
+    
+    Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
+
        // Authentication Routes...
  /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
        Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
