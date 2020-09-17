@@ -185,6 +185,12 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/make_new_order', 'User\OrderController@store')->name('make.single.order');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
 
+    /* payment gateways  */
+    Route::post('/payment/add-funds/paypal', 'User\PaypalController@store');
+    Route::get('/payment/add-funds/paypal/success', 'User\PaypalController@success');
+    Route::get('/payment/add-funds/paypal/cancel', 'User\PaypalController@cancel');
+    Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
+
        // Authentication Routes...
  /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
        Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');

@@ -237,6 +237,13 @@ class PageController extends Controller
             $site['skrill2'] = asset('assets/img/skrill2.png');
             $site['visa1'] = asset('assets/img/visa1.png');
             $site['payop'] = asset('assets/img/payop.png');
+            $site['pay_pal_store'] = url('/payment/add-funds/paypal');
+            if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+            }
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+            }
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
         }

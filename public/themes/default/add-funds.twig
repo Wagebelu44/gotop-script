@@ -111,7 +111,7 @@
                         <div class="title">paypal express checkout (min 10$)</div>
 
                        
-                        <form id="payment-form" role="form" method="POST" action="#">
+                        <form id="payment-form" role="form" method="POST" action="{{site['pay_pal_store']}}">
                            {{ site['csrf_field'] | raw }}
                            <fieldset class="scheduler-border">
                               <div class="form-group">
