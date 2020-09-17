@@ -1,7 +1,7 @@
 @extends('layouts.panel')
 
 @section('content')
-    <div class="container-fluid all-mt-30">
+    <div class="container-fluid all-mt-30" id="task_order_module">
         <div class="row">
             <div class="col-12">
                 <div class="material-card card">
@@ -57,7 +57,7 @@
                             <div class="col-md-6">
                                 <form class="d-flex pull-right" method="get" action="">
                                     <div>
-                                        <a href="" class="btn btn-link">Export</a>
+                                        {{-- <a href="" class="btn btn-link">Export</a> --}}
                                     </div>
                                     <div class="form-group mb-2 mr-0">
                                         <input type="search" name="search" class="form-control" placeholder="search...">
@@ -78,10 +78,46 @@
                         </div>
                     </div>
                     <div>
-                        @include('panel.tasks.table')
+                        @include('panel.orders.table')
+                        <div class="row">
+                            <div class="col-md-6">
+
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getOrders()"></data-pagination>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+<script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/task-order-vue.js')}}"></script>
+<script>
+    setTimeout(function () {
+    $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
+       if (!$(this).next().hasClass('show')) {
+           $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
+       }
+       //alert('dafs');
+       var $subMenu = $(this).next(".dropdown-menu");
+       $subMenu.toggleClass('show');
+
+
+       $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
+           $('.dropdown-submenu .show').removeClass("show");
+       });
+
+       return false;
+   });
+    }, 5000);
+
+    function service_type_modal()
+    {
+        $("#order_service_type_detail").modal('hide');
+    }
+</script>
 @endsection

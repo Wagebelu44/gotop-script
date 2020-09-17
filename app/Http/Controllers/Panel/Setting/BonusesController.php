@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Panel\Setting;
 
 use App\Http\Controllers\Controller;
-use App\Models\GlobalPaymentMethod;
+use App\Models\G\GlobalPaymentMethod;
 use App\Models\SettingBonuse;
 use Illuminate\Http\Request;
 use Validator;

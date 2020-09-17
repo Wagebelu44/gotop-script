@@ -170,13 +170,10 @@
         @endif
         /* global instances */
         window.CSRF_TOKEN = '{{csrf_token()}}';
-        window.base_url = window.location.origin;
+        window.base_url = "{{env('APP_URL')}}";
         /* end of global instances */
 
-        /* global instances */
-        window.CSRF_TOKEN = '{{ csrf_token() }}';
-        window.base_url = window.location.origin;
-        /* end of global instances */
+   
     </script>
     @yield('scripts')
 </body>

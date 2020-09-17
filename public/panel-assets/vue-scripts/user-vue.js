@@ -13,9 +13,11 @@ const userModule = new Vue({
             password_confirmation: '',
             status: '',
             balance: 0.00,
+            payment_methods: [],
         },
+        global_payment_methods: [],
         filter: {
-            status: "", 
+            status: "",
             search: "",
         },
         validationErros: [],
@@ -26,6 +28,7 @@ const userModule = new Vue({
         current_user_id: null,
         selectedUsers: [],
         checkAlluser: false,
+        isEdit: false,
     },
     created () {
         let myUrl = new URL (window.location.href);
@@ -40,7 +43,7 @@ const userModule = new Vue({
                 this.selectedUsers = this.users.map(it=>it.id);
             }
             else this.selectedUsers = [];
-        }  
+        }
     },
     mounted () {
         this.getUsers();
@@ -87,6 +90,7 @@ const userModule = new Vue({
                 .then(res => res.json())
                 .then(res => {
                     this.users = res.data.data;
+                    this.global_payment_methods = res.global_payment_methods;
                     this.pagination = res.data;
                 });
         },
@@ -111,6 +115,9 @@ const userModule = new Vue({
                     this.users.unshift(res.data);
                     this.formClear();
                     $("#userModal").modal('hide');
+                    $( '#user-form' ).each(function(){
+                        this.reset();
+                    });
                 }
             })
             .catch(res => {
@@ -135,6 +142,7 @@ const userModule = new Vue({
                 password: '',
                 password_confirmation: '',
                 status: '',
+                payment_methods: [],
             };
         },
         editUser(id) {
@@ -146,8 +154,11 @@ const userModule = new Vue({
             })
             .then(res => {
                 $("#userModal").modal('show');
-                this.formUser = res;
+                this.formUser = {...res};
+                let payment_ids = res.payment_methods.map(it=>it.payment_id);
+                this.formUser.payment_methods = [...payment_ids]; // res.payment_methods.map(it=>it.payment_id);
                 this.edit_user_id = res.id;
+                this.isEdit = true;
             })
             .catch(res => {
                 res.text().then(err=>{
@@ -187,6 +198,7 @@ const userModule = new Vue({
                     });
                     this.formClear();
                     $("#userModal").modal('hide');
+                    this.isEdit = false;
                 }
             })
             .catch(res => {
@@ -249,7 +261,7 @@ const userModule = new Vue({
                 if (res.length>0) {
                     res.forEach(item=>{
                         let provider_service = null; //provider_rate(item.id);
-                        let rateObj = {}; 
+                        let rateObj = {};
                         rateObj.service_id = item.id;
                         rateObj.name = item.name;
                         rateObj.price =  item.pivot.price;
@@ -258,7 +270,7 @@ const userModule = new Vue({
                         this.userServices.unshift(rateObj);
                     });
                 }
-                
+
                 $('#customRateAddModal').modal('show');
             });
         },
@@ -303,15 +315,15 @@ const userModule = new Vue({
         statusFilter(txt) {
             this.filter.status = txt;
             this.getUsers();
-        }, 
+        },
         searchFilter() {
             this.getUsers();
         },
-        addCustomRate(obj) 
+        addCustomRate(obj)
         {
             let service_ids = obj.id;
             let provider_service = null; //provider_rate(service_ids);
-            
+
             let pushAble = false;
             if (this.userServices.length>0) {
                 this.userServices.forEach(item=>{
@@ -320,9 +332,9 @@ const userModule = new Vue({
                     }
                 });
             }
-            if (!pushAble) 
+            if (!pushAble)
             {
-                let rateObj = {}; 
+                let rateObj = {};
                 rateObj.service_id = obj.id;
                 rateObj.name = obj.name;
                 rateObj.price =  obj.price;
@@ -344,7 +356,7 @@ const userModule = new Vue({
             if (this.userServices.length>0) {
                 this.userServices.forEach(item=>{
                     if (item.service_id == service_id) {
-                        if (item.back_end) 
+                        if (item.back_end)
                         {
                            /*  $('#deleteCustomRate').attr('action', originUrl + 'reseller/users/' + current_user_id + '/services/' + service_id);
                             $('#deleteCustomRate').submit(); */
@@ -356,7 +368,7 @@ const userModule = new Vue({
                     }
                 });
             }
-        }, 
+        },
         storeUserService()
         {
             if (this.userServices.length===0) {
@@ -384,7 +396,7 @@ const userModule = new Vue({
                 })
                 .then(res => {
                     if (res.status) {
-                        $("#customRateAddModal").modal('hide'); 
+                        $("#customRateAddModal").modal('hide');
                     }
                 })
                 .catch(res => {
@@ -432,7 +444,7 @@ const userModule = new Vue({
                 })
                 .then(res => {
                     if (res.status) {
-                        $("#customRateAddModal").modal('hide'); 
+                        $("#customRateAddModal").modal('hide');
                     }
                 })
                 .catch(res => {
@@ -483,7 +495,7 @@ const userModule = new Vue({
                     });
                 });
             }
-            else 
+            else
             {
                 alert('No User is selected');
             }
@@ -498,7 +510,7 @@ const userModule = new Vue({
                     },
                     credentials: "same-origin",
                     method: "POST",
-                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'inactive'}),
+                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'Deactivated'}),
                 }).then(res => {
                     if (!res.ok) {
                         throw res;
@@ -522,11 +534,11 @@ const userModule = new Vue({
                     });
                 });
             }
-            else 
+            else
             {
                 alert('No User is selected');
             }
-        
+
         },
         resetAlluserRate()
         {
@@ -562,11 +574,11 @@ const userModule = new Vue({
                     });
                 });
             }
-            else 
+            else
             {
                 alert('No User is selected');
             }
         }
-       
+
     }
 });

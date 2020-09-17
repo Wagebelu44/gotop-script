@@ -3,29 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\Contracts\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-class GlobalPaymentMethod extends Model
+class UserPaymentMethod extends Model
 {
-    use SoftDeletes, LogsActivity;
+    use LogsActivity;
 
-    protected $table = 'global_payment_methods';
+    protected $table = 'user_payment_methods';
 
     protected $fillable = [
-        'name', 'fields', 'status'
+        'panel_id', 'user_id', 'payment_id',
     ];
-
-    public function settingBonus() 
-    {
-        return $this->belongsTo(SettingBonuse::class);
-    }
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Payment'; //custom_log_name_for_this_model
+    protected static $logName = 'User payment methods'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

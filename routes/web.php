@@ -13,10 +13,26 @@ Route::get('command', function () {
 //Test Route::END
 
 Route::group(['middleware' => 'checkPanel'], function () {
+    Route::get('/', 'Web\PageController@index')->name('home');
+
+    Auth::routes(['verify' => true]);
+    Route::group(['middleware' => ['auth', 'verified']], function () {
+        Route::get('/home', 'User\DashboardController@index')->name('home');
+
+        /* User order module */
+        Route::get('/order/{order_id?}', 'User\OrderController@index')->name('order');
+        Route::get('/get-category-services', 'User\OrderController@getCateServices');
+      /*   Route::get('/orders', 'User\OrderController@orderLists'); */
+  
+        Route::post('statusChanges', 'User\OrderController@refillStatusChange')->name('user.changeRefillStatus');
+        Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
+
+    });
+
     Route::group(['prefix' => 'admin'], function () {
         // Authentication Routes...
         Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
-        Route::post('/', 'Panel\Auth\LoginController@login');
+        Route::post('/login', 'Panel\Auth\LoginController@login')->name('panel.login.action');
         Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
 
         Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
@@ -48,9 +64,14 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('users', 'Panel\UserController');
 
             #Orders...
+            Route::post('orders/update/status', 'Panel\OrderController@bulkStatusChange');
+            Route::get('get-orders', 'Panel\OrderController@getOrderLists');
+            Route::post('orders/update/{id}', 'Panel\OrderController@updateOrder');
             Route::resource('orders', 'Panel\OrderController');
 
             #Drip-feed...
+            Route::get('drip-feed-lists', 'Panel\DripFeedController@getDripFeedLists');
+            Route::post('drip-feed/update/{id}', 'Panel\DripFeedController@updateDripOrder');
             Route::resource('drip-feed', 'Panel\DripFeedController');
 
             #Services...
@@ -69,13 +90,17 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('get-category-services', 'Panel\ServiceController@getCateServices');
             Route::post('updateService/{id}', 'Panel\ServiceController@updateService');
             Route::resource('services', 'Panel\ServiceController', ["as"=>"admin"]);
+
             #Tasks...
+            Route::get('tasks-lists', 'Panel\TaskController@getTasksOrders');
+            Route::post('refill/order/status', 'Panel\TaskController@refillChnageStatus')->name('task.change.status');
             Route::resource('tasks', 'Panel\TaskController');
 
             #Services...
             Route::resource('services', 'Panel\ServiceController');
 
             #Payments...
+            Route::get('payments-lists', 'Panel\PaymentController@getPaymentLists');
             Route::resource('payments', 'Panel\PaymentController');
 
             #Tickets...
@@ -85,6 +110,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('tickets/{ticket}/comment', 'Panel\TicketController@comment')->name('tickets.comment');
 
             #Reports...
+            Route::get('reports/profits', 'Panel\ReportController@profits');
+            Route::get('reports/tickets', 'Panel\ReportController@ticket');
+            Route::get('reports/orders', 'Panel\ReportController@order');
+            Route::get('reports/payment', 'Panel\ReportController@payments');
             Route::resource('reports', 'Panel\ReportController');
 
             #Appearance...
@@ -152,5 +181,15 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
+    Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');      
+    Route::post('/make_new_order', 'User\OrderController@store')->name('make.single.order');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
+
+       // Authentication Routes...
+ /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
+       Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
+
+       Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
+       Route::post('/register', 'Panel\Auth\RegisterController@register'); */
+
 });

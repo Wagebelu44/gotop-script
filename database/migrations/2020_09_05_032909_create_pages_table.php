@@ -19,6 +19,7 @@ class CreatePagesTable extends Migration
             $table->unsignedBigInteger('global_page_id')->nullable();
             $table->string('name');
             $table->string('url');
+            $table->string('default_url')->nullable();
             $table->longText('content')->nullable();
             $table->string('meta_title')->nullable();
             $table->string('meta_keyword')->nullable();

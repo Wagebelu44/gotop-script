@@ -1,0 +1,318 @@
+
+<div class="inner-page-common add-funds">
+<section id="add-funds" class="mt-0 mb-5">
+   <div class="container-fluid" id="deposite-section">
+      <div class="row">
+         <div class="col-lg-6 payments-panel">
+            <div class="card mb-4">
+               {# @if ($errors->has('stripeToken'))
+               <div class="alert alert-danger">
+                  <strong>{{ $errors->first('stripeToken') }}</strong>
+               </div>
+               @endif #}
+               <div class="card-header">
+                  <div class="tabs-wrapper">
+                     <ul class="nav nav-justified nav-tabs dragscroll horizontal ml-0 mr-0" id="myTab" role="tablist">
+                        <li class="nav-item ">
+                           <a class="nav-link active show" data-toggle="tab" href="#manual_container" id="tab_manual" role="tab" aria-controls="home" aria-selected="true" 
+                              data-paymentName="Manual">
+                           <img src="{{ site['pp-icon'] }}" alt="" title=""></a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" data-toggle="tab" href="#payoneer_container" role="tab" aria-controls="home" aria-selected="true" data-paymentName="PayOp">
+                           <img src="{{ site['visa1'] }}" alt="card" title="Stripe">
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link payment_tab_link " data-toggle="tab" id="tab_275" href="#form_container" 
+                              role="tab" aria-controls="home" aria-selected="true" data-paymentName="CryptoCurrency"  
+                              data-paymentId="275" >
+                           <img src="{{ site['bitcoin'] }}" alt="CryptoCurrency" title="CryptoCurrency">
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" data-toggle="tab" href="#payoneer" role="tab" aria-controls="home" aria-selected="true" data-paymentName="Payoneer">
+                           <img src="{{ site['payoneer1'] }}" alt="card" title="Payoneer">
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" data-toggle="tab" href="#Skrill" role="tab" aria-controls="home" aria-selected="true" data-paymentName="Skrill">
+                           <img src="{{ site['skrill2'] }}" alt="card" title="Skrill">
+                           </a>
+                        </li>
+                        <li class="nav-item">
+                           <a class="nav-link" data-toggle="tab" href="#blackhatworld_container" role="tab" aria-controls="home" aria-selected="true" data-paymentName="Payoneer">
+                           <img src="{{ site['FreeReviewCopy'] }}" alt="Payoneer" title="Free 1$">
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="card-body">
+                    {% if site['error']  %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> {{site['error']}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                    {% if site['success']  %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Success!</strong> {{site['success']}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                    {% if site['validation_error'] > 0 %}
+						{% for error in site['errors'] %}
+                           <div class="alert alert-danger alert-dismissible fade show" role="alert">
+							<strong>Error!</strong> {{error}}.
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                    	{% endfor %}
+					{% endif %}
+                  <div class="tab-content" id="myTabContent">
+                     <div class="tab-pane fade" id="form_container" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="title">CRYPTOCURRENCY (MIN 10$)</div>
+
+                        
+                        <p>After you deposit,
+                           <a href="#">open a new ticket</a>, write your <b>website username</b>, and <b>how much </b> you deposited.<br><br>The Social Media Growth team will add money on your balance as soon as possible.
+                        </p>
+                        <form id="payment-form"
+                           role="form"
+                           method="POST"
+                           action="#">
+                           {{ site['csrf_field'] | raw }}
+                           <fieldset class="scheduler-border">
+                              <div class="title" id="form_payment_name"></div>
+                              <div class="form-group">
+                                 <p id="card-errors" style="color:red"></p>
+                              </div>
+                              <div class="form-group" style="padding-bottom: 0;margin-bottom:0">
+                                 <label class="control-label" for="amount">Amount (USD)</label>
+                                 <input class="form-control"
+                                    name="amount"
+                                    id="amount"
+                                    data-validation="number"
+                                    type="text">
+                              </div>
+                              <div class="form-group" style="margin-top:15px;">
+                                 <button type="submit" class="btn btn-green btn-block">Pay</button>
+                              </div>
+                           </fieldset>
+                        </form>
+                     </div>
+                     <div class="tab-pane active show" id="manual_container" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="title">paypal express checkout (min 10$)</div>
+
+                       
+                        <form id="payment-form" role="form" method="POST" action="#">
+                           {{ site['csrf_field'] | raw }}
+                           <fieldset class="scheduler-border">
+                              <div class="form-group">
+                                 <p id="card-errors" style="color:red"></p>
+                              </div>
+                              <div class="form-group" style="padding-bottom: 0;margin-bottom:0">
+                                 <label class="control-label" for="amount">Amount (USD) </label>
+                                 <input class="form-control"
+                                    name="amount"
+                                    id="amount"
+                                    data-validation="number"
+                                    type="text">
+                              </div>
+                              <div class="form-group" style="margin-top:15px;">
+                                 <button type="submit" class="btn btn-green btn-block">Pay</button>
+                              </div>
+                           </fieldset>
+                        </form>
+                        <p class="text-center"><small>PayPal Transaction Fee Will Be Charged!</small></p>
+                     </div>
+                     <div class="tab-pane fade" id="payoneer_container" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="title">VISA / Mastercard / American express [Powered by PayOp] (min 10$)</div>
+
+                       
+                        <div style="text-align: left;">
+                           <img src="{{ site['payop'] }}">
+                        </div>
+                        <form action="#" method="post">
+                             {{ site['csrf_field'] | raw }}
+                           <fieldset class="scheduler-border">
+                              <div class="form-group">
+                                 <p id="card-errors" style="color:red"></p>
+                              </div>
+                              <div class="form-group" style="padding-bottom: 0;margin-bottom:0">
+                                 <label class="control-label" for="amount">Amount (USD)</label>
+                                 <input class="form-control" name="amount" data-validation="number" type="text">
+                                
+                              </div>
+                              <div class="form-group" style="margin-top:15px;">
+                                 <button type="submit" class="btn btn-green btn-block">Pay</button>
+                              </div>
+                           </fieldset>
+                        </form>
+                        <p class="text-center"><small>PayOp Transaction fee will be charged</small></p>
+                     </div>
+                     <div class="tab-pane fade" id="payoneer" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="title">payoneer (min 20$)</div>
+
+
+                      
+                        <p>
+                           In order to deposit via <b>Payoneer</b>, please do the following:<br><br>
+                        <b>Step 1:</b> Send payment from Your Payoneer Account to this email address: <b>digitalforce99@gmail.com</b><br><br>
+                        <b>Step 2:</b> After sending, wait for 10-20 minutes for approval of the transaction.<br><br>
+                        <b>Step 3:</b> As soon as the payment is Approved, <a href="#">open a new ticket</a>, fill in <b>Transaction ID</b>, an <b>Amount</b> that you've paid and your Payoneer <b>email address</b>.<br><br>
+                        <b>Step 4:</b> TSMG Team will check and funds will be deposited into your account balance.
+                        </p>
+                     </div>
+                     <div class="tab-pane fade" id="Skrill" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="title">Skrill (min 10$)</div>                        
+
+                        <p>
+In order to deposit via <b>Skrill</b>, please do the following:<br><br>
+<b>Step 1:</b> Send payment from Your Skrill Account to: <b>digitalforce99@gmail.com</b><br><br>
+                           <b>Step 2:</b> After sending, <a href="#">open a new ticket</a>, fill in <b>Transaction ID</b>, an <b>Amount</b> that you've paid and your Skrill <b>email address.</b><br><br>
+                           <b>Step 3:</b> TSMG Team will check and funds will be deposited into your account balance.
+                        </p>
+                     </div>
+                     <div class="tab-pane fade" id="blackhatworld_container" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="title">Free 1$</div>
+
+
+                      
+                        <p> 
+                           If you are a <b>new user</b>, you are eligible to receive Free $1 to your Account Balance. <br><br> 
+                           In order to get <b>Free $1</b>, click the button below and follow further steps!<br>
+                           
+                           <div class="mcwidget-embed" data-widget-id="12616260"></div>
+
+                        </p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="card">
+               <!-- <div class="card-header">
+                  <div class="card-title px-3">Payment Lists</div>
+               </div> -->
+               {# <div class="row">
+                  <div class="card-body">
+                     <table class="table table-bordered">
+                        <thead>
+                           <tr>
+                              <th>ID</th>
+                              <th>Date</th>
+                              <th>Method</th>
+                              <th>Amount</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           @foreach ($transactions as $transaction)
+                           <tr>
+                              <td>{{$transaction->id}}</td>
+                              <td>{{$transaction->created_at}}</td>
+                              <td>
+                                 @if ($transaction->reseller_payment_methods_setting_id == 1)  
+                                    Paypal
+                                 @elseif($transaction->reseller_payment_methods_setting_id == 2)
+                                    PayOP
+                                 @elseif($transaction->reseller_payment_methods_setting_id == 3)
+                                    Coinbase
+                                 @elseif($transaction->reseller_payment_methods_setting_id == 4)
+                                    Bank/Other
+                                 @elseif($transaction->reseller_payment_methods_setting_id == 5)
+                                    Skrill
+                                 @elseif($transaction->reseller_payment_methods_setting_id == 6)
+                                    Payoneer
+                                 @else Unknown
+                                 @endif
+
+                              </td>
+                              {{-- it needs to pull by relation dynamic, --}}
+                              <td>${{$transaction->amount}}</td>
+                           </tr>
+                           @endforeach
+                        </tbody>
+                     </table>
+                     <div class="text-center py-3">
+                        <div class="d-inline-block mx-auto">
+                           {{ $transactions->links() }}
+                        </div>
+                      </div>
+                  </div>
+               </div> #}
+            </div>
+         </div>
+         <div class="col-lg-6">
+            <div class="card bg-white" id="faq-page-deposite">
+               <div class="card-header">
+                  <div class="card-title p-3">
+                     <i class="fa fa-comments"></i> Frequently Asked Questions
+                  </div>
+               </div>
+               <div class="card-body ">
+                  <div class="accordion faq-panels">
+                     <div class="card">
+                        <div class="card-header">
+                           <button class="btn" type="button" data-toggle="collapse" data-target="#collapseFaq0" aria-expanded="true">learn how to deposit money<i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i></button>
+                        </div>
+                        <div id="collapseFaq0" class="collapse in show" aria-expanded="false" style="">
+                           <div class="card-body">
+                              <p class="card-text">
+                                 <iframe width="100%" height="320" src="https://www.youtube.com/embed/ORGwVWbC4uo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="card">
+                        <div class="card-header">
+                           <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapseFaq00" aria-expanded="false">Payment Bonuses<i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i></button>
+                        </div>
+                        <div id="collapseFaq00" class="collapse in" aria-expanded="false" style="">
+                           <div class="card-body">
+                           <p class="card-text">
+                              <b>Paypal:</b> 5% Bonus On All Deposits Above $100<br>
+                              <b>Visa / Mastercard / American Express [Powered By PayOp] :</b> 5% Bonus On All Deposits Above $100<br>
+                              <b>Bitcoin:</b> 5% Bonus On All Deposits<br>
+                              <b>Payoneer:</b> 10% bonus above $100<br>
+                              <b>Skrill:</b> 5% Bonus On All Deposits Above $50<br><br>
+                              Enjoy your Bonuses! <br<br>
+                              And don't forget: <b>With us, growing social media has never been easier!</b>
+                                 </p>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="card">
+                        <div class="card-header">
+                           <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#collapseFaq1" aria-expanded="false">Get your 10% First Deposit Bonus<i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i></button>
+                        </div>
+                        <div id="collapseFaq1" class="collapse in" aria-expanded="false" style="">
+                           <div class="card-body">
+                              <p class="card-text">The Social Media Growth want to help with <b>10% Bonus on First Deposit</b> and ensure you get the most out of our Panel.<br> <br>To receive this Bonus, the requirement is a minimum of 20$ Deposit.</b></p>
+                           </div>
+                        </div>
+                     </div>
+                     <div id="collapseFaq3" class="collapse in" aria-expanded="false" style="">
+                        <div class="card-body">
+                           <p class="card-text">If you wish to get your remaining balance refunded to your account please do the following, please <a href="https://followiz.com/tickets">open a ticket</a> and ask so.</p>
+                           <ul>
+                              <li>Do not open dispute/chargeback otherwise we are going to lock your account.</li>
+                              <li>We cannot refund payment to another Payment Processor Account.</li>
+                              <li>You have to have a deposit with the Payment Processor Account previously.</li>
+                              <p></p>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+</div>

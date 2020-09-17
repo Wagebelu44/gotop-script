@@ -8,7 +8,13 @@
 
 <div class="row">
     <div class="col-12">
-        <form class="form-horizontal mt-3" method="POST" action="{{ route('panel.login') }}">
+        @if(session('error'))
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                <h3 class="text-warning"><i class="fa fa-exclamation-triangle"></i> Warning</h3> {{ Session::get('error') }}
+            </div>
+        @endif
+        <form class="form-horizontal mt-3" method="POST" action="{{ route('panel.login.action') }}">
             @csrf
 
             <div class="input-group mb-3">

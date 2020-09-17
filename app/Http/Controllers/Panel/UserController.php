@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Models\UserPaymentMethod;
 use Auth;
 use App\User;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -24,16 +26,19 @@ class UserController extends Controller
                     if (isset($request->status) && $request->status != '') {
                         $q->where('status', $request->status);
                     }
-                    
+
                     if (isset($request->search) && $request->search != '') {
                         $q->where('username', $request->search);
                         $q->orWhere('email', $request->search);
                     }
         })->orderBy('id', 'DESC')->paginate(10);
-
+        $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
+        ->where('visibility', 'enabled')
+        ->get();
         return response()->json([
             'status' => 200,
             'data' => $users,
+            'global_payment_methods' => $globalMethods,
         ]);
     }
 
@@ -49,7 +54,7 @@ class UserController extends Controller
             'username'    => 'nullable|string|max:255|unique:users',
             'email'       => 'required|string|email|max:255|unique:users',
             'skype_name'  => 'nullable|string|max:255|unique:users',
-            'status'      => 'required|in:pending,active,inactive',
+            'status'      => 'required|in:Pending,Active,Deactivated',
             'password'    => 'required|string|min:8|confirmed',
         ];
         $validator = Validator::make($credentials, $rules);
@@ -59,8 +64,30 @@ class UserController extends Controller
 
         try {
             $data = $request->except('password_confirmation');
-            $data['password'] = Hash::make($data['password']);
-            $user = User::create($data);
+            $user = User::create([
+                'panel_id'   => Auth::user()->panel_id,
+                'email'      => $data['email'],
+                'username'   => $data['username'],
+                'skype_name' => $data['skype_name'],
+                'password'   => Hash::make($data['password']),
+                'status'     => Auth::user()->panel_id,
+                'phone'      => null,
+                'balance'    => 0,
+            ]);
+
+            if ($request->has('payment_methods')){
+                if ($user){
+                    $paymentIds = [];
+                    foreach ($request->payment_methods as $key => $payment){
+                        $paymentIds [] = [
+                            'panel_id'   => Auth::user()->panel_id,
+                            'user_id'    => $user->id,
+                            'payment_id' => $payment,
+                        ];
+                    }
+                    UserPaymentMethod::insert($paymentIds);
+                }
+            }
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
@@ -69,7 +96,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        return User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+        return User::with('paymentMethods')->where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
     }
 
     public function edit($id)
@@ -92,7 +119,7 @@ class UserController extends Controller
 
         try {
             $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $user_id)->first();
-            $user->update(['status' => $user->status == 'active' ? 'inactive' : 'active']);
+            $user->update(['status' => $user->status == 'Active' ? 'Deactivated' : 'Active']);
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
@@ -102,8 +129,22 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $data = $request->except('email', 'password','password_confirmation', 'created_at', 'updated_at');
+            $data = $request->except('email', 'password','password_confirmation', 'payment_methods', 'created_at', 'updated_at');
             $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->update($data);
+            if ($user){
+                UserPaymentMethod::where('user_id', $id)->delete();
+                if ($request->has('payment_methods')){
+                    $paymentIds = [];
+                    foreach ($request->payment_methods as $key => $payment){
+                        $paymentIds [] = [
+                            'panel_id'   => Auth::user()->panel_id,
+                            'user_id'    => $id,
+                            'payment_id' => $payment,
+                        ];
+                    }
+                    UserPaymentMethod::insert($paymentIds);
+                }
+            }
             return response()->json(['status' => true, 'data'=> $request->all()], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
@@ -128,7 +169,7 @@ class UserController extends Controller
         if($validator->fails()) {
             return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
         }
-        
+
         try {
             User::where('panel_id', Auth::user()->panel_id)->where('id', $credentials['user_id'])->update([
                 'password' => Hash::make($credentials['password'])
@@ -139,13 +180,13 @@ class UserController extends Controller
         }
     }
 
-   
+
     /* service custom price */
     public function getCategoryService()
     {
         return ServiceCategory::with(['services'=>function($q){
-            $q->where('status', 'active');
-        }])->where('status', 'active')->orderBy('id', 'ASC')->get();
+            $q->where('status', 'Active');
+        }])->where('status', 'Active')->orderBy('id', 'ASC')->get();
     }
     public function getUserServices($user_id)
     {
@@ -154,7 +195,7 @@ class UserController extends Controller
     }
     public function serviceUpdate(Request $request)
     {
-        
+
         $request->validate([
             'user_id' => 'required|numeric',
             'services' => 'required',
@@ -168,8 +209,8 @@ class UserController extends Controller
             }
             $panel_id = auth()->user()->panel_id;
             $serviceLists  = json_decode($data['services']);
-            
-            foreach ($serviceLists as $index => $value) 
+
+            foreach ($serviceLists as $index => $value)
             {
                 $price = isset($value->update_price)?$value->update_price:$value->price;
                $user->servicesList()->attach($value->service_id, ['price' => $price, 'panel_id'=>$panel_id]);
@@ -204,14 +245,14 @@ class UserController extends Controller
                 $user->servicesList()->detach();
             }
         }
-        elseif ($data['status'] == 'active') {
+        elseif ($data['status'] == 'Active') {
             User::whereIn('id', $data['user_ids'])->update([
-                'status' => 'active'
+                'status' => 'Active'
             ]);
         }
-        elseif ($data['status'] == 'inactive') {
+        elseif ($data['status'] == 'Deactivated') {
             User::whereIn('id', $data['user_ids'])->update([
-                'status' => 'inactive'
+                'status' => 'Deactivated'
             ]);
         }
         return response()->json(['status' => true, 'data'=> 'Bulk users update'], 200);
