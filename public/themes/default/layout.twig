@@ -22,7 +22,7 @@
 <body>
     <div class="container-fluid m-0" >
           <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="{{ site['site_url'] }}">
             {% if site['logo'] %}
                 <img style="width: 100px;" src="{{ site['logo'] }}">
             {% else %}
@@ -63,7 +63,7 @@
         </div>
     </nav>
     </div>
-  
+
 
 	{{ content }}
 

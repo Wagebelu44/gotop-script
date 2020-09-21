@@ -52,6 +52,7 @@ class PageController extends Controller
         }
         $menus = $sql->get();
 
+        $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? true : false;
         $site['menuActive'] = (Auth::check()) ? true : false;
         $site['title'] = 'ASDF';
