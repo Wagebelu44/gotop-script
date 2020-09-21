@@ -23,7 +23,7 @@ class GlobalPaymentSeeder extends Seeder
 			[
                 'uuid' => Str::uuid(),
 				'name' => 'PayOP',
-				'fields' => '{"PAYOP_SECRET_KEY":"Secret Key", "PAYOP_PUBLIC_KEY":"Public Key"}',
+				'fields' => '{"PAYOP_SECRET_KEY":"Secret Key", "PAYOP_PUBLIC_KEY":"Public Key", "PAYOP_JWT_TOKEN": "JWT token"}',
 				'status' => '1',
 				'created_at' => now(),
 			],

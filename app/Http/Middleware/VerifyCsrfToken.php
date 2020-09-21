@@ -12,6 +12,10 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'paypal-ipn',
+        '/payment/*',
+        '/payment/add-funds/paypal/ipn',
+        '/payment/add-funds/bitcoin/bit-ipn',
+        '/payopcallback',
     ];
 }
