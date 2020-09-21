@@ -43,21 +43,29 @@
             {% for post in site['posts'] %}
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
-                        <img class="card-img-top img-fluid" src="{{ site['postsImgUrl'] }}/{{ post['image'] }}" >
+                        <a href="{{ site['url'] }}?details={{ post['id'] }}">
+                            <img class="card-img-top img-fluid" src="{{ site['postsImgUrl'] }}/{{ post['image'] }}" >
+                        </a>
                         <div class="card-body">
                             <p class="card-text">
-                                {{ post['title']|length > 50 ? post['title']|slice(0, 50) ~ '...' : post['title']  }}
+                                <a href="{{ site['url'] }}?details={{ post['id'] }}">
+                                    {{ post['title']|length > 80 ? post['title']|slice(0, 80) ~ '...' : post['title']  }}
+                                </a>
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a href="{{ site['url'] }}?details={{ post['id'] }}" class="btn btn-sm btn-outline-secondary">View</a>
                                 </div>
-                                <small class="text-muted">9 mins</small>
+                                <small class="text-muted">{{ post['created_at'].diffForHumans }}</small>
                             </div>
                         </div>
                     </div>
                 </div>
             {% endfor %}
+
+            <div class="col-md-12 d-flex justify-content-center">
+                {{ site['posts'].links|raw }}
+            </div>
         {% endif %}
     </div>
 </div>
