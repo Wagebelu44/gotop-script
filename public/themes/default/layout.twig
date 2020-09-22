@@ -12,7 +12,7 @@
     <script>
         /* global instances */
         window.CSRF_TOKEN = "{{site['csrf_token']}}";
-        window.base_url = "{{site['app_url']}}";
+        window.base_url = "{{site['site_url']}}";
         /* end of global instances */
     </script>
     {% for style in site['styles'] %}
@@ -97,7 +97,7 @@
                         {% endif %}
                     </ul>
                 {% endif %}
-                
+
                 {% if site['auth'] %}
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">

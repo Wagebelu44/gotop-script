@@ -69,7 +69,6 @@ class PageController extends Controller
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
         $site['csrf_token'] = csrf_token();
-        $site['app_url'] = env('APP_URL');
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/style.css'),
