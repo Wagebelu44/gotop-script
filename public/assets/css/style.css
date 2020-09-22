@@ -124,7 +124,7 @@ a.article:hover {
 
 #content {
     width: 100%;
-    min-height: 100vh;
+    min-height: 70vh;
     transition: all 0.3s;
 }
 
@@ -221,7 +221,11 @@ a.article:hover {
     line-height: 10px !important;
 }
 pre {
-    background-color: #203e05e6 !important;
+    white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 #deposite-section .card-header .tabs-wrapper {
     display: block;

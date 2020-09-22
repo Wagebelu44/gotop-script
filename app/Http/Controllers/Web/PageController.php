@@ -30,15 +30,25 @@ class PageController extends Controller
     public function page(Request $request, $url)
     {
         $panelId = session('panel');
-        $page = Page::where('panel_id', $panelId)->where('url', $url)->first();
+        $page = Page::with(['menu' => function($q) use($panelId) {
+            $q->select('menu_link_id', 'menu_link_type');
+            $q->where('panel_id', $panelId);
+        }])->where('panel_id', $panelId)->where('url', $url)->first();
 
+        // If page not found...
         if (empty($page)) {
-            return 1;
+            abort(404);
+        }
+
+        // If without authentication hit authentic url...
+        if ($page->menu->menu_link_type == 'No' && Auth::check() == false) {
+            abort(404);
         }
 
         //Menu data fetch...
-        $sql = Menu::with(['page' => function($q) {
+        $sql = Menu::with(['page' => function($q) use($panelId) {
             $q->select('id', 'url');
+            $q->where('panel_id', $panelId);
         }])
         ->select('menu_link_id', 'menu_name', 'external_link')
         ->where('panel_id', $panelId)
@@ -61,6 +71,7 @@ class PageController extends Controller
 
         $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
 
+        $site['panel_name'] = $setting->panel_name;
         $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['logout_url'] = route('logout');
