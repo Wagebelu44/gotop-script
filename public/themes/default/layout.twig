@@ -35,7 +35,7 @@
             <ul class="list-unstyled components">
                 {% if site['auth'] %}
                     {% for menu in menus %}
-                        <li{% if site['menuActive'] %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
+                        <li{% if menu['page']['active'] %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
                             <a class="nav-link" href="{{ menu['page']['url'] }}">
                                 {{ menu['menu_name'] }}
                             </a>
@@ -43,7 +43,7 @@
                     {% endfor %}
                 {% else %}
                     {% for menu in menus %}
-                        <li{% if menuActive %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
+                        <li{% if menu['page']['active'] %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
                             <a class="nav-link" href="{{ menu['page']['url'] }}">
                                 {{ menu['menu_name'] }}
                             </a>
@@ -80,7 +80,7 @@
                     <ul class="navbar-nav">
                         {% if site['auth'] %}
                             {% for menu in menus %}
-                                <li{% if site['menuActive'] %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
+                                <li{% if menu['page']['active'] %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
                                     <a class="nav-link" href="{{ menu['page']['url'] }}">
                                         {{ menu['menu_name'] }}
                                     </a>
@@ -88,7 +88,7 @@
                             {% endfor %}
                         {% else %}
                             {% for menu in menus %}
-                                <li{% if menuActive %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
+                                <li{% if menu['page']['active'] %} class="nav-item active" {% else %}  class="nav-item" {% endif %}>
                                     <a class="nav-link" href="{{ menu['page']['url'] }}">
                                         {{ menu['menu_name'] }}
                                     </a>
@@ -97,6 +97,7 @@
                         {% endif %}
                     </ul>
                 {% endif %}
+                
                 {% if site['auth'] %}
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
@@ -116,59 +117,17 @@
                 {% endif %}
             </div>
         </nav>
-        <!-- Main Content -->
+
         {{ content }}
-        <!--End Main Content -->
 
     </div>
-
 </div>
 
-<div class="container-fluid m-0" >
-    <footer class="pt-4 my-md-5 pt-md-5 border-top">
-        <div class="row">
-            <div class="col-12 col-md">
-                <a class="navbar-brand" href="{{ site['site_url'] }}">
-                    {% if site['logo'] %}
-                        <img style="width: 100px;" src="{{ site['logo'] }}">
-                    {% else %}
-                        Your Logo
-                    {% endif %}
-                </a>
-                <small class="d-block mb-3 text-muted">&copy; 2020</small>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Features</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Cool stuff</a></li>
-                    <li><a class="text-muted" href="#">Random feature</a></li>
-                    <li><a class="text-muted" href="#">Team feature</a></li>
-                    <li><a class="text-muted" href="#">Stuff for developers</a></li>
-                    <li><a class="text-muted" href="#">Another one</a></li>
-                    <li><a class="text-muted" href="#">Last time</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>Resources</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Resource</a></li>
-                    <li><a class="text-muted" href="#">Resource name</a></li>
-                    <li><a class="text-muted" href="#">Another resource</a></li>
-                    <li><a class="text-muted" href="#">Final resource</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md">
-                <h5>About</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Team</a></li>
-                    <li><a class="text-muted" href="#">Locations</a></li>
-                    <li><a class="text-muted" href="#">Privacy</a></li>
-                    <li><a class="text-muted" href="#">Terms</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-</div>
+<footer class="border-top">
+    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+        <a href="https://mdbootstrap.com/"> MDBootstrap.com</a>
+    </div>
+</footer>
 {% for script in site['scripts'] %}
     <script type="text/javascript" src="{{ script }}"></script>
 {% endfor %}

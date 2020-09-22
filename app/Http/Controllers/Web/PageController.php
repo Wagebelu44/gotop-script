@@ -36,8 +36,7 @@ class PageController extends Controller
             return 1;
         }
 
-        $setting = SettingGeneral::where('panel_id', $panelId)->first();
-
+        //Menu data fetch...
         $sql = Menu::with(['page' => function($q) {
             $q->select('id', 'url');
         }])
@@ -51,15 +50,23 @@ class PageController extends Controller
             $sql->where('menu_link_type', 'Yes');
         }
         $menus = $sql->get();
+        foreach ($menus as $menu) {
+            if ($menu['page']['url'] == $url) {
+                $menu['page']['active'] = true;
+            }
+        }
+
+        //Panel Setting row fetch...
+        $setting = SettingGeneral::where('panel_id', $panelId)->first();
+
+        $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
 
         $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
-        $site['menuActive'] = (Auth::check()) ? true : false;
-        $site['title'] = 'ASDF';
         $site['logout_url'] = route('logout');
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
-        $site['horizontal_menu'] = isset($setting) && $setting->horizontal_menu ? $setting->horizontal_menu:'No';
+        $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
         $site['csrf_token'] = csrf_token();
         $site['app_url'] = env('APP_URL');
@@ -73,8 +80,7 @@ class PageController extends Controller
             asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
         ];
-        $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
-        $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
+
         if ($page->default_url == 'sign-in') {
             $site['url'] = route('login');
 
@@ -262,6 +268,9 @@ class PageController extends Controller
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
         }
+        
+        $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
+        $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
 
         $loader1 = new \Twig\Loader\ArrayLoader([
             'base.html' => str_replace('{{ content }}', '{% block content %}{% endblock %}', $layout->content),
