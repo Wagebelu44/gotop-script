@@ -23,6 +23,11 @@ class Page extends Model
         return $this->belongsTo(GlobalPage::class);
     }
 
+    public function menu() 
+    {
+        return $this->hasOne(Menu::class, 'menu_link_id', 'id');
+    }
+
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
