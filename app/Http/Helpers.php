@@ -179,3 +179,32 @@ if ( ! function_exists('getFileSizeUnits')) {
     }
 }
 
+if ( ! function_exists('accountStatusKeys')) {
+    function accountStatusKeys(){
+        $data = [
+            '24/7 TICKETS SUPPORT',
+            '5% PAYMENTS BONUS**',
+            '500$ MONTHLY LOTTERY',
+            'FREE SMM PANEL',
+            'PRIORITY TICKET SUPPORT',
+            'CUSTOM SERVICE',
+            'EARLY NOTIFICATION ON NEW',
+            'SERVICES',
+            'SUPPORT HANDLED BY ADMINS',
+        ];
+        return $data;
+    }
+}
+
+if ( ! function_exists('accountPointKeys')) {
+    function accountPointKeys(){
+        $data = [
+            'AVAILABLE',
+            'CAN REDEEM >= 500 POINTS',
+            'CAN REDEEM >= 250 POINTS',
+            'CAN REDEEM >= 100 POINTS',
+            'LESS THAN 4 DAYS CONVERSATION',
+        ];
+        return $data;
+    }
+}
