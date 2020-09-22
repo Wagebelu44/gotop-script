@@ -23,7 +23,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('/order/{order_id?}', 'User\OrderController@index')->name('order');
         Route::get('/get-category-services', 'User\OrderController@getCateServices');
       /*   Route::get('/orders', 'User\OrderController@orderLists'); */
-  
+
         Route::post('statusChanges', 'User\OrderController@refillStatusChange')->name('user.changeRefillStatus');
         Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
 
@@ -170,6 +170,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
                 Route::resource('bonuses', 'Panel\Setting\BonusesController');
 
+                Route::resource('account-status', 'Panel\Setting\AccountStatusController');
+
             });
 
         });
@@ -181,7 +183,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
-    Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');      
+    Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
     Route::post('/make_new_order', 'User\OrderController@store')->name('make.single.order');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
 
@@ -192,14 +194,14 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
 
 
-    
+
     //Route::get('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@showForm');
     Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');
     Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');
     Route::get('/payment/add-funds/bitcoin/success', 'User\CoinPaymentsController@success');
     Route::post('/payment/add-funds/bitcoin/bit-ipn', 'User\CoinPaymentsController@ipn');
 
-    
+
     Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
 
        // Authentication Routes...
