@@ -53,12 +53,13 @@ class PageController extends Controller
         $menus = $sql->get();
 
         $site['site_url'] = url('/');
-        $site['auth'] = (Auth::check()) ? true : false;
+        $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['menuActive'] = (Auth::check()) ? true : false;
         $site['title'] = 'ASDF';
         $site['logout_url'] = route('logout');
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
+        $site['horizontal_menu'] = isset($setting) && $setting->horizontal_menu ? $setting->horizontal_menu:'No';
         $site['csrf_field'] = csrf_field();
         $site['csrf_token'] = csrf_token();
         $site['app_url'] = env('APP_URL');

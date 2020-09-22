@@ -86,7 +86,7 @@ a[data-toggle="collapse"] {
     display: block;
     position: absolute;
     top: 50%;
-    right: 20px;
+    right: 0;
     transform: translateY(-50%);
 }
 
@@ -152,7 +152,7 @@ a.article:hover {
 .card-header{
     display: flex;
     padding: 0px;
-} 
+}
 .card-header .tab-bar{
     cursor: pointer;
     flex-basis: 50%;
