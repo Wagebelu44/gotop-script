@@ -106,12 +106,9 @@
                                                         <div class="form-group">
                                                             <label for=""><strong>Category Name</strong></label>
                                                             <input type="text" v-model="category.name" name="name" class="form-control custom-form-control" placeholder="Name">
+                                                            <span class="text-danger" v-if="errors.category && errors.category['name']">@{{ errors.category['name'][0] }}</span>
                                                         </div>
                                                     </div>
-                                                </div>
-
-                                                <div class="error-display">
-                                                    <p class="error-display-item" v-for="errC in errors.category"></p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">

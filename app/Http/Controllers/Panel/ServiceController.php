@@ -9,6 +9,7 @@ use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
 {
@@ -302,6 +303,17 @@ class ServiceController extends Controller
     }
     public function categoryStore(Request $request)
     {
+        $credentials = $request->only('name');
+
+        $rules = [
+            'name' => 'required|string|max:255'
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if($validator->fails()) {
+            return response()->json(['success' => false, 'errors'=> $validator->messages()], 422);
+        }
+
+
         if ($request->has('edit_id'))
         {
             $request->validate([

@@ -330,22 +330,29 @@ const App = new Vue({
                     }, 2000);
                 }
 
-            }).catch(err => {
-                setTimeout(() => {
-                    this.loader.category = false;
-                    let prepare = [];
-                    err.then(erMesg => {
-                        let errMsgs = Object.entries(erMesg.errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            prepare.push(obj);
-                        }
-                        this.errors.category = prepare;
-                    });
-                }, 2000);
+            })
+            .catch(error => {
+                error.then(erMesg => {
+                    this.errors.category = erMesg.errors;
+                });
             });
+            // .catch(err => {
+            //     setTimeout(() => {
+            //         this.loader.category = false;
+            //         let prepare = [];
+            //         err.then(erMesg => {
+            //             let errMsgs = Object.entries(erMesg.errors);    
+            //             for (let i = 0; i < errMsgs.length; i++) {
+            //                 let obj = {};
+            //                 obj.name = errMsgs[i][0];
+            //                 obj.desc = errMsgs[i][1][0];
+            //                 prepare.push(obj);
+            //             }
+            //             this.errors.category = [...prepare];
+            //         });
+            //     }, 2000);
+               
+            // });
         },
         updateCategoryStatus(id)
         {
@@ -1175,7 +1182,11 @@ const App = new Vue({
                     })
                 }
             }
-        }
+        },
+        errorBreakDown(obj)
+        {
+            return JSON.parse( JSON.stringify(obj));
+        },
     },
 });
 function categorysortable() {
