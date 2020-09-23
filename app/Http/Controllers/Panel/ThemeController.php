@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MediaController;
 use Illuminate\Http\Request;
 use App\Models\Theme;
 use App\Models\ThemePage;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class ThemeController extends Controller
 {
@@ -67,6 +68,10 @@ class ThemeController extends Controller
             if (!empty($theme)) {
                 Theme::where('panel_id', Auth::user()->panel_id)->update(['status' => 'Deactivated']);
                 $theme->update(['status' => 'Active']);
+
+                $image = $this->screenShotUrl(Auth::user()->panel_id, $id);
+                $theme->update(['snapshot' => $image['name']]);
+
                 return redirect()->back()->with('success', 'Theme active successfully!');
             }
             return redirect()->back()->with('error', 'Theme not found!');
@@ -92,4 +97,17 @@ class ThemeController extends Controller
             return view('panel.permission');
         }
     }
+
+    private function screenShotUrl($panelId, $themeId)
+    {
+        $url = url('/');
+        $resp = file_get_contents("https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=$url&screenshot=true");
+        $resp = json_decode($resp, true);
+        $data = str_replace('_', '/', $resp['lighthouseResult']['audits']['final-screenshot']['details']['data']);
+        $data = str_replace('-', '+', $data);
+        echo '<img src="' . $data . '" />';
+        $img = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $data));
+
+        return (new MediaController())->contentUpload($img, 'themes/'.$panelId, $themeId.'.jpg');
+    } 
 }

@@ -103,6 +103,23 @@ class MediaController
         $this->name = $name;
         return $this->upload();
     }
+    
+
+    //Upload Content in "$definePath" folder....
+    public function contentUpload($content, $path, $name)
+    {
+        //Path Create...
+        $realPath = $this->basePath.$path.'/';
+        if (!Storage::exists($realPath)) {
+            Storage::makeDirectory($realPath);
+        }
+        
+        Storage::put($name, $content);
+
+        $data['name'] = $name;
+        $data['url'] = $path.'/'.$name;
+        return $data;
+    }
 
     //Only thumb image create in "$definePath/thumb" folder....
     public function thumb($path, $file, $thumbPath = false, $thumbWidth = 300, $thumbHeight = 300)
