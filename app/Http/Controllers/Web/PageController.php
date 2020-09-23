@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\AccountStatus;
 use App\Models\Blog;
 use App\Models\BlogSlider;
 use App\Models\Menu;
@@ -82,6 +83,7 @@ class PageController extends Controller
         $site['csrf_token'] = csrf_token();
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
+            asset('assets/css/fontawesome.css'),
             asset('assets/css/style.css'),
         ];
         $site['scripts'] = [
@@ -254,6 +256,36 @@ class PageController extends Controller
 
             $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
             $site['ticketLists'] = $ticketLists;
+            $site['setting'] = $setting;
+
+            $site['total_order']  = Order::where('panel_id', $panelId)->count();
+            $totalSpent = Order::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->sum('charges');
+            $site['total_spent']  = numberFormat($totalSpent, 2);
+            $accountStatusData = AccountStatus::where('panel_id', $panelId)->orderBy('id', 'desc')->get()->toArray();
+            $accountStatuses = [];
+            $statusPosition = [
+                'spent_amount' => 0,
+            ];
+            foreach ($accountStatusData as $accStatus){
+                $accountStatuses [] = [
+                    'name' => $accStatus['name'],
+                    'minimum_spent_amount' => $accStatus['minimum_spent_amount'],
+                    'point' => $accStatus['point'],
+                    'statusKeys' => json_decode($accStatus['status_keys'], true),
+                    'pointKeys' => json_decode($accStatus['point_keys'], true),
+                ];
+                if (($accStatus['minimum_spent_amount'] <= $totalSpent) && ($accStatus['minimum_spent_amount'] > $statusPosition['spent_amount'])) {
+                    $statusPosition = [
+                        'name' => $accStatus['name'],
+                        'point' => $accStatus['point'],
+                        'spent_amount' => $accStatus['minimum_spent_amount'],
+                    ];
+                }
+            }
+            $site['accountStatuses'] = $accountStatuses;
+            $site['accountStatusKeys'] = accountStatusKeys();
+            $site['accountPointKeys'] = accountPointKeys();
+            $site['statusPosition']  = $statusPosition;
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
@@ -278,7 +310,7 @@ class PageController extends Controller
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
         }
-        
+
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
         $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
 
