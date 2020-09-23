@@ -1001,6 +1001,11 @@
     </div>
 @endsection
 @section('scripts')
+    <script>
+        var sortServiceRoute = '{{route("reseller.service.sort.data")}}';
+        var sortCategoryRoute = '{{route("reseller.category.sort.data")}}';
+        var resetCustomRatesRoute = '{{route("reseller.service.custom.rate.reset.all")}}';
+    </script>
     <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
     <script src="{{asset('/panel-assets/vue-scripts/service-vue.js')}}"></script>

@@ -812,7 +812,7 @@ const App = new Vue({
                 //console.log(this.service_checkbox);
                 let forD = new FormData();
                 forD.append('service_ids', this.service_checkbox);
-                fetch('{{route("reseller.service.custom.rate.reset.all")}}', {
+                fetch(resetCustomRatesRoute, {
                     headers: {
                         "Accept": "application/json",
                         "X-CSRF-TOKEN": "{{ csrf_token() }}",
@@ -1238,8 +1238,8 @@ function categorysortable() {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: '{{route("reseller.category.sort.data")}}',
-        data: {'category_ids': allcategory_ids, "_token": "{{ csrf_token() }}"},
+        url: sortCategoryRoute,
+        data: {'category_ids': allcategory_ids, "_token": CSRF_TOKEN},
         success: function (data) {
             console.log(data);
         }
@@ -1255,8 +1255,8 @@ function serviceSortable() {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: '{{route("reseller.service.sort.data")}}',
-        data: {'services_ids': allservice_ids, "_token": "{{ csrf_token() }}"},
+        url: sortServiceRoute,
+        data: {'services_ids': allservice_ids, "_token": CSRF_TOKEN},
         success: function (data) {
             console.log(data);
         }
