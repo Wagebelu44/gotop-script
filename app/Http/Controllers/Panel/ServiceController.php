@@ -175,7 +175,7 @@ class ServiceController extends Controller
             }
             return response()->json(['status'=>200,'data'=> $service, 'message'=>'Service created successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['status'=>401, 'data'=>$e->getMessage()]);
+            return response()->json(['status'=>401, 'data'=>$e->getMessage()], 422);
         }
     }
 

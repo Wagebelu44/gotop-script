@@ -404,6 +404,7 @@
                                                             <div class="controls">
                                                                 <label for="name"> <strong>Service Name <span class="badge badge-pill badge-dark"> English </span> </strong>  </label>
                                                                 <input type="text" v-model="services.form_fields.name" name="name" class="form-control" id="name" placeholder="Service Name">
+                                                                <span class="text-danger" v-if="errorFilter('name')!==''"> @{{ errorFilter('name') }} </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -415,6 +416,7 @@
                                                                     <option value="" selected>Choose category</option>
                                                                     <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
                                                                 </select>
+                                                                <span class="text-danger" v-if="errorFilter('category_id')!==''"> @{{ errorFilter('category_id') }} </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -498,6 +500,7 @@
                                                                 <input type="hidden" name="price" v-model="services.form_fields.price">
                                                             </div>
                                                         </div>
+                                                        <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                     </div>
                                                     <div class="col-11 test-class" v-else>
                                                         <div class="form-group">
@@ -520,9 +523,7 @@
                                                         <div class="form-group">
                                                             <input type="text" name="price" class="form-control"
                                                                     v-model="services.form_fields.price" placeholder="Price">
-                                                        </div>
-                                                        <div class="price_validation_messages" v-if='services.validations.price.visibility' >
-                                                            <p class="text-danger">@{{services.validations.price.msg}}</p>
+                                                            <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -535,6 +536,7 @@
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
                                                                     <label for="">@{{services.form_fields.auto_min_quantity}} USD</label>
+                                                                    <span class="text-danger" v-if="errorFilter('min_quantity')!==''"> @{{ errorFilter('min_quantity') }} </span>
                                                                 </div>
                                                                 <div class="overlay" v-if="auto_min_rate_toggler"></div>
                                                             </div>
@@ -557,11 +559,10 @@
                                                                             :class="{disabled :services.disable.min}"
                                                                             :disabled="services.disable.min"
                                                                     />
+                                                                    <span class="text-danger" v-if="errorFilter('min_quantity')!==''"> @{{ errorFilter('min_quantity') }} </span>
                                                                 </div>
                                                             </div>
-                                                            <div class="price_validation_messages" v-if='services.validations.minQuantity.visibility' >
-                                                                <p class="text-danger">@{{services.validations.minQuantity.msg}}</p>
-                                                            </div>
+                                                            
                                                         </div>
                     
                     
@@ -574,6 +575,7 @@
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
                                                                     <label for="">@{{services.form_fields.auto_max_quantity}} USD</label>
+                                                                    <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                                 </div>
                                                                 <div class="overlay" v-if="auto_max_rate_toggler"></div>
                                                             </div>
@@ -589,7 +591,6 @@
                                                         <div v-else>
                                                             <div class="form-group">
                                                                 <div class="controls">
-                    
                                                                     <input type="text" name="max_quantity"
                                                                             class="form-control"
                                                                             placeholder="Max quantity"
@@ -597,11 +598,10 @@
                                                                             :class="{disabled :services.disable.max}"
                                                                             :disabled="services.disable.max"
                                                                     />
+                                                                    <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                                 </div>
                                                             </div>
-                                                            <div class="price_validation_messages" v-if='services.validations.maxQuantity.visibility' >
-                                                                <p class="text-danger">@{{services.validations.maxQuantity.msg}}</p>
-                                                            </div>
+                                                            
                                                         </div>
                     
                                                     </div>
@@ -647,8 +647,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div v-if="errors.category.length != 0" class="error-display">
-                                                    <p class="error-display-item" v-for="errC in errors.category"> @{{ errC.desc }}</p>
+                                                <div v-if="errors.common" class="error-display">
+                                                    <p class="error-display-item"> @{{ errors.common }}</p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">

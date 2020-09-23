@@ -9,8 +9,9 @@ const App = new Vue({
         options: [ {country: 'atik', code: 1}, {country: 'sudip', code: 2},],
         providers_lists: [],
         errors: {
+            common: null,
             category: [],
-            services: null,
+            services: [],
         },
         success: {
             category: '',
@@ -514,14 +515,20 @@ const App = new Vue({
                     this.loader.service = false;
                     let prepare = [];
                     err.then(erMesg => {
-                        let errMsgs = Object.entries(erMesg.errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            prepare.push(obj);
+                        if ('errors' in erMesg) {
+                            let errMsgs = Object.entries(erMesg.errors);
+                            for (let i = 0; i < errMsgs.length; i++) {
+                                let obj = {};
+                                obj.name = errMsgs[i][0];
+                                obj.desc = errMsgs[i][1][0];
+                                prepare.push(obj);
+                            }
+                            this.errors.services = prepare;
                         }
-                        this.errors.services = prepare;
+                        else if('data' in erMesg)
+                        {
+                            this.errors.common = erMesg.data;
+                        }
                     });
                 }, 2000);
             });
@@ -1183,10 +1190,19 @@ const App = new Vue({
                 }
             }
         },
-        errorBreakDown(obj)
+        errorFilter(name)
         {
-            return JSON.parse( JSON.stringify(obj));
-        },
+            let txt = '';
+            if (this.errors.services.length>0) 
+            {
+                this.errors.services.forEach(item=>{
+                    if (item.name === name) {
+                        txt = item.desc;
+                    }
+                });
+            }
+            return txt;
+        }
     },
 });
 function categorysortable() {
