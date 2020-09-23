@@ -18,6 +18,66 @@ class ServiceController extends Controller
     {
         return view('panel.services.index');
     }
+    public function sortData(Request $request)
+    {
+        try {
+            $categories  = $request->services_ids;
+            $cas = Service::get();
+            $category_count = count($categories);
+            foreach($cas as $ca)
+            {
+                $pos = null;
+                foreach ($categories as $key => $id) {
+                    if ($ca->id == $id) {
+                        $pos  = $key == 0? 1: $key + 1;
+                        break;
+                    }
+                }
+                if ($pos !=null)
+                {
+                    $ca->sort  = $pos;
+                    $ca->save();
+                    $category_count--;
+                }
+
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'data'   => $e->getMessage(),
+            ]);
+        }
+    }
+    public function cateogrySortData(Request $request)
+    {
+        try {
+             $categories  = $request->category_ids;
+             $cas = ServiceCategory::get();
+             $category_count = count($categories);
+             foreach($cas as $ca)
+             {
+                 $pos = null;
+                 foreach ($categories as $key => $id) {
+                        if ($ca->id == $id) {
+                            $pos  = $key == 0? 1: $key + 1;
+                            break;
+                        }
+                 }
+                 if ($pos !=null)
+                 {
+                     $ca->sort  = $pos;
+                     $ca->save();
+                     $category_count--;
+                 }
+
+             }
+        } catch (\Exception $e) {
+             return response()->json([
+                    'status' => false, 
+                    'data'   => $e->getMessage(),
+             ]);
+        }
+    }
 
     public function getCateServices(Request $request)
     {
@@ -38,7 +98,7 @@ class ServiceController extends Controller
             }
         }, 'services.provider'])
         ->where('panel_id', auth()->user()->panel_id)
-        ->orderBy('id', 'ASC')->get();
+        ->orderBy('sort', 'ASC')->get();
         $service_type_counts =  [
             'All' => 0,
             'Default' => 0,
