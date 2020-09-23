@@ -86,6 +86,11 @@ class GeneralController extends Controller
                 'average_time'       => $request->average_time,
                 'drip_feed_interval' => $request->drip_feed_interval,
                 'horizontal_menu'    => isset($request->horizontal_menu) ? 'Yes':'No',
+                'total_order'        => isset($request->horizontal_menu) ? 'Yes':'No',
+                'total_spent'        => isset($request->horizontal_menu) ? 'Yes':'No',
+                'account_status'     => isset($request->horizontal_menu) ? 'Yes':'No',
+                'point'              => isset($request->horizontal_menu) ? 'Yes':'No',
+                'redeem'             => isset($request->horizontal_menu) ? 'Yes':'No',
                 'custom_header_code' => null,
                 'custom_footer_code' => null,
             ]);

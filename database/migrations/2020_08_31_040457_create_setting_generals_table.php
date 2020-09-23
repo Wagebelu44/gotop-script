@@ -36,6 +36,11 @@ class CreateSettingGeneralsTable extends Migration
             $table->longText('custom_header_code')->nullable();
             $table->longText('custom_footer_code')->nullable();
             $table->enum('horizontal_menu', ['Yes', 'No'])->default('Yes');
+            $table->enum('total_order', ['Yes', 'No'])->default('No');
+            $table->enum('total_spent', ['Yes', 'No'])->default('No');
+            $table->enum('point', ['Yes', 'No'])->default('No');
+            $table->enum('account_status', ['Yes', 'No'])->default('No');
+            $table->enum('redeem', ['Yes', 'No'])->default('No');
             $table->enum('status', ['Active', 'Canceled'])->default('Active');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();
