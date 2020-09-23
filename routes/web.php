@@ -75,6 +75,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('drip-feed', 'Panel\DripFeedController');
 
             #Services...
+            Route::post('service_custom_rate_reset', 'Panel\ServiceController@resetManyServiceCustomRate')->name('service.custom.rate.reset.all');
+            Route::post('category/sortData', 'Panel\ServiceController@cateogrySortData')->name('category.sort.data');
+            Route::post('services/sortData', 'Panel\ServiceController@sortData')->name('service.sort.data');
             Route::get('service_provider', 'Panel\ServiceController@getProviders');
             Route::post('provider/get/services', 'Panel\ServiceController@getProviderServices');
             Route::post('service_bulk_category', 'Panel\ServiceController@bulkCategory');
