@@ -7380,12 +7380,12 @@
         "var $$a=" + value + "," +
             '$$el=$event.target,' +
             "$$c=$$el.checked?(" + trueValueBinding + "):(" + falseValueBinding + ");" +
-        'if(Array.isArray($$a)){' +
+        'if (Array.isArray($$a)){' +
           "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
               '$$i=_i($$a,$$v);' +
-          "if($$el.checked){$$i<0&&(" + (genAssignmentCode(value, '$$a.concat([$$v])')) + ")}" +
+          "if ($$el.checked){$$i<0&&(" + (genAssignmentCode(value, '$$a.concat([$$v])')) + ")}" +
           "else{$$i>-1&&(" + (genAssignmentCode(value, '$$a.slice(0,$$i).concat($$a.slice($$i+1))')) + ")}" +
-        "}else{" + (genAssignmentCode(value, '$$c')) + "}",
+        "} else {" + (genAssignmentCode(value, '$$c')) + "}",
         null, true
       );
     }
@@ -7462,7 +7462,7 @@
   
       var code = genAssignmentCode(value, valueExpression);
       if (needCompositionGuard) {
-        code = "if($event.target.composing)return;" + code;
+        code = "if ($event.target.composing)return;" + code;
       }
   
       addProp(el, 'value', ("(" + value + ")"));
@@ -10763,7 +10763,7 @@
     // #4868: modifiers that prevent the execution of the listener
     // need to explicitly return null so that we can determine whether to remove
     // the listener for .once
-    var genGuard = function (condition) { return ("if(" + condition + ")return null;"); };
+    var genGuard = function (condition) { return ("if (" + condition + ")return null;"); };
   
     var modifierCode = {
       stop: '$event.stopPropagation();',
@@ -10865,7 +10865,7 @@
         // make sure the key filters only apply to KeyboardEvents
         // #9441: can't use 'keyCode' in $event because Chrome autofill fires fake
         // key events that do not have keyCode property...
-        "if(!$event.type.indexOf('key')&&" +
+        "if (!$event.type.indexOf('key')&&" +
         (keys.map(genFilterCode).join('&&')) + ")return null;"
       )
     }

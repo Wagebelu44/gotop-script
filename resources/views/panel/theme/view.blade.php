@@ -8,7 +8,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if(!empty($page))
+                @if (!empty($page))
                     <form method="POST" action="{{ route($resource.'update', $page->id) }}">
                 @else
                     <form>
@@ -47,7 +47,7 @@
                                     </ul>
                                 </div>
                                 <div class="col-sm-9">
-                                    @if(!empty($page))
+                                    @if (!empty($page))
                                     <div class="alert alert-success">{{ strtoupper($page->group).'/'.$page->name }}</div>
                                     <textarea id="content" name="content">{{ $page->content }}</textarea>
                                     @else
@@ -57,8 +57,8 @@
                             </div>
                         </div>
                         <div class="card-footer text-right">
-                            @if(!empty($page))
-                                @if($page->updated_at != null)
+                            @if (!empty($page))
+                                @if ($page->updated_at != null)
                                     <a type="reset" class="btn btn-default" href="javascript:void(0);" onclick="reset('{{ route($resource.'reset', $page->id) }}')">Reset</a>
                                 @endif
                                 <button type="submit" class="btn btn-primary">Save</button>
@@ -71,7 +71,7 @@
     </div>
 @endsection
 
-@if(!empty($page))
+@if (!empty($page))
     @section('styles')
         <link href="{{ asset('panel-assets/libs/codemirror/codemirror.css') }}" rel="stylesheet">
         <link href="{{ asset('panel-assets/libs/codemirror/addon/display/fullscreen.css') }}" rel="stylesheet">
@@ -79,7 +79,7 @@
 @endif
 
 @section('scripts')
-    @if(!empty($page))
+    @if (!empty($page))
     <script src="{{ asset('panel-assets/libs/codemirror/codemirror.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/codemirror/mode/css/css.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/codemirror/addon/display/fullscreen.js') }}"></script>

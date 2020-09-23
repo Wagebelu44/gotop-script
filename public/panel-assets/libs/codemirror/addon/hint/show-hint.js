@@ -105,7 +105,7 @@
       }
 
       var identStart = this.startPos;
-      if(this.data) {
+      if (this.data) {
         identStart = this.data.from;
       }
 

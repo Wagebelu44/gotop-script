@@ -29,7 +29,7 @@ class DripFeedController extends Controller
 
         if (isset($request->status))
         {
-            if($request->status != 'all')
+            if ($request->status != 'all')
             $d_feeds->where('drip_feed_orders.status',$request->status);
         }
 
@@ -84,7 +84,7 @@ class DripFeedController extends Controller
             }
             $or->status = $data['status']??'completed';
             $order = $or->save();
-            if($order)
+            if ($order)
                 return response()->json(['status'=>200, 'data'=> $or, 'success'=>'successfully updated']);
             else return response()->json(['status'=>401, 'error'=>'Could not updated']);
         }catch (\Exception $e)

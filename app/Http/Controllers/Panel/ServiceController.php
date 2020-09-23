@@ -336,7 +336,7 @@ class ServiceController extends Controller
     {
         $category = ServiceCategory::find($id);
         $category->status = $category->status == 'Active'?'Deactivated':'Active';
-        if($category->save())
+        if ($category->save())
             return response()->json(['status'=>200,'data'=> $category, 'message'=>'Category Updated successfully.']);
         else
             return response()->json(['status'=>401,'data'=> null, 'message'=>'error occured.']);
@@ -349,7 +349,7 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255'
         ];
         $validator = Validator::make($credentials, $rules);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(['success' => false, 'errors'=> $validator->messages()], 422);
         }
 
@@ -370,7 +370,7 @@ class ServiceController extends Controller
 
 
         try {
-            if($request->has('edit_id'))
+            if ($request->has('edit_id'))
             {
                 $data = $request->except('_token', 'score','edit_id','edit_mode');
             }

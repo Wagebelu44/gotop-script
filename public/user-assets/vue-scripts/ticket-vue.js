@@ -24,7 +24,7 @@ let app = new Vue({
                  this.payment_types = false;
                  this.transaction_ids = false;
              }
-             else if(this.ticket_subject === 'payment')
+             else if (this.ticket_subject === 'payment')
              {
                  this.payment_types = true;
                  this.transaction_ids = true;

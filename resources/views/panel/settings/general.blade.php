@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <img style="display: none; width: 200px" id="logoPreview" class="img-thumbnail" src="">
-                                    @if(isset($general->logo))
+                                    @if (isset($general->logo))
                                         <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/setting/'.$general->logo) }}">
                                     @endif
                                 </div>
@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <img style="display: none; width: 50px" id="iconPreview" class="img-thumbnail" src="">
-                                    @if(isset($general->favicon))
+                                    @if (isset($general->favicon))
                                         <img style="width: 50px" id="savedFavicon" class="img-thumbnail" src="{{ asset('./storage/images/setting/'.$general->favicon) }}">
                                     @endif
                                 </div>

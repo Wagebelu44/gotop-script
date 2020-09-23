@@ -28,7 +28,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($paymentMethodList))
+                            @if (!empty($paymentMethodList))
                                 @foreach($paymentMethodList as $key => $value)
                                 <tr class="{{ $value->visibility == 'enabled' ? '':'row-disable' }}">
                                     <td>
@@ -172,7 +172,7 @@
                 url: "{{ route('admin.setting.payment.updateStatus') }}",
                 data: {'status': status, 'id': id, "_token": "{{ csrf_token() }}"},
                 success: function (response) {
-                    if(response.status === 200){
+                    if (response.status === 200){
                         location.reload();
                     }
                 }

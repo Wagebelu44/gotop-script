@@ -9,7 +9,7 @@
             <!--navbar-->
             @include('panel.blog.nav')
             <!--navbar-->
-            @if($page == 'index')
+            @if ($page == 'index')
             <div class="col-md-8">
                 <div class="card panel-default">
                     <div class="card-body">
@@ -25,7 +25,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($data))
+                            @if (!empty($data))
                                 @foreach($data as $key => $category)
                                 <tr>
                                     <td>{{ $key+1 }}</td>
@@ -46,13 +46,13 @@
                     </div>
                 </div>
             </div>
-            @elseif($page == 'create' || $page == 'edit')
+            @elseif ($page == 'create' || $page == 'edit')
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
                         <form method="post" action="{{ $page == 'edit' ? route($resource.'update', $data->id):route($resource.'store') }}">
                             @csrf
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 @method('PUT')
                             @endif
                             <div class="form-group">
@@ -74,11 +74,11 @@
                             <hr>
                             <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                             <a class="btn btn-default" href="{{ route($resource.'index') }}">Cancel</a>
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 <a href="javascript: void(0)" onclick="document.getElementById('deleteCategory').submit();" class="btn btn-default waves-effect pull-right" ><i>Delete</i></a>
                             @endif
                         </form>
-                        @if($page == 'edit')
+                        @if ($page == 'edit')
                             <form id="deleteCategory" action="{{ route($resource.'destroy', $data->id)}}" method="post">
                                 @csrf
                                 @method('DELETE')

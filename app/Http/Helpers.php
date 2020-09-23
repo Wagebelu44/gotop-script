@@ -16,67 +16,9 @@ if ( ! function_exists('defaultThemePageContent')) {
     }
 }
 
-//Delete existing file
-if ( ! function_exists('deleteFile')) {
-    function deleteFile($path, $name)
-    {
-        if (file_exists($path.'/'.$name)) {
-            unlink($path.'/'.$name);
-        }
-    }
-}
-
-//Search string get and set an url
-if ( ! function_exists('qString')) {
-    function qString($query = null)
-    {
-        if (isset($_SERVER['QUERY_STRING'])) {
-            return '?'.$_SERVER['QUERY_STRING'].$query;
-        } else {
-            if ($query) {
-                return '?'.$query;
-            }
-        }
-    }
-}
-
-//Date View
-if ( ! function_exists('dateFormat')) {
-    function dateFormat($date, $time = null)
-    {
-        if ($time) {
-            return date('d/M/Y h:i A',(strtotime($date)));
-        } else {
-            return date('d/M/Y',strtotime($date));
-        }
-    }
-}
-
-//Time View
-if ( ! function_exists('timeFormat')) {
-    function timeFormat($date)
-    {
-        return date('h:i A',(strtotime($date)));
-    }
-}
-
-//Two Digit Number Format Function
-if ( ! function_exists('numberFormat')) {
-    function numberFormat($amount=0, $coma=null)
-    {
-        if ($coma) {
-            if ($amount==0)
-                return '-';
-            else
-                return number_format($amount,2);
-        } else {
-            return number_format($amount,2,'.','');
-        }
-    }
-}
-
 if ( ! function_exists('getTimezone')) {
-    function getTimezone() {
+    function getTimezone() 
+    {
         $arr = [
             '-43200' => '(UTC -12:00) Baker/Howland Island',
             '-39600' => '(UTC -11:00) Niue',
@@ -124,7 +66,8 @@ if ( ! function_exists('getTimezone')) {
 }
 
 if ( ! function_exists('getCurrencyFormat')) {
-    function getCurrencyFormat() {
+    function getCurrencyFormat() 
+    {
         $arr = [
             '0' => '1000.00',
             '1' => '1000,00',
@@ -136,7 +79,8 @@ if ( ! function_exists('getCurrencyFormat')) {
 }
 
 if ( ! function_exists('getRateFormat')) {
-    function getRateFormat() {
+    function getRateFormat() 
+    {
         $arr = [
             '0' => 'Ones (1)',
             '1' => 'Hundredth (1.11)',
@@ -147,7 +91,8 @@ if ( ! function_exists('getRateFormat')) {
 }
 
 if ( ! function_exists('getTicketPerUser')) {
-    function getTicketPerUser(){
+    function getTicketPerUser()
+    {
         $arr = [];
         for ($i = 0; $i <= 9; $i++) :
             if ($i == 0) :
@@ -161,7 +106,8 @@ if ( ! function_exists('getTicketPerUser')) {
 }
 
 if ( ! function_exists('getFileSizeUnits')) {
-    function getFileSizeUnits($bytes){
+    function getFileSizeUnits($bytes)
+    {
         if ($bytes >= 1073741824) {
             $bytes = number_format($bytes / 1073741824, 2) . ' GB';
         } elseif ($bytes >= 1048576) {
@@ -180,7 +126,8 @@ if ( ! function_exists('getFileSizeUnits')) {
 }
 
 if ( ! function_exists('accountStatusKeys')) {
-    function accountStatusKeys(){
+    function accountStatusKeys()
+    {
         $data = [
             '24/7 TICKETS SUPPORT',
             '5% PAYMENTS BONUS**',
@@ -197,7 +144,8 @@ if ( ! function_exists('accountStatusKeys')) {
 }
 
 if ( ! function_exists('accountPointKeys')) {
-    function accountPointKeys(){
+    function accountPointKeys()
+    {
         $data = [
             'AVAILABLE',
             'CAN REDEEM >= 500 POINTS',

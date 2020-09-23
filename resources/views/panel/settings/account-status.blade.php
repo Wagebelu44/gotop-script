@@ -9,7 +9,7 @@
     <div class="row all-mt-30">
         @include('panel.settings.navbar')
 
-        @if($page == 'index')
+        @if ($page == 'index')
             <div class="col-md-8">
                 <a href="{{ route($resource.'create') }}" class="btn btn-sm btn-primary">Add Status</a>
                 <div class="card panel-default" style="margin-top: 10px;">
@@ -26,7 +26,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(!empty($data))
+                                @if (!empty($data))
                                     @foreach($data as $key => $accStatus)
                                     <tr>
                                         <td>{{ ++$key }}</td>
@@ -48,14 +48,14 @@
                 </div>
             </div>
 
-        @elseif($page == 'create' || $page == 'edit')
+        @elseif ($page == 'create' || $page == 'edit')
             <div class="col-md-8">
                 <a href="{{ route($resource.'index') }}" class="btn btn-sm btn-primary">Back</a>
                 <div class="card panel-default" style="margin-top: 10px;">
                     <div class="card-body">
                         <form action="{{ $page == 'edit' ? route($resource.'update', $data->id):route($resource.'store') }}" method="post">
                             @csrf
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 @method('PUT')
                             @endif
 
@@ -123,11 +123,11 @@
                             <hr>
                             <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                             <a class="btn btn-default" href="">Cancel</a>
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 <a href="javascript: void(0)" onclick="document.getElementById('deleteStatus').submit();" class="btn btn-default waves-effect pull-right" ><i>Delete</i></a>
                             @endif
                         </form>
-                        @if($page == 'edit')
+                        @if ($page == 'edit')
                             <form id="deleteStatus" action="{{ route($resource.'destroy', $data->id)}}" method="post">
                                 @csrf
                                 @method('DELETE')

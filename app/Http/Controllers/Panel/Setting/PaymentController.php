@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\G\GlobalPaymentMethod;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
     public function index()
     {
-        if(Auth::user()->can('payment setting')) {
+        if (Auth::user()->can('payment setting')) {
             $paymentMethodList = PaymentMethod::where('panel_id', Auth::user()->panel_id)
                 ->select('payment_methods.*', 'global_payment_methods.name')
                 ->join('global_payment_methods', 'global_payment_methods.id', '=', 'payment_methods.global_payment_method_id')
@@ -28,14 +28,14 @@ class PaymentController extends Controller
 
             return view('panel.settings.payments', compact('globalPaymentList', 'paymentMethodList'));
 
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function store(Request $request)
     {
-        if(Auth::user()->can('payment setting')) {
+        if (Auth::user()->can('payment setting')) {
             $this->validate($request, [
                 'payment_method' => 'required|integer',
             ]);
@@ -65,17 +65,17 @@ class PaymentController extends Controller
                 ]);
 
                 return redirect()->back()->with('success', 'Payment method added successfully !!');
-            }else{
+            } else {
                 return redirect()->back()->with('error', 'Something went wrong, Please try again !!');
             }
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function updateStatus(Request $request)
     {
-        if(Auth::user()->can('payment setting')) {
+        if (Auth::user()->can('payment setting')) {
             $request->validate([
                 'id' => 'required|numeric',
                 'status' => 'required',
@@ -96,25 +96,25 @@ class PaymentController extends Controller
                 'status' => 200,
                 'message' => 'Payment status updated successfully.'
             ]);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function paymentEdit(Request $request){
-        if(Auth::user()->can('payment setting')) {
+        if (Auth::user()->can('payment setting')) {
             $payment_method = PaymentMethod::where(['panel_id' => Auth::user()->panel_id, 'created_by' => Auth::user()->panel_id, 'id' => $request->id])->first();
             return response()->json([
                 'payment_method'  => $payment_method,
                 'payment_details' => !empty($payment_method->details) ? json_decode($payment_method->details, true):'',
             ], 200);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function paymentUpdate(Request $request){
-        if(Auth::user()->can('payment setting')) {
+        if (Auth::user()->can('payment setting')) {
             $this->validate($request, [
                 'payment_id' => 'required|integer',
                 'global_methods_id' => 'required|integer',
@@ -133,7 +133,7 @@ class PaymentController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Payment method update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

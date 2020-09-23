@@ -7,7 +7,7 @@ use App\Models\Page;
 use App\Models\Theme;
 use App\Models\ThemePage;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {

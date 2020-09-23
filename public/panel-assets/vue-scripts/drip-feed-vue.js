@@ -77,7 +77,7 @@ const orderModule = new Vue({
                 body:statusForm
             })
                 .then(res=>{
-                    if(!res.ok)
+                    if (!res.ok)
                         throw res.json();
     
                     return res.json()

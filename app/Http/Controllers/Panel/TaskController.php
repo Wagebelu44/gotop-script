@@ -82,7 +82,7 @@ class TaskController extends Controller
             {
                 $order_mode['auto']++;
             }
-            elseif($order->mode =='manual')
+            elseif ($order->mode =='manual')
             {
                 $order_mode['manual']++;
             }
