@@ -150,10 +150,22 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request->all());
         if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package') {
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'price' => 'required|numeric',
+                'category_id' => 'required|integer|exists:service_categories,id',
+            ]);
+        }
+        elseif(isset($request->mode) &&  strtolower($request->mode)=='auto')
+        {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'price' => 'required',
+                'min_quantity' => 'required',
+                'max_quantity' => 'required',
+                'provider_id' => 'required',
                 'category_id' => 'required|integer|exists:service_categories,id',
             ]);
         }
