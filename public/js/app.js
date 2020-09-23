@@ -6,7 +6,7 @@
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
+/******/ 		if (installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
@@ -35,14 +35,14 @@
 /******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 		if (!__webpack_require__.o(exports, name)) {
 /******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
 /******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 		if (typeof Symbol !== 'undefined' && Symbol.toStringTag) {
 /******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 		}
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
@@ -54,13 +54,13 @@
 /******/ 	// mode & 4: return value when already ns object
 /******/ 	// mode & 8|1: behave like require
 /******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		if (mode & 1) value = __webpack_require__(value);
+/******/ 		if (mode & 8) return value;
+/******/ 		if ((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
 /******/ 		var ns = Object.create(null);
 /******/ 		__webpack_require__.r(ns);
 /******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		if (mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
 /******/ 		return ns;
 /******/ 	};
 /******/
@@ -45044,12 +45044,12 @@ function genCheckboxModel (
     "var $$a=" + value + "," +
         '$$el=$event.target,' +
         "$$c=$$el.checked?(" + trueValueBinding + "):(" + falseValueBinding + ");" +
-    'if(Array.isArray($$a)){' +
+    'if (Array.isArray($$a)){' +
       "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
           '$$i=_i($$a,$$v);' +
-      "if($$el.checked){$$i<0&&(" + (genAssignmentCode(value, '$$a.concat([$$v])')) + ")}" +
+      "if ($$el.checked){$$i<0&&(" + (genAssignmentCode(value, '$$a.concat([$$v])')) + ")}" +
       "else{$$i>-1&&(" + (genAssignmentCode(value, '$$a.slice(0,$$i).concat($$a.slice($$i+1))')) + ")}" +
-    "}else{" + (genAssignmentCode(value, '$$c')) + "}",
+    "} else {" + (genAssignmentCode(value, '$$c')) + "}",
     null, true
   );
 }
@@ -45126,7 +45126,7 @@ function genDefaultModel (
 
   var code = genAssignmentCode(value, valueExpression);
   if (needCompositionGuard) {
-    code = "if($event.target.composing)return;" + code;
+    code = "if ($event.target.composing)return;" + code;
   }
 
   addProp(el, 'value', ("(" + value + ")"));
@@ -48427,7 +48427,7 @@ var keyNames = {
 // #4868: modifiers that prevent the execution of the listener
 // need to explicitly return null so that we can determine whether to remove
 // the listener for .once
-var genGuard = function (condition) { return ("if(" + condition + ")return null;"); };
+var genGuard = function (condition) { return ("if (" + condition + ")return null;"); };
 
 var modifierCode = {
   stop: '$event.stopPropagation();',
@@ -48529,7 +48529,7 @@ function genKeyFilter (keys) {
     // make sure the key filters only apply to KeyboardEvents
     // #9441: can't use 'keyCode' in $event because Chrome autofill fires fake
     // key events that do not have keyCode property...
-    "if(!$event.type.indexOf('key')&&" +
+    "if (!$event.type.indexOf('key')&&" +
     (keys.map(genFilterCode).join('&&')) + ")return null;"
   )
 }
@@ -49668,7 +49668,7 @@ try {
 
 // g can still be undefined, but nothing to do about it...
 // We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
+// easier to handle this case. if (!global) { ...}
 
 module.exports = g;
 

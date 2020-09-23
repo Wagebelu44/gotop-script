@@ -74,7 +74,7 @@
             //look if the character if the quote is like the B in '10100010'B
             if (afterNext){
               afterNext = afterNext.toLowerCase();
-              if(afterNext == "b" || afterNext == "h" || afterNext == "o")
+              if (afterNext == "b" || afterNext == "h" || afterNext == "o")
                 stream.next();
             }
             end = true; break;

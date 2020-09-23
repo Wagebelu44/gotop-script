@@ -9,7 +9,7 @@ use App\Models\TicketComment;
 use App\Notifications\TicketNotification;
 use App\User;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
@@ -18,7 +18,7 @@ class TicketController extends Controller
 
     public function index()
     {
-        if(Auth::user()->can('ticket')) {
+        if (Auth::user()->can('ticket')) {
             $inputSearch = request()->all();
             $inputSearch['keyword'] = isset($inputSearch['keyword']) ? $inputSearch['keyword'] : '';
             $users = User::where('panel_id', Auth::user()->id)->get();
@@ -40,7 +40,7 @@ class TicketController extends Controller
 
     public function store(Request $request)
     {
-        if(Auth::user()->can('create ticket')) {
+        if (Auth::user()->can('create ticket')) {
             $this->validate($request, [
                 'subject' => 'required',
                 'user_id' => 'required',
@@ -49,13 +49,13 @@ class TicketController extends Controller
             $sIds = null;
             if (isset($request->order_ids)) {
                 $sIds = $request->order_ids;
-            }elseif (isset($request->transaction_id)) {
+            } elseif (isset($request->transaction_id)) {
                 $sIds = $request->transaction_id;
             }
             $paymentTypes = null;
             if (isset($request->order_types)) {
                 $paymentTypes = $request->order_types;
-            }elseif (isset($request->payment_types)) {
+            } elseif (isset($request->payment_types)) {
                 $paymentTypes = $request->payment_types;
             }
 
@@ -81,44 +81,44 @@ class TicketController extends Controller
             } else {
                 return redirect()->back()->with('error', 'There is an error');
             }
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function show(Ticket $ticket)
     {
-        if(Auth::user()->can('view ticket')) {
+        if (Auth::user()->can('view ticket')) {
             if (Auth::user()->id != $ticket->user->panel_id) {
                 abort(403, 'You do not own this ticket.');
             }
             $ticket->update(['seen_by_admin' => true]);
             return view('panel.tickets.show', compact('ticket'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request)
     {
-        if(Auth::user()->can('edit ticket message')) {
+        if (Auth::user()->can('edit ticket message')) {
             Ticket::whereIn('id', $request->tickets)->update($request->only('status'));
             return redirect()->back()->with('Tickets status updated successfully.');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function destroy(Request $request)
     {
-        if(Auth::user()->can('delete ticket message')) {
+        if (Auth::user()->can('delete ticket message')) {
             if (count($request->tickets)>0) {
                 foreach ($request->tickets as $id) {
                     Ticket::where('id', $id)->delete();
                 }
             }
             return redirect()->back()->with('Tickets deleted successfully.');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

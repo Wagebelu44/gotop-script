@@ -8,7 +8,7 @@
         <div class="row">
             @include('panel.appearance.nav')
 
-            @if($page == 'index')
+            @if ($page == 'index')
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
@@ -26,7 +26,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(!empty($data))
+                                @if (!empty($data))
                                     @foreach($data as $key => $info)
                                         <tr class="{{ $info->is_editable == 'No' ? 'disable-keystroke':'' }}">
                                             <td class="p-l">{{ $key+1 }}</td>
@@ -52,14 +52,14 @@
                         </div>
                     </div>
                 </div>
-            @elseif($page == 'create' || $page == 'edit')
+            @elseif ($page == 'create' || $page == 'edit')
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <form name="blogForm" action="{{ $page == 'edit' ? route($resource.'update', $data->id):route($resource.'store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
 
-                                @if($page == 'edit')
+                                @if ($page == 'edit')
                                     @method('PUT')
                                 @endif
 
@@ -160,7 +160,7 @@
 
 @section('scripts')
     <script>
-        @if($page == 'create' || $page == 'edit')
+        @if ($page == 'create' || $page == 'edit')
         $(function () {
             jQuery('#url').on('input', function () {
                 $("#url").removeClass();
@@ -193,7 +193,7 @@
                         }
                         $('#status'+pageId).val(status_value);
                         toastr["success"](response.message);
-                    }else{
+                    } else {
                         toastr["error"]("Something went wrong !! Please try again !!");
                     }
                 }

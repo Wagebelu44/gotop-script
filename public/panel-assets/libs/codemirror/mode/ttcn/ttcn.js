@@ -68,8 +68,8 @@
         }
       }
       if (isOperatorChar.test(ch)) {
-        if(ch == "@"){
-          if(stream.match("try") || stream.match("catch")
+        if (ch == "@"){
+          if (stream.match("try") || stream.match("catch")
               || stream.match("lazy")){
             return "keyword";
           }
@@ -111,7 +111,7 @@
             //look if the character after the quote is like the B in '10100010'B
             if (afterQuote){
               afterQuote = afterQuote.toLowerCase();
-              if(afterQuote == "b" || afterQuote == "h" || afterQuote == "o")
+              if (afterQuote == "b" || afterQuote == "h" || afterQuote == "o")
                 stream.next();
             }
             end = true; break;

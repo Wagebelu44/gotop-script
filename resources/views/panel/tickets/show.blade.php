@@ -73,7 +73,7 @@
                         <!--chat Row -->
                         <ul class="chat-list">
                         @foreach($ticket->comments as $comment)
-                            @if($comment->commentor_role == 'user')
+                            @if ($comment->commentor_role == 'user')
                                 <!--chat Row -->
                                     <li class="chat-item">
                                         <div class="chat-img"><img src="{{ asset('/panel-assets/images/avatar.png') }}" alt="user"></div>

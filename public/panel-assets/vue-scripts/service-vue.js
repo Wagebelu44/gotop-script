@@ -8,19 +8,19 @@ const App = new Vue({
     data: {
         options: [ {country: 'atik', code: 1}, {country: 'sudip', code: 2},],
         providers_lists: [],
+        service_filter: {
+            service_type: '',
+            status: '',
+        },
         errors: {
+            common: null,
             category: [],
-            services: null,
+            services: [],
         },
         success: {
             category: '',
         },
-        loader: {
-            category: false,
-            service: false,
-            page: false,
-            description: false,
-        },
+        loader: false,
         service_edit: false,
         service_edit_id: null,
         category_edit: false,
@@ -88,24 +88,8 @@ const App = new Vue({
         },
         link_duplicate_selected: 'Allow',
         service_mode: 'Auto',
-        service_type: [
-            'Default',
-            'SEO',
-            'SEO2',
-            'Custom Comments',
-            'Custom Comments Package',
-            'Comment Likes',
-            'Mentions',
-            'Mentions with Hashtags',
-            'Mentions Custom List',
-            'Mentions Hashtag',
-            'Mentions Users Followers',
-            'Mentions Media Likers',
-            'Package',
-            'Poll',
-            'Comment Replies',
-            'Invites From Groups',
-        ],
+        service_type: null,
+        autoManualCount: null,
         service_type_selected: 'Default',
         category: {
             name: null,
@@ -277,16 +261,46 @@ const App = new Vue({
                 this.providers_lists = res;
             });
         },
+        serviceTypeFilter(name)
+        {
+            this.service_filter.service_type = name;
+            this.getCategoryServices();
+        },
+        serviceStatusFilter(name)
+        {
+            this.service_filter.status = name;
+            this.getCategoryServices();
+        },
         getCategoryServices()
         {
-            fetch(base_url+"/admin/get-category-services")
+            this.loader = true;
+            let url = base_url+"/admin/get-category-services?";
+            let top_Url = base_url+'/admin/services?';
+            if (this.service_filter.service_type!=='') {
+                url +='&service_type='+this.service_filter.service_type;
+                top_Url +='&service_type='+this.service_filter.service_type;
+                const state = { 'service_type': this.service_filter.service_type};
+                const title = '';
+                history.pushState(state, title, top_Url)
+            }
+            if (this.service_filter.status!=='') {
+                url +='&status='+this.service_filter.status;
+                top_Url +='&status='+this.service_filter.status;
+                const state = { 'status': this.service_filter.status};
+                const title = '';
+                history.pushState(state, title, top_Url)
+            }
+            fetch(url)
             .then(res=>res.json())
             .then(res=>{
-                this.category_services = res;
+                this.loader = false;
+                this.category_services = res.data;
+                this.service_type = res.service_type_count;
+                this.autoManualCount = res.autoManualCount;
             });
         },
         submitCategoryForm(evt) {
-            this.loader.category = true;
+            this.loader = true;
             let categoryForm = new FormData(document.getElementById('category_form'));
             if (this.category_edit) {
                 categoryForm.append('edit_id', this.category_edit_id);
@@ -323,33 +337,41 @@ const App = new Vue({
                     this.category_edit_id = null;
                     this.category = {...res.data};
                     setTimeout(() => {
-                        this.loader.category = false;
+                        this.loader = false;
                         toastr["success"](res.message);
                         document.getElementById('category_form').reset();
                         $('#exampleModalCenter').modal('hide');
                     }, 2000);
                 }
 
-            }).catch(err => {
-                setTimeout(() => {
-                    this.loader.category = false;
-                    let prepare = [];
-                    err.then(erMesg => {
-                        let errMsgs = Object.entries(erMesg.errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            prepare.push(obj);
-                        }
-                        this.errors.category = prepare;
-                    });
-                }, 2000);
+            })
+            .catch(error => {
+                this.loader = false;
+                error.then(erMesg => {
+                    this.errors.category = erMesg.errors;
+                });
             });
+            // .catch(err => {
+            //     setTimeout(() => {
+            //         this.loader.category = false;
+            //         let prepare = [];
+            //         err.then(erMesg => {
+            //             let errMsgs = Object.entries(erMesg.errors);    
+            //             for (let i = 0; i < errMsgs.length; i++) {
+            //                 let obj = {};
+            //                 obj.name = errMsgs[i][0];
+            //                 obj.desc = errMsgs[i][1][0];
+            //                 prepare.push(obj);
+            //             }
+            //             this.errors.category = [...prepare];
+            //         });
+            //     }, 2000);
+               
+            // });
         },
         updateCategoryStatus(id)
         {
-            this.loader.category = true;
+            this.loader = true;
             fetch(base_url+'/admin/category-status-change/'+id, 
             {
                 headers: 
@@ -374,7 +396,7 @@ const App = new Vue({
                 }
             }).catch(err => {
                 setTimeout(() => {
-                    this.loader.category = false;
+                    this.loader = false;
                     let prepare = [];
                     err.then(erMesg => {
                         let errMsgs = Object.entries(erMesg.errors);
@@ -434,7 +456,7 @@ const App = new Vue({
         },
         submitServiceForm(evt) 
         {
-            this.loader.service = true;
+            this.loader = true;
             evt.preventDefault();
             let service_form = null;
             if (this.subscription_modal) {
@@ -469,7 +491,7 @@ const App = new Vue({
                     this.service_edit = false;
                     this.service_edit_id = null;
                     setTimeout(() => {
-                        this.loader.service = false;
+                        this.loader = false;
                         toastr["success"](res.message);
                         document.getElementById('service_form').reset();
                         if (this.subscription_modal) {
@@ -494,9 +516,9 @@ const App = new Vue({
 
                     }, 2000);
                 }
-                else if(res.status === 401)
+                else if (res.status === 401)
                 {
-                    this.loader.service = false;
+                    this.loader = false;
                     this.errors.services = res.data;
                 }
 
@@ -504,17 +526,23 @@ const App = new Vue({
             .catch(err => 
             {
                 setTimeout(() => {
-                    this.loader.service = false;
+                    this.loader = false;
                     let prepare = [];
                     err.then(erMesg => {
-                        let errMsgs = Object.entries(erMesg.errors);
-                        for (let i = 0; i < errMsgs.length; i++) {
-                            let obj = {};
-                            obj.name = errMsgs[i][0];
-                            obj.desc = errMsgs[i][1][0];
-                            prepare.push(obj);
+                        if ('errors' in erMesg) {
+                            let errMsgs = Object.entries(erMesg.errors);
+                            for (let i = 0; i < errMsgs.length; i++) {
+                                let obj = {};
+                                obj.name = errMsgs[i][0];
+                                obj.desc = errMsgs[i][1][0];
+                                prepare.push(obj);
+                            }
+                            this.errors.services = prepare;
                         }
-                        this.errors.services = prepare;
+                        else if ('data' in erMesg)
+                        {
+                            this.errors.common = erMesg.data;
+                        }
                     });
                 }, 2000);
             });
@@ -527,12 +555,11 @@ const App = new Vue({
             this.link_duplicate_selected = capitalize(this.services.form_fields.link_duplicates);
         },
         subscriptionEdit(service_id) {
-            this.loader.page = true;
+            this.loader = true;
             this.service_edit_id = service_id;
             fetch('showService/' + service_id).then(res => res.json())
                 .then(res => {
-                    this.loader.page = false;
-                    this.loader.service = true;
+                    this.loader = true;
                     this.service_edit = true;
                     $('#subscriptionModal').modal('show');
                     this.services.form_fields = {...res.data};
@@ -540,16 +567,14 @@ const App = new Vue({
                     this.service_type_selected = this.services.form_fields.service_type;
                     this.manipulateInputs();
                     this.editHelper();
-                    this.loader.service = false;
                 })
         },
         serviceEdit(service_id) {
-            this.loader.page = true;
+            this.loader = true;
             this.service_edit_id = service_id;
             fetch(base_url+'/admin/services/' + service_id).then(res => res.json())
                 .then(res => {
-                    this.loader.page = false;
-                    this.loader.service = true;
+                    this.loader = false;
                     this.service_edit = true;
                     this.services.form_fields = {...res};
                     $('#serviceAddModal').modal('show');
@@ -557,16 +582,15 @@ const App = new Vue({
                     this.service_type_selected = this.services.form_fields.service_type;
                     this.manipulateInputs();
                     this.editHelper();
-                    this.loader.service = false;
+                    this.loader = false;
                 })
         },
         serviceDescription(service_id) {
-            this.loader.page = true;
+            this.loader = true;
             fetch(base_url+'/admin/services/' +  service_id).then(res => res.json())
                 .then(res => {
                     console.log(res);
-                    this.loader.page = false;
-                    this.loader.description = true;
+                    this.loader = false;
                     $('#serviceDescription').modal('show');
                     this.services.form_fields.description = res.description;
                     $("#serviceDescription_edit").summernote('code', res.description, {
@@ -583,13 +607,12 @@ const App = new Vue({
                                 
                             ], 
                         });
-                    this.loader.description = false;
                     this.service_edit_id = service_id;
                 })
         },
         updateServiceDescription(evt) {
             evt.preventDefault();
-            this.loader.description = true;
+            this.loader = true;
             evt.preventDefault();
             let service_form = new FormData(document.getElementById('formDescription'));
             fetch('updateService/' + this.service_edit_id, {
@@ -612,7 +635,7 @@ const App = new Vue({
                 if (res.status === 200) {
                     this.service_edit = false;
                     setTimeout(() => {
-                        this.loader.description = false;
+                        this.loader = false;
                         toastr["success"](res.message);
                         document.getElementById('formDescription').reset();
                         $('#serviceDescription').modal('hide');
@@ -623,7 +646,7 @@ const App = new Vue({
             .catch(err => {
                 console.log(err);
                 setTimeout(() => {
-                    this.loader.description = false;
+                    this.loader = false;
                     let prepare = [];
                     err.then(erMesg => {
                         let errMsgs = Object.entries(erMesg.errors);
@@ -639,10 +662,10 @@ const App = new Vue({
             });
         },
         serviceEnableDisable(service_id) {
-            this.loader.page = true;
+            this.loader = true;
             fetch(base_url+'/admin/enableService/' + service_id).then(res => res.json())
                 .then(res => {
-                    this.loader.page = false;
+                    this.loader = false;
                     toastr["success"](res.message);
                     if (res.data) {
                         let row  = res.data;
@@ -651,16 +674,16 @@ const App = new Vue({
                 })
         },
         serviceResetRate(service_id) {
-            this.loader.page = true;
+            this.loader = true;
             fetch('resetCustomRate/' + service_id).then(res => res.json())
                 .then(res => {
-                    this.loader.page = false;
+                    this.loader = false;
                     toastr["success"](res.message);
                 })
         },
         serviceDelete(service_id) {
             if (confirm('Are you sure?')) {
-                this.loader.page = true;
+                this.loader = true;
                 fetch(base_url+'/admin/deleteService/' + service_id, {
                     headers: 
                     {
@@ -672,7 +695,7 @@ const App = new Vue({
                     body: {} 
                 }).then(res => res.json())
                     .then(res => {
-                        this.loader.page = false;
+                        this.loader = false;
                         toastr["success"](res.message);
                         if (res.status === 200) {
                             let row = res.data;
@@ -682,31 +705,29 @@ const App = new Vue({
             }
         },
         serviceDuplicate(service_id, catStatus) {
-            this.loader.page = true;
+            this.loader = true;
             fetch(base_url+'/admin/duplicate/service/' + service_id).then(res => res.json())
                 .then(res => {
-                    this.loader.page = false;
+                    this.loader = false;
                     toastr["success"](res.message);
                     var row = res.data;
                     this.addnewServicetoLists(row);
                 })
         },
         categoryEdit(category_id) {
-            this.loader.page = true;
+            this.loader = true;
             this.category_edit = true;
             this.category_edit_id = category_id;
             fetch(base_url+'/admin/show-category/' + category_id).then(res => res.json())
                 .then(res => {
-                    this.loader.page = false;
-                    this.loader.category = true;
+                    this.loader = true;
                     this.category = {...res};
                     $('#exampleModalCenter').modal('show');
-                    this.loader.category = false;
                 });
 
         },
         bulkEnable() {
-            this.loader.page = true;
+            this.loader = true;
             if (this.service_checkbox.length !== 0) {
                 //console.log(this.service_checkbox);
                 let forD = new FormData();
@@ -724,7 +745,7 @@ const App = new Vue({
 
                         if (res.status === 200) {
                             setTimeout(() => {
-                                this.loader.page = false;
+                                this.loader = false;
                                 toastr["success"](res.message);
                                 window.location.reload();
                             }, 2000);
@@ -737,7 +758,7 @@ const App = new Vue({
             }
         },
         bulkDisable() {
-            this.loader.page = true;
+            this.loader = true;
             if (this.service_checkbox.length !== 0) {
                 //console.log(this.service_checkbox);
                 let forD = new FormData();
@@ -755,7 +776,7 @@ const App = new Vue({
 
                         if (res.status === 200) {
                             setTimeout(() => {
-                                this.loader.page = false;
+                                this.loader = false;
                                 toastr["success"](res.message);
                                 window.location.reload();
                             }, 2000);
@@ -768,7 +789,7 @@ const App = new Vue({
             }
         },
         resetCustomRates() {
-            this.loader.page = true;
+            this.loader = true;
             if (this.service_checkbox.length !== 0) {
                 //console.log(this.service_checkbox);
                 let forD = new FormData();
@@ -786,7 +807,7 @@ const App = new Vue({
 
                         if (res.status === 200) {
                             setTimeout(() => {
-                                this.loader.page = false;
+                                this.loader = false;
                                 toastr["success"](res.message);
                                 window.location.reload();
                             }, 2000);
@@ -800,7 +821,7 @@ const App = new Vue({
         },
         bulkDelete() {
             if (confirm('Are you sure?')) {
-                this.loader.page = true;
+                this.loader = true;
                 if (this.service_checkbox.length !== 0) {
                     //console.log(this.service_checkbox);
                     let forD = new FormData();
@@ -818,7 +839,7 @@ const App = new Vue({
 
                             if (res.status === 200) {
                                 setTimeout(() => {
-                                    this.loader.page = false;
+                                    this.loader = false;
                                     toastr["success"](res.message);
                                     window.location.reload();
                                 }, 2000);
@@ -834,7 +855,7 @@ const App = new Vue({
         },
         service_bulk_category(evt) {
             evt.preventDefault();
-            this.loader.page = true;
+            this.loader = true;
             if (this.service_checkbox.length !== 0) {
                 //console.log(this.service_checkbox);
                 let forD = new FormData(document.getElementById('formBulkCategory'));
@@ -852,7 +873,7 @@ const App = new Vue({
 
                         if (res.status === 200) {
                             setTimeout(() => {
-                                this.loader.page = false;
+                                this.loader = false;
                                 toastr["success"](res.message);
                                 $("#serviceDescription").modal('hide');
                                 window.location.reload();
@@ -867,7 +888,7 @@ const App = new Vue({
         },
         getProviderServices() {
             if (this.services.form_fields.provider_id !== null && this.services.form_fields.provider_id !== '') {
-                this.loader.page = true;
+                this.loader = true;
                 let forD = new FormData();
                 forD.append('provider_id', this.services.form_fields.provider_id);
                 fetch(base_url+'/admin/provider/get/services', {
@@ -888,14 +909,14 @@ const App = new Vue({
                 .then(res => {
                     if (res.status) {
                         if (res.data !==null) {
-                            this.loader.page = false;
+                            this.loader = false;
                             this.provider_services = res.data;
                             this.services.visibility.service_id_by_provider = true;
                             this.services.validations.provider_service_not_found= '';
                         }
                         else
                         {
-                            this.loader.page = false;
+                            this.loader = false;
                             this.services.visibility.service_id_by_provider = false;
                             this.services.validations.provider_service_not_found= 'Nothing found';
                             this.services.form_fields.provider_service_id = null;
@@ -917,7 +938,7 @@ const App = new Vue({
                 return false;
             }
 
-            this.loader.page = true;
+            this.loader = true;
 
             let originUrl = window.location.origin;
             if (originUrl == 'http://localhost') {
@@ -944,7 +965,7 @@ const App = new Vue({
                     return res.json();
                 })
                 .then(response => {
-                    this.loader.page = false;
+                    this.loader = false;
 
                     if (response.status == 200) {
                         this.categories = response.data;
@@ -971,7 +992,7 @@ const App = new Vue({
                 })
                 .catch(err => {
                     console.log(err);
-                    this.loader.page = false;
+                    this.loader = false;
                     alert(err);
                 });
         },
@@ -1175,6 +1196,19 @@ const App = new Vue({
                     })
                 }
             }
+        },
+        errorFilter(name)
+        {
+            let txt = '';
+            if (this.errors.services.length>0) 
+            {
+                this.errors.services.forEach(item=>{
+                    if (item.name === name) {
+                        txt = item.desc;
+                    }
+                });
+            }
+            return txt;
         }
     },
 });
@@ -1287,14 +1321,14 @@ function toggleAllcategory()
 
 }
 
-document.getElementById('service_type_filter').addEventListener('click', evt=>{
-        document.querySelector('input[name=serviceTypefilter]').value = evt.target.getAttribute('data-key');
-        document.getElementById('service_type_filter_form').submit();
-});
-document.getElementById('status_type_filter').addEventListener('click', evt=>{
-        document.querySelector('input[name=status]').value = evt.target.getAttribute('data-key');
-        document.getElementById('status_type_filter_form').submit();
-});
+// document.getElementById('service_type_filter').addEventListener('click', evt=>{
+//         document.querySelector('input[name=serviceTypefilter]').value = evt.target.getAttribute('data-key');
+//         document.getElementById('service_type_filter_form').submit();
+// });
+// document.getElementById('status_type_filter').addEventListener('click', evt=>{
+//         document.querySelector('input[name=status]').value = evt.target.getAttribute('data-key');
+//         document.getElementById('status_type_filter_form').submit();
+// });
 $('.custom_summernote').summernote({
         tabsize: 2,
         height: 120,

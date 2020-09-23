@@ -72,7 +72,7 @@ CodeMirror.defineMode('shell', function() {
     }
     if (/\d/.test(ch)) {
       stream.eatWhile(/\d/);
-      if(stream.eol() || !/\w/.test(stream.peek())) {
+      if (stream.eol() || !/\w/.test(stream.peek())) {
         return 'number';
       }
     }

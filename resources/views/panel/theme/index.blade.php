@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <div class="el-card-item">
                             <div class="el-card-avatar el-overlay-1"> <img src="{{ asset($theme->snapshot) }}" alt="user">
-                                @if($theme->status != 'Active')
+                                @if ($theme->status != 'Active')
                                 <div class="el-overlay">
                                     <ul class="list-style-none el-info">
                                         <li class="el-item"><a class="btn default btn-outline el-link" href="javascript:void(0);" onclick="activate('{{ route($resource.'active', $theme->id) }}')">Activate</a></li>

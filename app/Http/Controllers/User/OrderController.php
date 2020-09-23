@@ -50,7 +50,7 @@ class OrderController extends Controller
 
         if (isset($r->status))
         {
-            if($r->status != 'all')
+            if ($r->status != 'all')
             $d_feeds->where('drip_feed_orders.status',$r->status);
         }
 
@@ -63,7 +63,7 @@ class OrderController extends Controller
     {
         $input = $r->all();
         $order = Order::where('user_id', auth()->user()->id)->where('refill_status', 0);
-        if(isset($input['query']))
+        if (isset($input['query']))
         {
             $orders =  $order->where('status', $input['query'])->orderBy('id', 'DESC')->paginate(10);
         }
@@ -505,7 +505,7 @@ class OrderController extends Controller
                             'quantity' => $make_order->quantity,
                             );
                     }
-                    elseif($ps->type == 'Package')
+                    elseif ($ps->type == 'Package')
                     {
                         $dataArray = array(
                             'key' =>$provider_info->api_key,
@@ -514,7 +514,7 @@ class OrderController extends Controller
                             'link' => $make_order->link,
                             );
                     }
-                    elseif($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package')
+                    elseif ($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package')
                     {
                         $dataArray = array(
                             'key' =>$provider_info->api_key,
@@ -524,7 +524,7 @@ class OrderController extends Controller
                             'comments' => $make_order->text_area_1,
                             );
                     }
-                    elseif($ps->type ==  'Mentions Custom List')
+                    elseif ($ps->type ==  'Mentions Custom List')
                     {
                         $dataArray = array(
                             'key' =>$provider_info->api_key,
@@ -534,7 +534,7 @@ class OrderController extends Controller
                             'usernames' => $make_order->text_area_1,
                             );
                     }
-                    elseif($ps->type == 'Mentions Hashtag')
+                    elseif ($ps->type == 'Mentions Hashtag')
                     {
                         $dataArray = array(
                             'key' =>$provider_info->api_key,
@@ -545,7 +545,7 @@ class OrderController extends Controller
                             'hashtag' => $make_order->additional_inputs,
                             );
                     }
-                    elseif($ps->type == 'Comment Likes')
+                    elseif ($ps->type == 'Comment Likes')
                     {
                         $dataArray = array(
                             'key' =>$provider_info->api_key,
@@ -556,7 +556,7 @@ class OrderController extends Controller
                             'username' => $make_order->additional_inputs,
                             );
                     }
-                    elseif($ps->type == 'Poll')
+                    elseif ($ps->type == 'Poll')
                     {
                         $dataArray = array(
                             'key' =>$provider_info->api_key,
@@ -567,7 +567,7 @@ class OrderController extends Controller
                             'answer_number' => $make_order->additional_inputs,
                             );
                     }
-                    elseif($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers')
+                    elseif ($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers')
                     {
                         $make_order->status =  "cancelled";
                         $make_order->auto_order_response  =  json_encode(['error'=> 'subscription is not implemented yet']);

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 use Image;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class GeneralController extends Controller
 {

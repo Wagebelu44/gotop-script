@@ -25,16 +25,16 @@
                         <tbody class="payment-method-list ui-sortable-handle">
                         @foreach($data as $provider)
                             <tr id="">
-                                @if(isset($provider->domain))
+                                @if (isset($provider->domain))
                                     <td class="p-l">{{ $provider->domain }}</td>
                                 @endif
-                                @if(isset($provider->api_key))
+                                @if (isset($provider->api_key))
                                     <td>{{ $provider->api_key }}</td>
                                 @endif
-                                @if(isset($provider->api_url))
+                                @if (isset($provider->api_url))
                                     <td>{{ $provider->api_url }}</td>
                                 @endif
-                                @if(isset($provider->status))
+                                @if (isset($provider->status))
                                     <td>{{ $provider->status }}</td>
                                 @endif
                                 <td class="p-r text-right">

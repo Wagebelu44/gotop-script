@@ -155,7 +155,7 @@
                             Actions
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            @if($order->refill_order_status == 'pending')
+                            @if ($order->refill_order_status == 'pending')
                                 <li>
                                     <form action="#" method="post">
                                         @csrf

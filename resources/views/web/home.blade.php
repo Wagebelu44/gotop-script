@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Go2Fans</title>
-    @if(isset($settingGeneral->favicon))
+    @if (isset($settingGeneral->favicon))
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('./storage/images/setting/'.$settingGeneral->favicon) }}">
     @endif
     <!-- Bootstrap core CSS -->
@@ -17,10 +17,10 @@
 
 <div class="wrapper">
     <!-- Sidebar  -->
-    @if(isset($settingGeneral) && $settingGeneral->horizontal_menu == 'No')
+    @if (isset($settingGeneral) && $settingGeneral->horizontal_menu == 'No')
     <nav class="navbar-light bg-light shadow-sm" id="sidebar">
         <div class="sidebar-header">
-            @if(isset($settingGeneral->logo))
+            @if (isset($settingGeneral->logo))
                 <img style="width: 100px;" src="{{ asset('./storage/images/setting/'.$settingGeneral->logo) }}">
             @else
                 Your Logo
@@ -28,9 +28,9 @@
         </div>
         <ul class="list-unstyled components">
             @guest
-                @if(!empty($menus))
+                @if (!empty($menus))
                     @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'Yes')
+                        @if ($menu->menu_link_type == 'Yes')
                             <li class="nav-item menu-border">
                                 <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                             </li>
@@ -38,9 +38,9 @@
                     @endforeach
                 @endif
             @else
-                @if(!empty($menus))
+                @if (!empty($menus))
                     @foreach($menus as $menu)
-                        @if($menu->menu_link_type == 'No')
+                        @if ($menu->menu_link_type == 'No')
                             <li class="nav-item menu-border">
                                 <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                             </li>
@@ -53,14 +53,14 @@
     @endif
     <div id="content">
         <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-            @if(isset($settingGeneral) && $settingGeneral->horizontal_menu == 'Yes')
-                @if(isset($settingGeneral->logo))
+            @if (isset($settingGeneral) && $settingGeneral->horizontal_menu == 'Yes')
+                @if (isset($settingGeneral->logo))
                     <img style="width: 100px;" src="{{ asset('./storage/images/setting/'.$settingGeneral->logo) }}">
                 @else
                     Your Logo
                 @endif
             @endif
-            @if(isset($settingGeneral) && $settingGeneral->horizontal_menu == 'No')
+            @if (isset($settingGeneral) && $settingGeneral->horizontal_menu == 'No')
                 <button id="sidebarCollapse" class="navbar-toggler" type="button" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -70,12 +70,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                @if(isset($settingGeneral) && $settingGeneral->horizontal_menu == 'Yes')
+                @if (isset($settingGeneral) && $settingGeneral->horizontal_menu == 'Yes')
                 <ul class="navbar-nav">
                     @guest
-                        @if(!empty($menus))
+                        @if (!empty($menus))
                             @foreach($menus as $menu)
-                                @if($menu->menu_link_type == 'Yes')
+                                @if ($menu->menu_link_type == 'Yes')
                                     <li class="nav-item">
                                         <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                                     </li>
@@ -83,9 +83,9 @@
                             @endforeach
                         @endif
                     @else
-                        @if(!empty($menus))
+                        @if (!empty($menus))
                             @foreach($menus as $menu)
-                                @if($menu->menu_link_type == 'No')
+                                @if ($menu->menu_link_type == 'No')
                                     <li class="nav-item">
                                         <a class="nav-link" href="#">{{ $menu->menu_name }}</a>
                                     </li>

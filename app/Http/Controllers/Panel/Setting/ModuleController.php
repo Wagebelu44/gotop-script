@@ -11,16 +11,16 @@ class ModuleController extends Controller
 {
     public function index()
     {
-        if(Auth::user()->can('module setting')) {
+        if (Auth::user()->can('module setting')) {
             return view('panel.settings.modules');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request)
     {
-        if(Auth::user()->can('module setting')) {
+        if (Auth::user()->can('module setting')) {
             $panelId = Auth::user()->panel_id;
             if ($request->type === 'affiliate') {
                 SettingModule::updateOrCreate(
@@ -56,20 +56,20 @@ class ModuleController extends Controller
                 );
                 return redirect()->back()->with('success', 'Free balance Setting update successfully!');
             }
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function getModuleData(Request $request)
     {
-        if(Auth::user()->can('module setting')) {
+        if (Auth::user()->can('module setting')) {
             $data = SettingModule::where('panel_id', Auth::user()->panel_id)->where('type', $request->type)->first();
             return response()->json([
                 'status' => 'success',
                 'data' => $data
             ], 200);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

@@ -82,7 +82,7 @@ class OrderController extends Controller
             {
                 $order->update($data);
             }
-            if($order)
+            if ($order)
                 return response()->json(['status'=>200, 'data'=>$order,  'success'=>'successfully updated']);
             else return response()->json(['status'=>401,  'data'=>$order, 'error'=>'Could not updated']);
         }catch (\Exception $e)
@@ -117,7 +117,7 @@ class OrderController extends Controller
                     $order->save();
             }
         }
-        elseif($r->status == 'failed_resend')
+        elseif ($r->status == 'failed_resend')
         {
             $orders = Order::whereIn('id',explode(',',$r->service_ids))->get();
             foreach ($orders as $order) 
@@ -171,7 +171,7 @@ class OrderController extends Controller
                     'quantity' => $make_order->quantity,
                     );
             }
-            elseif($ps->type == 'Package')
+            elseif ($ps->type == 'Package')
             {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
@@ -180,7 +180,7 @@ class OrderController extends Controller
                     'link' => $make_order->link,
                     );
             }
-            elseif($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package')
+            elseif ($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package')
             {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
@@ -190,7 +190,7 @@ class OrderController extends Controller
                     'comments' => $make_order->text_area_1,
                     );
             }
-            elseif($ps->type ==  'Mentions Custom List')
+            elseif ($ps->type ==  'Mentions Custom List')
             {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
@@ -200,7 +200,7 @@ class OrderController extends Controller
                     'usernames' => $make_order->text_area_1,
                     );
             }
-            elseif($ps->type == 'Mentions Hashtag')
+            elseif ($ps->type == 'Mentions Hashtag')
             {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
@@ -211,7 +211,7 @@ class OrderController extends Controller
                     'hashtag' => $make_order->additional_inputs,
                     );
             }
-            elseif($ps->type == 'Comment Likes')
+            elseif ($ps->type == 'Comment Likes')
             {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
@@ -222,7 +222,7 @@ class OrderController extends Controller
                     'username' => $make_order->additional_inputs,
                     );
             }
-            elseif($ps->type == 'Poll')
+            elseif ($ps->type == 'Poll')
             {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
@@ -233,7 +233,7 @@ class OrderController extends Controller
                     'answer_number' => $make_order->additional_inputs,
                     );
             }
-            elseif($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers')
+            elseif ($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers')
             {
                 $make_order->status =  "cancelled";
                 $make_order->auto_order_response  =  json_encode(['error'=> 'subscription is not implemented yet']);
@@ -260,7 +260,7 @@ class OrderController extends Controller
                 $make_order->status =  "failed";
             }
 
-            if( $make_order->save() )
+            if ( $make_order->save() )
             {
                 return true;
             }
@@ -388,7 +388,7 @@ class OrderController extends Controller
             {
                 $order_mode['auto']++;
             }
-            elseif($order->mode =='manual')
+            elseif ($order->mode =='manual')
             {
                 $order_mode['manual']++;
             }

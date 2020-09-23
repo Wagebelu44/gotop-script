@@ -9,6 +9,7 @@ use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
 {
@@ -20,7 +21,69 @@ class ServiceController extends Controller
 
     public function getCateServices(Request $request)
     {
-        return ServiceCategory::with('services', 'services.provider')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
+        $query_data = $request->all();
+        $cate_services = ServiceCategory::with(['services' => function($q) use($query_data) {
+            if ( isset($query_data['service_type'])) {
+                $q->where('service_type', $query_data['service_type']);
+            }
+            if ( isset($query_data['status'])) {
+                $status = '';
+                if ($query_data['status']!='All' && $query_data['status']=='Enabled') {
+                    $status = 'Active';
+                }
+                if ($query_data['status']!='All' && $query_data['status']=='Disabled') {
+                    $status = 'Deactivated';
+                }
+                $q->where('status', $status);
+            }
+        }, 'services.provider'])
+        ->where('panel_id', auth()->user()->panel_id)
+        ->orderBy('id', 'ASC')->get();
+        $service_type_counts =  [
+            'All' => 0,
+            'Default' => 0,
+            'SEO'=> 0,
+            'SEO2'=> 0,
+            'Custom Comments'=> 0,
+            'Custom Comments Package'=> 0,
+            'Comment Likes'=> 0,
+            'Mentions'=> 0,
+            'Mentions with Hashtags'=> 0,
+            'Mentions Custom List'=> 0,
+            'Mentions Hashtag'=> 0,
+            'Mentions Users Followers'=> 0,
+            'Mentions Media Likers'=> 0,
+            'Package'=> 0,
+            'Poll'=> 0,
+            'Comment Replies'=> 0,
+            'Invites From Groups'=> 0,
+            'Subscriptions'=> 0,
+        ];
+        $all_service = Service::get();
+        $autoManualCount = [
+            'All' => 0,
+            'Enabled' => 0,
+            'Disabled' => 0,
+        ]; 
+        foreach ($all_service as $cs)
+        {   $service_type_counts['All'] ++;
+            $autoManualCount['All'] ++;
+            if ($cs->service_type !=null)
+                $service_type_counts[$cs->service_type]++;
+            if ( strtolower($cs->status) == 'active') 
+            {
+                $autoManualCount['Enabled']++;
+            }
+            if ( strtolower($cs->status) == 'deactivated') 
+            {
+                $autoManualCount['Disabled']++;
+            }
+        }
+        return [
+            'data'=>$cate_services,
+            'service_type_count'=>$service_type_counts,
+            'autoManualCount'=>$autoManualCount,
+        ];
     }
 
     public function getProviders()
@@ -174,7 +237,7 @@ class ServiceController extends Controller
             }
             return response()->json(['status'=>200,'data'=> $service, 'message'=>'Service created successfully.']);
         } catch (\Exception $e) {
-            return response()->json(['status'=>401, 'data'=>$e->getMessage()]);
+            return response()->json(['status'=>401, 'data'=>$e->getMessage()], 422);
         }
     }
 
@@ -295,13 +358,24 @@ class ServiceController extends Controller
     {
         $category = ServiceCategory::find($id);
         $category->status = $category->status == 'Active'?'Deactivated':'Active';
-        if($category->save())
+        if ($category->save())
             return response()->json(['status'=>200,'data'=> $category, 'message'=>'Category Updated successfully.']);
         else
             return response()->json(['status'=>401,'data'=> null, 'message'=>'error occured.']);
     }
     public function categoryStore(Request $request)
     {
+        $credentials = $request->only('name');
+
+        $rules = [
+            'name' => 'required|string|max:255'
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors'=> $validator->messages()], 422);
+        }
+
+
         if ($request->has('edit_id'))
         {
             $request->validate([
@@ -318,7 +392,7 @@ class ServiceController extends Controller
 
 
         try {
-            if($request->has('edit_id'))
+            if ($request->has('edit_id'))
             {
                 $data = $request->except('_token', 'score','edit_id','edit_mode');
             }

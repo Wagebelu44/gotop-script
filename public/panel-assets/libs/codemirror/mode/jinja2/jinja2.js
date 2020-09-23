@@ -38,7 +38,7 @@
 
       //Comment
       if (state.incomment) {
-        if(!stream.skipTo("#}")) {
+        if (!stream.skipTo("#}")) {
           stream.skipToEnd();
         } else {
           stream.eatWhile(/\#|}/);
@@ -48,56 +48,56 @@
       //Tag
       } else if (state.intag) {
         //After operator
-        if(state.operator) {
+        if (state.operator) {
           state.operator = false;
-          if(stream.match(atom)) {
+          if (stream.match(atom)) {
             return "atom";
           }
-          if(stream.match(number)) {
+          if (stream.match(number)) {
             return "number";
           }
         }
         //After sign
-        if(state.sign) {
+        if (state.sign) {
           state.sign = false;
-          if(stream.match(atom)) {
+          if (stream.match(atom)) {
             return "atom";
           }
-          if(stream.match(number)) {
+          if (stream.match(number)) {
             return "number";
           }
         }
 
-        if(state.instring) {
-          if(ch == state.instring) {
+        if (state.instring) {
+          if (ch == state.instring) {
             state.instring = false;
           }
           stream.next();
           return "string";
-        } else if(ch == "'" || ch == '"') {
+        } else if (ch == "'" || ch == '"') {
           state.instring = ch;
           stream.next();
           return "string";
-        } else if(stream.match(state.intag + "}") || stream.eat("-") && stream.match(state.intag + "}")) {
+        } else if (stream.match(state.intag + "}") || stream.eat("-") && stream.match(state.intag + "}")) {
           state.intag = false;
           return "tag";
-        } else if(stream.match(operator)) {
+        } else if (stream.match(operator)) {
           state.operator = true;
           return "operator";
-        } else if(stream.match(sign)) {
+        } else if (stream.match(sign)) {
           state.sign = true;
         } else {
-          if(stream.eat(" ") || stream.sol()) {
-            if(stream.match(keywords)) {
+          if (stream.eat(" ") || stream.sol()) {
+            if (stream.match(keywords)) {
               return "keyword";
             }
-            if(stream.match(atom)) {
+            if (stream.match(atom)) {
               return "atom";
             }
-            if(stream.match(number)) {
+            if (stream.match(number)) {
               return "number";
             }
-            if(stream.sol()) {
+            if (stream.sol()) {
               stream.next();
             }
           } else {
@@ -109,7 +109,7 @@
       } else if (stream.eat("{")) {
         if (stream.eat("#")) {
           state.incomment = true;
-          if(!stream.skipTo("#}")) {
+          if (!stream.skipTo("#}")) {
             stream.skipToEnd();
           } else {
             stream.eatWhile(/\#|}/);
@@ -120,7 +120,7 @@
         } else if (ch = stream.eat(/\{|%/)) {
           //Cache close tag
           state.intag = ch;
-          if(ch == "{") {
+          if (ch == "{") {
             state.intag = "}";
           }
           stream.eat("-");

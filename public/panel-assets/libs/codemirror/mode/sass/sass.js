@@ -158,7 +158,7 @@ CodeMirror.defineMode("sass", function(config) {
       return "string";
     }
 
-    if(!state.cursorHalf){// state.cursorHalf === 0
+    if (!state.cursorHalf){// state.cursorHalf === 0
     // first half i.e. before : for key-value pairs
     // including selectors
 
@@ -230,9 +230,9 @@ CodeMirror.defineMode("sass", function(config) {
         }
       }
 
-      if(ch === "@"){
-        if(stream.match(/@extend/)){
-          if(!stream.match(/\s*[\w]/))
+      if (ch === "@"){
+        if (stream.match(/@extend/)){
+          if (!stream.match(/\s*[\w]/))
             dedent(state);
         }
       }
@@ -252,7 +252,7 @@ CodeMirror.defineMode("sass", function(config) {
       }
 
       if (stream.eatWhile(/[\w-]/)){
-        if(stream.match(/ *: *[\w-\+\$#!\("']/,false)){
+        if (stream.match(/ *: *[\w-\+\$#!\("']/,false)){
           word = stream.current().toLowerCase();
           var prop = state.prevProp + "-" + word;
           if (propertyKeywords.hasOwnProperty(prop)) {
@@ -265,13 +265,13 @@ CodeMirror.defineMode("sass", function(config) {
           }
           return "tag";
         }
-        else if(stream.match(/ *:/,false)){
+        else if (stream.match(/ *:/,false)){
           indent(state);
           state.cursorHalf = 1;
           state.prevProp = stream.current().toLowerCase();
           return "property";
         }
-        else if(stream.match(/ *,/,false)){
+        else if (stream.match(/ *,/,false)){
           return "tag";
         }
         else{
@@ -280,7 +280,7 @@ CodeMirror.defineMode("sass", function(config) {
         }
       }
 
-      if(ch === ":"){
+      if (ch === ":"){
         if (stream.match(pseudoElementsRegexp)){ // could be a pseudo-element
           return "variable-3";
         }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Models\UserPaymentMethod;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
@@ -111,7 +111,7 @@ class UserController extends Controller
             'user_id' => 'required',
         ];
         $validator = Validator::make($credentials, $rules);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
         }
 
@@ -166,7 +166,7 @@ class UserController extends Controller
             'password'    => 'required|string|min:8|confirmed',
         ];
         $validator = Validator::make($credentials, $rules);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
         }
 

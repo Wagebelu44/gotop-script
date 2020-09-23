@@ -32,14 +32,14 @@ class TicketController extends Controller
             $s_ids = null;
             if (isset($data['order_ids'])) {
                 $s_ids = $data['order_ids'];
-            }elseif (isset($data['transaction_id'])) {
+            } elseif (isset($data['transaction_id'])) {
                 $s_ids = $data['transaction_id'];
             }
 
             $payment_types = null;
             if (isset($data['order_type'])) {
                 $payment_types = $data['order_type'];
-            }elseif (isset($data['payment_types'])) {
+            } elseif (isset($data['payment_types'])) {
                 $payment_types = $data['payment_types'];
             }
 
@@ -58,7 +58,7 @@ class TicketController extends Controller
             if ($s_tickets) {
                 //Mail::to("thesocialmediagrowthh@gmail.com")->send(new SupportTickets($s_tickets));
                 //Notification::send(auth()->user(),  new SupportTicketCreated);
-                /* if(count(Mail::failures()) > 0){
+                /* if (count(Mail::failures()) > 0){
                     $errors = 'Failed to send password reset email, please try again.';
                 } */
                 return redirect()->back()->with('success', 'Ticket has been created successfully');

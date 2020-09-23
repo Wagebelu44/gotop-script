@@ -15,7 +15,7 @@
                             <div class="col-md-8">
                                 <table class="table table-bordered">
                                     <tbody class="tablecontents" id="public_menu">
-                                    @if(!empty($menus))
+                                    @if (!empty($menus))
                                         @foreach($menus as $key => $public_menu)
                                             @if ($public_menu->menu_link_type == 'Yes')
                                                 <tr class="row1" data-id="{{ $public_menu->id }}">
@@ -47,7 +47,7 @@
                                 <a href="javascript:void(0)" onclick="addMenuItem(1)" class="btn btn-default m-b add-modal-menu">Add menu item</a>
                                 <table class="table table-bordered" style="margin-top: 10px;">
                                     <tbody class="tablecontents" id="signed_menu">
-                                    @if(!empty($menus))
+                                    @if (!empty($menus))
                                         @foreach($menus as $key => $menu)
                                             @if ($menu->menu_link_type == 'No')
                                                 <tr class="row1" data-id="{{ $menu->id }}">
@@ -229,9 +229,9 @@
                         _token: '{{csrf_token()}}'
                     },
                     success: function(response) {
-                        if(response.status === 'success'){
+                        if (response.status === 'success'){
                             toastr["success"](response.message);
-                        }else{
+                        } else {
                             toastr["error"](response.message);
                         }
 
@@ -288,10 +288,10 @@
                         $('#menu_link_edit').val(response.data.menu_link_id);
                         let selectedExtLink = '';
                         let extUrlLink = '';
-                        if(response.data.menu_link_id === 0){
+                        if (response.data.menu_link_id === 0){
                             $('#edit_external_url').val(response.data.external_link);
                             $('#edit_external_link').show();
-                        }else {
+                        } else {
                             $('#edit_external_link').hide();
                         }
                         let updateUrl = "{{ url('admin/appearance/menu') }}/"+id;

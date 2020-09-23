@@ -66,8 +66,8 @@
 
       var cur = stream.current();
 
-      if(state.sol && (cur == "package" || cur == "model" || cur == "when" || cur == "connector")) state.level++;
-      else if(state.sol && cur == "end" && state.level > 0) state.level--;
+      if (state.sol && (cur == "package" || cur == "model" || cur == "when" || cur == "connector")) state.level++;
+      else if (state.sol && cur == "end" && state.level > 0) state.level--;
 
       state.tokenize = null;
       state.sol = false;
@@ -84,7 +84,7 @@
       state.tokenize = null;
       state.sol = false;
 
-      if(stream.eat("'"))
+      if (stream.eat("'"))
         return "variable";
       else
         return "error";
@@ -117,16 +117,16 @@
       },
 
       token: function(stream, state) {
-        if(state.tokenize != null) {
+        if (state.tokenize != null) {
           return state.tokenize(stream, state);
         }
 
-        if(stream.sol()) {
+        if (stream.sol()) {
           state.sol = true;
         }
 
         // WHITESPACE
-        if(stream.eatSpace()) {
+        if (stream.eatSpace()) {
           state.tokenize = null;
           return null;
         }
@@ -134,38 +134,38 @@
         var ch = stream.next();
 
         // LINECOMMENT
-        if(ch == '/' && stream.eat('/')) {
+        if (ch == '/' && stream.eat('/')) {
           state.tokenize = tokenLineComment;
         }
         // BLOCKCOMMENT
-        else if(ch == '/' && stream.eat('*')) {
+        else if (ch == '/' && stream.eat('*')) {
           state.tokenize = tokenBlockComment;
         }
         // TWO SYMBOL TOKENS
-        else if(isDoubleOperatorChar.test(ch+stream.peek())) {
+        else if (isDoubleOperatorChar.test(ch+stream.peek())) {
           stream.next();
           state.tokenize = null;
           return "operator";
         }
         // SINGLE SYMBOL TOKENS
-        else if(isSingleOperatorChar.test(ch)) {
+        else if (isSingleOperatorChar.test(ch)) {
           state.tokenize = null;
           return "operator";
         }
         // IDENT
-        else if(isNonDigit.test(ch)) {
+        else if (isNonDigit.test(ch)) {
           state.tokenize = tokenIdent;
         }
         // Q-IDENT
-        else if(ch == "'" && stream.peek() && stream.peek() != "'") {
+        else if (ch == "'" && stream.peek() && stream.peek() != "'") {
           state.tokenize = tokenQIdent;
         }
         // STRING
-        else if(ch == '"') {
+        else if (ch == '"') {
           state.tokenize = tokenString;
         }
         // UNSIGNED_NUBER
-        else if(isDigit.test(ch)) {
+        else if (isDigit.test(ch)) {
           state.tokenize = tokenUnsignedNuber;
         }
         // ERROR
@@ -181,13 +181,13 @@
         if (state.tokenize != null) return CodeMirror.Pass;
 
         var level = state.level;
-        if(/(algorithm)/.test(textAfter)) level--;
-        if(/(equation)/.test(textAfter)) level--;
-        if(/(initial algorithm)/.test(textAfter)) level--;
-        if(/(initial equation)/.test(textAfter)) level--;
-        if(/(end)/.test(textAfter)) level--;
+        if (/(algorithm)/.test(textAfter)) level--;
+        if (/(equation)/.test(textAfter)) level--;
+        if (/(initial algorithm)/.test(textAfter)) level--;
+        if (/(initial equation)/.test(textAfter)) level--;
+        if (/(end)/.test(textAfter)) level--;
 
-        if(level > 0)
+        if (level > 0)
           return indentUnit*level;
         else
           return 0;

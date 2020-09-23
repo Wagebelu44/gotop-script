@@ -137,21 +137,21 @@
                                     @elseif ($order->service_type == 'SEO2')
                                         <a  class="service_type_tags" @click="modalVIsible('text_area_1', {{$order}} )">Keywords</a>
                                         <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', {{$order}} )">Email</a>
-                                    @elseif($order->service_type == 'Custom Comments' || $order->service_type == 'Custom Comments Package')
+                                    @elseif ($order->service_type == 'Custom Comments' || $order->service_type == 'Custom Comments Package')
                                         <a  class="service_type_tags" @click="modalVIsible('text_area_1', {{$order}} )">Comments</a>
-                                    @elseif($order->service_type == 'Comment Likes' || $order->service_type == 'Mentions Users Followers' )
+                                    @elseif ($order->service_type == 'Comment Likes' || $order->service_type == 'Mentions Users Followers' )
                                         <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', {{$order}} )">Username</a>
-                                    @elseif($order->service_type == 'Mentions Custom List' || $order->service_type == 'Mentions')
+                                    @elseif ($order->service_type == 'Mentions Custom List' || $order->service_type == 'Mentions')
                                         <a  class="service_type_tags" @click="modalVIsible('text_area_1', {{$order}} )">Username</a>
-                                    @elseif($order->service_type == 'Mentions with Hashtags')
+                                    @elseif ($order->service_type == 'Mentions with Hashtags')
                                         <a  class="service_type_tags" @click="modalVIsible('text_area_1', {{$order}} )">Username</a>
                                         <a  class="service_type_tags" @click="modalVIsible('text_area_2', {{$order}} )">Hastags</a>
-                                    @elseif($order->service_type == 'Comment Replies')
+                                    @elseif ($order->service_type == 'Comment Replies')
                                         <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', {{$order}} )">Username</a>
                                         <a  class="service_type_tags" @click="modalVIsible('text_area_1', {{$order}} )">Comments</a>
-                                    @elseif($order->service_type == 'Mentions Hashtag')
+                                    @elseif ($order->service_type == 'Mentions Hashtag')
                                         <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', {{$order}} )">Hastags</a>
-                                    @elseif($order->service_type == 'Mentions Media Likers')
+                                    @elseif ($order->service_type == 'Mentions Media Likers')
                                         <a  class="service_type_tags" @click="modalVIsible('additional_comment_owner_username_visible', {{$order}} )">Mediua URLs</a>
                                     @endif
                                 </td>
@@ -170,7 +170,7 @@
 
                                        
                                     </div>
-                                    @if($role=='user')
+                                    @if ($role=='user')
                                     
                                         @if ($order->status == 'completed' && $order->refill_order_status == null)
                                         <div class="action bg-green order-actions">
