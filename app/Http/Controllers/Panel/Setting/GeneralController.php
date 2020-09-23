@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel\Setting;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MediaController;
 use App\Models\SettingGeneral;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -33,34 +34,28 @@ class GeneralController extends Controller
             $checkLogoFavicon = SettingGeneral::select('logo', 'favicon')->where('panel_id', Auth::user()->panel_id)->first();
             if ($request->hasFile('logo')) {
                 if (!empty($checkLogoFavicon->logo)) {
-                    deleteFile('./storage/images/setting/', $checkLogoFavicon->logo);
+                    (new MediaController())->delete('images/setting', $checkLogoFavicon->logo, 1);
                 }
-                $logo = $request->file('logo');
-                $mime= $logo->getClientOriginalExtension();
-                $logoName = time()."_logo.".$mime;
-                $logo = Image::make($logo)->resize(200, 80);
-                Storage::disk('public')->put("images/setting/".$logoName, (string) $logo->encode());
+                $file = $request->file('logo');
+                $logoImage = (new MediaController())->imageUpload($file, 'images/setting', 1, null, [200, 80]);
             }
 
             if ($request->hasFile('favicon')) {
                 if (!empty($checkLogoFavicon->favicon)) {
-                    deleteFile('./storage/images/setting/', $checkLogoFavicon->favicon);
+                    (new MediaController())->delete('images/setting', $checkLogoFavicon->favicon, 1);
                 }
                 $favicon = $request->file('favicon');
-                $mime= $favicon->getClientOriginalExtension();
-                $faviconName = time()."_favicon.".$mime;
-                $favicon = Image::make($favicon)->resize(16, 16);
-                Storage::disk('public')->put("images/setting/".$faviconName, (string) $favicon->encode());
+                $faviconImage = (new MediaController())->imageUpload($favicon, 'images/setting', 1, null, [16, 16]);
             }
 
-            if (isset($logoName)) {
-                $logo =  $logoName;
+            if (isset($logoImage['name'])) {
+                $logo =  $logoImage['name'];
             } else {
                 $logo = isset($checkLogoFavicon->logo) ? $checkLogoFavicon->logo:null;
             }
 
-            if (isset($faviconName)) {
-                $favicon = $faviconName;
+            if (isset($faviconImage['name'])) {
+                $favicon = $faviconImage['name'];
             } else {
                 $favicon = isset($checkLogoFavicon->favicon) ? $checkLogoFavicon->favicon:null;
             }
@@ -86,6 +81,11 @@ class GeneralController extends Controller
                 'average_time'       => $request->average_time,
                 'drip_feed_interval' => $request->drip_feed_interval,
                 'horizontal_menu'    => isset($request->horizontal_menu) ? 'Yes':'No',
+                'total_order'        => isset($request->total_order) ? 'Yes':'No',
+                'total_spent'        => isset($request->total_spent) ? 'Yes':'No',
+                'account_status'     => isset($request->account_status) ? 'Yes':'No',
+                'point'              => isset($request->point) ? 'Yes':'No',
+                'redeem'             => isset($request->redeem) ? 'Yes':'No',
                 'custom_header_code' => null,
                 'custom_footer_code' => null,
             ]);

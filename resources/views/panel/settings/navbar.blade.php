@@ -27,5 +27,9 @@
         <a class="list-group-item  {{ Request::segment(3) == 'bonuses' ? 'active' : '' }}" href="{{ route('admin.setting.bonuses.index') }}">
             Bonuses
         </a>
+
+        <a class="list-group-item  {{ Request::segment(3) == 'account-status' ? 'active' : '' }}" href="{{ route('admin.setting.account-status.index') }}">
+            Account Status
+        </a>
     </ul>
 </div>
