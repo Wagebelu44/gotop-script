@@ -346,6 +346,7 @@ const App = new Vue({
 
             })
             .catch(error => {
+                this.loader = false;
                 error.then(erMesg => {
                     this.errors.category = erMesg.errors;
                 });
