@@ -21,7 +21,47 @@ class ServiceController extends Controller
 
     public function getCateServices(Request $request)
     {
-        return ServiceCategory::with('services', 'services.provider')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
+        $cate_services = ServiceCategory::with('services', 'services.provider')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
+        $service_type_counts =  [
+            'All' => 0,
+            'Default' => 0,
+            'SEO'=> 0,
+            'SEO2'=> 0,
+            'Custom Comments'=> 0,
+            'Custom Comments Package'=> 0,
+            'Comment Likes'=> 0,
+            'Mentions'=> 0,
+            'Mentions with Hashtags'=> 0,
+            'Mentions Custom List'=> 0,
+            'Mentions Hashtag'=> 0,
+            'Mentions Users Followers'=> 0,
+            'Mentions Media Likers'=> 0,
+            'Package'=> 0,
+            'Poll'=> 0,
+            'Comment Replies'=> 0,
+            'Invites From Groups'=> 0,
+            'Subscriptions'=> 0,
+        ];
+        $all_service = Service::get();
+        $autoManualCount = [
+            'All' => 0,
+            'auto' => 0,
+            'manual' => 0,
+        ]; 
+        foreach ($all_service as $cs)
+        {   $service_type_counts['All'] ++;
+            $autoManualCount['All'] ++;
+            if ($cs->service_type !=null)
+                $service_type_counts[$cs->service_type]++;
+            if ($cs->mode !=null)
+                $autoManualCount[strtolower($cs->mode)]++;
+            
+        }
+        return [
+            'data'=>$cate_services,
+            'service_type_count'=>$service_type_counts,
+            'autoManualCount'=>$autoManualCount,
+        ];
     }
 
     public function getProviders()

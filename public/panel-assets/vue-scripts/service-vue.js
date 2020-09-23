@@ -84,24 +84,8 @@ const App = new Vue({
         },
         link_duplicate_selected: 'Allow',
         service_mode: 'Auto',
-        service_type: [
-            'Default',
-            'SEO',
-            'SEO2',
-            'Custom Comments',
-            'Custom Comments Package',
-            'Comment Likes',
-            'Mentions',
-            'Mentions with Hashtags',
-            'Mentions Custom List',
-            'Mentions Hashtag',
-            'Mentions Users Followers',
-            'Mentions Media Likers',
-            'Package',
-            'Poll',
-            'Comment Replies',
-            'Invites From Groups',
-        ],
+        service_type: null,
+        autoManualCount: null,
         service_type_selected: 'Default',
         category: {
             name: null,
@@ -278,7 +262,9 @@ const App = new Vue({
             fetch(base_url+"/admin/get-category-services")
             .then(res=>res.json())
             .then(res=>{
-                this.category_services = res;
+                this.category_services = res.data;
+                this.service_type = res.service_type_count;
+                this.autoManualCount = res.autoManualCount;
             });
         },
         submitCategoryForm(evt) {
