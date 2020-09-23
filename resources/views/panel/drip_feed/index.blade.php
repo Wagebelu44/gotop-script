@@ -61,10 +61,7 @@
                             @include('panel.drip_feed.table')
 
                             <div class="row">
-                                <div class="col-md-6">
-    
-                                </div>
-                                <div class="col-md-6 text-right">
+                                <div class="col-md-12 text-center">
                                     <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getDripFeedOrders()"></data-pagination>
                                 </div>
                             </div>
