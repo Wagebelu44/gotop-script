@@ -858,8 +858,8 @@
                                                 aria-expanded="false">
                                             Type
                                         </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="service_type_filter">
-                                            <a class="dropdown-item type-dropdown-item" v-for="(st, ind) in service_type">@{{ ind }} (@{{ st }}) </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item type-dropdown-item"  @click="serviceTypeFilter(ind)" v-for="(st, ind) in service_type">@{{ ind }} (@{{ st }}) </a>
                                         </div>
                                     </div>
                                 </div>
@@ -874,8 +874,8 @@
                                                 aria-expanded="false">
                                             Status
                                         </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"  id="status_type_filter">
-                                            <a class="dropdown-item type-dropdown-item" v-for="(st, ind) in autoManualCount">@{{ ind }} (@{{ st }}) </a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item type-dropdown-item" @click="serviceStatusFilter(ind)" v-for="(st, ind) in autoManualCount">@{{ ind }} (@{{ st }}) </a>
                                         </div>
 
                                     </div>

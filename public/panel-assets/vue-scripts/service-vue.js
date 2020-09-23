@@ -8,6 +8,10 @@ const App = new Vue({
     data: {
         options: [ {country: 'atik', code: 1}, {country: 'sudip', code: 2},],
         providers_lists: [],
+        service_filter: {
+            service_type: '',
+            status: '',
+        },
         errors: {
             common: null,
             category: [],
@@ -257,11 +261,39 @@ const App = new Vue({
                 this.providers_lists = res;
             });
         },
+        serviceTypeFilter(name)
+        {
+            this.service_filter.service_type = name;
+            this.getCategoryServices();
+        },
+        serviceStatusFilter(name)
+        {
+            this.service_filter.status = name;
+            this.getCategoryServices();
+        },
         getCategoryServices()
         {
-            fetch(base_url+"/admin/get-category-services")
+            this.loader = true;
+            let url = base_url+"/admin/get-category-services?";
+            let top_Url = base_url+'/admin/services?';
+            if (this.service_filter.service_type!=='') {
+                url +='&service_type='+this.service_filter.service_type;
+                top_Url +='&service_type='+this.service_filter.service_type;
+                const state = { 'service_type': this.service_filter.service_type};
+                const title = '';
+                history.pushState(state, title, top_Url)
+            }
+            if (this.service_filter.status!=='') {
+                url +='&status='+this.service_filter.status;
+                top_Url +='&status='+this.service_filter.status;
+                const state = { 'status': this.service_filter.status};
+                const title = '';
+                history.pushState(state, title, top_Url)
+            }
+            fetch(url)
             .then(res=>res.json())
             .then(res=>{
+                this.loader = false;
                 this.category_services = res.data;
                 this.service_type = res.service_type_count;
                 this.autoManualCount = res.autoManualCount;
@@ -1288,14 +1320,14 @@ function toggleAllcategory()
 
 }
 
-document.getElementById('service_type_filter').addEventListener('click', evt=>{
-        document.querySelector('input[name=serviceTypefilter]').value = evt.target.getAttribute('data-key');
-        document.getElementById('service_type_filter_form').submit();
-});
-document.getElementById('status_type_filter').addEventListener('click', evt=>{
-        document.querySelector('input[name=status]').value = evt.target.getAttribute('data-key');
-        document.getElementById('status_type_filter_form').submit();
-});
+// document.getElementById('service_type_filter').addEventListener('click', evt=>{
+//         document.querySelector('input[name=serviceTypefilter]').value = evt.target.getAttribute('data-key');
+//         document.getElementById('service_type_filter_form').submit();
+// });
+// document.getElementById('status_type_filter').addEventListener('click', evt=>{
+//         document.querySelector('input[name=status]').value = evt.target.getAttribute('data-key');
+//         document.getElementById('status_type_filter_form').submit();
+// });
 $('.custom_summernote').summernote({
         tabsize: 2,
         height: 120,

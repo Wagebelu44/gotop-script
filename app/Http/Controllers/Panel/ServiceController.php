@@ -21,7 +21,24 @@ class ServiceController extends Controller
 
     public function getCateServices(Request $request)
     {
-        $cate_services = ServiceCategory::with('services', 'services.provider')->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
+        $query_data = $request->all();
+        $cate_services = ServiceCategory::with(['services' => function($q) use($query_data) {
+            if ( isset($query_data['service_type'])) {
+                $q->where('service_type', $query_data['service_type']);
+            }
+            if ( isset($query_data['status'])) {
+                $status = '';
+                if ($query_data['status']!='All' && $query_data['status']=='Enabled') {
+                    $status = 'Active';
+                }
+                if ($query_data['status']!='All' && $query_data['status']=='Disabled') {
+                    $status = 'Deactivated';
+                }
+                $q->where('status', $status);
+            }
+        }, 'services.provider'])
+        ->where('panel_id', auth()->user()->panel_id)
+        ->orderBy('id', 'ASC')->get();
         $service_type_counts =  [
             'All' => 0,
             'Default' => 0,
@@ -45,17 +62,22 @@ class ServiceController extends Controller
         $all_service = Service::get();
         $autoManualCount = [
             'All' => 0,
-            'auto' => 0,
-            'manual' => 0,
+            'Enabled' => 0,
+            'Disabled' => 0,
         ]; 
         foreach ($all_service as $cs)
         {   $service_type_counts['All'] ++;
             $autoManualCount['All'] ++;
             if ($cs->service_type !=null)
                 $service_type_counts[$cs->service_type]++;
-            if ($cs->mode !=null)
-                $autoManualCount[strtolower($cs->mode)]++;
-            
+            if ( strtolower($cs->status) == 'active') 
+            {
+                $autoManualCount['Enabled']++;
+            }
+            if ( strtolower($cs->status) == 'deactivated') 
+            {
+                $autoManualCount['Disabled']++;
+            }
         }
         return [
             'data'=>$cate_services,
