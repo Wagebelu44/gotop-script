@@ -27,7 +27,7 @@ CodeMirror.defineSimpleMode("nsis",{
     {regex: /^\s*(?:\!(include|addincludedir|addplugindir|appendfile|cd|delfile|echo|error|execute|packhdr|pragma|finalize|getdllversion|gettlbversion|system|tempfile|warning|verbose|define|undef|insertmacro|macro|macroend|makensis|searchparse|searchreplace))\b/, token: "keyword"},
 
     // Conditional Compilation
-    {regex: /^\s*(?:\!(if(?:n?def)?|ifmacron?def|macro))\b/, token: "keyword", indent: true},
+    {regex: /^\s*(?:\!(if (?:n?def)?|ifmacron?def|macro))\b/, token: "keyword", indent: true},
     {regex: /^\s*(?:\!(else|endif|macroend))\b/, token: "keyword", dedent: true},
 
     // Runtime Commands

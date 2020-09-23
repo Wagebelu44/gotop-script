@@ -38,7 +38,7 @@ CodeMirror.defineMode("yaml", function() {
         state.pair = false;
         state.pairStart = false;
         /* document start */
-        if(stream.match(/---/)) { return "def"; }
+        if (stream.match(/---/)) { return "def"; }
         /* document end */
         if (stream.match(/\.\.\./)) { return "def"; }
         /* array list item */

@@ -40,7 +40,7 @@ CodeMirror.defineMode("oz", function (conf) {
     }
 
     // Brackets
-    if(stream.match(/[{}]/)) {
+    if (stream.match(/[{}]/)) {
       return "bracket";
     }
 
@@ -55,7 +55,7 @@ CodeMirror.defineMode("oz", function (conf) {
     }
 
     // Atoms
-    if(stream.match(atoms)) {
+    if (stream.match(atoms)) {
       return 'atom';
     }
 
@@ -68,11 +68,11 @@ CodeMirror.defineMode("oz", function (conf) {
         state.doInCurrentLine = false;
 
       // Special matching for signatures
-      if(matched[0] == "proc" || matched[0] == "fun")
+      if (matched[0] == "proc" || matched[0] == "fun")
         state.tokenize = tokenFunProc;
-      else if(matched[0] == "class")
+      else if (matched[0] == "class")
         state.tokenize = tokenClass;
-      else if(matched[0] == "meth")
+      else if (matched[0] == "meth")
         state.tokenize = tokenMeth;
 
       return 'keyword';
@@ -101,7 +101,7 @@ CodeMirror.defineMode("oz", function (conf) {
     // Numbers
     if (/[~\d]/.test(ch)) {
       if (ch == "~") {
-        if(! /^[0-9]/.test(stream.peek()))
+        if (! /^[0-9]/.test(stream.peek()))
           return null;
         else if (( stream.next() == "0" && stream.match(/^[xX][0-9a-fA-F]+/)) || stream.match(/^[0-9]*(\.[0-9]+)?([eE][~+]?[0-9]+)?/))
           return "number";
@@ -126,7 +126,7 @@ CodeMirror.defineMode("oz", function (conf) {
     }
 
     // Single operators
-    if(singleOperators.test(ch)) {
+    if (singleOperators.test(ch)) {
       return "operator";
     }
 
@@ -159,11 +159,11 @@ CodeMirror.defineMode("oz", function (conf) {
       return null;
     }
 
-    if(!state.hasPassedFirstStage && stream.eat("{")) {
+    if (!state.hasPassedFirstStage && stream.eat("{")) {
       state.hasPassedFirstStage = true;
       return "bracket";
     }
-    else if(state.hasPassedFirstStage) {
+    else if (state.hasPassedFirstStage) {
       stream.match(/([A-Z][A-Za-z0-9_]*)|(`.+`)|\$/);
       state.hasPassedFirstStage = false;
       state.tokenize = tokenBase;

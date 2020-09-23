@@ -38,19 +38,19 @@
       },
       token: function(stream, state) {
         if (stream.eatSpace()) return null
-        if(stream.sol()){
+        if (stream.sol()){
           state.commentLine = false;
         }
         var ch = stream.next().toString();
-        if(reserve.indexOf(ch) !== -1){
-          if(state.commentLine === true){
-            if(stream.eol()){
+        if (reserve.indexOf(ch) !== -1){
+          if (state.commentLine === true){
+            if (stream.eol()){
               state.commentLine = false;
             }
             return "comment";
           }
-          if(ch === "]" || ch === "["){
-            if(ch === "["){
+          if (ch === "]" || ch === "["){
+            if (ch === "["){
               state.left++;
             }
             else{
@@ -58,24 +58,24 @@
             }
             return "bracket";
           }
-          else if(ch === "+" || ch === "-"){
+          else if (ch === "+" || ch === "-"){
             return "keyword";
           }
-          else if(ch === "<" || ch === ">"){
+          else if (ch === "<" || ch === ">"){
             return "atom";
           }
-          else if(ch === "." || ch === ","){
+          else if (ch === "." || ch === ","){
             return "def";
           }
         }
         else{
           state.commentLine = true;
-          if(stream.eol()){
+          if (stream.eol()){
             state.commentLine = false;
           }
           return "comment";
         }
-        if(stream.eol()){
+        if (stream.eol()){
           state.commentLine = false;
         }
       }

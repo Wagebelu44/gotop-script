@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\MediaController;
 use App\Models\BlogSlider;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Image;
 use Validator;
@@ -19,7 +19,7 @@ class BlogSliderController extends Controller
             $data = BlogSlider::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
             $page = 'index';
             return view('panel.blog.slider-index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -30,7 +30,7 @@ class BlogSliderController extends Controller
             $data = null;
             $page = 'create';
             return view('panel.blog.slider-index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -60,7 +60,7 @@ class BlogSliderController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'blog Slider save successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -74,7 +74,7 @@ class BlogSliderController extends Controller
             }
             $page = 'edit';
             return view('panel.blog.slider-index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -108,7 +108,7 @@ class BlogSliderController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'blog Slider update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -126,7 +126,7 @@ class BlogSliderController extends Controller
             }
             $data->delete();
             return redirect(route('admin.blog-slider.index'))->with('success', 'blog slider delete successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

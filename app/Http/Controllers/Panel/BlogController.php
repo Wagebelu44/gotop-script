@@ -8,37 +8,37 @@ use App\Models\Blog;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class BlogController extends Controller
 {
 
     public function index()
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = Blog::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
             $page = 'index';
             return view('panel.blog.index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function create()
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = null;
             $page = 'create';
             $categories = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
             return view('panel.blog.index', compact('data', 'page', 'categories'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function store(Request $request)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $this->validate($request, [
                 'image'         => 'required|image',
                 'title'         => 'required',
@@ -66,14 +66,14 @@ class BlogController extends Controller
                 'created_by'        => Auth::user()->id,
             ]);
             return redirect()->back()->with('success', 'blog Post save successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function edit($id)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = Blog::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
                 return redirect()->route(' admin.blog.index');
@@ -81,14 +81,14 @@ class BlogController extends Controller
             $categories = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
             $page = 'edit';
             return view('panel.blog.index', compact('data', 'page', 'categories'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request, $id)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $this->validate($request, [
                 'image'        => 'sometimes|image',
                 'title'        => 'required',
@@ -121,14 +121,14 @@ class BlogController extends Controller
                 'created_by'        => Auth::user()->id,
             ]);
             return redirect()->back()->with('success', 'blog Post update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function destroy($id)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = Blog::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
                 return redirect()->route('admin.blog.index');
@@ -138,7 +138,7 @@ class BlogController extends Controller
             }
             $data->delete();
             return redirect(route('admin.blog.index'))->with('success', 'blog delete successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

@@ -162,7 +162,7 @@
           embed = false;
           delim = stream.next();
         } else {
-          if(delim = stream.match(/^%([^\w\s=])/)) {
+          if (delim = stream.match(/^%([^\w\s=])/)) {
             delim = delim[1];
           } else if (stream.match(/^%[a-zA-Z0-9_\u009F-\uFFFF]*/)) {
             // Macro variables

@@ -28,22 +28,22 @@
                             <tr>
                                 <td class="p-l">{{ $key+1 }}</td>
                                 <td>
-                                    @if(isset($bonuse->bonus_amount))
+                                    @if (isset($bonuse->bonus_amount))
                                         {{ $bonuse->bonus_amount }}%
                                     @endif
                                 </td>
                                 <td>
-                                    @if(isset($bonuse->globalPaymentMethod->name))
+                                    @if (isset($bonuse->globalPaymentMethod->name))
                                         {{ $bonuse->globalPaymentMethod->name }}
                                     @endif
                                 </td>
                                 <td>
-                                    @if( $bonuse->deposit_from )
+                                    @if ( $bonuse->deposit_from )
                                         {{ $bonuse->deposit_from }}
                                     @endif
                                 </td>
                                 <td>
-                                    @if( $bonuse->status === 'Active' )
+                                    @if ( $bonuse->status === 'Active' )
                                         Enabled
                                     @else
                                         Disabled

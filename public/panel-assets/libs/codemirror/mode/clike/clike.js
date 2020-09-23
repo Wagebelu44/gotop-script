@@ -637,7 +637,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
         if (!tripleString && !escaped && stream.match('"') ) {end = true; break;}
         if (tripleString && stream.match('"""')) {end = true; break;}
         next = stream.next();
-        if(!escaped && next == "$" && stream.match('{'))
+        if (!escaped && next == "$" && stream.match('{'))
           stream.skipTo("}");
         escaped = !escaped && next == "\\" && !tripleString;
       }

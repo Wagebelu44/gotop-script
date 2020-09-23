@@ -7,25 +7,25 @@ use App\Models\G\GlobalPaymentMethod;
 use App\Models\SettingBonuse;
 use Illuminate\Http\Request;
 use Validator;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class BonusesController extends Controller
 {
 
     public function index()
     {
-        if(Auth::user()->can('bonus setting')) {
+        if (Auth::user()->can('bonus setting')) {
             $bonuses = SettingBonuse::with('globalPaymentMethod')->where('panel_id', Auth::user()->panel_id)->get();
             $methodsName = GlobalPaymentMethod::get();
             return view('panel.settings.bonuses', compact('bonuses', 'methodsName'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function store(Request $request)
     {
-        if(Auth::user()->can('bonus setting')) {
+        if (Auth::user()->can('bonus setting')) {
             $this->validate($request, [
                 'bonus_amount'              => 'required',
                 'global_payment_method_id'  => 'required|integer',
@@ -43,27 +43,27 @@ class BonusesController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Bonuses has been successfully created');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function edit($id)
     {
-        if(Auth::user()->can('bonus setting')) {
+        if (Auth::user()->can('bonus setting')) {
             $editBonus = SettingBonuse::where('panel_id', Auth::user()->panel_id)->where('id',$id)->first();
             return response()->json([
                 'status' => 'success',
                 'data' => $editBonus,
             ], 200);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request, $id)
     {
-        if(Auth::user()->can('bonus setting')) {
+        if (Auth::user()->can('bonus setting')) {
             $this->validate($request, [
                 'bonus_amount'              => 'required',
                 'global_payment_method_id'  => 'required|integer',
@@ -81,7 +81,7 @@ class BonusesController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Bonuses has been successfully updated');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

@@ -220,15 +220,15 @@ In order to deposit via <b>Skrill</b>, please do the following:<br><br>
                               <td>
                                  @if ($transaction->reseller_payment_methods_setting_id == 1)  
                                     Paypal
-                                 @elseif($transaction->reseller_payment_methods_setting_id == 2)
+                                 @elseif ($transaction->reseller_payment_methods_setting_id == 2)
                                     PayOP
-                                 @elseif($transaction->reseller_payment_methods_setting_id == 3)
+                                 @elseif ($transaction->reseller_payment_methods_setting_id == 3)
                                     Coinbase
-                                 @elseif($transaction->reseller_payment_methods_setting_id == 4)
+                                 @elseif ($transaction->reseller_payment_methods_setting_id == 4)
                                     Bank/Other
-                                 @elseif($transaction->reseller_payment_methods_setting_id == 5)
+                                 @elseif ($transaction->reseller_payment_methods_setting_id == 5)
                                     Skrill
-                                 @elseif($transaction->reseller_payment_methods_setting_id == 6)
+                                 @elseif ($transaction->reseller_payment_methods_setting_id == 6)
                                     Payoneer
                                  @else Unknown
                                  @endif

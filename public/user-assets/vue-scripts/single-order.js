@@ -57,11 +57,11 @@ const NewOrder = new Vue({
     watch:{
         category_id(newval, oldval)
         {
-            if(newval !== null)
+            if (newval !== null)
             {
                 let services = this.categoryjs.find(item => item.id == newval);
 
-                if(services !== null)
+                if (services !== null)
                 {
                    let computedservices = services.services.map(item=>{
 
@@ -235,7 +235,7 @@ const NewOrder = new Vue({
         let category_id_selected = document.getElementById('category_id').value;
         /* let services = this.categoryjs.find(item => item.id == category_id_selected);
         $submitted_order = [];
-        if(services !== null)
+        if (services !== null)
         {
            this.services = services.services.map(item=>{
                  if (item.service_type == 'Package') {

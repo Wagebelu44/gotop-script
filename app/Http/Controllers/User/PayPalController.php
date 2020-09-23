@@ -135,10 +135,10 @@ class PayPalController extends Controller
     public function store_Log($data)
     {
         $dir = public_path("payment_log/");
-        if(!file_exists( $dir ) && !is_dir( $dir ))
+        if (!file_exists( $dir ) && !is_dir( $dir ))
         {
             $md = mkdir($dir, 0777, true);
-            if($md)
+            if ($md)
             {
                 $this->putResultData($dir, $data);
             }

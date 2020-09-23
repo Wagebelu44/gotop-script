@@ -129,7 +129,7 @@ const paymentModule = new Vue({
 
                     }, 2000);
                 }
-                else if(res.status === 401)
+                else if (res.status === 401)
                 {
                     this.loader.payment = false;
                     this.errors.services = res.data;

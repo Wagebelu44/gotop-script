@@ -119,6 +119,7 @@ class PermissionSeeder extends Seeder
                 'notification setting',
                 'bonus setting',
                 'faq setting',
+                'account status setting'
             ]
         ];
 

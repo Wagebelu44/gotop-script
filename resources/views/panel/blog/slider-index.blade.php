@@ -9,7 +9,7 @@
             <!--navbar-->
             @include('panel.blog.nav')
             <!--navbar-->
-            @if($page == 'index')
+            @if ($page == 'index')
             <div class="col-md-8">
                 <div class="card panel-default">
                     <div class="card-body">
@@ -26,7 +26,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($data))
+                            @if (!empty($data))
                                 @foreach($data as $key => $slider)
                                 <tr>
                                     <td>{{ $key+1 }}</td>
@@ -50,13 +50,13 @@
                     </div>
                 </div>
             </div>
-            @elseif($page == 'create' || $page == 'edit')
+            @elseif ($page == 'create' || $page == 'edit')
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
                         <form method="post" action="{{ $page == 'edit' ? route($resource.'update', $data->id):route($resource.'store') }}" enctype="multipart/form-data">
                             @csrf
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 @method('PUT')
                             @endif
                             <div class="row">
@@ -74,7 +74,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <img style="width: 200px" id="preview" class="img-thumbnail" src="">
-                                    @if(isset($data->image))
+                                    @if (isset($data->image))
                                         <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog-slider/'.$data->image) }}">
                                     @endif
                                 </div>
@@ -112,11 +112,11 @@
                             <hr>
                             <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                             <a class="btn btn-default" href="{{ route($resource.'index') }}">Cancel</a>
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 <a href="javascript: void(0)" onclick="document.getElementById('deleteSlider').submit();" class="btn btn-default waves-effect pull-right" ><i>Delete</i></a>
                             @endif
                         </form>
-                        @if($page == 'edit')
+                        @if ($page == 'edit')
                             <form id="deleteSlider" action="{{ route($resource.'destroy', $data->id)}}" method="post">
                                 @csrf
                                 @method('DELETE')

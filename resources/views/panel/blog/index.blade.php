@@ -6,7 +6,7 @@
             <!--navbar-->
             @include('panel.blog.nav')
             <!--navbar-->
-            @if($page == 'index')
+            @if ($page == 'index')
             <div class="col-md-8">
                 <div class="card panel-default">
                     <div class="card-body">
@@ -23,7 +23,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($data))
+                            @if (!empty($data))
                                 @foreach($data as $key => $blog)
                                     <tr>
                                         <td>{{ $key+1 }}</td>
@@ -47,13 +47,13 @@
                     </div>
                 </div>
             </div>
-            @elseif($page == 'create' || $page == 'edit')
+            @elseif ($page == 'create' || $page == 'edit')
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <form name="blogForm" action="{{ $page == 'edit' ? route('admin.blog.update', $data->id):route('admin.blog.store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
-                                @if($page == 'edit')
+                                @if ($page == 'edit')
                                     @method('PUT')
                                 @endif
                                 <div class="relative">
@@ -73,7 +73,7 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <img style="width: 100px" id="preview" src="">
-                                                @if(isset($data->image))
+                                                @if (isset($data->image))
                                                     <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog/'.$data->image) }}">
                                                 @endif
                                             </div>
@@ -176,12 +176,12 @@
                                 <hr>
                                 <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                                 <a class="btn btn-default" href="{{ route('admin.blog.index') }}">Cancel</a>
-                                @if($page == 'edit')
+                                @if ($page == 'edit')
                                     <a href="javascript: void(0)" onclick="document.getElementById('deleteBlog').submit();" class="btn btn-default waves-effect pull-right" ><i>Delete</i></a>
                                 @endif
                             </form>
 
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 <form id="deleteBlog" action="{{ route('admin.blog.destroy', $data->id)}}" method="post">
                                     @csrf
                                     @method('DELETE')

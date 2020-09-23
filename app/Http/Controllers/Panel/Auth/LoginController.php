@@ -54,7 +54,7 @@ class LoginController extends Controller
         //attempt to log the admin in
         if (Auth::guard('panelAdmin')->attempt(['email' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember)) {
             return redirect()->intended(route('admin.panel.dashboard'));
-        }else{
+        } else {
             return redirect()->back()->with('Input', $request->only('email', 'remember'))->with('error', 'Admin Login invalid !!');
         }
     }
