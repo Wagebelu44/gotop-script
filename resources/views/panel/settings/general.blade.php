@@ -160,18 +160,84 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label" for="horizontal_menu">Horizontal Menu</label>
-                            <div class="setting-switch setting-switch-table">
-                                <label class="switch">
-                                    <input type="checkbox" class="toggle-page-visibility" name="horizontal_menu" id="horizontal_menu" {{ isset($general) && $general->horizontal_menu == 'Yes' ? 'checked' : '' }}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             <label class="control-label" for="drip_feed_interval">Minimum drip-feed interval </label>
                             <input type="text" class="form-control" value="{{ old('drip_feed_interval', isset($general) && $general->drip_feed_interval ? $general->drip_feed_interval:'') }}" name="drip_feed_interval">
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="horizontal_menu">Horizontal Menu</label>
+                                    <div class="setting-switch setting-switch-table">
+                                        <label class="switch">
+                                            <input type="checkbox" class="toggle-page-visibility" name="horizontal_menu" id="horizontal_menu" {{ isset($general) && $general->horizontal_menu == 'Yes' ? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="total_order">Total order</label>
+                                    <div class="setting-switch setting-switch-table">
+                                        <label class="switch">
+                                            <input type="checkbox" class="toggle-page-visibility" name="total_order" id="total_order" {{ isset($general) && $general->total_order == 'Yes' ? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="total_spent">Total spent</label>
+                                    <div class="setting-switch setting-switch-table">
+                                        <label class="switch">
+                                            <input type="checkbox" class="toggle-page-visibility" name="total_spent" id="total_spent" {{ isset($general) && $general->total_spent == 'Yes' ? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="account_status">Account status</label>
+                                    <div class="setting-switch setting-switch-table">
+                                        <label class="switch">
+                                            <input type="checkbox" class="toggle-page-visibility" name="account_status" id="account_status" {{ isset($general) && $general->account_status == 'Yes' ? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="point">Point</label>
+                                    <div class="setting-switch setting-switch-table">
+                                        <label class="switch">
+                                            <input type="checkbox" class="toggle-page-visibility" name="point" id="point" {{ isset($general) && $general->point == 'Yes' ? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="redeem">Redeem</label>
+                                    <div class="setting-switch setting-switch-table">
+                                        <label class="switch">
+                                            <input type="checkbox" class="toggle-page-visibility" name="redeem" id="redeem" {{ isset($general) && $general->redeem == 'Yes' ? 'checked' : '' }}>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <hr>
