@@ -27,7 +27,7 @@
             <div class="order-stat clearfix ordercountbg daymode ">
                 <span class="order-icon"><i class="fas fa-rocket"></i></span>
                 <div class="order-info text-dark">
-                    <span class="counter">Loading</span> <label>Account Points <i data-toggle="modal" data-target="#accountPointStatus" class="fas fa-question-circle"></i></label>
+                    <span class="counter">{{ site['statusPosition']['point'] }}</span> <label>Account Points <i data-toggle="modal" data-target="#accountPointStatus" class="fas fa-question-circle"></i></label>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="order-stat clearfix ordercountbg daymode ">
                 <span class="order-icon"><i class="fas fa-child"></i></span>
                 <div class="order-info text-dark">
-                    <span class="counter">Junior</span> <label>Account Status <i data-toggle="modal" data-target="#accountStatus" class="fas fa-question-circle"></i></label>
+                    <span class="counter">{{ site['statusPosition']['name'] }}</span> <label>Account Status <i data-toggle="modal" data-target="#accountStatus" class="fas fa-question-circle"></i></label>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-6">
+        <div class="col-sm-6">
             <div class="card">
                 <div class="card-header custom-card-header" id="card-header-order">
                     <span  class="tab-bar order_active" data-id="new-order"> New Order </span>
@@ -233,7 +233,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-sm-6">
             <div class="col-md">
                 <div class="card bg-white">
                     <div class="card-header custom-card-header" id="card-header-id">

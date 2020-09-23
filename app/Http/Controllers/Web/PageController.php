@@ -263,6 +263,9 @@ class PageController extends Controller
             $site['total_spent']  = numberFormat($totalSpent, 2);
             $accountStatusData = AccountStatus::where('panel_id', $panelId)->orderBy('id', 'desc')->get()->toArray();
             $accountStatuses = [];
+            $statusPosition = [
+                'spent_amount' => 0,
+            ];
             foreach ($accountStatusData as $accStatus){
                 $accountStatuses [] = [
                     'name' => $accStatus['name'],
@@ -271,10 +274,18 @@ class PageController extends Controller
                     'statusKeys' => json_decode($accStatus['status_keys'], true),
                     'pointKeys' => json_decode($accStatus['point_keys'], true),
                 ];
+                if (($accStatus['minimum_spent_amount'] <= $totalSpent) && ($accStatus['minimum_spent_amount'] > $statusPosition['spent_amount'])) {
+                    $statusPosition = [
+                        'name' => $accStatus['name'],
+                        'point' => $accStatus['point'],
+                        'spent_amount' => $accStatus['minimum_spent_amount'],
+                    ];
+                }
             }
             $site['accountStatuses'] = $accountStatuses;
             $site['accountStatusKeys'] = accountStatusKeys();
             $site['accountPointKeys'] = accountPointKeys();
+            $site['statusPosition']  = $statusPosition;
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;

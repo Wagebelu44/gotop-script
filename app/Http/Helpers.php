@@ -17,7 +17,7 @@ if ( ! function_exists('defaultThemePageContent')) {
 }
 
 if ( ! function_exists('getTimezone')) {
-    function getTimezone() 
+    function getTimezone()
     {
         $arr = [
             '-43200' => '(UTC -12:00) Baker/Howland Island',
@@ -66,7 +66,7 @@ if ( ! function_exists('getTimezone')) {
 }
 
 if ( ! function_exists('getCurrencyFormat')) {
-    function getCurrencyFormat() 
+    function getCurrencyFormat()
     {
         $arr = [
             '0' => '1000.00',
@@ -79,7 +79,7 @@ if ( ! function_exists('getCurrencyFormat')) {
 }
 
 if ( ! function_exists('getRateFormat')) {
-    function getRateFormat() 
+    function getRateFormat()
     {
         $arr = [
             '0' => 'Ones (1)',
@@ -156,3 +156,18 @@ if ( ! function_exists('accountPointKeys')) {
         return $data;
     }
 }
+
+if ( ! function_exists('numberFormat')) {
+    function numberFormat($amount=0, $coma=null)
+    {
+        if ($coma) {
+            if ($amount==0)
+                return '-';
+            else
+                return number_format($amount,2);
+        } else {
+            return number_format($amount,2,'.','');
+        }
+    }
+}
+
