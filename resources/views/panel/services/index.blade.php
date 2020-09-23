@@ -54,6 +54,22 @@
         color: rgba(0, 0, 0, 0.31);
     }
 
+    .overlay-loader {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.04);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 999999999;
+    }
+    .overlay-loader .loader-holder{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     @media (min-width: 576px)
     {
         #import .__modal_dialog_custom {
@@ -75,7 +91,7 @@
                             <input type="hidden" name="status">
                         </form>
                         <div class="__table-container" id="serviceApp">
-                            <div class="overlay-loader">
+                            <div class="overlay-loader" v-if="loader">
                                 <div class="loader-holder">
                                     <img src="{{asset('loader.gif')}}" alt="">
                                 </div>
@@ -95,12 +111,6 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
-
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -138,12 +148,6 @@
                                            </button>
                                        </div>
                                        <div class="modal-body">
-                                           <div class="overlay-loader" v-if="loader.service">
-                                               <div class="loader-holder">
-                                                   <img src="{{asset('loader.gif')}}" alt="">
-                                               </div>
-                                           </div>
-               
                                            <div class="row">
                                                <div class="col-md-12">
                                                    <div class="form-group">
@@ -396,11 +400,6 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -680,11 +679,6 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader" v-if="loader.description">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
                                                 <input type="hidden" name="id" v-model="service_edit_id"/>
                                                 <div class="form-group">
                                                     <label for="description"> <strong>Description</strong> </label>
@@ -721,11 +715,6 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
                                                 <input type="hidden" name="id" v-model="service_edit_id">
                                                 <div class="form-group">
                                                     <select name="bulk_category_id" id="bulk_category_id" class="form-control custom-form-control">
@@ -755,11 +744,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="form-group">
