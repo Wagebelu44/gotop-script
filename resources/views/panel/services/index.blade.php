@@ -207,6 +207,7 @@
                                                                            class="style-chooser"
                                                                            :reduce="domain => domain.id" label="domain"></v-select>
                                                                <input type="hidden" name="provider_id" v-model="services.form_fields.provider_id">
+                                                               <span class="text-danger" v-if="errorFilter('provider_id')!==''"> @{{ errorFilter('provider_id') }} </span>
                                                            </div>
                                                            <span style="color: red" v-if="service_mode == 'Auto' && services.validations.provider_service_not_found !==''">@{{services.validations.provider_service_not_found}}</span>
                                                            <div class="form-group" v-if="services.visibility.service_id_by_provider">
@@ -442,6 +443,7 @@
                                                                                 class="style-chooser"
                                                                                 :reduce="domain => domain.id" label="domain"></v-select>
                                                                     <input type="hidden" name="provider_id" v-model="services.form_fields.provider_id">
+                                                                    <span class="text-danger" v-if="errorFilter('provider_id')!==''"> @{{ errorFilter('provider_id') }} </span>
                                                                 </div>
                                                                 
                                                                 <span style="color: red" v-if="service_mode == 'Auto' && services.validations.provider_service_not_found !==''">@{{services.validations.provider_service_not_found}}</span>
@@ -460,7 +462,7 @@
                                                                     <label for=""><strong>Service Type</strong></label>
                                                                     <select name="service_type" id="service_type"
                                                                             class="form-control" v-model="service_type_selected">
-                                                                        <option v-for="st in service_type">@{{ st }}</option>
+                                                                        <option v-for="(st, ind) in service_type">@{{ ind }}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="form-group" v-if="services.visibility.drip_feed">
