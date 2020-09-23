@@ -115,7 +115,7 @@ class ServiceController extends Controller
             }
             else
             {
-                $data = $request->except('_token', 'score', 'users', 'provider_selected_service_data');
+                $data = $request->except('_token', 'score', 'users', 'provider_selected_service_data', 'name');
             }
             $data['panel_id'] = auth()->user()->panel_id;
             $data['provider_sync_status'] = $request->provider_sync_status == 'on'? true: false;
