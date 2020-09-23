@@ -117,21 +117,10 @@
                         </div>
 
 
-                        <div class="row mt-4">
-                            <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
                                 <data-pagination v-if="pagination.last_page > 1" :pagination="pagination" :offset="5" @paginate="getUsers()"></data-pagination>
                             </div>
-                            {{-- <div class="col-md-6 text-right">
-                                <span>Record per page</span>
-                                <form action="" id="show_per_page" method="get" class="d-inline">
-                                    <select name="page_size" id="page_size">
-                                        <option value="100">100</option>
-                                        <option value="200">200</option>
-                                        <option value="500">500</option>
-                                        <option value="1000">1000</option>
-                                    </select>
-                                </form>
-                            </div> --}}
                         </div>
 
 

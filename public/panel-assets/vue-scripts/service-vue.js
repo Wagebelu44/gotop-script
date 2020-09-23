@@ -247,12 +247,30 @@ const App = new Vue({
             this.services.form_fields.subscription_type = null;
         }
         this.services.visibility.auto_per_rate = this.auto_per_rate_toggler;
+
+        // filter reload
+        if (this.getParameterByName('service_type')) {
+            this.service_filter.service_type = this.getParameterByName('service_type');
+        }
+
+        if (this.getParameterByName('status')) {
+            this.service_filter.status = this.getParameterByName('status');
+        }
     },
     mounted () {
         this.getCategoryServices();
         this.loadProviders();
     },
     methods: {
+        getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        },
         loadProviders()
         {
             fetch(base_url+'/admin/service_provider')

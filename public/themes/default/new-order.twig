@@ -1,259 +1,246 @@
 <div class="container-fluid">
-   <div class="row">
-      <div class="col-md-4 col-sm-12 col-xs-12">
-         <div class="card order-dashboard">
-            <div class="card-body">
-               <div class="table-cell">
-                  <div class="icon rounded-circle">
-                     <i class="fas fa-shipping-fast"></i>
-                  </div>
-               </div>
-               <div class="table-cell">
-                  <div class="content-box">
-                     <div class="title">Total Orders on TSMG</div>
-                     <div class="numbers"> 1245.000</div>
-                     <div class="des-sec">5+ years experience providing SMM services! 🥇</div>
-                  </div>
-               </div>
+    <div class="row">
+        {% if site['setting'].total_order == 'Yes' %}
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="order-stat clearfix ordercountbg daymode ">
+                <span class="order-icon"><i class="fab fa-first-order"></i></span>
+                <div class="order-info text-dark">
+                    <span class="counter">{{ site['total_order'] }}</span> <label>Total Order</label>
+                </div>
             </div>
-            <a href="#" class="btn btn-overlay-test bg-green"> <span> View your Orders!️️ </span></a>
-         </div>
-      </div>
-      <div class="col-md-4 col-sm-12 col-xs-12">
-         <div class="card order-dashboard">
-            <div class="card-body">
-               <div class="table-cell">
-                  <div class="icon rounded-circle">
-                     <i class="fas fa-coins"></i>
-                  </div>
-               </div>
-               <div class="table-cell">
-                  <div class="content-box">
-                     <div class="title">Current Balance</div>
-                     <div class="numbers">$15487</div>
-                     <div class="des-sec">Spend your balance and enjoy our services! 🤗</div>
-                  </div>
-               </div>
+        </div>
+        {% endif %}
+
+        {% if site['setting'].total_spent == 'Yes' %}
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="order-stat clearfix ordercountbg daymode ">
+                <span class="order-icon"><i class="fas fa-dollar-sign"></i></span>
+                <div class="order-info text-dark">
+                    <span class="counter">{{ site['total_spent'] }}</span> <label>Total spent</label>
+                </div>
             </div>
-            <a href="#" class="btn btn-overlay-test bg-green"> <span>Deposit now!</span> </a>
-         </div>
-      </div>
-      <div class="col-md-4 col-sm-12 col-xs-12">
-         <div class="card order-dashboard">
-            <div class="card-body">
-               <div class="table-cell">
-                  <div class="icon rounded-circle" >
-                     <i class="fa fa-child"></i>
-                  </div>
-               </div>
-               <div class="table-cell">
-                  <div class="content-box" style="cursor: pointer;" onclick="openAccountStatus();" >
-                     <div class="title" >view your Account Status</div>
-                     <div class="numbers">145</div>
-                     <div class="des-sec">Your total spending:  $45784 💰</div>
-                  </div>
-               </div>
+        </div>
+        {% endif %}
+
+        {% if site['setting'].point == 'Yes' %}
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="order-stat clearfix ordercountbg daymode ">
+                <span class="order-icon"><i class="fas fa-rocket"></i></span>
+                <div class="order-info text-dark">
+                    <span class="counter">{{ site['statusPosition']['point'] }}</span> <label>Account Points <i data-toggle="modal" data-target="#accountPointStatus" class="fas fa-question-circle"></i></label>
+                </div>
             </div>
-            <a href="#" data-toggle="modal" data-target="#exampleModal"class="btn btn-overlay-test bg-green"> <span>View your Account Status!</span></a>
-         </div>
-      </div>
-      <div class="container custom-space-height mesage-space-height">
-         <div class="row">
-            <div class="col-md-12" style="min-height: 30px; width: 100%">
-               {% if site['error']  %}
-               <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                  <strong>Error!</strong> {{site['error']}}.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                  </button>
-               </div>
-               {% endif %}
-               {% if site['success']  %}
-               <div class="alert alert-success alert-dismissible fade show" role="alert">
-                  <strong>Success!</strong> {{site['success']}}.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                  </button>
-               </div>
-               {% endif %}
-               {% if site['validation_error'] > 0 %}
-               {% for error in site['errors'] %}
-               <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                  <strong>Error!</strong> {{error}}.
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                  </button>
-               </div>
-               {% endfor %}
-               {% endif %}
+        </div>
+        {% endif %}
+
+        {% if site['setting'].account_status == 'Yes' %}
+        <div class="col-md-3 col-sm-12 col-xs-12">
+            <div class="order-stat clearfix ordercountbg daymode ">
+                <span class="order-icon"><i class="fas fa-child"></i></span>
+                <div class="order-info text-dark">
+                    <span class="counter">{{ site['statusPosition']['name'] }}</span> <label>Account Status <i data-toggle="modal" data-target="#accountStatus" class="fas fa-question-circle"></i></label>
+                </div>
             </div>
-         </div>
-      </div>
-   </div>
-   <div class="row">
-      <div class="col-6">
-         <div class="card">
-            <div class="card-header custom-card-header" id="card-header-order">
-               <span  class="tab-bar order_active" data-id="new-order"> New Order </span>
-               <span  class="tab-bar" data-id="mass-order"> Mass Order</span>
+        </div>
+        {% endif %}
+
+        <div class="container custom-space-height mesage-space-height">
+            <div class="row">
+                <div class="col-md-12" style="min-height: 30px; width: 100%">
+                    {% if site['error']  %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> {{site['error']}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                    {% if site['success']  %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Success!</strong> {{site['success']}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                    {% if site['validation_error'] > 0 %}
+                        {% for error in site['errors'] %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Error!</strong> {{error}}.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </div>
-            <div class="card-body">
-               <div id='new_order'>
-                  <div id="vueHolder">
-                     <form action="{{ site['single_order_url'] }}" method="post"  id="order-form-gotop" class="has-validation-callback">
-                        {{ site['csrf_field'] | raw }}
-                        <div class="form-group">
-                           <label for="orderform-category">Category:</label>
-                           <select class="form-control" id="category_id" name="category_id" @change="categoryChanges">
-                              <option value="" >Select a Category</option>
-                              <option :value="c.id" v-for="(c,i) in categoryjs">${c.name}</option>
-                           </select>
-                        </div>
-                        <div class="form-group">
-                           <label for="orderform-service">Service: </label>
-                           <select class="form-control" id="service_id" name="service_id" v-model="service_id">
-                              <div v-if="services.length !== 0">
-                                 <option v-for="serv in services" :value="serv.id">${serv.display_name}</option>
-                              </div>
-                           </select>
-                           <input type="hidden" name="service_mode" v-model="service_mode" >
-                        </div>
-                        <div class="description hidden fields" id="service_description">
-                           <div class="service-description-split"></div>
-                        </div>
-                        <div class="description">
-                           <div class="form-group">
-                              <label for="description" class="control-label">Details: 📝 (Read before order)</label>
-                              <div v-html="serviceDesc" readonly style="height: 250px; overflow-y: scroll"  class="form-control"></div>
-                           </div>
-                        </div>
-                        <div class="form-group  fields" id="order_link">
-                           <label class="control-label" for="field-orderform-fields-link">Link: 📌 (Must be public) </label>
-                           <input class="form-control" name="link" value="" type="text" id="link">
-                        </div>
-                        <div class="description" v-if="comments_visible">
-                           <div class="form-group">
-                              <label for="comments" class="control-label">Comments: (1 per line)</label>
-                              <textarea  name="text_area_1" @keydown='countPerLine' id="comments" rows="5" style="height: 250px" class="form-control" placeholder="comments"></textarea>
-                           </div>
-                        </div>
-                        <div class="description" v-if="keyword_visible">
-                           <div class="form-group">
-                              <label for="keywords" class="control-label">Keywords: (1 per line)</label>
-                              <textarea  name="text_area_1" @keydown='countPerLine' id="keywords" rows="5" style="height: 250px" class="form-control" placeholder="Key words"></textarea>
-                           </div>
-                        </div>
-                        <div class="description" v-if="perline_username_visible">
-                           <div class="form-group">
-                              <label for="keywords" class="control-label">Username: (1 per line)</label>
-                              <textarea  name="text_area_1" @keydown='countPerLine' id="per_line_username" rows="5" style="height: 250px" class="form-control" placeholder="Username per line"></textarea>
-                           </div>
-                        </div>
-                        <div class="description" v-if="hastags_visible">
-                           <div class="form-group">
-                              <label for="hastags" class="control-label">Hastags: (1 per line)</label>
-                              <textarea  name="text_area_2" id="hastags" rows="5" style="height: 250px" class="form-control" placeholder="Hastags"></textarea>
-                           </div>
-                        </div>
-                        <div class="form-group  fields" v-if="additional_username_visible" >
-                           <label class="control-label" for="field-orderform-fields-link">Username: </label>
-                           <input class="form-control" name="additional_inputs" value="" type="text" id="username">
-                        </div>
-                        <div class="form-group  fields" v-if="additional_email_visible">
-                           <label class="control-label" for="field-orderform-fields-link">Email: </label>
-                           <input class="form-control" name="additional_inputs" value="" type="text" id="email">
-                        </div>
-                        <div class="form-group  fields" v-if="additional_comment_owner_username_visible">
-                           <label class="control-label" for="field-orderform-fields-link">Username of the comment owner </label>
-                           <input class="form-control" name="additional_inputs" value="" type="text" id="owner_username">
-                        </div>
-                        <div class="form-group  fields"  v-if="additional_hashtags_visible">
-                           <label class="control-label" for="field-orderform-fields-link">Hashtag</label>
-                           <input class="form-control" name="additional_inputs" value="" type="text" id="hashtag">
-                        </div>
-                        <div class="form-group  fields" v-if="additional_media_url_visible">
-                           <label class="control-label" for="field-orderform-fields-link">Media URL</label>
-                           <input class="form-control" name="additional_inputs" value="" type="text" id="media_url">
-                        </div>
-                        <div class="form-group  fields" v-if="additional_answer_number_visible" >
-                           <label class="control-label" for="field-orderform-fields-link">Answer Number</label>
-                           <input class="form-control" name="additional_inputs" value="" type="text" id="answer_number">
-                        </div>
-                        <div class="form-group  fields" id="order_quantity" v-if="quantity_visibility">
-                           <label class="control-label" for="field-orderform-fields-quantity">Quantity: 🔢</label>
-                           <input class="form-control" :class="{ 'input-disabled' : inputDisable}" name="quantity" v-model="quantity" type="number">
-                        </div>
-                        <span v-if="!quantity_visibility">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header custom-card-header" id="card-header-order">
+                    <span  class="tab-bar order_active" data-id="new-order"> New Order </span>
+                    <span  class="tab-bar" data-id="mass-order"> Mass Order</span>
+                </div>
+                <div class="card-body">
+                    <div id='new_order'>
+                        <div id="vueHolder">
+                            <form action="{{ site['single_order_url'] }}" method="post"  id="order-form-gotop" class="has-validation-callback">
+                                {{ site['csrf_field'] | raw }}
+                                <div class="form-group">
+                                    <label for="orderform-category">Category:</label>
+                                    <select class="form-control" id="category_id" name="category_id" @change="categoryChanges">
+                                        <option value="" >Select a Category</option>
+                                        <option :value="c.id" v-for="(c,i) in categoryjs">${c.name}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="orderform-service">Service: </label>
+                                    <select class="form-control" id="service_id" name="service_id" v-model="service_id">
+                                        <div v-if="services.length !== 0">
+                                            <option v-for="serv in services" :value="serv.id">${serv.display_name}</option>
+                                        </div>
+                                    </select>
+                                    <input type="hidden" name="service_mode" v-model="service_mode" >
+                                </div>
+                                <div class="description hidden fields" id="service_description">
+                                    <div class="service-description-split"></div>
+                                </div>
+                                <div class="description">
+                                    <div class="form-group">
+                                        <label for="description" class="control-label">Details: 📝 (Read before order)</label>
+                                        <div v-html="serviceDesc" readonly style="height: 250px; overflow-y: scroll"  class="form-control"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group  fields" id="order_link">
+                                    <label class="control-label" for="field-orderform-fields-link">Link: 📌 (Must be public) </label>
+                                    <input class="form-control" name="link" value="" type="text" id="link">
+                                </div>
+                                <div class="description" v-if="comments_visible">
+                                    <div class="form-group">
+                                        <label for="comments" class="control-label">Comments: (1 per line)</label>
+                                        <textarea  name="text_area_1" @keydown='countPerLine' id="comments" rows="5" style="height: 250px" class="form-control" placeholder="comments"></textarea>
+                                    </div>
+                                </div>
+                                <div class="description" v-if="keyword_visible">
+                                    <div class="form-group">
+                                        <label for="keywords" class="control-label">Keywords: (1 per line)</label>
+                                        <textarea  name="text_area_1" @keydown='countPerLine' id="keywords" rows="5" style="height: 250px" class="form-control" placeholder="Key words"></textarea>
+                                    </div>
+                                </div>
+                                <div class="description" v-if="perline_username_visible">
+                                    <div class="form-group">
+                                        <label for="keywords" class="control-label">Username: (1 per line)</label>
+                                        <textarea  name="text_area_1" @keydown='countPerLine' id="per_line_username" rows="5" style="height: 250px" class="form-control" placeholder="Username per line"></textarea>
+                                    </div>
+                                </div>
+                                <div class="description" v-if="hastags_visible">
+                                    <div class="form-group">
+                                        <label for="hastags" class="control-label">Hastags: (1 per line)</label>
+                                        <textarea  name="text_area_2" id="hastags" rows="5" style="height: 250px" class="form-control" placeholder="Hastags"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group  fields" v-if="additional_username_visible" >
+                                    <label class="control-label" for="field-orderform-fields-link">Username: </label>
+                                    <input class="form-control" name="additional_inputs" value="" type="text" id="username">
+                                </div>
+                                <div class="form-group  fields" v-if="additional_email_visible">
+                                    <label class="control-label" for="field-orderform-fields-link">Email: </label>
+                                    <input class="form-control" name="additional_inputs" value="" type="text" id="email">
+                                </div>
+                                <div class="form-group  fields" v-if="additional_comment_owner_username_visible">
+                                    <label class="control-label" for="field-orderform-fields-link">Username of the comment owner </label>
+                                    <input class="form-control" name="additional_inputs" value="" type="text" id="owner_username">
+                                </div>
+                                <div class="form-group  fields"  v-if="additional_hashtags_visible">
+                                    <label class="control-label" for="field-orderform-fields-link">Hashtag</label>
+                                    <input class="form-control" name="additional_inputs" value="" type="text" id="hashtag">
+                                </div>
+                                <div class="form-group  fields" v-if="additional_media_url_visible">
+                                    <label class="control-label" for="field-orderform-fields-link">Media URL</label>
+                                    <input class="form-control" name="additional_inputs" value="" type="text" id="media_url">
+                                </div>
+                                <div class="form-group  fields" v-if="additional_answer_number_visible" >
+                                    <label class="control-label" for="field-orderform-fields-link">Answer Number</label>
+                                    <input class="form-control" name="additional_inputs" value="" type="text" id="answer_number">
+                                </div>
+                                <div class="form-group  fields" id="order_quantity" v-if="quantity_visibility">
+                                    <label class="control-label" for="field-orderform-fields-quantity">Quantity: 🔢</label>
+                                    <input class="form-control" :class="{ 'input-disabled' : inputDisable}" name="quantity" v-model="quantity" type="number">
+                                </div>
+                                <span v-if="!quantity_visibility">
                         <input  name="quantity" v-model="quantity" type="hidden">
                         </span>
-                        <div class="order_quantity_validation" v-if="quantity_validation">
-                           <p class="text-danger">${quantity_validation_msg}</p>
-                        </div>
-                        <div class="form-group" id="drip_feed" v-if="drip_feed_available">
-                           <input type="checkbox" v-model="drip_feed" id="exampleCheck1"  name="drip_feed">
-                           <label class="form-check-label" for="exampleCheck1">Drip-feed</label>
-                        </div>
-                        <div id="drip_field" class="" v-if="drip_feed_content">
-                           <div class="form-group  fields" id="order_runs">
-                              <label class="control-label" for="field-orderform-fields-runs">Runs: </label>
-                              <input class="form-control" name="runs" v-model="runs" type="number">
-                           </div>
-                           <div class="form-group  fields" id="order_interval">
-                              <label class="control-label" for="field-orderform-fields-interval">Interval (minutes): </label>
-                              <input class="form-control" name="interval" v-model="interval"  type="number">
-                           </div>
-                           <div class="form-group  fields" id="order_total_quantity">
-                              <label class="control-label" for="field-orderform-fields-total_quantity">Total quantity: </label>
-                              <input class="form-control" readonly name="total_quantity"  v-model="total_quantity" type="number" >
-                           </div>
-                        </div>
-                        <div class="form-group">
-                           <div class="card card-mini price bg-light">
-                              <div class="card-body">
+                                <div class="order_quantity_validation" v-if="quantity_validation">
+                                    <p class="text-danger">${quantity_validation_msg}</p>
+                                </div>
+                                <div class="form-group" id="drip_feed" v-if="drip_feed_available">
+                                    <input type="checkbox" v-model="drip_feed" id="exampleCheck1"  name="drip_feed">
+                                    <label class="form-check-label" for="exampleCheck1">Drip-feed</label>
+                                </div>
+                                <div id="drip_field" class="" v-if="drip_feed_content">
+                                    <div class="form-group  fields" id="order_runs">
+                                        <label class="control-label" for="field-orderform-fields-runs">Runs: </label>
+                                        <input class="form-control" name="runs" v-model="runs" type="number">
+                                    </div>
+                                    <div class="form-group  fields" id="order_interval">
+                                        <label class="control-label" for="field-orderform-fields-interval">Interval (minutes): </label>
+                                        <input class="form-control" name="interval" v-model="interval"  type="number">
+                                    </div>
+                                    <div class="form-group  fields" id="order_total_quantity">
+                                        <label class="control-label" for="field-orderform-fields-total_quantity">Total quantity: </label>
+                                        <input class="form-control" readonly name="total_quantity"  v-model="total_quantity" type="number" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="card card-mini price bg-light">
+                                        <div class="card-body">
                                  <span class="card-text">
                                  <b>Charge: 💰</b></span>
-                                 <p>$<span id="order_total">${ charge }</span></p>
-                                 <input type="hidden" name="charge" :value="charge">
-                                 <p id="not-enough-funds" style="display:none;color:red">Order amount exceeds available funds</p>
-                              </div>
-                           </div>
-                           <span v-if="current_service_type !== 'Package'">
+                                            <p>$<span id="order_total">${ charge }</span></p>
+                                            <input type="hidden" name="charge" :value="charge">
+                                            <p id="not-enough-funds" style="display:none;color:red">Order amount exceeds available funds</p>
+                                        </div>
+                                    </div>
+                                    <span v-if="current_service_type !== 'Package'">
                            <small class="help-block min-max">Min: <span id="min-q">${min}</span> - Max: <span id="max-q">${max}</span></small>
                            </span>
+                                </div>
+                                <div class="form-group" id="custom-comments-div" style="display: none">
+                                    <label for="custom_comments" class="control-label">Custom Data</label>
+                                    <textarea class="form-control" id="custom_comments" style="height: 150px;" placeholder="1 on each line" name="custom_comments"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-block" id="btn-proceed" type="submit">Submit</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="form-group" id="custom-comments-div" style="display: none">
-                           <label for="custom_comments" class="control-label">Custom Data</label>
-                           <textarea class="form-control" id="custom_comments" style="height: 150px;" placeholder="1 on each line" name="custom_comments"></textarea>
-                        </div>
-                        <div class="form-group">
-                           <button class="btn btn-primary btn-block" id="btn-proceed" type="submit">Submit</button>
-                        </div>
-                     </form>
-                  </div>
-               </div>
-               <div id='mass_order' style="display:none">
-                  <form method="post" action="{{ site['mass_order_url'] }}" id="mass_order" class="has-validation-callback">
-                     {{ site['csrf_field'] | raw }}
-                     <div class="form-group">
-                        <label for="links">One order per line in format</label>
-                        <textarea class="form-control" name="content" rows="15" id="content" placeholder="service_id|quantity|link"></textarea>
-                     </div>
-                     <div class="form-group">
-                        <button class="btn btn-block btn-primary" type="submit">Submit</button>
-                     </div>
-                  </form>
-               </div>
+                    </div>
+                    <div id='mass_order' style="display:none">
+                        <form method="post" action="{{ site['mass_order_url'] }}" id="mass_order" class="has-validation-callback">
+                            {{ site['csrf_field'] | raw }}
+                            <div class="form-group">
+                                <label for="links">One order per line in format</label>
+                                <textarea class="form-control" name="content" rows="15" id="content" placeholder="service_id|quantity|link"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-block btn-primary" type="submit">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-         </div>
-      </div>
-      <div class="col-6">
-         <div class="col-md">
+        </div>
+        <div class="col-sm-6">
+            <div class="col-md">
                 <div class="card bg-white">
                     <div class="card-header custom-card-header" id="card-header-id">
-                        <span class="tab-bar news-tab-active" data-id="latestNews"> 
+                        <span class="tab-bar news-tab-active" data-id="latestNews">
                         Important News
                         </span>
-                        <span class="tab-bar" data-id="genralnews"> 
+                        <span class="tab-bar" data-id="genralnews">
                           Service Updates
                         </span>
                     </div>
@@ -261,11 +248,11 @@
                 <div class="card bg-white latest-news-panel radious-control">
                     <div id="latest-news">
                         <div class="card-body">
-                        <p>
+                            <p>
                             </p><p><i class="green"><b>Join our Premium WhatsApp Group and Earn Money Every Weekend! </b>💰</i></p>
                             To provide further assistance to help you reach your social media marketing goals, we have a WhatsApp group where all our customers can join.
                             <br>
-                            <br>Every user who joins the group is added to a list which makes them eligible to <strong>win $5 on their balance every Sunday at 10pm GMT.</strong> We also share important website updates on the group such as:</b>                           
+                            <br>Every user who joins the group is added to a list which makes them eligible to <strong>win $5 on their balance every Sunday at 10pm GMT.</strong> We also share important website updates on the group such as:</b>
                             <br>
                             <br><i class="fas fa-arrow-alt-circle-right"style="color:#77b243;"></i> <strong>Our Best Performing Services!</strong>
                             <br><i class="fas fa-arrow-alt-circle-right"style="color:#77b243;"></i> <strong>Every Time We Add a New Category or Service!</strong>
@@ -274,7 +261,7 @@
                             <br>Also, all users who are in groups will be notified about everything that is happening on the website.
                             <br>
                             <br>In order to join all you have to do is to <u>click the link below</u>&nbsp;and join our <strong>Premium Group</strong>&nbsp;👇
-						
+
 
                             <p><b></b></p>
                             <p></p>
@@ -1563,6 +1550,100 @@
                     </div>
                 </div>
             </div>
-      </div>
-   </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="accountStatus" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Account Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <section class="pricing">
+                    <div class="container">
+                        <div class="row">
+                            <!-- Free Tier -->
+                            {% if site['accountStatuses'] %}
+                                {% for accountStatus in site['accountStatuses'] %}
+                                <div class="col-lg-4" style="margin-bottom: 15px;">
+                                    <div class="card mb-5 mb-lg-0">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-muted text-uppercase">
+                                                Haven't Spent More than
+                                            </h5>
+                                            <h6 class="card-price">{{ accountStatus['name'] }}<span class="period">${{ accountStatus['minimum_spent_amount'] }}</span></h6>
+                                            <hr>
+                                            <ul class="fa-ul">
+                                                {% for accStatusKey in site['accountStatusKeys'] %}
+                                                    {% if accStatusKey in accountStatus['statusKeys'] %}
+                                                        <li><span class="fa-li"><i class="fas fa-check"></i></span>{{ accStatusKey }}</li>
+                                                    {% else %}
+                                                        <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>{{ accStatusKey }}</li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="accountPointStatus" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="max-width: 90%">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Point</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <section class="pricing">
+                    <div class="container">
+                        <div class="row">
+                            <!-- Free Tier -->
+                            {% if site['accountStatuses'] %}
+                                {% for accountStatus in site['accountStatuses'] %}
+                                    <div class="col-lg-4" style="margin-bottom: 15px;">
+                                        <div class="card mb-5 mb-lg-0">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-muted text-uppercase">
+                                                    Each 100 Points
+                                                </h5>
+                                                <h6 class="card-price">{{ accountStatus['name'] }}<span class="period">${{ accountStatus['point'] }}</span></h6>
+                                                <hr>
+                                                <ul class="fa-ul">
+                                                    {% for accPointKeys in site['accountPointKeys'] %}
+                                                        {% if accPointKeys in accountStatus['pointKeys'] %}
+                                                            <li><span class="fa-li"><i class="fas fa-check"></i></span>{{ accPointKeys }}</li>
+                                                        {% else %}
+                                                            <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>{{ accPointKeys }}</li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
 </div>
