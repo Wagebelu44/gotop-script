@@ -78,6 +78,7 @@ class PageController extends Controller
         $site['logout_url'] = route('logout');
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
+        $site['notifigIcon'] = asset('assets/img/notifig.svg');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
         $site['csrf_token'] = csrf_token();
