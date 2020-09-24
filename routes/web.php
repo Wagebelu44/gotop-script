@@ -105,6 +105,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             #Payments...
             Route::get('payments-lists', 'Panel\PaymentController@getPaymentLists');
             Route::resource('payments', 'Panel\PaymentController');
+            Route::resource('redeem', 'Panel\RedeemController');
 
             #Tickets...
             Route::resource('tickets', 'Panel\TicketController');

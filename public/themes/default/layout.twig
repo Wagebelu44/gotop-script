@@ -107,6 +107,12 @@
                 {% if site['auth'] %}
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0)">
+                            <span class="pricestyle">${{ site['auth'].balance }}</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0)" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             Logout
                         </a>

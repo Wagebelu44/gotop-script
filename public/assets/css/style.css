@@ -352,6 +352,18 @@ img {
     text-transform: uppercase;
 }
 
+.pricestyle{
+    font-weight: bold;
+    width: 100px;
+    border: 2px solid #BDBDBD;
+    padding: 5px;
+    border-radius: 29px;
+    color: #000;
+    margin: -5px 0;
+    float: right;
+    text-align: center;
+}
+
 @media (min-width: 992px) {
     .pricing .card:hover {
         margin-top: -.25rem;

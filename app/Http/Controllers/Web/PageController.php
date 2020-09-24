@@ -8,6 +8,7 @@ use App\Models\BlogSlider;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
+use App\Models\Redeem;
 use App\Models\Ticket;
 use App\Models\Service;
 use App\Models\ThemePage;
@@ -286,6 +287,9 @@ class PageController extends Controller
             $site['accountStatusKeys'] = accountStatusKeys();
             $site['accountPointKeys'] = accountPointKeys();
             $site['statusPosition']  = $statusPosition;
+            $redeemSpent = Redeem::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->sum('spent_amount');
+            $site['redeem_point']  = round($totalSpent-$redeemSpent);
+            $site['redeem_amount']  = numberFormat((($site['redeem_point']*$statusPosition['point'])/100));
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
