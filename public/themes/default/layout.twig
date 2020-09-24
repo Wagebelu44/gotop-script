@@ -129,6 +129,33 @@
         <a href="{{ site['base_url'] }}"> {{ site['panel_name'] }}</a>
     </div>
 </footer>
+
+<div id="fbmsg">
+    <div class="fbmsg-badge">
+        <div class="messanger">
+            <img style="cursor:pointer; width: 80px" src="https://www.flaticon.com/svg/static/icons/svg/633/633584.svg" alt="messanger">
+        </div>
+    </div>
+    <div class="wp-sheet" style="display:none">
+        <div class="wp-sheet-head">
+            <div class="wp-sheet-head-inner">Go2Top</div>
+            <a href="#" class="wp-sheet-head-close">×</a>
+        </div>
+        <div class="wp-sheet-body"></div>
+        <div class="wp-sheet-content">
+            <div class="wp-sheet-content-inner">
+                <div class="wp-sheet-content-part">
+                    <div class="fb-page">
+                        <iframe style="width: 100%; height: calc(100vh - 54px);" src="http://goldtop.live/gotoapi/"></iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="wp-sheet-footer"></div>
+    </div>
+</div>
+
 {% for script in site['scripts'] %}
     <script type="text/javascript" src="{{ script }}"></script>
 {% endfor %}
@@ -138,6 +165,16 @@
             $('#sidebar').toggleClass('active');
         });
     });
+
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id))
+            return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "http://goldtop.live/gotoapi/";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 </script>
 </body>
 </html>
