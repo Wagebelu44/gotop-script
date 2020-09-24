@@ -344,6 +344,9 @@ img {
     transition: all 0.2s;
 }
 
+.price-content{
+    line-height: 0.5;
+}
 /* Hover Effects on Card */
 
 .acc-header .header-left span{
