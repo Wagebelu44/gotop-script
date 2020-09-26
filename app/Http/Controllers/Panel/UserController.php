@@ -31,9 +31,9 @@ class UserController extends Controller
                         $q->where('status', $request->status);
                     }
 
-                    if (isset($request->search) && $request->search != '') {
-                        $q->where('username', $request->search);
-                        $q->orWhere('email', $request->search);
+                    if (isset($request->username) && $request->username != '') {
+                        $q->where('username', 'LIKE', "%$request->username%");
+                        $q->orWhere('email', 'LIKE', "%$request->username%");
                     }
         })->orderBy('id', 'DESC')->paginate(10);
         $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
