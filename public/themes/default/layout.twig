@@ -73,7 +73,7 @@
             {% endif %}
 
             {% if site['horizontal_menu'] == 'No' %}
-                <a class="nav-link" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                <a class="nav-link hLogout" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                     Logout
                 </a>
             {% else %}
@@ -135,6 +135,33 @@
         <a href="{{ site['base_url'] }}"> {{ site['panel_name'] }}</a>
     </div>
 </footer>
+
+<div id="fbmsg">
+    <div class="fbmsg-badge">
+        <div class="messanger">
+            <img style="cursor:pointer; width: 80px; z-index: 9999" src="{{ site['notifigIcon'] }}" alt="messanger">
+        </div>
+    </div>
+    <div class="wp-sheet" style="display:none">
+        <div class="wp-sheet-head">
+            <div class="wp-sheet-head-inner">Go2Top</div>
+            <a href="#" class="wp-sheet-head-close">×</a>
+        </div>
+        <div class="wp-sheet-body"></div>
+        <div class="wp-sheet-content">
+            <div class="wp-sheet-content-inner">
+                <div class="wp-sheet-content-part">
+                    <div class="fb-page">
+                        <iframe style="width: 100%; height: calc(100vh - 54px); border: 1px solid #fff;" src="http://goldtop.live/gotoapi/"></iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="wp-sheet-footer"></div>
+    </div>
+</div>
+
 {% for script in site['scripts'] %}
     <script type="text/javascript" src="{{ script }}"></script>
 {% endfor %}
