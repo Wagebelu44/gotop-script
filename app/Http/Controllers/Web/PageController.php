@@ -340,8 +340,8 @@ class PageController extends Controller
                 $q->where('category_id', '=', $request->category);
             });
         }
-        
-        $news = $sql->paginate(10);
+
+        $news = $sql->paginate(3);
         return view('web.newsfeed', compact('categories', 'news'));
     }
 }

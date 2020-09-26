@@ -145,10 +145,10 @@
                         <a class="catItemLink" href="{{ route('newsfeedApi') }}"><i class="ico" style="background:#0bb6b4 !important;"></i> <span class="catItemName">All</span></a>
                     </li>
                     @if (!empty($categories))
-                        @foreach ($categories as $cat) 
+                        @foreach ($categories as $cat)
                         <li class="catItem">
                             <a class="catItemLink" href="{{ route('newsfeedApi') }}?category={{ $cat->id }}">
-                                <i class="ico" style="background:{{ $cat->color }};?> !important;"></i> 
+                                <i class="ico" style="background:{{ $cat->color }};?> !important;"></i>
                                 <span class="catItemName">{{ $cat->name }}</span>
                             </a>
                         </li>
@@ -167,15 +167,16 @@
     <div class="news">
         <div id="post-data">
             <div id="load_data">
+                <div class="infinite-scroll">
                 @foreach ($news as $post)
                 <div data-description-id="217001" data-post-title="" data-redirect-links="false" data-links-in-new-window="true" class="feature improvement november unread hasShare" id="feature211799" data-initialized="true">
                     <div class="featureDate">
                         @foreach ($post->getCategories as $item)
-                            <div class="category categoryImprovement improvement" style="background-color:{{ $item->category->color }} !important;">
-                                {{ $item->category->name }}
+                            <div class="category categoryImprovement improvement" style="background-color:{{ isset($item->category) ? $item->category->color:'' }} !important;">
+                                {{ isset($item->category) ? $item->category->name:'' }}
                             </div>
                         @endforeach
-                        <span>{{ dateFormat($post->created_at) }}</span>
+                        <span>{{ dateFormat(isset($item->category) ? $post->created_at:'') }}</span>
                     </div>
 
                     {{-- <div class="featureControls">
@@ -211,9 +212,9 @@
 
                     <div class="featureContent">
                         <h2><b>{{ $post->title }}</b></h2>
-                        {{ $post->content }}
+                        {!! $post->content !!}
                     </div>
-                    
+
                     <div id="feedback211799" class="featureFeedback">
                         <div id="reactions" class="emojis">
                             <span class="emojiContainer">
@@ -229,6 +230,9 @@
                     </div>
                 </div>
                 @endforeach
+
+                    {!! $news->links() !!}
+                </div>
             </div>
         </div>
     </div>
@@ -239,7 +243,22 @@
 <script src="{{ asset('notify-assets/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('notify-assets/js/jquery.cookie.min.js') }}"></script>
 <script src="{{ asset('notify-assets/js/scroll.jquery.js') }}"></script>
-<script src="{{ asset('notify-assets/js/script.min.js') }}"></script>
 <script src="{{ asset('notify-assets/js/beamer.js') }}"></script>
+<script>
+    $('ul.pagination').hide();
+    $(function () {
+        $('.infinite-scroll').jscroll({
+            autoTrigger: true,
+            loadingHtml: '<img class="img-responsive" src="{!! asset('loader.gif') !!}" alt="Loading..." />', // MAKE SURE THAT YOU PUT THE CORRECT IMG PATH
+            padding: 0,
+            nextSelector: '.pagination li.active + li a',
+            contentSelector: 'div.infinite-scroll',
+            callback: function () {
+                $('ul.pagination').remove();
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
