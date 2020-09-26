@@ -97,7 +97,7 @@
 <div>
     <div class="header dark solid">
         <div class="headerTitle">
-            <a href="{{ url('/') }}" target="_blank">What's new on {{ config('app.name', 'Laravel') }}</a>
+            <a href="{{ route('newsfeedApi') }}" target="_blank">What's new on {{ config('app.name', 'Laravel') }}</a>
         </div>
 
         <div class="headerNav" onclick="BeamerEmbed.showSearch();">
@@ -116,7 +116,7 @@
 
     <div class="streamSearch">
         <div class="streamSearchBack" onclick="clearSearch();">
-            <a href="{{ url('/') }}">
+            <a href="{{ route('newsfeedApi') }}">
                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="26px" height="26px" viewBox="0 0 26 26" enable-background="new 0 0 26 26" xml:space="preserve">
                     <path d="M7.756,1.935L6.75,2.94c-0.238,0.238-0.238,0.624,0,0.861L15.927,13L6.75,22.198 c-0.238,0.237-0.238,0.624,0,0.861l1.006,1.006c0.238,0.237,0.624,0.237,0.861,0l10.635-10.634c0.237-0.238,0.237-0.625,0-0.862 L8.617,1.935C8.379,1.697,7.994,1.697,7.756,1.935z"></path>
                 </svg>
@@ -142,7 +142,7 @@
             <div class="streamCats singleCategory">
                 <ul class="streamCatsList">
                     <li class="catItem">
-                        <a class="catItemLink" href="{{ url('/') }}"><i class="ico" style="background:#0bb6b4 !important;"></i> <span class="catItemName">All</span></a>
+                        <a class="catItemLink" href="{{ route('newsfeedApi') }}"><i class="ico" style="background:#0bb6b4 !important;"></i> <span class="catItemName">All</span></a>
                     </li>
                     @if (!empty($categories))
                         @foreach ($categories as $cat) 
