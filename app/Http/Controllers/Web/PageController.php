@@ -79,12 +79,14 @@ class PageController extends Controller
         $site['logout_url'] = route('logout');
         $site['logo'] = asset('storage/images/setting/'.$setting->logo);
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
+        $site['notifigIcon'] = asset('assets/img/notifig.svg');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
         $site['csrf_token'] = csrf_token();
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
+            asset('assets/css/site-modal.css'),
             asset('assets/css/style.css'),
         ];
         $site['scripts'] = [
@@ -92,6 +94,7 @@ class PageController extends Controller
             asset('assets/js/bootstrap.js'),
             asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
+            asset('assets/js/site-modal.js'),
         ];
 
         if ($page->default_url == 'sign-in') {
