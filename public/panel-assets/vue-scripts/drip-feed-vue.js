@@ -5,11 +5,15 @@ const orderModule = new Vue({
         driporders: [],
         filter: {
             status: "", 
-            search: "",
+            search: "", 
+            filter_type: {
+                type: 'order_id',
+                data: '',
+            }
         },
         orderStatus : '',
         order_id:  null,
-        
+        loader: false,
     },
   
     watch: {
@@ -22,6 +26,7 @@ const orderModule = new Vue({
     methods: {
         //
         getDripFeedOrders(page=1) {
+            this.loader = true;
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {
@@ -39,22 +44,18 @@ const orderModule = new Vue({
                 history.pushState(state, title, url)
             }
 
-            if (this.filter.search !== "") {
-                const state = { 'search': this.filter.search};
+            if (this.filter.filter_type.data!=='') {
+                const state = { 'filter_type': this.filter.filter_type.type, 'data': this.filter.filter_type.data};
                 const title = '';
-                page_id += '&status='+this.filter.search;
+                page_id += '&filter_type='+this.filter.filter_type.type+'&data='+this.filter.filter_type.data;
                 const url = base_url+'/admin/orders'+ page_id;
                 history.pushState(state, title, url)
             }
             fetch(base_url+'/admin/drip-feed-lists'+ page_id)
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res);
+                    this.loader = false;
                     this.driporders = res.feed_lists.data;
-                    /* this.users = res.users;
-                    this.services = res.services;
-                    this.order_mode_count = res.order_mode_count;
-                    this.pagination = res.orders; */
                 });
         },
 
@@ -105,6 +106,15 @@ const orderModule = new Vue({
         no()
         {
             $("#mi-modal").modal('hide');
+        },
+        filterStatus(status)
+        {
+            this.filter.status = status;
+            this.getDripFeedOrders();
+        },
+        filterType()
+        {
+            this.getDripFeedOrders();
         }
     }
 });
