@@ -147,7 +147,7 @@
                     @if (!empty($categories))
                         @foreach ($categories as $cat) 
                         <li class="catItem">
-                            <a class="catItemLink" href="#">
+                            <a class="catItemLink" href="{{ route('newsfeedApi') }}?category={{ $cat->id }}">
                                 <i class="ico" style="background:{{ $cat->color }};?> !important;"></i> 
                                 <span class="catItemName">{{ $cat->name }}</span>
                             </a>
