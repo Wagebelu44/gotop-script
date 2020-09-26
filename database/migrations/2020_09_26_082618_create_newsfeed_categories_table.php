@@ -17,6 +17,7 @@ class CreateNewsfeedCategoriesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('panel_id');
             $table->string('name');
+            $table->string('color');
             $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
