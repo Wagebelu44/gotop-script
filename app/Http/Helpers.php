@@ -171,3 +171,14 @@ if ( ! function_exists('numberFormat')) {
     }
 }
 
+if ( ! function_exists('dateFormat')) {
+    function dateFormat($date, $time = null)
+    {
+        if ($time) {
+            return date('d/M/Y h:i A',(strtotime($date)));
+        } else {
+            return date('d/M/Y',strtotime($date));
+        }
+    }
+}
+

@@ -6,6 +6,7 @@ use App\Models\AccountStatus;
 use App\Models\Blog;
 use App\Models\BlogSlider;
 use App\Models\Menu;
+use App\Models\Newsfeed;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Redeem;
@@ -18,6 +19,7 @@ use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
+use App\Models\NewsfeedCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
@@ -326,5 +328,20 @@ class PageController extends Controller
         $twig = new \Twig\Environment($loader);
 
         return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site, 'menus' => $menus->toArray()]);
+    }
+
+    public function newsfeedApi(Request $request)
+    {
+        $panelId = session('panel');
+        $categories = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('name', 'ASC')->get();
+        $sql = Newsfeed::with(['getCategories.category'])->where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'DESC');
+        if ($request->category != null) {
+            $sql->whereHas('getCategories', function ($q) use($request) {
+                $q->where('category_id', '=', $request->category);
+            });
+        }
+
+        $news = $sql->paginate(3);
+        return view('web.newsfeed', compact('categories', 'news'));
     }
 }

@@ -164,6 +164,26 @@
                             <input type="text" class="form-control" value="{{ old('drip_feed_interval', isset($general) && $general->drip_feed_interval ? $general->drip_feed_interval:'') }}" name="drip_feed_interval">
                         </div>
 
+                        <div class="form-group row">
+                            <div class="col-6">
+                                <label class="control-label" for="newsfeed">News feed</label>
+                                <div class="setting-switch setting-switch-table">
+                                    <label class="switch">
+                                        <input type="checkbox" class="toggle-page-visibility" name="newsfeed" id="newsfeed" {{ isset($general) && $general->newsfeed == 'Yes' ? 'checked' : '' }}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="control-label" for="newsfeed_align">Average Time</label>
+                                <select class="form-control" name="newsfeed_align" id="newsfeed_align">
+                                    <option value="Left" {{ isset($general) && $general->newsfeed_align == 1 ? 'selected':'' }}>Left</option>
+                                    <option value="Right" {{ isset($general) && $general->newsfeed_align == 0 ? 'selected':'' }}>Right</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <hr>
                         <div class="row">
                             <div class="col-md-6">
