@@ -170,9 +170,11 @@
                 @foreach ($news as $post)
                 <div data-description-id="217001" data-post-title="" data-redirect-links="false" data-links-in-new-window="true" class="feature improvement november unread hasShare" id="feature211799" data-initialized="true">
                     <div class="featureDate">
-                        <div class="category categoryImprovement improvement" style="background-color: '.$post->category_color.'!important;">
-                            '.$post->category_name.'
-                        </div>
+                        @foreach ($post->getCategories as $item)
+                            <div class="category categoryImprovement improvement" style="background-color:{{ $item->category->color }} !important;">
+                                {{ $item->category->name }}
+                            </div>
+                        @endforeach
                         <span>{{ dateFormat($post->created_at) }}</span>
                     </div>
 

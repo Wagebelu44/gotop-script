@@ -334,8 +334,7 @@ class PageController extends Controller
     {
         $panelId = session('panel');
         $categories = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('name', 'ASC')->get();
-        $news = Newsfeed::with(['getCategories'])->where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'DESC')->get();
+        $news = Newsfeed::with(['getCategories.category'])->where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'DESC')->paginate(10);
         return view('web.newsfeed', compact('categories', 'news'));
     }
-
 }

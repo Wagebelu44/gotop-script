@@ -101,7 +101,7 @@
 
                         <li class="sidebar-item {{ Request::routeIs('admin.newsfeed*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.newsfeed*') ? 'active':'' }}" href="{{ route('admin.newsfeed.index') }}">
-                                <span class="hide-menu">Newsfeed</span>
+                                <span class="hide-menu">News feed</span>
                             </a>
                         </li>
 

@@ -1,7 +1,6 @@
 @extends('layouts.panel')
 
 @section('content')
-
     @php
       $resource = 'admin.newsfeed.';
     @endphp
@@ -15,13 +14,13 @@
             <div class="col-md-8">
                 <div class="card panel-default">
                     <div class="card-body">
-                        <a class="btn btn-default m-b add-page" href="{{ route($resource.'create') }}">Add Newsfeed</a>
+                        <a class="btn btn-default m-b add-page" href="{{ route($resource.'create') }}">Add News feed</a>
 
                         <table class="table">
                             <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>Page Title</th>
+                                <th>Title</th>
                                 <th>Created</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -86,7 +85,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="control-label" for="categories">Newsfeed Category</label>
+                                        <label class="control-label" for="categories">News feed Category</label>
                                         <select class="select2 form-control is-public @error('cate') is-invalid @enderror" multiple="multiple" name="categories[]" id="categories" required>
                                             @if (!empty($categories))
                                                 @foreach ($categories as $key => $category)

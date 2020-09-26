@@ -18,6 +18,7 @@ class CreateNewsfeedRelationsTable extends Migration
             $table->unsignedBigInteger('newsfeed_id');
             $table->unsignedBigInteger('category_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
