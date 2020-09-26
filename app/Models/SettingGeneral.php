@@ -15,7 +15,7 @@ class SettingGeneral extends Model
     protected $fillable = [
         'panel_id', 'logo', 'favicon', 'panel_name', 'timezone', 'currency', 'currency_format', 'rates_rounding', 'ticket_system', 'tickets_per_user',
         'signup_page', 'email_confirmation', 'skype_field', 'name_fields', 'terms_checkbox', 'reset_password', 'average_time',
-        'drip_feed_interval', 'custom_header_code', 'custom_footer_code', 'horizontal_menu', 'total_order', 'total_spent', 'account_status',
+        'drip_feed_interval', 'custom_header_code', 'custom_footer_code', 'newsfeed_align', 'newsfeed', 'horizontal_menu', 'total_order', 'total_spent', 'account_status',
         'point', 'redeem', 'status', 'updated_by',
     ];
 
