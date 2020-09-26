@@ -86,7 +86,7 @@ class PageController extends Controller
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
-            asset('assets/css/fbmsg.css'),
+            asset('assets/css/site-modal.css'),
             asset('assets/css/style.css'),
         ];
         $site['scripts'] = [
@@ -94,7 +94,7 @@ class PageController extends Controller
             asset('assets/js/bootstrap.js'),
             asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
-            asset('assets/js/fbmsg.js'),
+            asset('assets/js/site-modal.js'),
         ];
 
         if ($page->default_url == 'sign-in') {
