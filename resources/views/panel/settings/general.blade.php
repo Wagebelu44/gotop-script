@@ -159,6 +159,11 @@
                             </select>
                         </div>
 
+                        <div class="form-group">
+                            <label class="control-label" for="drip_feed_interval">Minimum drip-feed interval </label>
+                            <input type="text" class="form-control" value="{{ old('drip_feed_interval', isset($general) && $general->drip_feed_interval ? $general->drip_feed_interval:'') }}" name="drip_feed_interval">
+                        </div>
+
                         <div class="form-group row">
                             <div class="col-6">
                                 <label class="control-label" for="newsfeed">News feed</label>
@@ -177,11 +182,6 @@
                                     <option value="Right" {{ isset($general) && $general->newsfeed_align == 0 ? 'selected':'' }}>Right</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label" for="drip_feed_interval">Minimum drip-feed interval </label>
-                            <input type="text" class="form-control" value="{{ old('drip_feed_interval', isset($general) && $general->drip_feed_interval ? $general->drip_feed_interval:'') }}" name="drip_feed_interval">
                         </div>
 
                         <hr>
