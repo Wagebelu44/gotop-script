@@ -49,14 +49,12 @@ class Order extends Model
             'partial' => "#17a2b8",
         ];
         return $colors[$this->status]??'#77B243';
-
     }
 
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id');
     }
-
 
     public function user()
     {
@@ -67,6 +65,4 @@ class Order extends Model
     {
         return $this->belongsTo(SettingProvider::class, 'provider_id');
     }
-
-
 }

@@ -22,6 +22,7 @@ class CreateExportedUsersTable extends Migration
             $table->string('include_columns');
             $table->unsignedBigInteger('panel_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
