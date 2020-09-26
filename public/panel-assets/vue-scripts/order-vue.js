@@ -1,5 +1,6 @@
 const orderModule = new Vue({
     el: '#order_module',
+    mixins: [mixin],
     data: {
         pagination: {current_page: 1},
         orders: [],
@@ -31,7 +32,9 @@ const orderModule = new Vue({
         order_page: 'order',
     },
     created () {
-       
+        if (this.getParameterByName('status')) {
+            this.filter.status = this.getParameterByName('status');
+        }
     },
     watch: {
         checkAllOrders(oldval, newval)
@@ -44,7 +47,6 @@ const orderModule = new Vue({
     },
     mounted () {
         this.getOrders();
-        console.log(this.orders, 'lsits');
     },
    
     methods: {
@@ -77,7 +79,6 @@ const orderModule = new Vue({
             fetch(base_url+'/admin/get-orders'+ page_id)
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res);
                     this.orders = res.orders.data;
                     this.users = res.users;
                     this.services = res.services;
@@ -287,6 +288,11 @@ const orderModule = new Vue({
             } else {
                 alert('No check box is selected');
             }
+        },
+        filterStatus(status)
+        {
+            this.filter.status = status;
+            this.getOrders();
         },
 
         

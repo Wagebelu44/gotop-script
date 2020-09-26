@@ -29,58 +29,31 @@
                             <div class="col-md-6">
                                 <ul class="list-group d-flex flex-row reseller_order_filter_lists">
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="all">
-                                            <button type="submit" class="btn btn-link">All</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('all')"  class="btn btn-link">All</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="PENDING">
-                                            <button type="submit" class="btn btn-link">Pending</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('PENDING')" class="btn btn-link">Pending</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="INPROGRESS">
-                                            <button type="submit" class="btn btn-link">In&nbsp;Progress</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('INPROGRESS')" class="btn btn-link">In&nbsp;Progress</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="COMPLETED">
-                                            <button type="submit" class="btn btn-link">Completed</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('COMPLETED')" class="btn btn-link">Completed</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="PARTIAL">
-                                            <button type="submit" class="btn btn-link">Partial</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('PARTIAL')" class="btn btn-link">Partial</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="cancelled">
-                                            <button type="submit" class="btn btn-link">Cancelled</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('cancelled')" class="btn btn-link">Cancelled</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="PROCESSING">
-                                            <button type="submit" class="btn btn-link">Processing</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('PROCESSING')" class="btn btn-link">Processing</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="FAILED">
-                                            <button type="submit" class="btn btn-link">Failed <span class="badge badge-danger"></span> </button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('FAILED')" class="btn btn-link">Failed <span class="badge badge-danger"></span> </button>
                                     </li>
                                     <li class="list-group-item ">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="status" value="ERROR">
-                                            <button type="submit" class="btn btn-link">Error</button>
-                                        </form>
+                                        <button type="button" @click="filterStatus('ERROR')" class="btn btn-link">Error</button>
                                     </li>
                                 </ul>
                             </div>
@@ -210,6 +183,7 @@
 @endsection
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/order-vue.js')}}"></script>
 <script>
     setTimeout(function () {

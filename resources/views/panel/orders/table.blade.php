@@ -1,4 +1,4 @@
-<div class="tab-content table-responsive-xl" id="orders_tble">
+<div class="tab-content table-responsive-xl">
     <div class="d-flex top-caret-bar">
         <div class="d-flex service-checkbox-action bg-danger" v-if="order_checkbox.length>0">
             <div>
