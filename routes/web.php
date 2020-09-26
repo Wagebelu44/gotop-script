@@ -108,6 +108,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('services', 'Panel\ServiceController');
 
             #Payments...
+            Route::get('export/payments', 'Panel\PaymentController@export')->name('payments.export');
+            Route::post('export/payments', 'Panel\PaymentController@exportPayment');
+            Route::post('payments/download/{exported_payment}', 'Panel\PaymentController@downloadExportedPayment')->name('payments.exported_payment.download');
             Route::get('payments-lists', 'Panel\PaymentController@getPaymentLists');
             Route::resource('payments', 'Panel\PaymentController');
             Route::resource('redeem', 'Panel\RedeemController');

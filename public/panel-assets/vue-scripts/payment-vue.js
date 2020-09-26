@@ -96,28 +96,6 @@ const paymentModule = new Vue({
                         $('#select2-redeem-user').select2();
                         $('#select2-redeem-user').val(this.users).trigger('change');                        
                     }, 100);
-                }).
-                catch(err=>{
-                        this.loader = false;
-                        let prepare = [];
-                        err.then(erMesg => {
-                            console.log(erMesg, 'adfdsaf');
-                            if ('errors' in erMesg) {
-                                let errMsgs = Object.entries(erMesg.errors);
-                                for (let i = 0; i < errMsgs.length; i++) {
-                                    let obj = {};
-                                    obj.name = errMsgs[i][0];
-                                    obj.desc = errMsgs[i][1][0];
-                                    prepare.push(obj);
-                                }
-                                this.errors.payment = prepare;
-                                console.log(this.errors.payment);
-                            }
-                            else if ('data' in erMesg)
-                            {
-                                this.errors.common = erMesg.data;
-                            }
-                        });
                 })
                 
         },
@@ -126,10 +104,9 @@ const paymentModule = new Vue({
             this.loader.payment = true;
             let payment_form = null;
             payment_form = new FormData(document.getElementById('payment-form'));
-
-            var userId = $('#select2-payment-user').val();
+            var userId = document.getElementById('select2-payment-user').value;
+            console.log(userId, 'asdfdas');
             payment_form.append('user_id', userId);
-            console.log(payment_form);
             if (this.payment_edit_id) {
                 payment_form.append('edit_id', this.payment_edit_id);
                 payment_form.append('edit_mode', true);
@@ -157,14 +134,11 @@ const paymentModule = new Vue({
                     setTimeout(() => {
                         this.loader.payment = false;
                         toastr["success"](res.message);
-                        
                         $('#paymentAddModal').modal('hide');
-
                         if (isEdit) 
                         {
                             var row = res.data;
                             this.updatePaymentLists(row);
-                            //var status = (row.status == 'active')?'Enabled':'Disabled';
                         } 
                         else 
                         {
@@ -181,13 +155,12 @@ const paymentModule = new Vue({
                     this.errors.services = res.data;
                 }
 
-            })
-            .catch(err => 
-            {
-                setTimeout(() => {
-                    this.loader.service = false;
-                    let prepare = [];
-                    err.then(erMesg => {
+            }).
+            catch(err=>{
+                this.loader = false;
+                let prepare = [];
+                err.then(erMesg => {
+                    if ('errors' in erMesg) {
                         let errMsgs = Object.entries(erMesg.errors);
                         for (let i = 0; i < errMsgs.length; i++) {
                             let obj = {};
@@ -195,10 +168,27 @@ const paymentModule = new Vue({
                             obj.desc = errMsgs[i][1][0];
                             prepare.push(obj);
                         }
-                        this.errors.services = prepare;
-                    });
-                }, 2000);
+                        this.errors.payment = prepare;
+                    }
+                    else if ('data' in erMesg)
+                    {
+                        this.errors.common = erMesg.data;
+                    }
+                });
             });
+        },
+        errorFilter(name)
+        {
+            let txt = '';
+            if (this.errors.payment.length>0) 
+            {
+                this.errors.payment.forEach(item=>{
+                    if (item.name === name) {
+                        txt = item.desc;
+                    }
+                });
+            }
+            return txt;
         },
         addToPaymentList(payment)
         {

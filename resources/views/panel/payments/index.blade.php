@@ -14,7 +14,7 @@
                             <div class="col-md-6">
                                 <form class="d-flex pull-right" method="get" action="">
                                     <div>
-                                        {{-- <a href="" class="btn btn-link">Export</a> --}}
+                                        <a href="{{ route('admin.payments.export') }}" class="btn btn-link">Export</a>
                                     </div>
                                     <div class="form-group mb-2 mr-0">
                                         <input type="search" name="search" class="form-control" placeholder="search...">
@@ -32,74 +32,72 @@
                             </div>
                             <form class="text-right" id="search-form"></form>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table dataTable">
-                                <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>User</th>
-                                    <th>Amount</th>
-                                    <th>
-                                        <div class="input-group">
-                                            <div class="input-group-append">
-                                                <button class="btn  custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Method</button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item type-dropdown-item" href="">All</a>
-                                                        <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"></a>
-                                                    <a class="dropdown-item type-dropdown-item"
-                                                       href="javascript:void(0)" > Bonus </a>
-                                                </div>
+                        <table class="table dataTable">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Amount</th>
+                                <th>
+                                    <div class="input-group">
+                                        <div class="input-group-append">
+                                            <button class="btn  custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Method</button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item type-dropdown-item" href="">All</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"></a>
+                                                <a class="dropdown-item type-dropdown-item"
+                                                    href="javascript:void(0)" > Bonus </a>
                                             </div>
                                         </div>
-                                    </th>
-                                    <th>Memo</th>
-                                    <th>Created</th>
-                                    <th>Updated</th>
-                                    <th>
-                                        <div class="input-group">
-                                            <div class="input-group-append">
-                                                <button class="btn  custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item type-dropdown-item" href="">All</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'admin_panel')">Manual</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'payment_gateway')">Auto</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'bonus_deposit')" > Bonus</a>
-                                                </div>
+                                    </div>
+                                </th>
+                                <th>Memo</th>
+                                <th>Created</th>
+                                <th>Updated</th>
+                                <th>
+                                    <div class="input-group">
+                                        <div class="input-group-append">
+                                            <button class="btn  custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item type-dropdown-item" href="">All</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'admin_panel')">Manual</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'payment_gateway')">Auto</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'bonus_deposit')" > Bonus</a>
                                             </div>
                                         </div>
-                                    </th>
-                                    <th>Actions</th>
+                                    </div>
+                                </th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(p, i) in payments">
+                                    <td> @{{ p.id }} </td>
+                                    <td>@{{ p.username }}</td>
+                                    <td>@{{ p.amount }}</td>
+                                    <td>@{{ p.payment_method_name }}</td>
+                                    <td>@{{ p.memo }}</td>
+                                    <td>@{{ p.created_at }}</td>
+                                    <td>@{{ p.updated_at }}</td>
+                                    <td>
+                                        <span v-if="p.transaction_flag == 'admin_panel'">Manual</span>
+                                        <span v-else-if="p.transaction_flag == 'payment_gateway'">Auto</span>
+                                        <span v-else-if="p.transaction_flag == 'bonus_deposit'">Bonus</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn  custom-dropdown-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Action
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                {{-- <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Details</a> --}}
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editPayment(p.id)" >Edit</a>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(p, i) in payments">
-                                        <td> @{{ p.id }} </td>
-                                        <td>@{{ p.username }}</td>
-                                        <td>@{{ p.amount }}</td>
-                                        <td>@{{ p.payment_method_name }}</td>
-                                        <td>@{{ p.memo }}</td>
-                                        <td>@{{ p.created_at }}</td>
-                                        <td>@{{ p.updated_at }}</td>
-                                        <td>
-                                            <span v-if="p.transaction_flag == 'admin_panel'">Manual</span>
-                                            <span v-else-if="p.transaction_flag == 'payment_gateway'">Auto</span>
-                                            <span v-else-if="p.transaction_flag == 'bonus_deposit'">Bonus</span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button type="button" class="btn  custom-dropdown-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    Action
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    {{-- <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Details</a> --}}
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editPayment(p.id)" >Edit</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            </tbody>
+                        </table>
                         <div class="modal bs-example-modal-lg" id="paymentAddModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
@@ -111,7 +109,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-group">
-                                                <label for=""><strong>User</strong></label>
+                                                <label for=""><strong>User @{{ payment_obj.user_id }}</strong></label>
                                                 {{-- <div class="ui-widget">
                                                   <input type="text" name="user_id" id="user_id_payment" class="form-control custom-form-control" placeholder="type user name" />
                                                 </div> --}}
@@ -119,10 +117,12 @@
                                                     <option disabled selected>Choose user</option>
                                                 <option :value="u.id" v-for="(u, i) in users">@{{ u.username }} </option>
                                                 </select>
+                                                <span class="text-danger" v-if="errorFilter('user_id')!==''"> @{{ errorFilter('user_id') }} </span>
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Amount</strong></label>
                                                 <input type="text" name="amount" v-model='payment_obj.amount' class="form-control custom-form-control" placeholder="Amount"  required >
+                                                <span class="text-danger" v-if="errorFilter('amount')!==''"> @{{ errorFilter('amount') }} </span>
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Payment Method</strong></label>
@@ -130,6 +130,7 @@
                                                     <option disabled selected>Choose payment method</option>
                                                 <option :value="gp.id" v-for="(gp, i) in global_payments">@{{gp.method_name}}</option>
                                                 </select>
+                                                <span class="text-danger" v-if="errorFilter('reseller_payment_methods_setting_id')!==''"> @{{ errorFilter('reseller_payment_methods_setting_id') }} </span>
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Memo (optional)</strong></label>
@@ -152,7 +153,7 @@
                         <div class="modal bs-example-modal-lg" id="redeemPointModal" role="dialog" aria-labelledby="redeemPointModal" aria-hidden="true">
                             <div class="modal-dialog __modal_dialog_custom">
                                 <div class="modal-content">
-                                    <form  id="payment-form" method="post" action="{{ route('admin.redeem.store') }}">
+                                    <form method="post" action="{{ route('admin.redeem.store') }}">
                                         @csrf
                                         <div class="modal-header">
                                             <h4 class="modal-title">Redeem Point</h4>
@@ -188,7 +189,7 @@
 
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/payment-vue.js?var=0.1')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/payment-vue.js?var=0.3')}}"></script>
 <script>
     setTimeout(function () {
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {

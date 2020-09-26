@@ -7,9 +7,13 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Models\SettingBonuse;
-use App\Models\G\GlobalPaymentMethod;
+use App\Exports\PaymentsExport;
+use App\Models\ExportedPayment;
+use Spatie\ArrayToXml\ArrayToXml;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use App\Models\G\GlobalPaymentMethod;
+use Illuminate\Support\Facades\Storage;
 
 class PaymentController extends Controller
 {
@@ -213,5 +217,121 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         //
+    }
+      /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function export()
+    {
+        $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
+        $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
+        ->where('visibility', 'enabled')
+        ->get();
+        $exported_payments = ExportedPayment::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
+        return view('panel.payments.export', compact('users', 'globalMethods', 'exported_payments'));
+    }
+
+    /**
+     * Export payments.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function exportPayment(Request $request)
+    {
+        // Validate form data
+        $request->validate([
+            'from' => 'required|date',
+            'to' => 'required|date|after_or_equal:from',
+            'user_ids' => 'required|array',
+            'payment_method_ids' => 'required|array',
+            'user_ids.*' => 'required',
+            'payment_method_ids.*' => 'required',
+            'status' => 'required|array|in:all,pending,waiting,hold,completed,failed,expired',
+            'mode' => 'required|in:all,auto,manual',
+            'format' => 'required|in:xml,json,csv',
+            'include_columns' => 'required|array|in:id,user_username,user_balance,amount,payment_method_name,status,memo,completed,created_at,ip_address,mode',
+        ]);
+
+        try {
+            $data = $request->except('_token');
+            $data['include_columns'] = serialize($request->include_columns);
+            $data['user_ids'] = serialize($request->user_ids);
+            $data['payment_method_ids'] = serialize($request->payment_method_ids);
+            $data['status'] = serialize($request->status);
+            $data['panel_id'] = auth()->user()->panel_id;
+            $data['from'] = date('Y-m-d H:i:s',  strtotime($request->from));
+            $data['to'] = date('Y-m-d H:i:s',  strtotime($request->to));
+            ExportedPayment::create($data);
+
+            return redirect()->back()->withSuccess('Payment exported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withError($e->getMessage());
+        }
+    }
+
+    /**
+     * Download exported payments.
+     *
+     * @param \App\ExportedPayment $exportedPayment
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadExportedPayment(ExportedPayment $exportedPayment)
+    {
+        try {
+            $columns = unserialize($exportedPayment->include_columns);
+            $include_columns = [];
+
+            foreach ($columns as $value) {
+                if ($value != 'user_username' && $value != 'user_balance' && $value != 'payment_method_name') {
+                    $include_columns[] = 'payments.' . $value;
+                } elseif ($value == 'payment_method_name') {
+                    $include_columns[] = 'reseller_payment_methods_settings.method_name';
+                } else {
+                    $include_columns[] = 'users.' . explode('user_', $value, 2)[1] . ' AS ' . $value;
+                }
+            }
+
+            $payments = Transaction::join('users', 'users.id', '=', 'payments.user_id')
+                ->join('reseller_payment_methods_settings', 'reseller_payment_methods_settings.id', '=', 'payments.reseller_payment_methods_setting_id')
+                ->select($include_columns)
+                ->whereBetween('payments.created_at', [$exportedPayment->from, $exportedPayment->to])
+                ->where(function ($q) use ($exportedPayment) {
+                    if (!in_array('all', unserialize($exportedPayment->status))) {
+                        $q->whereIn('payments.status', unserialize($exportedPayment->status));
+                    }
+                    if ($exportedPayment->mode != 'all') {
+                        $q->where('payments.mode', $exportedPayment->mode);
+                    }
+                    if (!in_array('all', unserialize($exportedPayment->user_ids))) {
+                        $q->whereIn('users.id', unserialize($exportedPayment->user_ids));
+                    }
+                    if (!in_array('all', unserialize($exportedPayment->payment_method_ids))) {
+                        $q->whereIn('reseller_payment_methods_settings.id', unserialize($exportedPayment->payment_method_ids));
+                    }
+                })
+                ->get();
+
+            if ($exportedPayment->format == 'json') {
+                $filename = "public/exportedData/payments.json";
+                Storage::disk('local')->put($filename, $payments->toJson(JSON_PRETTY_PRINT));
+                $headers = array('Content-type' => 'application/json');
+
+                return response()->download('storage/exportedData/payments.json', 'payments.json', $headers);
+            } elseif ($exportedPayment->format == 'xml') {
+                $data = ArrayToXml::convert(['__numeric' => $payments->toArray()]);
+                $filename = "public/exportedData/payments.xml";
+                Storage::disk('local')->put($filename, $data);
+                $headers = array('Content-type' => 'application/xml');
+
+                return response()->download('storage/exportedData/payments.xml', 'payments.xml', $headers);
+            } else {
+                return Excel::download(new PaymentsExport($payments, unserialize($exportedPayment->include_columns)), 'payments.xlsx');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withError($e->getMessage());
+        }
     }
 }
