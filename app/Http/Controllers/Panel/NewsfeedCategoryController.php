@@ -37,6 +37,7 @@ class NewsfeedCategoryController extends Controller
         if (Auth::user()->can('create newsfeed category')) {
             $this->validate($request, [
                 'name'     => 'required',
+                'color'    => 'required',
                 'status'   => 'required'
             ]);
 
@@ -44,6 +45,7 @@ class NewsfeedCategoryController extends Controller
                 'panel_id'      => Auth::user()->panel_id,
                 'name'          => $request->name,
                 'status'        => $request->status,
+                'color'         => $request->color,
                 'created_by'    => Auth::user()->id,
             ]);
 
@@ -79,6 +81,7 @@ class NewsfeedCategoryController extends Controller
             NewsfeedCategory::find($id)->update([
                 'panel_id'      => Auth::user()->panel_id,
                 'name'          => $request->name,
+                'color'         => $request->color,
                 'status'        => $request->status,
                 'updated_by'    => Auth::user()->id,
             ]);

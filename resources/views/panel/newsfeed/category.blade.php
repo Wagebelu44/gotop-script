@@ -20,6 +20,7 @@
                             <tr>
                                 <th>SN</th>
                                 <th>Name</th>
+                                <th>Color</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -30,6 +31,7 @@
                                 <tr>
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $category->name }}</td>
+                                    <td>{{ $category->color }}<span class="badge" style="background-color: {{ $category->color }}">&nbsp;&nbsp;&nbsp;</span></td>
                                     <td>{{ $category->status }}</td>
                                     <td class="p-r text-right">
                                         <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $category->id) }}">Edit</a>
@@ -59,6 +61,12 @@
                                 <label class="form-control-label">Category name</label>
                                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', isset($data) && $data->name ? $data->name:'' ) }}" placeholder="Category name">
                             </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label">Color</label>
+                                <input type="color" name="color" id="color" class="form-control @error('color') is-invalid @enderror" value="{{ old('color', isset($data) && $data->color ? $data->color:'' ) }}" placeholder="Category name">
+                            </div>
+
                             <div class="form-group">
                                 <label class="form-control-label">Status</label>
                                 <select class="form-control @error('status') is-invalid @enderror" name="status" id="status">
