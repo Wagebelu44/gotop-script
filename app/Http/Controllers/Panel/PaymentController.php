@@ -50,6 +50,21 @@ class PaymentController extends Controller
                     $q->where('transactions.memo', 'like', '%' . $input['search'] . '%');
                     $q->orWhere('transactions.tnx_id', 'like', '%' . $input['search'] . '%');
                 }
+
+                if (request()->query('filter_type')) {
+                    $filte_type = request()->query('filter_type');
+                    $search_input = request()->query('data');
+                    if ($search_input != null) {
+                      
+                        if ($filte_type == 'user') {
+                            
+                            $q->whereHas('user', function($q) use($search_input) {
+                                $q->where('username','like', '%' . $search_input . '%');
+                            });
+                            
+                        }
+                    }
+                }
             })
             ->where(function ($q) use ($input) {
                 if (isset($input['columns']) && is_array($input['columns'])) {
@@ -70,8 +85,10 @@ class PaymentController extends Controller
                 ->orderBy($sort_by, $order_by);
                 $payments = $local_payments->paginate($show_page);
                 $total_payments = $local_payments->count();
-                $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
-                ->where('visibility', 'enabled')
+                $globalMethods = PaymentMethod::select('payment_methods.*','totalPayment')
+                ->where('payment_methods.panel_id', auth()->user()->panel_id)
+                ->leftJoin(\DB::raw('(SELECT reseller_payment_methods_setting_id, count(id) as totalPayment FROM transactions GROUP BY reseller_payment_methods_setting_id) as A'), 'A.reseller_payment_methods_setting_id', '=', 'payment_methods.id')
+                ->where('payment_methods.visibility', 'enabled')
                 ->get();
                 $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
             $data = [

@@ -15,6 +15,10 @@ const paymentModule = new Vue({
         filter: {
             status: "", 
             search: "",
+            filter_type: {
+                type: 'user',
+                data: '',
+            }
         },
         errors: {
             payment: [],
@@ -69,11 +73,11 @@ const paymentModule = new Vue({
                 history.pushState(state, title, url)
             }
 
-            if (this.filter.search !== "") {
-                const state = { 'search': this.filter.search};
+            if (this.filter.filter_type.data!=='') {
+                const state = { 'filter_type': this.filter.filter_type.type, 'data': this.filter.filter_type.data};
                 const title = '';
-                page_id += '&status='+this.filter.search;
-                const url = base_url+'/admin/orders'+ page_id;
+                page_id += '&filter_type='+this.filter.filter_type.type+'&data='+this.filter.filter_type.data;
+                const url = base_url+'/admin/payments'+ page_id;
                 history.pushState(state, title, url)
             }
             fetch(base_url+'/admin/payments-lists'+ page_id)
@@ -88,7 +92,6 @@ const paymentModule = new Vue({
                     this.payments = res.payments.data;
                     this.global_payments = res.globalMethods;
                     this.users = res.users;
-
                     setTimeout(() => {
                         $('#select2-payment-user').select2();
                         $('#select2-payment-user').val(this.users).trigger('change');
@@ -220,6 +223,10 @@ const paymentModule = new Vue({
                 }
                 return item;
             });
+        },
+        filterType()
+        {
+            this.getPayments();
         }
 
        

@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\PaymentMethod;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
@@ -28,5 +29,14 @@ class Transaction extends Model
     {
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id');
+    }
+    public function resellerPaymentMethodsSetting()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

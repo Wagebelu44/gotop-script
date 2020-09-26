@@ -12,15 +12,15 @@
                                 <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#redeemPointModal">Redeem Point</button>
                             </div>
                             <div class="col-md-6">
-                                <form class="d-flex pull-right" method="get" action="">
+                                <form class="d-flex pull-right" method="get" @submit.prevent="filterType">
                                     <div>
                                         <a href="{{ route('admin.payments.export') }}" class="btn btn-link">Export</a>
                                     </div>
                                     <div class="form-group mb-2 mr-0">
-                                        <input type="search" name="search" class="form-control" placeholder="search...">
+                                        <input type="search" name="search" v-model="filter.filter_type.data" class="form-control" placeholder="search...">
                                     </div>
                                     <div class="form-group mb-2 ml-0">
-                                        <select name="keyword" id="keyword" class="form-control">
+                                        <select name="keyword" id="keyword"  class="form-control">
                                             <option value="user">User</option>
                                             <option value="memo">Memo</option>
                                         </select>
@@ -44,9 +44,8 @@
                                             <button class="btn  custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Method</button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item type-dropdown-item" href="">All</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"></a>
-                                                <a class="dropdown-item type-dropdown-item"
-                                                    href="javascript:void(0)" > Bonus </a>
+                                                    <a class="dropdown-item type-dropdown-item"  v-for="(g, i) in global_payments" href="javascript:void(0)"> @{{ g.method_name }} (@{{g.totalPayment??0}}) </a>
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" > Bonus (0) </a>
                                             </div>
                                         </div>
                                     </div>
