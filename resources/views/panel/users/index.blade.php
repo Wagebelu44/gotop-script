@@ -12,7 +12,7 @@
                             </div>
                             <div class="__right_control_panel">
                                 <form class="d-flex pull-right" id="search-form"  @submit.prevent="searchFilter">
-                                <div><a class="btn btn-link" href="">Export</a></div>
+                                <div><a class="btn btn-link" href="{{ route('admin.users.export') }}">Export</a></div>
                                     <input type="hidden" name="order_by" value="">
                                     <input type="hidden" name="sort_by" value="">
                                     <div class="form-group mb-2 mr-0">

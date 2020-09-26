@@ -53,6 +53,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('getusers', 'Panel\UserController@getUsers');
             Route::resource('users', 'Panel\UserController');
             #Users...
+            Route::get('export/users', 'Panel\UserController@export')->name('users.export');
+            Route::post('exportedUser', 'Panel\UserController@exportUsers');
+            Route::post('users/download/{exported_user}', 'Panel\UserController@downloadExportedUser')->name('users.exported_user.download');
             Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');

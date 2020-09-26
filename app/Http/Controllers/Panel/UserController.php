@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Models\UserPaymentMethod;
-use Illuminate\Support\Facades\Auth;
 use App\User;
+use App\Models\ExportedUser;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Models\ServiceCategory;
+use App\Models\UserPaymentMethod;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -256,5 +259,88 @@ class UserController extends Controller
             ]);
         }
         return response()->json(['status' => true, 'data'=> 'Bulk users update'], 200);
+    }
+
+       /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function export()
+    {
+        $exported_users = ExportedUser::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
+  
+        return view('panel.users.user_export', compact('exported_users'));
+    }
+
+    /**
+     * Export users.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function exportUsers(Request $request)
+    {
+        // Validate form data
+        $request->validate([
+            'from' => 'required|date',
+            'to' => 'required|date|after_or_equal:from',
+            'status' => 'required|array|in:all,pending,active,inactive',
+            'format' => 'required|in:xml,json,csv',
+            'include_columns' => 'required|array|in:id,username,email,name,skype_name,balance,spent,status,created_at,last_login_at',
+        ]);
+
+        try {
+            $data = $request->except('_token');
+            $data['include_columns'] = serialize($request->include_columns);
+            $data['status'] = serialize($request->status);
+            $data['panel_id'] = auth()->user()->panel_id;
+            $data['from'] = date('Y-m-d H:i:s',  strtotime($request->from));
+            $data['to'] = date('Y-m-d H:i:s',  strtotime($request->to));
+            ExportedUser::create($data);
+            return redirect()->back()->withSuccess('Users exported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withError($e->getMessage());
+        }
+    }
+
+    /**
+     * Download exported users.
+     *
+     * @param \App\ExportedUser $exportedUser
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadExportedUser(ExportedUser $exportedUser)
+    {
+        try {
+            $users = User::whereBetween('created_at', [$exportedUser->from, $exportedUser->to])
+                ->where(function ($q) use ($exportedUser) {
+                    if (!in_array('all', unserialize($exportedUser->status))) {
+                        $q->whereIn('status', unserialize($exportedUser->status));
+                    }
+                })
+                ->leftJoin(\DB::raw("(SELECT sum(charges) as spent, user_id from orders where 
+                status!='cancelled' AND  status!='Canceled' AND  status!='Refunded' group by user_id) as A"), 'users.id', '=', 'A.user_id')
+                ->get(unserialize($exportedUser->include_columns));
+
+            if ($exportedUser->format == 'json') {
+                $filename = "public/exportedData/users.json";
+                Storage::disk('local')->put($filename, $users->toJson(JSON_PRETTY_PRINT));
+                $headers = array('Content-type' => 'application/json');
+
+                return response()->download('storage/exportedData/users.json', 'users.json', $headers);
+            } elseif ($exportedUser->format == 'xml') {
+                $data = ArrayToXml::convert(['__numeric' => $users->toArray()]);
+                $filename = "public/exportedData/users.xml";
+                Storage::disk('local')->put($filename, $data);
+                $headers = array('Content-type' => 'application/xml');
+
+                return response()->download('storage/exportedData/users.xml', 'users.xml', $headers);
+            } else {
+                return Excel::download(new ExportedUser($users, unserialize($exportedUser->include_columns)), 'users.xlsx');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withError(['error' => $e->getMessage()]);
+        }
     }
 }
