@@ -436,6 +436,7 @@ class OrderController extends Controller
                     'charges' => $custom_charges,
                     'unit_price' =>  $s_price,
                     'original_unit_price' => $service->price,
+                    'status' => 'pending',
                     'original_charges' => $custom_original_charges,
                     'link' => $data['link'],
                     'quantity' => $data['quantity'],

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Service;
+use App\Models\SettingProvider;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -56,9 +57,15 @@ class Order extends Model
         return $this->belongsTo(Service::class, 'service_id');
     }
 
+
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function provider()
+    {
+        return $this->belongsTo(SettingProvider::class, 'provider_id');
     }
 
 

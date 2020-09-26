@@ -70,7 +70,6 @@ const userModule = new Vue({
                 const url = base_url+'/admin/users'+ page_id;
                 history.pushState(state, title, url)
             }
-
             if (this.filter.status !== "") {
                 const state = { 'status': this.filter.status};
                 const title = '';
@@ -80,9 +79,9 @@ const userModule = new Vue({
             }
 
             if (this.filter.search !== "") {
-                const state = { 'search': this.filter.search};
+                const state = { 'username': this.filter.search};
                 const title = '';
-                page_id += '&status='+this.filter.search;
+                page_id += '&username='+this.filter.search;
                 const url = base_url+'/admin/users'+ page_id;
                 history.pushState(state, title, url)
             }

@@ -1,9 +1,11 @@
 const orderModule = new Vue({
     el: '#order_module',
+    mixins: [mixin],
     data: {
         pagination: {current_page: 1},
         orders: [],
         users: [],
+        loader: false,
         services: [],
         order_mode_count: null,
         order_checkbox: [],
@@ -11,6 +13,13 @@ const orderModule = new Vue({
         filter: {
             status: "", 
             search: "",
+            user: "",
+            service: "",
+            mode: "",
+            filter_type: {
+                type: 'order_id',
+                data: '',
+            }
         },
         datalink : null,
         dataStartCount : null,
@@ -31,7 +40,18 @@ const orderModule = new Vue({
         order_page: 'order',
     },
     created () {
-       
+        if (this.getParameterByName('status')) {
+            this.filter.status = this.getParameterByName('status');
+        }
+        if (this.getParameterByName('user')) {
+            this.filter.user = this.getParameterByName('user');
+        }
+        if (this.getParameterByName('service')) {
+            this.filter.service = this.getParameterByName('service');
+        }
+        if (this.getParameterByName('mode')) {
+            this.filter.mode = this.getParameterByName('mode');
+        }
     },
     watch: {
         checkAllOrders(oldval, newval)
@@ -44,12 +64,12 @@ const orderModule = new Vue({
     },
     mounted () {
         this.getOrders();
-        console.log(this.orders, 'lsits');
     },
    
     methods: {
         //
         getOrders(page=1) {
+            this.loader = true;
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {
@@ -67,17 +87,39 @@ const orderModule = new Vue({
                 history.pushState(state, title, url)
             }
 
-            if (this.filter.search !== "") {
-                const state = { 'search': this.filter.search};
+            if (this.filter.user !== "") {
+                const state = { 'user': this.filter.user};
                 const title = '';
-                page_id += '&status='+this.filter.search;
+                page_id += '&user='+this.filter.user;
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+            if (this.filter.service !== "") {
+                const state = { 'service': this.filter.service};
+                const title = '';
+                page_id += '&service='+this.filter.service;
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+            if (this.filter.mode !== "") {
+                const state = { 'mode': this.filter.mode};
+                const title = '';
+                page_id += '&mode='+this.filter.mode;
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+
+            if (this.filter.filter_type.data!=='') {
+                const state = { 'filter_type': this.filter.filter_type.type, 'data': this.filter.filter_type.data};
+                const title = '';
+                page_id += '&filter_type='+this.filter.filter_type.type+'&data='+this.filter.filter_type.data;
                 const url = base_url+'/admin/orders'+ page_id;
                 history.pushState(state, title, url)
             }
             fetch(base_url+'/admin/get-orders'+ page_id)
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res);
+                    this.loader = false;
                     this.orders = res.orders.data;
                     this.users = res.users;
                     this.services = res.services;
@@ -288,6 +330,30 @@ const orderModule = new Vue({
                 alert('No check box is selected');
             }
         },
+        filterStatus(status)
+        {
+            this.filter.status = status;
+            this.getOrders();
+        },
+        statusUser(user_id)
+        {
+            this.filter.user = user_id;
+            this.getOrders();
+        },
+        statusService(service)
+        {
+            this.filter.service = service;
+            this.getOrders();
+        },
+        statusMode(mode)
+        {
+            this.filter.mode = mode;
+            this.getOrders();
+        },
+        filterType()
+        {
+            this.getOrders();
+        }
 
         
        
