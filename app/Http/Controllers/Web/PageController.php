@@ -94,7 +94,6 @@ class PageController extends Controller
             asset('assets/js/bootstrap.js'),
             asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
-            asset('assets/js/site-modal.js'),
         ];
 
         if ($page->default_url == 'sign-in') {
@@ -214,12 +213,8 @@ class PageController extends Controller
             $site['status'] = $input['status']??'all';
         } elseif ($page->default_url == 'tickets') {
             $site['url'] = route('ticket.store');
-            $site['scripts'] = [
-                asset('assets/js/jquery.js'),
-                asset('assets/js/bootstrap.js'),
-                asset('assets/js/vue.js'),
-                asset('user-assets/vue-scripts/ticket-vue.js'),
-            ];
+
+            $site['scripts'][] = asset('user-assets/vue-scripts/ticket-vue.js');
 
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');
@@ -234,13 +229,8 @@ class PageController extends Controller
         } elseif ($page->default_url == 'new-order' || $page->default_url == 'mass-order') {
             $site['single_order_url'] = route('make.single.order');
             $site['mass_order_url'] = route('massOrder.store');
-            $site['scripts'] = [
-                asset('assets/js/jquery.js'),
-                asset('assets/js/bootstrap.js'),
-                asset('assets/js/vue.js'),
-                asset('user-assets/vue-scripts/single-order.js'),
-                asset('assets/js/custom.js'),
-            ];
+
+            $site['scripts'][] = asset('user-assets/vue-scripts/single-order.js');
 
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');
