@@ -7,20 +7,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Blog extends Model
+class Redeem extends Model
 {
     use SoftDeletes, LogsActivity;
 
-    protected $table = 'blogs';
+    protected $table = 'redeems';
 
     protected $fillable = [
-        'panel_id', 'category_id', 'title', 'slug', 'image', 'content', 'meta_title', 'meta_keyword', 'meta_description', 'type', 'status', 'updated_by', 'created_by',
+        'panel_id', 'user_id', 'account_status', 'redeem_point', 'spent_amount', 'redeem_amount', 'updated_by', 'created_by',
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Blog'; //custom_log_name_for_this_model
+    protected static $logName = 'Redeem'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

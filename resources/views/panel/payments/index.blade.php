@@ -9,6 +9,7 @@
                         <div class="row pb-3 pt-3">
                             <div class="col-md-6">
                                 <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#paymentAddModal">Add Payment</button>
+                                <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#redeemPointModal">Redeem Point</button>
                             </div>
                             <div class="col-md-6">
                                 <form class="d-flex pull-right" method="get" action="">
@@ -133,6 +134,37 @@
                                             <div class="form-group">
                                                 <label for=""><strong>Memo (optional)</strong></label>
                                                 <input type="text" v-model='payment_obj.memo' name="memo" class="form-control custom-form-control" placeholder="Memo"  required >
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="form-actions">
+                                                <button type="submit"  class="btn btn-primary custom-button"> <i class="fa fa-check"></i> Save</button>
+                                            </div>
+                                            <button type="button" class="btn btn-danger custom-button" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+
+                        <div class="modal bs-example-modal-lg" id="redeemPointModal" role="dialog" aria-labelledby="redeemPointModal" aria-hidden="true">
+                            <div class="modal-dialog __modal_dialog_custom">
+                                <div class="modal-content">
+                                    <form  id="payment-form" method="post" action="{{ route('admin.redeem.store') }}">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Redeem Point</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for=""><strong>User</strong></label>
+                                                <select name="user_id" class="form-control custom-form-control" required >
+                                                    <option disabled>Choose user</option>
+                                                    <option :value="user.id" v-for="(user, index) in users">@{{ user.username }} </option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
