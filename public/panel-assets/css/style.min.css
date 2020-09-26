@@ -197,4 +197,6 @@ body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important}.__servic
     #import .__modal_dialog_custom {
         max-width: 800px!important;
     }
+.select2-container {
+    width: 100% !important;
 }
