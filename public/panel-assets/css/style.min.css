@@ -176,3 +176,6 @@ body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important}.__servic
 .pagination .page-item .page-link{
     cursor: pointer;
 }
+.select2-container {
+    width: 100% !important;
+}
