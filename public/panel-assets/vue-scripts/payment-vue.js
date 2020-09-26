@@ -16,6 +16,11 @@ const paymentModule = new Vue({
             status: "", 
             search: "",
         },
+        errors: {
+            payment: [],
+            common: "",
+
+        },
         payment_edit_id: null,
         payment_edit: false,
 
@@ -72,7 +77,13 @@ const paymentModule = new Vue({
                 history.pushState(state, title, url)
             }
             fetch(base_url+'/admin/payments-lists'+ page_id)
-                .then(res => res.json())
+                .then(res =>
+                    {
+                        if (!res.ok) {
+                            throw res.json();
+                        }
+                        return res.json();
+                    })
                 .then(res => {
                     this.payments = res.payments.data;
                     this.global_payments = res.globalMethods;
@@ -85,7 +96,30 @@ const paymentModule = new Vue({
                         $('#select2-redeem-user').select2();
                         $('#select2-redeem-user').val(this.users).trigger('change');                        
                     }, 100);
-                });
+                }).
+                catch(err=>{
+                        this.loader = false;
+                        let prepare = [];
+                        err.then(erMesg => {
+                            console.log(erMesg, 'adfdsaf');
+                            if ('errors' in erMesg) {
+                                let errMsgs = Object.entries(erMesg.errors);
+                                for (let i = 0; i < errMsgs.length; i++) {
+                                    let obj = {};
+                                    obj.name = errMsgs[i][0];
+                                    obj.desc = errMsgs[i][1][0];
+                                    prepare.push(obj);
+                                }
+                                this.errors.payment = prepare;
+                                console.log(this.errors.payment);
+                            }
+                            else if ('data' in erMesg)
+                            {
+                                this.errors.common = erMesg.data;
+                            }
+                        });
+                })
+                
         },
         savePayment(evt)
         {

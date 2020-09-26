@@ -188,7 +188,7 @@
 
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/payment-vue.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/payment-vue.js?var=0.1')}}"></script>
 <script>
     setTimeout(function () {
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
