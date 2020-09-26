@@ -9,12 +9,7 @@
     {% if site['favicon'] %}
         <link rel="shortcut icon" type="image/ico" href="{{ site['favicon'] }}" />
     {% endif %}
-    <script>
-        /* global instances */
-        window.CSRF_TOKEN = "{{site['csrf_token']}}";
-        window.base_url = "{{site['site_url']}}";
-        /* end of global instances */
-    </script>
+
     {% for style in site['styles'] %}
         <link rel="stylesheet" type="text/css" href="{{ style }}">
     {% endfor %}
@@ -163,7 +158,9 @@
 </div>
 
 {% for script in site['scripts'] %}
-    <script type="text/javascript" src="{{ script }}"></script>
+    <script type="text/javascript" {% if script['src'] %}src="{{ script['src'] }}"{% endif %}>
+		{% if script['code'] %} {{ script['code'] | raw }} {% endif %}
+	</script>
 {% endfor %}
 </body>
 </html>
