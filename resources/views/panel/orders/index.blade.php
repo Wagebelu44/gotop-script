@@ -81,6 +81,11 @@
                             </div>
                         </div><div>
                     </div>
+                    <div class="overlay-loader" v-if="loader">
+                        <div class="loader-holder">
+                            <img src="{{asset('loader.gif')}}" alt="">
+                        </div>
+                    </div>
                         @include('panel.orders.table')
                         <div class="row">
                             <div class="col-md-12 text-center">

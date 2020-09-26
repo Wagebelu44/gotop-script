@@ -304,8 +304,8 @@ class OrderController extends Controller
                     $q->where('orders.user_id', request()->query('user'));
                 }
 
-                if (request()->query('services')) {
-                    $q->where('orders.service_id', request()->query('services'));
+                if (request()->query('service')) {
+                    $q->where('orders.service_id', request()->query('service'));
                 }
                 if (request()->query('mode') && request()->query('mode') != 'all') {
                     $q->where('orders.mode', strtolower(request()->query('mode')));

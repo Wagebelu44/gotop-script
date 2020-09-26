@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.1') }}">
     @yield('styles')
 </head>
 

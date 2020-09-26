@@ -5,6 +5,7 @@ const orderModule = new Vue({
         pagination: {current_page: 1},
         orders: [],
         users: [],
+        loader: false,
         services: [],
         order_mode_count: null,
         order_checkbox: [],
@@ -12,6 +13,9 @@ const orderModule = new Vue({
         filter: {
             status: "", 
             search: "",
+            user: "",
+            service: "",
+            mode: "",
         },
         datalink : null,
         dataStartCount : null,
@@ -52,6 +56,7 @@ const orderModule = new Vue({
     methods: {
         //
         getOrders(page=1) {
+            this.loader = true;
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {
@@ -69,16 +74,31 @@ const orderModule = new Vue({
                 history.pushState(state, title, url)
             }
 
-            if (this.filter.search !== "") {
-                const state = { 'search': this.filter.search};
+            if (this.filter.user !== "") {
+                const state = { 'user': this.filter.user};
                 const title = '';
-                page_id += '&status='+this.filter.search;
+                page_id += '&user='+this.filter.user;
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+            if (this.filter.service !== "") {
+                const state = { 'service': this.filter.service};
+                const title = '';
+                page_id += '&service='+this.filter.service;
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+            if (this.filter.mode !== "") {
+                const state = { 'mode': this.filter.mode};
+                const title = '';
+                page_id += '&mode='+this.filter.mode;
                 const url = base_url+'/admin/orders'+ page_id;
                 history.pushState(state, title, url)
             }
             fetch(base_url+'/admin/get-orders'+ page_id)
                 .then(res => res.json())
                 .then(res => {
+                    this.loader = false;
                     this.orders = res.orders.data;
                     this.users = res.users;
                     this.services = res.services;
@@ -292,6 +312,21 @@ const orderModule = new Vue({
         filterStatus(status)
         {
             this.filter.status = status;
+            this.getOrders();
+        },
+        statusUser(user_id)
+        {
+            this.filter.user = user_id;
+            this.getOrders();
+        },
+        statusService(service)
+        {
+            this.filter.service = service;
+            this.getOrders();
+        },
+        statusMode(mode)
+        {
+            this.filter.mode = mode;
             this.getOrders();
         },
 
