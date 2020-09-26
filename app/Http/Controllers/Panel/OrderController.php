@@ -313,7 +313,7 @@ class OrderController extends Controller
 
                 if (request()->query('filter_type')) {
                     $filte_type = request()->query('filter_type');
-                    $search_input = request()->query('search');
+                    $search_input = request()->query('data');
                     if ($search_input != null) {
                         if ($filte_type == 'order_id') {
                             $q->where('orders.order_id', '=', $search_input);
@@ -370,7 +370,7 @@ class OrderController extends Controller
 
         $role =  'admin';
         $page_name =  'order_index';
-        $users = User::where('panel_id', auth()->user()->panel_id)->get();
+        $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
         $services = Service::select('services.id', 'services.name', 'A.totalOrder')
         ->leftJoin(\DB::raw('( SELECT service_id, count(id) as totalOrder From orders GROUP BY service_id) as A'), 'services.id', '=','A.service_id')
         ->where('panel_id', auth()->user()->panel_id)

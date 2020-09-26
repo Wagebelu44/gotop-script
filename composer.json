@@ -17,6 +17,7 @@
         "laravel/framework": "^7.24",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.2",
+        "maatwebsite/excel": "^3.1",
         "rcrowe/twigbridge": "^0.12.1",
         "spatie/laravel-activitylog": "^3.14",
         "spatie/laravel-permission": "^3.16"

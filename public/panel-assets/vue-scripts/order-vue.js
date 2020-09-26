@@ -16,6 +16,10 @@ const orderModule = new Vue({
             user: "",
             service: "",
             mode: "",
+            filter_type: {
+                type: 'order_id',
+                data: '',
+            }
         },
         datalink : null,
         dataStartCount : null,
@@ -38,6 +42,15 @@ const orderModule = new Vue({
     created () {
         if (this.getParameterByName('status')) {
             this.filter.status = this.getParameterByName('status');
+        }
+        if (this.getParameterByName('user')) {
+            this.filter.user = this.getParameterByName('user');
+        }
+        if (this.getParameterByName('service')) {
+            this.filter.service = this.getParameterByName('service');
+        }
+        if (this.getParameterByName('mode')) {
+            this.filter.mode = this.getParameterByName('mode');
         }
     },
     watch: {
@@ -92,6 +105,14 @@ const orderModule = new Vue({
                 const state = { 'mode': this.filter.mode};
                 const title = '';
                 page_id += '&mode='+this.filter.mode;
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+
+            if (this.filter.filter_type.data!=='') {
+                const state = { 'filter_type': this.filter.filter_type.type, 'data': this.filter.filter_type.data};
+                const title = '';
+                page_id += '&filter_type='+this.filter.filter_type.type+'&data='+this.filter.filter_type.data;
                 const url = base_url+'/admin/orders'+ page_id;
                 history.pushState(state, title, url)
             }
@@ -329,6 +350,10 @@ const orderModule = new Vue({
             this.filter.mode = mode;
             this.getOrders();
         },
+        filterType()
+        {
+            this.getOrders();
+        }
 
         
        

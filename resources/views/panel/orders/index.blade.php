@@ -58,16 +58,16 @@
                                 </ul>
                             </div>
                             <div class="col-md-6">
-                                <form class="d-flex pull-right" method="get" action="">
+                                <div class="d-flex pull-right">
                                     <div>
-                                        <a href="" class="btn btn-link">Export</a>
+                                        <a href="{{ route('admin.exported_orders.index') }}" class="btn btn-link">Export</a>
                                     </div>
                                     <div class="form-group mb-2 mr-0">
-                                        <input type="search" name="search" class="form-control" placeholder="Search..." value="">
+                                        <input type="search" name="search" v-model="filter.filter_type.data" class="form-control" placeholder="Search..." value="">
                                     </div>
                                     <input type="hidden" name="query_service" value="">
                                     <div class="form-group mb-2 ml-0">
-                                        <select name="filter_type" id="filter_type" class="form-control">
+                                        <select name="filter_type" v-model="filter.filter_type.type" class="form-control">
                                             <option value="order_id">Order ID</option>
                                             <option value="link">Link</option>
                                             <option value="username">Username</option>
@@ -76,8 +76,8 @@
                                             <option value="null">Provider</option>
                                         </select>
                                     </div>
-                                    <button type="submit" class="btn btn-default mb-2" style="border:1px solid #eeeff0;"> <i class="fa fa-search" aria-hidden="true"></i> </button>
-                                </form>
+                                    <button type="button" @click="filterType" class="btn btn-default mb-2" style="border:1px solid #eeeff0;"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                                </div>
                             </div>
                         </div><div>
                     </div>
