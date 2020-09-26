@@ -26,6 +26,7 @@ class CreateExportedOrdersTable extends Migration
             $table->text('provider_ids');
             $table->unsignedBigInteger('panel_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
