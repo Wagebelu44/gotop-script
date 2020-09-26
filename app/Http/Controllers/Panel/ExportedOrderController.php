@@ -6,6 +6,7 @@ use App\User;
 use App\Models\Order;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use App\Exports\OrdersExport;
 use App\Models\ExportedOrder;
 use Spatie\ArrayToXml\ArrayToXml;
 use App\Http\Controllers\Controller;
@@ -59,7 +60,7 @@ class ExportedOrderController extends Controller
 
             return redirect()->back()->withSuccess('Order exported successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return redirect()->back()->withError($e->getMessage());
         }
     }
 
@@ -80,7 +81,7 @@ class ExportedOrderController extends Controller
                 } elseif ($value == 'service_id' || $value == 'service_name') {
                     $include_columns[] = 'services.' . explode('service_', $value, 2)[1] . ' AS ' . $value;
                 } elseif ($value == 'provider_domain') {
-                    $include_columns[] = 'providers.domain AS provider';
+                    $include_columns[] = 'setting_providers.domain AS provider';
                 } else {
                     $include_columns[] = 'orders.' . $value;
                 }
@@ -112,7 +113,6 @@ class ExportedOrderController extends Controller
                 $filename = "public/exportedData/orders.json";
                 Storage::disk('local')->put($filename, $orders->toJson(JSON_PRETTY_PRINT));
                 $headers = array('Content-type' => 'application/json');
-
                 return response()->download('storage/exportedData/orders.json', 'orders.json', $headers);
             } elseif ($exportedOrder->format == 'xml') {
                 $data = ArrayToXml::convert(['__numeric' => $orders->toArray()]);
@@ -124,7 +124,8 @@ class ExportedOrderController extends Controller
                 return Excel::download(new OrdersExport($orders, unserialize($exportedOrder->include_columns)), 'orders.xlsx');
             }
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            dd($e->getMessage());
+            return redirect()->back()->withError($e->getMessage());
         }
     }
 }

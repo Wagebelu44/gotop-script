@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\User;
+use App\Exports\UsersExport;
 use App\Models\ExportedUser;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
@@ -337,7 +338,7 @@ class UserController extends Controller
 
                 return response()->download('storage/exportedData/users.xml', 'users.xml', $headers);
             } else {
-                return Excel::download(new ExportedUser($users, unserialize($exportedUser->include_columns)), 'users.xlsx');
+                return Excel::download(new UsersExport($users, unserialize($exportedUser->include_columns)), 'users.xlsx');
             }
         } catch (\Exception $e) {
             return redirect()->back()->withError(['error' => $e->getMessage()]);
