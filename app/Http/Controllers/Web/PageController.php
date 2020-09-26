@@ -19,6 +19,7 @@ use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
 use App\Http\Controllers\Controller;
+use App\Models\NewsfeedCategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
@@ -329,8 +330,10 @@ class PageController extends Controller
         return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site, 'menus' => $menus->toArray()]);
     }
 
-    public function newsfeedApi(){
+    public function newsfeedApi(Request $request)
+    {
         $panelId = session('panel');
+        $data = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'desc')->get();
         $data = Newsfeed::where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'desc')->get();
         return view('web.newsfeed', compact('data'));
     }

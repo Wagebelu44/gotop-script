@@ -11,16 +11,16 @@ class NewsfeedCategory extends Model
 {
     use SoftDeletes, LogsActivity;
 
-    protected $table = 'blog_categories';
+    protected $table = 'newsfeed_categories';
 
     protected $fillable = [
-        'panel_id', 'name', 'status', 'created_by', 'updated_by',
+        'panel_id', 'name', 'color', 'status', 'created_by', 'updated_by',
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'Blog Category'; //custom_log_name_for_this_model
+    protected static $logName = 'News Category'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {
