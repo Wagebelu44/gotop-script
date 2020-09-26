@@ -77,6 +77,14 @@ const paymentModule = new Vue({
                     this.payments = res.payments.data;
                     this.global_payments = res.globalMethods;
                     this.users = res.users;
+
+                    setTimeout(() => {
+                        $('#select2-payment-user').select2();
+                        $('#select2-payment-user').val(this.users).trigger('change');
+                        
+                        $('#select2-redeem-user').select2();
+                        $('#select2-redeem-user').val(this.users).trigger('change');                        
+                    }, 100);
                 });
         },
         savePayment(evt)
@@ -84,6 +92,10 @@ const paymentModule = new Vue({
             this.loader.payment = true;
             let payment_form = null;
             payment_form = new FormData(document.getElementById('payment-form'));
+
+            var userId = $('#select2-payment-user').val();
+            payment_form.append('user_id', userId);
+            console.log(payment_form);
             if (this.payment_edit_id) {
                 payment_form.append('edit_id', this.payment_edit_id);
                 payment_form.append('edit_mode', true);

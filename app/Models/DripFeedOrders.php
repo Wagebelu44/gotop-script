@@ -10,6 +10,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class DripFeedOrders extends Model
 {
     use SoftDeletes, LogsActivity;
+    
     protected $table = 'drip_feed_orders';
     protected $fillable = ['id','user_id','runs','interval','total_quantity','total_charges','status','panel_id','created_at','updated_at','deleted_at'];
 

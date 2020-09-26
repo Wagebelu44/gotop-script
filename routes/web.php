@@ -53,6 +53,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('getusers', 'Panel\UserController@getUsers');
             Route::resource('users', 'Panel\UserController');
             #Users...
+            Route::get('export/users', 'Panel\UserController@export')->name('users.export');
+            Route::post('exportedUser', 'Panel\UserController@exportUsers');
+            Route::post('users/download/{exported_user}', 'Panel\UserController@downloadExportedUser')->name('users.exported_user.download');
             Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');
@@ -68,6 +71,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('get-orders', 'Panel\OrderController@getOrderLists');
             Route::post('orders/update/{id}', 'Panel\OrderController@updateOrder');
             Route::resource('orders', 'Panel\OrderController');
+            Route::resource('exported_orders', 'Panel\ExportedOrderController')->only('index', 'store');
+            Route::post('exported_orders/{exported_order}/download', 'Panel\ExportedOrderController@download')->name('exported_orders.download');
 
             #Drip-feed...
             Route::get('drip-feed-lists', 'Panel\DripFeedController@getDripFeedLists');

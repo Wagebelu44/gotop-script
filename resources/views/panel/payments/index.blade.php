@@ -115,7 +115,7 @@
                                                 {{-- <div class="ui-widget">
                                                   <input type="text" name="user_id" id="user_id_payment" class="form-control custom-form-control" placeholder="type user name" />
                                                 </div> --}}
-                                                <select name="user_id" v-model='payment_obj.user_id' class="form-control custom-form-control" required >
+                                                <select name="user_id" v-model='payment_obj.user_id' class="form-control custom-form-control" id="select2-payment-user" required>
                                                     <option disabled selected>Choose user</option>
                                                 <option :value="u.id" v-for="(u, i) in users">@{{ u.username }} </option>
                                                 </select>
@@ -161,7 +161,7 @@
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for=""><strong>User</strong></label>
-                                                <select name="user_id" class="form-control custom-form-control" required >
+                                                <select name="user_id" class="form-control custom-form-control" id="select2-redeem-user" required>
                                                     <option disabled>Choose user</option>
                                                     <option :value="user.id" v-for="(user, index) in users">@{{ user.username }} </option>
                                                 </select>

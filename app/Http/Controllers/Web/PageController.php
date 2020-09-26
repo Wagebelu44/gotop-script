@@ -82,7 +82,6 @@ class PageController extends Controller
         $site['notifigIcon'] = asset('assets/img/notifig.svg');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
-        $site['csrf_token'] = csrf_token();
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
@@ -90,10 +89,13 @@ class PageController extends Controller
             asset('assets/css/style.css'),
         ];
         $site['scripts'] = [
-            asset('assets/js/jquery.js'),
-            asset('assets/js/bootstrap.js'),
-            asset('assets/js/vue.js'),
-            asset('assets/js/custom.js'),
+            ['code' => '
+                window.CSRF_TOKEN = "'.csrf_token().';
+                window.base_url = "'.url('/').'";'],
+            ['src' => asset('assets/js/jquery.js')],
+            ['src' => asset('assets/js/bootstrap.js')],
+            ['src' => asset('assets/js/vue.js')],
+            ['src' => asset('assets/js/custom.js')],
         ];
 
         if ($page->default_url == 'sign-in') {
@@ -214,7 +216,7 @@ class PageController extends Controller
         } elseif ($page->default_url == 'tickets') {
             $site['url'] = route('ticket.store');
 
-            $site['scripts'][] = asset('user-assets/vue-scripts/ticket-vue.js');
+            $site['scripts'][] = ['src' => asset('user-assets/vue-scripts/ticket-vue.js')];
 
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');
@@ -230,7 +232,7 @@ class PageController extends Controller
             $site['single_order_url'] = route('make.single.order');
             $site['mass_order_url'] = route('massOrder.store');
 
-            $site['scripts'][] = asset('user-assets/vue-scripts/single-order.js');
+            $site['scripts'][] = ['src' => asset('user-assets/vue-scripts/single-order.js')];
 
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');

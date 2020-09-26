@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Service;
+use App\Models\SettingProvider;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -48,7 +49,6 @@ class Order extends Model
             'partial' => "#17a2b8",
         ];
         return $colors[$this->status]??'#77B243';
-
     }
 
     public function service()
@@ -61,5 +61,8 @@ class Order extends Model
         return $this->belongsTo('App\User');
     }
 
-
+    public function provider()
+    {
+        return $this->belongsTo(SettingProvider::class, 'provider_id');
+    }
 }
