@@ -178,7 +178,7 @@
                         <span>{{ dateFormat($post->created_at) }}</span>
                     </div>
 
-                    <div class="featureControls">
+                    {{-- <div class="featureControls">
                         <div class="social featureControl" data-action="share">
                             <div class="socialShare" onclick="BeamerEmbed.showSocialMenu(this)" title="Share"></div>
                             <div class="socialOverlay"></div>
@@ -203,7 +203,7 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <h3 class="featureTitle">
                         <a href="https://news.justanotherpanel.com/en/211799-217001" class="redirected"></a>
