@@ -145,6 +145,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
             #blog Slider
             Route::resource('blog-slider', 'Panel\BlogSliderController');
 
+            #news feed...
+            Route::resource('newsfeed', 'Panel\NewsfeedController');
+            Route::resource('newsfeed-category', 'Panel\NewsfeedCategoryController');
 
             #Profile...
             Route::get('profile', 'Panel\ProfileController@profile')->name('profile');

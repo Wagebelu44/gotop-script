@@ -98,6 +98,12 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item {{ Request::routeIs('admin.newsfeed*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.newsfeed*') ? 'active':'' }}" href="{{ route('admin.newsfeed.index') }}">
+                                <span class="hide-menu">Newsfeed</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item {{ Request::routeIs('admin.appearance*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.appearance*') ? 'active':'' }}" href="{{ route('admin.appearance.page.index') }}">
                                 <span class="hide-menu">Appearance</span>
