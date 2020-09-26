@@ -82,7 +82,6 @@ class PageController extends Controller
         $site['notifigIcon'] = asset('assets/img/notifig.svg');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
-        $site['csrf_token'] = csrf_token();
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
