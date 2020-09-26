@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Panel;
 
 use App\User;
+use App\Models\Order;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use App\Models\ExportedOrder;
+use Spatie\ArrayToXml\ArrayToXml;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 
 class ExportedOrderController extends Controller
 {
@@ -13,7 +18,8 @@ class ExportedOrderController extends Controller
     {
         $panel_users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
         $panel_services = Service::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
-        return view('panel.orders.order_export', compact('panel_users', 'panel_services'));
+        $exported_order = ExportedOrder::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
+        return view('panel.orders.order_export', compact('panel_users', 'panel_services', 'exported_order'));
     }
 
     /**
@@ -40,6 +46,7 @@ class ExportedOrderController extends Controller
             'include_columns' => 'required|array|in:id,order_id,user_username,charges,cost,link,status,start_counter,quantity,service_id,service_name,created_at,remains,provider_domain,mode',
         ]);
 
+        
         try {
             $data = $request->except('_token');
             $data['include_columns'] = serialize($request->include_columns);
@@ -47,8 +54,7 @@ class ExportedOrderController extends Controller
             $data['service_ids'] = serialize($request->service_ids);
             $data['provider_ids'] = serialize($request->provider_ids);
             $data['status'] = serialize($request->status);
-            $data['reseller_id'] = auth()->guard('reseller')->id();
-
+            $data['panel_id'] = auth()->user()->panel_id;
             ExportedOrder::create($data);
 
             return redirect()->back()->withSuccess('Order exported successfully.');
@@ -68,7 +74,6 @@ class ExportedOrderController extends Controller
         try {
             $columns = unserialize($exportedOrder->include_columns);
             $include_columns = [];
-
             foreach ($columns as $value) {
                 if ($value == 'user_username') {
                     $include_columns[] = 'users.username AS user_name';
@@ -80,10 +85,9 @@ class ExportedOrderController extends Controller
                     $include_columns[] = 'orders.' . $value;
                 }
             }
-
             $orders = Order::join('users', 'users.id', '=', 'orders.user_id')
                 ->join('services', 'services.id', '=', 'orders.service_id')
-                ->leftJoin('providers', 'providers.id', '=', 'orders.provider_id')
+                ->leftJoin('setting_providers', 'setting_providers.id', '=', 'orders.provider_id')
                 ->select($include_columns)
                 ->whereBetween('orders.created_at', [$exportedOrder->from, $exportedOrder->to])
                 ->where(function ($q) use ($exportedOrder) {
@@ -100,11 +104,10 @@ class ExportedOrderController extends Controller
                         $q->whereIn('services.id', unserialize($exportedOrder->service_ids));
                     }
                     if (!in_array('all', unserialize($exportedOrder->provider_ids))) {
-                        $q->whereIn('providers.id', unserialize($exportedOrder->provider_ids));
+                        $q->whereIn('setting_providers.id', unserialize($exportedOrder->provider_ids));
                     }
                 })
                 ->get();
-
             if ($exportedOrder->format == 'json') {
                 $filename = "public/exportedData/orders.json";
                 Storage::disk('local')->put($filename, $orders->toJson(JSON_PRETTY_PRINT));
@@ -116,7 +119,6 @@ class ExportedOrderController extends Controller
                 $filename = "public/exportedData/orders.xml";
                 Storage::disk('local')->put($filename, $data);
                 $headers = array('Content-type' => 'application/xml');
-
                 return response()->download('storage/exportedData/orders.xml', 'orders.xml', $headers);
             } else {
                 return Excel::download(new OrdersExport($orders, unserialize($exportedOrder->include_columns)), 'orders.xlsx');

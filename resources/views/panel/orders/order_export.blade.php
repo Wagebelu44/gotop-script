@@ -140,7 +140,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <div class="controls">
-                                                <input type="text" name="from" id="date-start" class="form-control @error('from') is-invalid @enderror" placeholder="From" value="{{ old('from') }}" required data-validation-required-message="This field is required">
+                                                <input type="text" name="from" class="form-control  datepicker @error('from') is-invalid @enderror" placeholder="From" value="{{ old('from') }}" required data-validation-required-message="This field is required">
 
                                                 @error('from')
                                                 <span class="invalid-feedback" role="alert">
@@ -153,7 +153,7 @@
                                     <div class="col">
                                         <div class="form-group">
                                             <div class="controls">
-                                                <input type="text" name="to" id="date-end" class="form-control @error('to') is-invalid @enderror" placeholder="To" value="{{ old('to') }}" required data-validation-required-message="This field is required">
+                                                <input type="text" name="to" class="form-control datepicker @error('to') is-invalid @enderror" placeholder="To" value="{{ old('to') }}" required data-validation-required-message="This field is required">
 
                                                 @error('to')
                                                 <span class="invalid-feedback" role="alert">
@@ -322,10 +322,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        @php
-                                            $exportedOrders = [];
-                                        @endphp
-                                    @foreach($exportedOrders as $item)
+                                    @foreach($exported_order as $item)
                                     <tr>
                                         <td>{{ $item->from }}</td>
                                         <td>{{ $item->to }}</td>
@@ -356,9 +353,12 @@
 
 @section('script')
     <script>
-        $('#date-start').bootstrapMaterialDatePicker({ weekStart: 0, time: false }).on('change', function(e, date) {
-            $('#date-end').bootstrapMaterialDatePicker({ weekStart: 0, time: false, minDate: date } );
+
+        $(document).ready(function () {
+            $('.datepicker').datepicker();
         });
+
+       
 
         (function() {
             let status = $("#status");

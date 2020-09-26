@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/sweetalert2/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/b-datepicker/css/bootstrap-datepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.1') }}">
     @yield('styles')
@@ -52,7 +53,7 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':'' }}">
+                        <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':''}} {{  Request::routeIs('admin.exported_orders*') ? 'selected':'' }} ">
                             <a class="sidebar-link {{ Request::routeIs('admin.orders*') ? 'active':'' }}" href="{{ route('admin.orders.index') }}">
                                 <span class="hide-menu">Orders</span>
                             </a>
@@ -160,6 +161,7 @@
     <script src="{{ asset('panel-assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/b-datepicker/js/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
