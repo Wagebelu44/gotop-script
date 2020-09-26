@@ -139,7 +139,7 @@
     </div>
     <div class="wp-sheet" style="display:none">
         <div class="wp-sheet-head">
-            <div class="wp-sheet-head-inner">Go2Top</div>
+            <div class="wp-sheet-head-inner">{{ site['panel_name'] }}</div>
             <a href="#" class="wp-sheet-head-close">×</a>
         </div>
         <div class="wp-sheet-body"></div>
@@ -147,7 +147,7 @@
             <div class="wp-sheet-content-inner">
                 <div class="wp-sheet-content-part">
                     <div class="fb-page">
-                        <iframe style="width: 100%; height: calc(100vh - 54px); border: 1px solid #fff;" src="http://goldtop.live/gotoapi/"></iframe>
+                        <iframe style="width: 100%; height: calc(100vh - 54px); border: 1px solid #fff;" src="{{ site['site_url'] }}/newsfeed-api"></iframe>
                     </div>
                 </div>
 
