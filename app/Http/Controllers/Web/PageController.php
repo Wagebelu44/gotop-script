@@ -333,9 +333,9 @@ class PageController extends Controller
     public function newsfeedApi(Request $request)
     {
         $panelId = session('panel');
-        $data = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'desc')->get();
-        $data = Newsfeed::where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'desc')->get();
-        return view('web.newsfeed', compact('data'));
+        $categories = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('name', 'ASC')->get();
+        $news = Newsfeed::with(['getCategories'])->where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'DESC')->get();
+        return view('web.newsfeed', compact('categories', 'news'));
     }
 
 }

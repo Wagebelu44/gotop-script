@@ -33,7 +33,8 @@ class Newsfeed extends Model
         $activity->panel_id = auth()->user()->panel_id;
     }
 
-    public function getCategories(){
+    public function getCategories()
+    {
         return $this->hasMany(NewsfeedRelation::class, 'newsfeed_id', 'id');
     }
 }
