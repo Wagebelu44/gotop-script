@@ -94,7 +94,6 @@ class PageController extends Controller
             asset('assets/js/bootstrap.js'),
             asset('assets/js/vue.js'),
             asset('assets/js/custom.js'),
-            asset('assets/js/site-modal.js'),
         ];
 
         if ($page->default_url == 'sign-in') {
