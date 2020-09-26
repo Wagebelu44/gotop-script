@@ -266,6 +266,7 @@ class PageController extends Controller
             $accountStatuses = [];
             $statusPosition = [
                 'spent_amount' => 0,
+                'point' => 0,
             ];
             foreach ($accountStatusData as $accStatus){
                 $accountStatuses [] = [
