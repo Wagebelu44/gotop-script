@@ -31,7 +31,7 @@
                                 <tr>
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $category->name }}</td>
-                                    <td>{{ $category->color }}<span class="badge" style="background-color: {{ $category->color }}">&nbsp;&nbsp;&nbsp;</span></td>
+                                    <td><span class="badge" style="background-color: {{ $category->color }}">&nbsp;&nbsp;&nbsp;</span></td>
                                     <td>{{ $category->status }}</td>
                                     <td class="p-r text-right">
                                         <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $category->id) }}">Edit</a>
