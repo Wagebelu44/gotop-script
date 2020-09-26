@@ -6,6 +6,7 @@ use App\Models\AccountStatus;
 use App\Models\Blog;
 use App\Models\BlogSlider;
 use App\Models\Menu;
+use App\Models\Newsfeed;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Redeem;
@@ -327,4 +328,11 @@ class PageController extends Controller
 
         return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site, 'menus' => $menus->toArray()]);
     }
+
+    public function newsfeedApi(){
+        $panelId = session('panel');
+        $data = Newsfeed::where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'desc')->get();
+        return view('web.newsfeed', compact('data'));
+    }
+
 }

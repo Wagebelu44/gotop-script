@@ -14,6 +14,7 @@ Route::get('command', function () {
 
 Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/', 'Web\PageController@index')->name('home');
+    Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
 
     Auth::routes(['verify' => true]);
     Route::group(['middleware' => ['auth', 'verified']], function () {
