@@ -51,6 +51,16 @@ class PaymentController extends Controller
                     $q->orWhere('transactions.tnx_id', 'like', '%' . $input['search'] . '%');
                 }
 
+                if (isset($input['payment_method']) && $input['payment_method']!='')
+                {
+                    $q->where('transactions.reseller_payment_methods_setting_id', $input['payment_method']);
+                }
+
+                if (isset($input['txn_flag']) && ( $input['txn_flag']!='' || $input['txn_flag']!='all' ) )
+                {
+                    $q->where('transactions.transaction_flag', $input['txn_flag']);
+                }
+
                 if (request()->query('filter_type')) {
                     $filte_type = request()->query('filter_type');
                     $search_input = request()->query('data');

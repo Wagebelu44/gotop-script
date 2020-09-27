@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container-fluid all-mt-30" id="payment_module">
+        <div class="overlay-loader" v-if="loader">
+            <div class="loader-holder">
+                <img src="{{asset('loader.gif')}}" alt="">
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -44,7 +49,7 @@
                                             <button class="btn  custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Method</button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item type-dropdown-item" href="">All</a>
-                                                    <a class="dropdown-item type-dropdown-item"  v-for="(g, i) in global_payments" href="javascript:void(0)"> @{{ g.method_name }} (@{{g.totalPayment??0}}) </a>
+                                                    <a class="dropdown-item type-dropdown-item" @click='filterPaymentMethod(g.id)'  v-for="(g, i) in global_payments" href="javascript:void(0)"> @{{ g.method_name }} (@{{g.totalPayment??0}}) </a>
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" > Bonus (0) </a>
                                             </div>
                                         </div>
@@ -59,9 +64,9 @@
                                             <button class="btn  custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mode</button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item type-dropdown-item" href="">All</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'admin_panel')">Manual</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'payment_gateway')">Auto</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchPayment('transaction_flag', 'bonus_deposit')" > Bonus</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="searchPayment('admin_panel')">Manual</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="searchPayment('payment_gateway')">Auto</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="searchPayment('bonus_deposit')" > Bonus</a>
                                             </div>
                                         </div>
                                     </div>
@@ -188,6 +193,7 @@
 
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/payment-vue.js?var=0.3')}}"></script>
 <script>
     setTimeout(function () {

@@ -1,20 +1,20 @@
 const paymentModule = new Vue({
     el: '#payment_module',
+    mixins: [mixin],
     data: {
         pagination: {current_page: 1},
         payments: [],
         global_payments: [],
         users: [],
         services: [],
-        loader: {
-            payment: false,
-        },
         order_mode_count: null,
         order_checkbox: [],
         checkAllOrders: false,
         filter: {
             status: "", 
             search: "",
+            txn_flag: '',
+            payment_method:"",
             filter_type: {
                 type: 'user',
                 data: '',
@@ -56,6 +56,7 @@ const paymentModule = new Vue({
     methods: {
         //
         getPayments(page=1) {
+            this.loader = true;
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {
@@ -80,6 +81,23 @@ const paymentModule = new Vue({
                 const url = base_url+'/admin/payments'+ page_id;
                 history.pushState(state, title, url)
             }
+
+            if (this.filter.payment_method !== "") {
+                const state = { 'payment_method': this.filter.payment_method};
+                const title = '';
+                page_id += '&payment_method='+this.filter.payment_method
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+            
+            if (this.filter.txn_flag !== "") {
+                const state = { 'txn_flag': this.filter.txn_flag};
+                const title = '';
+                page_id += '&txn_flag='+this.filter.txn_flag
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+            
             fetch(base_url+'/admin/payments-lists'+ page_id)
                 .then(res =>
                     {
@@ -89,6 +107,7 @@ const paymentModule = new Vue({
                         return res.json();
                     })
                 .then(res => {
+                    this.loader = false;
                     this.payments = res.payments.data;
                     this.global_payments = res.globalMethods;
                     this.users = res.users;
@@ -226,6 +245,16 @@ const paymentModule = new Vue({
         },
         filterType()
         {
+            this.getPayments();
+        },
+        filterPaymentMethod(method_id)
+        {
+            this.filter.payment_method = method_id;
+            this.getPayments();
+        },
+        searchPayment(flag)
+        {
+            this.filter.txn_flag = flag;
             this.getPayments();
         }
 
