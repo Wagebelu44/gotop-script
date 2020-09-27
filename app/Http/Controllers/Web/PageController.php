@@ -293,6 +293,10 @@ class PageController extends Controller
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
+            $site['serviceApi'] = apiServiceJson();
+            $site['orderResponse'] = apiOrderResponse();
+            $site['multiOrderResponse'] = apiMultiOrderResponse();
+            $site['userBalance'] = apiUserBalance();
         } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
             $site['bitcoin'] = asset('assets/img/bit-icon.png');

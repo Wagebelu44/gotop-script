@@ -182,3 +182,90 @@ if ( ! function_exists('dateFormat')) {
     }
 }
 
+if ( ! function_exists('apiServiceJson')) {
+    function apiServiceJson()
+    {
+       $data = [
+           [
+               "service" => 1,
+               "name" => "Followers",
+               "type" => "Default",
+               "category" => "First Category",
+               "rate" => "0.90",
+               "min" => "50",
+               "max" => "10000"
+           ],
+           [
+               "service" =>  2,
+                "name" =>  "Comments",
+                "type" =>  "Custom Comments",
+                "category" =>  "Second Category",
+                "rate" =>  "8",
+                "min" =>  "10",
+                "max" =>  "1500"
+           ]
+       ];
+
+       return $data;
+
+    }
+}
+
+if ( ! function_exists('apiOrderResponse')) {
+    function apiOrderResponse()
+    {
+       $data = [
+           "charge"=>  "0.27819",
+           "start_count"=>  "3572",
+           "status"=>  "Partial",
+           "remains"=>  "157",
+           "currency"=>  "USD"
+       ];
+       return $data;
+    }
+}
+
+if ( ! function_exists('apiMultiOrderResponse')) {
+    function apiMultiOrderResponse()
+    {
+       $data = [
+           [
+                1 => [
+                    "charge" =>  "0.27819",
+                   "start_count" =>  "3572",
+                   "status" =>  "Partial",
+                   "remains" =>  "157",
+                   "currency" =>  "USD"
+                ]
+           ],
+           [
+               10 => [
+                   "error" =>  "Incorrect order ID"
+               ]
+           ],
+           [
+               100 => [
+                   "charge" =>  "1.44219",
+                   "start_count" =>  "234",
+                   "status" =>  "In progress",
+                   "remains" =>  "10",
+                   "currency" =>  "USD"
+               ]
+           ]
+       ];
+       return $data;
+    }
+}
+
+if ( ! function_exists('apiUserBalance')) {
+    function apiUserBalance()
+    {
+        $data = [
+            "balance"=>  "100.84292",
+            "currency"=>  "USD"
+        ];
+        return $data;
+    }
+}
+
+
