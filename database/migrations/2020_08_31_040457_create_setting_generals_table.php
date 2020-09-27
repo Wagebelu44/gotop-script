@@ -35,6 +35,8 @@ class CreateSettingGeneralsTable extends Migration
             $table->string('drip_feed_interval')->nullable();
             $table->longText('custom_header_code')->nullable();
             $table->longText('custom_footer_code')->nullable();
+            $table->enum('newsfeed_align', ['Left', 'Right'])->default('Right');
+            $table->enum('newsfeed', ['Yes', 'No'])->default('Yes');
             $table->enum('horizontal_menu', ['Yes', 'No'])->default('Yes');
             $table->enum('total_order', ['Yes', 'No'])->default('No');
             $table->enum('total_spent', ['Yes', 'No'])->default('No');

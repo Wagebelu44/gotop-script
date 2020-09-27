@@ -35,6 +35,12 @@ php artisan storage:link
 php artisan migrate --seed
 ~~~
 
+### seed Permission data for first time
+~~~bash
+php artisan db:seed --class=PermissionSeeder
+~~~
+
+
 ### Serving laravel project
 ~~~
 php artisan serve
