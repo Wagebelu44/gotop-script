@@ -24,11 +24,17 @@ class TicketController extends Controller
             $users = User::where('panel_id', Auth::user()->id)->get();
             $tickets = Ticket::with('user')->where('panel_id', Auth::user()->id)
                 ->where(function ($q) use ($inputSearch) {
+                    if (isset($inputSearch['columns']) && is_array($inputSearch['columns'])) {
+                        foreach ($inputSearch['columns'] as $index => $value) {
+                            $q->where($index, $value);
+                        }
+                    }
                     if ($inputSearch['keyword'])
                     {
                         $q->orWhereHas('user', function($q) use ($inputSearch)
                         {
                             $q->where('name', 'like', '%' . $inputSearch['keyword'] . '%');
+                            $q->orWhere('username', 'like', '%' . $inputSearch['keyword'] . '%');
                         });
                     }
                 })->paginate(15);
