@@ -738,7 +738,7 @@ const App = new Vue({
             this.category_edit_id = category_id;
             fetch(base_url+'/admin/show-category/' + category_id).then(res => res.json())
                 .then(res => {
-                    this.loader = true;
+                    this.loader = false;
                     this.category = {...res};
                     $('#exampleModalCenter').modal('show');
                 });
@@ -1247,6 +1247,7 @@ function categorysortable() {
     console.log(allcategory_ids);
 }
 function serviceSortable() {
+    alert();
     let allservice_ids = [];
     $(".service_checkbox").each(function(i,v){
         allservice_ids.push($(this).val());
@@ -1279,7 +1280,6 @@ $(document).ready(function () {
     });
     $("#searchmyInput").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        console.log(value);
         $(".__table_body .__service_row").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });

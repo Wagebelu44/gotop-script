@@ -219,8 +219,9 @@
                                                            <input type="hidden" name="price" v-model="services.form_fields.price">
                                                        </div>
                                                    </div>
+                                                   <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                </div>
-                                               <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
+                                              
                                                <div class="col-11" v-else>
                                                    <div class="form-group">
                                                        <input type="text" class="form-control" name="price" v-model="services.form_fields.price">
@@ -481,9 +482,8 @@
                                                                 <input type="hidden" name="price" v-model="services.form_fields.price">
                                                             </div>
                                                         </div>
-                                                        
+                                                        <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                     </div>
-                                                    <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                     <div class="col-11 test-class" v-else>
                                                         <div class="form-group">
                                                             <input type="text" class="form-control" name="price" v-model="services.form_fields.price">
@@ -860,7 +860,7 @@
                                     </div>
                                 </div>
                                 <div class="__th no-drop-down __service_th_type" style="text-align:right;padding-right:4px; grid-column: span 3">
-                                    <div style="cursor: pointer">
+                                    <div style="cursor: pointer" onclick="toggleAllcategory()">
                                         <i class="fas fa-expand-arrows-alt" id="expand" style="display: none"></i>
                                         <i class="fas fa-compress" id="compress" ></i>
                                     </div>
@@ -894,7 +894,7 @@
                                                 </div>
                                             </div>
                                             <div class="__cate_toggler">
-                                                <div class="service-block__collapse-block">
+                                                <div class="service-block__collapse-block" onclick="hideService(this)">
                                                     <div class="service-block__collapse-button ">
                                                         <i class="fa fa-caret-down ml-1" aria-hidden="true"></i>
                                                     </div>
@@ -908,7 +908,7 @@
                                                         <path
                                                             d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path>
                                                     </svg>
-                                                    <input type="checkbox" class="service_checkbox" style="margin-top: 5px" v-model="service_checkbox"
+                                                    <input type="checkbox" :value='service.id' class="service_checkbox" style="margin-top: 5px" v-model="service_checkbox"
                                                     :value="service.id">
                                                 </div>
                                                 <div class="__service_td">
@@ -944,7 +944,8 @@
                                                     <span class="d-block sub-price"> @{{service.provider?service.provider.max:null}} </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sStatus">
-                                                    @{{service.status}}
+                                                    <span v-if="service.status === 'Deactivated'">Disabled</span>
+                                                    <span v-if="service.status === 'Active'">Enabled</span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" style="grid-column: span 3 / auto;padding: 0;text-align: right;">
                                                     <div class="dropdown __dropdown_buttons">
