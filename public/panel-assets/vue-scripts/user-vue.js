@@ -1,7 +1,7 @@
 const userModule = new Vue({
     el: '#user_panel_module',
     data: {
-        users: null,
+        users: [],
         pagination: {current_page: 1},
         formUser:{
             panel_id: 1,
@@ -29,7 +29,8 @@ const userModule = new Vue({
         selectedUsers: [],
         checkAlluser: false,
         isEdit: false,
-    },
+    },  
+    mixins: [mixin],
     created () {
         let myUrl = new URL (window.location.href);
         if (myUrl.search.includes('page=')) {
@@ -55,13 +56,16 @@ const userModule = new Vue({
     methods: {
         getCategoryServices()
         {
+            this.loader = true;
             fetch(base_url+'/admin/category-services/')
             .then(res => res.json())
             .then(res => {
+                this.loader = false;
                 this.categoryServices = res;
             });
         },
         getUsers(page=1) {
+            this.loader = true;
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {
@@ -88,12 +92,14 @@ const userModule = new Vue({
             fetch(base_url+'/admin/getusers'+ page_id)
                 .then(res => res.json())
                 .then(res => {
+                    this.loader = false;
                     this.users = res.data.data;
                     this.global_payment_methods = res.global_payment_methods;
                     this.pagination = res.data;
                 });
         },
         saveUserInfo() {
+            this.loader = true;
             fetch(base_url+'/admin/users', {
                 headers: {
                     "Accept": "application/json, text/plain, */*'",
@@ -110,8 +116,9 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 if (res.status) {
-                    this.users.unshift(res.data);
+                    this.users =  [res.data, ...this.users];
                     this.formClear();
                     $("#userModal").modal('hide');
                     $( '#user-form' ).each(function(){
@@ -145,6 +152,7 @@ const userModule = new Vue({
             };
         },
         editUser(id) {
+            this.loader = true;
             fetch(base_url+'/admin/users/'+id).then(res => {
                 if (!res.ok) {
                     throw res;
@@ -152,6 +160,7 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 $("#userModal").modal('show');
                 this.formUser = {...res};
                 let payment_ids = res.payment_methods.map(it=>it.payment_id);
@@ -172,6 +181,7 @@ const userModule = new Vue({
             });
         },
         updateUser() {
+            this.loader = true;
             fetch(base_url+'/admin/users/'+this.edit_user_id, {
                 headers: {
                     "Accept": "application/json, text/plain, */*'",
@@ -188,6 +198,7 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 if (res.status) {
                     this.users = this.users.map(item => {
                         if (item.id === res.data.id) {
@@ -214,6 +225,7 @@ const userModule = new Vue({
         },
         suspendUser(user_id) {
             if (confirm('Are you sure?')) {
+                this.loader = true;
                 fetch(base_url+'/admin/suspendUser', {
                     headers: {
                         "Accept": "application/json, text/plain, */*'",
@@ -230,6 +242,7 @@ const userModule = new Vue({
                     return res.json();
                 })
                 .then(res => {
+                    this.loader = false;
                     this.users = this.users.map(item => {
                         if (item.id === res.data.id) {
                             return res.data;
@@ -253,9 +266,11 @@ const userModule = new Vue({
         },
         customeRate(user_id) {
             this.current_user_id = user_id;
+            this.loader = true;
             fetch(base_url+'/admin/users-services/'+ user_id)
             .then(res => res.json())
             .then(res => {
+                this.loader = false;
                 this.userServices = [];
                 if (res.length>0) {
                     res.forEach(item=>{
@@ -279,6 +294,7 @@ const userModule = new Vue({
         },
         updatePassword() {
             let formD = new FormData(document.getElementById('password-update-form'));
+            this.loader = true;
             fetch(base_url+'/admin/updatePassword/', {
                 headers: {
                     "Accept": "application/json",
@@ -294,6 +310,7 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 if (res.status) {
                     document.getElementById('password-update-form').reset();
                     $("#passwordUpdateModal").modal('hide');
