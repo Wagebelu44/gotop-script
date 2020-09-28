@@ -80,7 +80,7 @@ class PageController extends Controller
         }else{
             $logo = isset($setting->panel_name) ? $setting->panel_name:null;
         }
-        
+
         $site['panel_name'] = $setting->panel_name;
         $site['newsfeed'] = $setting->newsfeed;
         $site['newsfeed_align'] = $setting->newsfeed_align;
@@ -312,6 +312,12 @@ class PageController extends Controller
             $site['api_key'] = auth()->user()->api_key;
         } elseif ($page->default_url == 'add-funds')
         {
+            $site['serviceApi'] = apiServiceJson();
+            $site['orderResponse'] = apiOrderResponse();
+            $site['multiOrderResponse'] = apiMultiOrderResponse();
+            $site['userBalance'] = apiUserBalance();
+            $site['apiAddOrder'] = apiAddOrder();
+        } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
             $site['bitcoin'] = asset('assets/img/bit-icon.png');
             $site['FreeReviewCopy'] = asset('assets/img/FreeReviewCopy.png');
@@ -323,6 +329,7 @@ class PageController extends Controller
             $site['pay_pal_store'] = url('/payment/add-funds/paypal');
             $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
             $site['pay_op_store'] = route('payment.payOp');
+            $site['user_payment_methods'] =
             $site['user_payment_route'] = route('make.user.payment');
 
             $site['validation_error'] = 0;

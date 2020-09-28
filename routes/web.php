@@ -12,6 +12,14 @@ Route::get('command', function () {
 });
 //Test Route::END
 
+
+
+//Test Route::START
+Route::get('bal', function () {
+    $apiAddOrder = apiAddOrder();
+
+});
+
 Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/', 'Web\PageController@index')->name('home');
     Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
