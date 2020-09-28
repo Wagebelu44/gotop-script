@@ -1,4 +1,9 @@
 let mixin = {
+    data(){
+      return {
+        loader: false,
+      }
+    },
     methods: {
       foo () {
         console.log('foo')

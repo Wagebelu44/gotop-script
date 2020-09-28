@@ -74,7 +74,7 @@ class UserController extends Controller
                 'username'   => $data['username'],
                 'skype_name' => $data['skype_name'],
                 'password'   => Hash::make($data['password']),
-                'status'     => Auth::user()->panel_id,
+                'status'     => $data['status'],
                 'phone'      => null,
                 'balance'    => 0,
             ]);
@@ -92,6 +92,7 @@ class UserController extends Controller
                     UserPaymentMethod::insert($paymentIds);
                 }
             }
+            $user->services_list = [];
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
@@ -149,7 +150,9 @@ class UserController extends Controller
                     UserPaymentMethod::insert($paymentIds);
                 }
             }
-            return response()->json(['status' => true, 'data'=> $request->all()], 200);
+            $returnData = $request->all();
+            $returnData['services_list'] = [];
+            return response()->json(['status' => true, 'data'=> $returnData], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
         }
