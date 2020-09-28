@@ -160,7 +160,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label" for="drip_feed_interval">Minimum drip-feed interval </label>
+                            <label class="control-label" for="drip_feed_interval">Minimum drip-feed interval (Minutes)</label>
                             <input type="text" class="form-control" value="{{ old('drip_feed_interval', isset($general) && $general->drip_feed_interval ? $general->drip_feed_interval:'') }}" name="drip_feed_interval">
                         </div>
 

@@ -310,6 +310,15 @@ class PageController extends Controller
             $site['pay_pal_store'] = url('/payment/add-funds/paypal');
             $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
             $site['pay_op_store'] = route('payment.payOp');
+            $site['user_payment_methods'] =
+              auth()
+            ->user()
+            ->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
+            ->join('payment_methods', function($q) use($panelId) {
+                $q->on('payment_methods.id', '=', 'user_payment_methods.payment_id');
+                $q->where('visibility', 'enabled');
+                $q->where('payment_methods.panel_id', $panelId);
+            })->get()->toArray();
             if (Session::has('success')) {
                 $site['success'] = Session::get('success');
             }

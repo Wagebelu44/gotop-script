@@ -2,6 +2,11 @@
 
 @section('content')
     <div class="container-fluid all-mt-30" id="user_panel_module">
+        <div class="overlay-loader" v-if="loader">
+            <div class="loader-holder">
+                <img src="{{asset('loader.gif')}}" alt="">
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="material-card card">
@@ -77,7 +82,7 @@
                                     <th>Actions</th>
                                 </tr>
                                 </thead>
-                                <tbody id="tbody_ss" v-if="users!==null">
+                                <tbody id="tbody_ss" v-if="users.length>0">
                                     <tr v-for="(user, index) in users">
                                         <td>
                                             <input type="checkbox"  v-model="selectedUsers" class="user_check" :value="user.id">
@@ -110,7 +115,7 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <div class="text-center mt-4" v-if="users===null">No data available in table</div>
+                                <div class="text-center mt-4" v-if="users.length === 0">No data available in table</div>
                             </table>
                         </div>
 
@@ -414,6 +419,7 @@
 @endsection
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/user-vue.js')}}"></script>
 <script>
     $('#userModal').on('hidden.bs.modal', function () {

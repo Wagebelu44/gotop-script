@@ -1,20 +1,29 @@
 const paymentModule = new Vue({
     el: '#payment_module',
+    mixins: [mixin],
     data: {
         pagination: {current_page: 1},
         payments: [],
         global_payments: [],
         users: [],
         services: [],
-        loader: {
-            payment: false,
-        },
         order_mode_count: null,
         order_checkbox: [],
         checkAllOrders: false,
         filter: {
             status: "", 
             search: "",
+            txn_flag: '',
+            payment_method:"",
+            filter_type: {
+                type: 'user',
+                data: '',
+            }
+        },
+        errors: {
+            payment: [],
+            common: "",
+
         },
         payment_edit_id: null,
         payment_edit: false,
@@ -47,6 +56,7 @@ const paymentModule = new Vue({
     methods: {
         //
         getPayments(page=1) {
+            this.loader = true;
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {
@@ -64,20 +74,43 @@ const paymentModule = new Vue({
                 history.pushState(state, title, url)
             }
 
-            if (this.filter.search !== "") {
-                const state = { 'search': this.filter.search};
+            if (this.filter.filter_type.data!=='') {
+                const state = { 'filter_type': this.filter.filter_type.type, 'data': this.filter.filter_type.data};
                 const title = '';
-                page_id += '&status='+this.filter.search;
+                page_id += '&filter_type='+this.filter.filter_type.type+'&data='+this.filter.filter_type.data;
+                const url = base_url+'/admin/payments'+ page_id;
+                history.pushState(state, title, url)
+            }
+
+            if (this.filter.payment_method !== "") {
+                const state = { 'payment_method': this.filter.payment_method};
+                const title = '';
+                page_id += '&payment_method='+this.filter.payment_method
                 const url = base_url+'/admin/orders'+ page_id;
                 history.pushState(state, title, url)
             }
+            
+            if (this.filter.txn_flag !== "") {
+                const state = { 'txn_flag': this.filter.txn_flag};
+                const title = '';
+                page_id += '&txn_flag='+this.filter.txn_flag
+                const url = base_url+'/admin/orders'+ page_id;
+                history.pushState(state, title, url)
+            }
+            
             fetch(base_url+'/admin/payments-lists'+ page_id)
-                .then(res => res.json())
+                .then(res =>
+                    {
+                        if (!res.ok) {
+                            throw res.json();
+                        }
+                        return res.json();
+                    })
                 .then(res => {
+                    this.loader = false;
                     this.payments = res.payments.data;
                     this.global_payments = res.globalMethods;
                     this.users = res.users;
-
                     setTimeout(() => {
                         $('#select2-payment-user').select2();
                         $('#select2-payment-user').val(this.users).trigger('change');
@@ -85,17 +118,17 @@ const paymentModule = new Vue({
                         $('#select2-redeem-user').select2();
                         $('#select2-redeem-user').val(this.users).trigger('change');                        
                     }, 100);
-                });
+                })
+                
         },
         savePayment(evt)
         {
             this.loader.payment = true;
             let payment_form = null;
             payment_form = new FormData(document.getElementById('payment-form'));
-
-            var userId = $('#select2-payment-user').val();
+            var userId = document.getElementById('select2-payment-user').value;
+            console.log(userId, 'asdfdas');
             payment_form.append('user_id', userId);
-            console.log(payment_form);
             if (this.payment_edit_id) {
                 payment_form.append('edit_id', this.payment_edit_id);
                 payment_form.append('edit_mode', true);
@@ -123,14 +156,11 @@ const paymentModule = new Vue({
                     setTimeout(() => {
                         this.loader.payment = false;
                         toastr["success"](res.message);
-                        
                         $('#paymentAddModal').modal('hide');
-
                         if (isEdit) 
                         {
                             var row = res.data;
                             this.updatePaymentLists(row);
-                            //var status = (row.status == 'active')?'Enabled':'Disabled';
                         } 
                         else 
                         {
@@ -147,13 +177,12 @@ const paymentModule = new Vue({
                     this.errors.services = res.data;
                 }
 
-            })
-            .catch(err => 
-            {
-                setTimeout(() => {
-                    this.loader.service = false;
-                    let prepare = [];
-                    err.then(erMesg => {
+            }).
+            catch(err=>{
+                this.loader = false;
+                let prepare = [];
+                err.then(erMesg => {
+                    if ('errors' in erMesg) {
                         let errMsgs = Object.entries(erMesg.errors);
                         for (let i = 0; i < errMsgs.length; i++) {
                             let obj = {};
@@ -161,10 +190,27 @@ const paymentModule = new Vue({
                             obj.desc = errMsgs[i][1][0];
                             prepare.push(obj);
                         }
-                        this.errors.services = prepare;
-                    });
-                }, 2000);
+                        this.errors.payment = prepare;
+                    }
+                    else if ('data' in erMesg)
+                    {
+                        this.errors.common = erMesg.data;
+                    }
+                });
             });
+        },
+        errorFilter(name)
+        {
+            let txt = '';
+            if (this.errors.payment.length>0) 
+            {
+                this.errors.payment.forEach(item=>{
+                    if (item.name === name) {
+                        txt = item.desc;
+                    }
+                });
+            }
+            return txt;
         },
         addToPaymentList(payment)
         {
@@ -196,6 +242,20 @@ const paymentModule = new Vue({
                 }
                 return item;
             });
+        },
+        filterType()
+        {
+            this.getPayments();
+        },
+        filterPaymentMethod(method_id)
+        {
+            this.filter.payment_method = method_id;
+            this.getPayments();
+        },
+        searchPayment(flag)
+        {
+            this.filter.txn_flag = flag;
+            this.getPayments();
         }
 
        
