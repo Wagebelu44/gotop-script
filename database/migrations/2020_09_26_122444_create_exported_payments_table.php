@@ -24,6 +24,7 @@ class CreateExportedPaymentsTable extends Migration
             $table->text('user_ids');
             $table->unsignedBigInteger('panel_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

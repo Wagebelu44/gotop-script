@@ -36,8 +36,7 @@ class PaymentController extends Controller
             }
             $local_payments = Transaction::select('transactions.*', 'users.username', 'global_payment_methods.name as payment_method_name')
             ->where('transactions.panel_id', auth()->user()->panel_id)
-            ->where(function ($q) use ($input)
-            {
+            ->where(function ($q) use ($input) {
                 if ($input['keyword'] && $input['keyword']=='user')
                 {
                     $q->whereHas('user', function($q) use ($input){
@@ -83,24 +82,25 @@ class PaymentController extends Controller
                     }
                 }
             })
-                ->where('transactions.status', 'done')
-                ->where('transactions.transaction_type', 'deposit')
-                ->where(function($query){
-                    $query->where('transactions.transaction_flag', 'admin_panel');
-                    $query->orWhere('transactions.transaction_flag', 'payment_gateway');
-                    $query->orWhere('transactions.transaction_flag', 'bonus_deposit');
-                })
-                ->join('users', 'users.id', '=', 'transactions.user_id')
-                ->join('global_payment_methods', 'global_payment_methods.id', '=', 'transactions.reseller_payment_methods_setting_id')
-                ->orderBy($sort_by, $order_by);
-                $payments = $local_payments->paginate($show_page);
-                $total_payments = $local_payments->count();
-                $globalMethods = PaymentMethod::select('payment_methods.*','totalPayment')
-                ->where('payment_methods.panel_id', auth()->user()->panel_id)
-                ->leftJoin(\DB::raw('(SELECT reseller_payment_methods_setting_id, count(id) as totalPayment FROM transactions GROUP BY reseller_payment_methods_setting_id) as A'), 'A.reseller_payment_methods_setting_id', '=', 'payment_methods.id')
-                ->where('payment_methods.visibility', 'enabled')
-                ->get();
-                $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
+            ->where('transactions.status', 'done')
+            ->where('transactions.transaction_type', 'deposit')
+            ->where(function($query){
+                $query->where('transactions.transaction_flag', 'admin_panel');
+                $query->orWhere('transactions.transaction_flag', 'payment_gateway');
+                $query->orWhere('transactions.transaction_flag', 'bonus_deposit');
+            })
+            ->join('users', 'users.id', '=', 'transactions.user_id')
+            ->join('global_payment_methods', 'global_payment_methods.id', '=', 'transactions.reseller_payment_methods_setting_id')
+            ->orderBy($sort_by, $order_by);
+            $payments = $local_payments->paginate($show_page);
+            $total_payments = $local_payments->count();
+            $globalMethods = PaymentMethod::select('payment_methods.*','totalPayment')
+            ->where('payment_methods.panel_id', auth()->user()->panel_id)
+            ->leftJoin(\DB::raw('(SELECT reseller_payment_methods_setting_id, count(id) as totalPayment FROM transactions GROUP BY reseller_payment_methods_setting_id) as A'), 'A.reseller_payment_methods_setting_id', '=', 'payment_methods.id')
+            ->where('payment_methods.visibility', 'enabled')
+            ->get();
+            $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
+
             $data = [
                 'payments' => $payments,
                 'total_payments' => $total_payments,
@@ -116,10 +116,6 @@ class PaymentController extends Controller
             return response()->json($data, 200);
         }
 
-    }
-    public function create()
-    {
-        //
     }
 
     public function store(Request $request)
@@ -169,8 +165,7 @@ class PaymentController extends Controller
                         WHERE t.id='.$log->id);
             }
 
-            if (!isset($request->edit_mode))
-            {
+            if (!isset($request->edit_mode)) {
                 $bonus = SettingBonuse::where('global_payment_method_id', $request->reseller_payment_methods_setting_id)->get()->last();
                 if ($bonus !=null) {
                     if ( floatval($request->input('amount')) >= floatval($bonus->deposit_from)) {
@@ -218,8 +213,8 @@ class PaymentController extends Controller
             // }
             $gp = GlobalPaymentMethod::find($request->reseller_payment_methods_setting_id);
 
-            $log->username = $user->username??'Not Found';
-            $log->payment_method_name = $gp?$gp->name:'Not Found';
+            $log->username = $user->username ?? 'Not Found';
+            $log->payment_method_name = $gp ? $gp->name:'Not Found';
             return response()->json(['status'=>200,'data'=> $log, 'message'=>'Payment created successfully.']);
         } catch (\Exception $e) {
             return response()->json(['status'=>500,'data'=> $e->getMessage(), 'message'=>'Somethig went wrong.']);
@@ -230,26 +225,7 @@ class PaymentController extends Controller
     {
         return Transaction::find($id);
     }
-
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    public function destroy($id)
-    {
-        //
-    }
-      /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
+    
     public function export()
     {
         $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
@@ -260,12 +236,6 @@ class PaymentController extends Controller
         return view('panel.payments.export', compact('users', 'globalMethods', 'exported_payments'));
     }
 
-    /**
-     * Export payments.
-     *
-     * @param \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function exportPayment(Request $request)
     {
         // Validate form data
@@ -299,12 +269,6 @@ class PaymentController extends Controller
         }
     }
 
-    /**
-     * Download exported payments.
-     *
-     * @param \App\ExportedPayment $exportedPayment
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-     */
     public function downloadExportedPayment(ExportedPayment $exportedPayment)
     {
         try {
