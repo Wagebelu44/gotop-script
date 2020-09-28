@@ -388,3 +388,7 @@ img {
         display: block;
     }
 }
+
+.custom-tab-pane{
+    padding: 20px !important;
+}
