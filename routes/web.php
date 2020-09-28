@@ -200,6 +200,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
     Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
+    Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
     Route::post('/make_new_order', 'User\OrderController@store')->name('make.single.order');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
 
