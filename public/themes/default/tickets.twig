@@ -180,11 +180,11 @@
    {% else %}
    <div class="row ticket-panel">
       <div class="col">
-         <div class="card   bg-white">
-            <div class="card-header">
+         <div class="cardbg-white">
+            <div class="card-header p-4">
                <div class="titcket-title card-title"> {{ site['single-ticket'].subject }} </div>
                <br>
-               <span class="label label-danger"></span>
+               <span class="label label-{% if site['single-ticket'].status == 'pending' %}  'success' {% else %} 'danger'  {% endif %}"></span>
             </div>
             <div class="card-body">
                <p>
@@ -193,51 +193,51 @@
                <h4>comments <i class="far fa-comments"></i> </h4> 
                <hr>
                {% if site['single-ticket'].comments %}
-               {% for sc in site['single-ticket'].comments %}
-               <div class="row ticket-message-block ticket-message-right  {% if sc.commentor_role == 'reseller' %} justify-content-start {% else %} justify-content-end {% endif %} px-3">
-                  <div class="d-flex flex-column w-85">
-                     {% if sc.commentor_role == 'user' %}
-                     <div class="d-flex justify-content-end">
-                        <div class="ticket-message user-message w-100">
-                           <div class="message message-tic ml-2">
-                              {{ sc.message | raw }}
+                  {% for sc in site['single-ticket'].comments %}
+                  <div class="row ticket-message-block ticket-message-right  {% if sc.commentor_role == 'reseller' %} justify-content-start {% else %} justify-content-end {% endif %} px-3">
+                     <div class="d-flex flex-column w-85">
+                        {% if sc.commentor_role == 'user' %}
+                        <div class="d-flex justify-content-end">
+                           <div class="ticket-message user-message w-100">
+                              <div class="message message-tic ml-2">
+                                 {{ sc.message | raw }}
+                              </div>
+                           </div>
+                           <span class="avatar mr-0 ml-2">
+                           <i class="fa fa-user-circle"></i>
+                           </span>
+                        </div>
+                        <div class="info d-flex justify-content-end">
+                           <small class="text-muted">{{ sc.created_at}}</small>
+                           {% if sc.commentor_role == 'reseller' %}
+                           <strong class="ml-1">Admin</strong>
+                           {% else %}
+                           <strong class="ml-1"> {{  sc.user.username }} </strong>
+                           {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="d-flex">
+                           <span class="avatar">
+                           <i class="fa fa-user-circle"></i>
+                           </span>
+                           <div class="ticket-message green w-100">
+                              <div class="message message-tic">
+                                 {{ sc.message | raw }}
+                              </div>
                            </div>
                         </div>
-                        <span class="avatar mr-0 ml-2">
-                        <i class="fa fa-user-circle"></i>
-                        </span>
-                     </div>
-                     <div class="info d-flex justify-content-end">
-                        <small class="text-muted">{{ sc.created_at}}</small>
-                        {% if sc.commentor_role == 'reseller' %}
-                        <strong class="ml-1">Admin</strong>
-                        {% else %}
-                        <strong class="ml-1"> {{  sc.user.username }} </strong>
-                        {% endif %}
-                     </div>
-                     {% else %}
-                     <div class="d-flex">
-                        <span class="avatar">
-                        <i class="fa fa-user-circle"></i>
-                        </span>
-                        <div class="ticket-message green w-100">
-                           <div class="message message-tic">
-                              {{ sc.message | raw }}
-                           </div>
+                        <div class="info">
+                           {% if sc.commentor_role == 'reseller' %}
+                           <strong>Admin</strong>
+                           {% else %}
+                           <strong> {{  sc.user.username }} </strong>
+                           {% endif %}
+                           <small class="text-muted">{{ sc.created_at}}</small>
                         </div>
-                     </div>
-                     <div class="info">
-                        {% if sc.commentor_role == 'reseller' %}
-                        <strong>Admin</strong>
-                        {% else %}
-                        <strong> {{  sc.user.username }} </strong>
                         {% endif %}
-                        <small class="text-muted">{{ sc.created_at}}</small>
                      </div>
-                     {% endif %}
                   </div>
-               </div>
-               {% endfor %}
+                  {% endfor %}
                {% endif %}
                <div class="row">
                   <div class="col-md-12">
@@ -264,9 +264,9 @@
                         <input type="hidden" name="ticket_id" value="{{site['single-ticket'].id}}">
                         <div class="form-group panel-border-top">
                            <label for="message" class="control-label">Message</label>
-                           <textarea id="content" rows="5" class="form-control" name="content" data-validation="required"></textarea>
+                           <textarea id="content" class="form-control" name="content" data-validation="required"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-green btn-block">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-block">Submit</button>
                      </form>
                   </div>
                </div>

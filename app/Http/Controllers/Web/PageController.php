@@ -91,7 +91,7 @@ class PageController extends Controller
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
             asset('assets/css/site-modal.css'),
-            asset('assets/css/style.css?var=0.1'),
+            asset('assets/css/style.css?var=0.2'),
         ];
         $site['scripts'] = [
             ['code' => '
