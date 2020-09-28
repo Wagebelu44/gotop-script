@@ -9,6 +9,7 @@ use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
@@ -418,6 +419,47 @@ class ServiceController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function servicesImport(Request $request)
+    {
+        try {
+            $data = [];
+
+            foreach ($request->services as $index => $service) {
+                $service = json_decode($service);
+                if ($request->categories[$index] == 'create') {
+                    $category = ServiceCategory::where('name', $service->category)->first();
+                    if ($category) {
+                        $category = $category->id;
+                    } else {
+                        $category = ServiceCategory::create([
+                            'name' => $service->category,
+                            'panel_id' => auth()->user()->panel_id,
+                        ])->id;
+                    }
+                } else {
+                    $category = $request->categories[$index];
+                }
+
+                $data[] = array(
+                    'name' => $service->name,
+                    'service_type' => $service->type,
+                    'price' => $service->rate,
+                    'min_quantity' => $service->min,
+                    'max_quantity' => $service->max,
+                    'drip_feed_status' => $service->dripfeed ? 'allow' : 'disallow',
+                    'category_id' => $category,
+                    'panel_id' => auth()->user()->panel_id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                );
+            }
+            Service::insert($data);
+            return redirect()->back()->withSuccess('Services imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
 

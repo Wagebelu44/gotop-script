@@ -714,7 +714,7 @@
                                  aria-labelledby="serviceModalTitle" aria-hidden="true">
                                 <div class="modal-dialog __modal_dialog_custom" role="document">
                                     <div class="modal-content">
-                                        <form method="post" action="">
+                                        <form method="post" action="{{ route('admin.provider.services.import') }}">
                                             @csrf
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle"> <strong>Import services</strong> </h5>
@@ -750,11 +750,11 @@
                                                                                     </div>
                                                                                     <div class="col">
                                                                                         <div class="dropdown show goTopDropdown">
-                                                                                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                            <a class="btn btn-secondary dropdown-toggle" :class="'cat' + index" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                                                 Create category
                                                                                             </a>
                                                                                             <ul class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuLink">
-                                                                                                <li><a class="dropdown-item">List name</a></li>
+                                                                                                <li v-for="(cs) in  category_services"><a class="dropdown-item" @click="selectDropDown(index, cs.name, cs.id)" > @{{ cs.name }} </a></li>
                                                                                             </ul>
                                                                                         </div>
                                                                                     </div>

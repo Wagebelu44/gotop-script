@@ -1006,69 +1006,6 @@ const App = new Vue({
             });
 
         },
-        // getProviderServicesByCategory() {
-        //     if (!this.provider_id) {
-        //         return false;
-        //     }
-
-        //     this.loader = true;
-
-        //     let originUrl = window.location.origin;
-        //     if (originUrl == 'http://localhost') {
-        //         originUrl += '/go2top/public/';
-        //     }
-        //     else
-        //     {
-        //         originUrl += '/';
-        //     }
-
-        //     fetch(originUrl + '/reseller/providers/' + this.provider_id + '/services', {
-        //         headers: {
-        //             "Accept": "application/json",
-        //             "X-CSRF-TOKEN": "{{ csrf_token() }}",
-        //         },
-        //         credentials: "same-origin",
-        //         method: "POST",
-        //     })
-        //         .then(res => {
-        //             if (!res.ok) {
-        //                 throw res;
-        //             }
-
-        //             return res.json();
-        //         })
-        //         .then(response => {
-        //             this.loader = false;
-
-        //             if (response.status == 200) {
-        //                 this.categories = response.data;
-
-        //                 setTimeout(function () {
-        //                     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
-        //                         if (!$(this).next().hasClass('show')) {
-        //                             $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
-        //                         }
-        //                         var $subMenu = $(this).next(".dropdown-menu");
-        //                         $subMenu.toggleClass('show');
-
-
-        //                         $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
-        //                             $('.dropdown-submenu .show').removeClass("show");
-        //                         });
-
-        //                         return false;
-        //                     });
-        //                 }, 1000);
-        //             } else {
-        //                 alert(response.msg);
-        //             }
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //             this.loader = false;
-        //             alert(err);
-        //         });
-        // },
         changeSelected() {
             this.provider_services.forEach(item => {
                 if (item.service  == this.services.form_fields.provider_service_id) {
