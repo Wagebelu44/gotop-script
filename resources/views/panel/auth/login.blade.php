@@ -2,7 +2,15 @@
 
 @section('content')
 <div class="logo">
-    <span class="db"><img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" /></span>
+    <span class="db">
+        @if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo))
+            <img src="{{ asset('storage/images/setting/'.$setting->logo) }}" alt="logo" />
+        @elseif($setting->panel_name)
+            <h2>{{ $setting->panel_name }}</h2>
+        @else
+            <img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" />
+        @endif
+    </span>
     <h5 class="font-medium mb-3">Sign In to Admin</h5>
 </div>
 
@@ -65,5 +73,18 @@
             </div>
         </form>
     </div>
+</div>
+
+<div class="logo" style="position: absolute;bottom: 10px;left: 35%;">
+    <h5 class="font-medium mb-3">Powered by</h5>
+    <span class="db">
+        @if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo))
+            <img src="{{ asset('storage/images/setting/'.$setting->logo) }}" alt="logo" />
+        @elseif($setting->panel_name)
+            <h2>{{ $setting->panel_name }}</h2>
+        @else
+            <img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" />
+        @endif
+    </span>
 </div>
 @endsection

@@ -75,14 +75,19 @@ class PageController extends Controller
         $setting = SettingGeneral::where('panel_id', $panelId)->first();
 
         $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
-
+        if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo)){
+            $logo = asset('storage/images/setting/'.$setting->logo);
+        }else{
+            $logo = isset($setting->panel_name) ? $setting->panel_name:null;
+        }
+        
         $site['panel_name'] = $setting->panel_name;
         $site['newsfeed'] = $setting->newsfeed;
         $site['newsfeed_align'] = $setting->newsfeed_align;
         $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['logout_url'] = route('logout');
-        $site['logo'] = asset('storage/images/setting/'.$setting->logo);
+        $site['logo'] = $logo;
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
         $site['notifigIcon'] = asset('assets/img/notifig.svg');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
@@ -294,7 +299,7 @@ class PageController extends Controller
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
-        } elseif ($page->default_url == 'add-funds') 
+        } elseif ($page->default_url == 'add-funds')
         {
             $site['url'] = url('/');
             $site['bitcoin'] = asset('assets/img/bit-icon.png');
@@ -315,7 +320,7 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
-            $site['user_payment_methods'] = 
+            $site['user_payment_methods'] =
               auth()
             ->user()
             ->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')

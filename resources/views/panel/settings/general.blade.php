@@ -10,7 +10,6 @@
                 <form action="{{ route('admin.setting.generalUpdate') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="relative">
-
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-10">
@@ -282,7 +281,6 @@
                     } else {
                         $('#logoPreview').attr('src', e.target.result);
                     }
-
                 };
 
                 reader.readAsDataURL(input.files[0]); // convert to base64 string
