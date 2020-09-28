@@ -390,5 +390,5 @@ img {
 }
 
 .custom-tab-pane{
-    padding: 20px;
+    padding: 20px !important;
 }
