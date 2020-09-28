@@ -735,6 +735,7 @@
                                                                 label="domain"
                                                                 @input="getProviderServices">
                                                             </v-select>
+                                                            <input type="hidden" name="provider_id" v-model='provider_id'>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for=""><strong>Services </strong></label>

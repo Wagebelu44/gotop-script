@@ -425,7 +425,6 @@ class ServiceController extends Controller
     {
         try {
             $data = [];
-
             foreach ($request->services as $index => $service) {
                 $service = json_decode($service);
                 if ($request->categories[$index] == 'create') {
@@ -452,13 +451,31 @@ class ServiceController extends Controller
                     'category_id' => $category,
                     'panel_id' => auth()->user()->panel_id,
                     'created_at' => now(),
+                    'mode' => 'auto',
                     'updated_at' => now(),
                 );
+
+                ProviderService::updateOrCreate(
+                    [
+                        'service_id'=> $service->service,
+                        'provider_id'=> $request->provider_id,
+                    ],
+                    [
+                    'provider_id' => $request->provider_id,
+                    'provider_service_id' => $service->service,
+                    'name' => $service->name,
+                    'type' => $service->type,
+                    'category' =>   $category,
+                    'rate'=>  $service->rate,
+                    'min'=>   $service->min,
+                    'max'=>   $service->max,
+                    'panel_id' => auth()->user()->panel_id,
+                ]);
             }
             Service::insert($data);
             return redirect()->back()->withSuccess('Services imported successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return redirect()->back()->withError($e->getMessage());
         }
     }
 
