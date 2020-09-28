@@ -28,6 +28,11 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('statusChanges', 'User\OrderController@refillStatusChange')->name('user.changeRefillStatus');
         Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
 
+        Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
+            Route::post('pay', 'Payment\CoinbaseController@install')->name('install');
+            Route::get('success', 'Payment\CoinbaseController@success')->name('success');
+            Route::get('failed', 'Payment\CoinbaseController@failed')->name('failed');
+        });
     });
 
     Route::group(['prefix' => 'admin'], function () {
