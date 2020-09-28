@@ -274,17 +274,17 @@ if ( ! function_exists('apiAddOrder')) {
         $data = [
             'name' => [
                 "0" => 'Default',
-                "10" => 'Package',
-                "1" => 'SEO',
-                "2" => 'Custom Comments',
-                "3" => 'Mentions with Hashtags',
-                "4" => 'Mentions Custom List',
+                "1" => 'Package',
+                "2" => 'SEO',
+                "3" => 'Custom Comments',
+                "4" => 'Mentions with Hashtags',
+                "5" => 'Mentions Custom List',
                 "6" => 'Mentions Hashtag',
                 "7" => 'Mentions User Followers',
-                "14" => 'Custom Comments Package',
-                "15" => 'Comment Likes',
-                "17" => 'Poll',
-                "100" => 'Subscriptions',
+                "8" => 'Custom Comments Package',
+                "9" => 'Comment Likes',
+                "10" => 'Poll',
+                "11" => 'Subscriptions',
             ],
             'data' => [
                 "0" => [
@@ -296,13 +296,13 @@ if ( ! function_exists('apiAddOrder')) {
                     ['parameters' => 'runs (optional)', 'description' => 'Runs to deliver'],
                     ['parameters' => 'interval (optional)', 'description' => 'Interval in minutes'],
                 ],
-                "10" => [
+                "1" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
                     ['parameters' => 'link', 'description' => 'Link to page'],
                 ],
-                "1" => [
+                "2" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
@@ -310,14 +310,14 @@ if ( ! function_exists('apiAddOrder')) {
                     ['parameters' => 'quantity', 'description' => 'Needed quantity'],
                     ['parameters' => 'keywords', 'description' => 'Keywords list separated by \r\n or \n'],
                 ],
-                "2" => [
+                "3" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
                     ['parameters' => 'link', 'description' => 'Link to page'],
                     ['parameters' => 'comments', 'description' => 'Comments list separated by \r\n or \n'],
                 ],
-                "3" => [
+                "4" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
@@ -326,7 +326,7 @@ if ( ! function_exists('apiAddOrder')) {
                     ['parameters' => 'usernames', 'description' => 'Usernames list separated by \r\n or \n'],
                     ['parameters' => 'hashtags', 'description' => 'Hashtags list separated by \r\n or \n'],
                 ],
-                "4" => [
+                "5" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
@@ -350,14 +350,14 @@ if ( ! function_exists('apiAddOrder')) {
                     ['parameters' => 'quantity', 'description' => 'Needed quantity'],
                     ['parameters' => 'usernames', 'description' => 'URL to scrape followers from'],
                 ],
-                "14" => [
+                "8" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
                     ['parameters' => 'link', 'description' => 'Link to page'],
                     ['parameters' => 'comments', 'description' => 'Comments list separated by \r\n or \n'],
                 ],
-                "15" => [
+                "9" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
@@ -365,7 +365,7 @@ if ( ! function_exists('apiAddOrder')) {
                     ['parameters' => 'quantity', 'description' => 'Needed quantity'],
                     ['parameters' => 'username', 'description' => 'Username of the comment owner'],
                 ],
-                "17" => [
+                "10" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
@@ -373,7 +373,7 @@ if ( ! function_exists('apiAddOrder')) {
                     ['parameters' => 'quantity', 'description' => 'Needed quantity'],
                     ['parameters' => 'answer_number', 'description' => 'Answer number of the poll'],
                 ],
-                "100" => [
+                "11" => [
                     ['parameters' => 'key', 'description' => 'Your API key'],
                     ['parameters' => 'action', 'description' => 'add'],
                     ['parameters' => 'service', 'description' => 'Service ID'],
