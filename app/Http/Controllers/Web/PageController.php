@@ -96,7 +96,7 @@ class PageController extends Controller
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
             asset('assets/css/site-modal.css'),
-            asset('assets/css/style.css?var=0.1'),
+            asset('assets/css/style.css?var=0.2'),
         ];
         $site['scripts'] = [
             ['code' => '
@@ -225,6 +225,8 @@ class PageController extends Controller
             $site['status'] = $input['status']??'all';
         } elseif ($page->default_url == 'tickets') {
             $site['url'] = route('ticket.store');
+            $site['base_url'] = url('/tickets');
+            $site['single-ticket'] = null;
 
             $site['scripts'][] = ['src' => asset('user-assets/vue-scripts/ticket-vue.js')];
 
@@ -235,9 +237,18 @@ class PageController extends Controller
             if (Session::has('success')) {
                 $site['success'] = Session::get('success');
             }
-
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
             $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
             $site['ticketLists'] = $ticketLists;
+            if (isset($request->id) && !empty($request->id)) {
+                $site['comment-store'] = route('ticket.comment.store');
+                $site['single-ticket'] = Ticket::with('comments')->where('id', $request->id)->first();
+            }
         } elseif ($page->default_url == 'new-order' || $page->default_url == 'mass-order') {
             $site['single_order_url'] = route('make.single.order');
             $site['mass_order_url'] = route('massOrder.store');

@@ -98,7 +98,6 @@ const App = new Vue({
         category_services: null,
         service_checkbox: [],
         provider_services: [],
-        categories: [],
         provider_service_selected: null,
         provider_id: null,
         subscription_modal: false,
@@ -126,6 +125,54 @@ const App = new Vue({
                         display_name: item.service+" - "+item.name,
                     }
             });
+        },
+        categories()
+        {
+            let p_categories = [];
+            if (this.provider_services.length>0) {
+                this.provider_services.forEach((item, index)=>{
+                    let flag  = false;
+                    p_categories.forEach((it, ind) => {
+                        if (it.category) {
+                            if (item.category == it.category) {
+                                flag = true;
+                            }
+                        }
+                    });
+
+                    if (p_categories.length==0) {
+                        let cobj = {};
+                        cobj.category = item.category;
+                        cobj.services = [];
+                        cobj.cate_id = index;
+                        cobj.services.push(item);
+                        p_categories.push(cobj); 
+                    }
+                    else
+                    {
+                        if (flag) {
+                            p_categories.forEach((it, ind) => {
+                                if (it.category) {
+                                    if (item.category == it.category) {
+                                        it.services.push(item);
+                                    }
+                                }
+                            }); 
+                        }
+                        else
+                        {
+                            let cobj = {};
+                            cobj.category = item.category;
+                            cobj.services = [];
+                            cobj.cate_id = index;
+                            cobj.services.push(item);
+                            p_categories.push(cobj); 
+                        }
+                    }
+
+                });
+            }
+            return p_categories;
         },
     },
     watch: {
@@ -905,114 +952,59 @@ const App = new Vue({
             }
         },
         getProviderServices() {
-            if (this.services.form_fields.provider_id !== null && this.services.form_fields.provider_id !== '') {
-                this.loader = true;
-                let forD = new FormData();
-                forD.append('provider_id', this.services.form_fields.provider_id);
-                fetch(base_url+'/admin/provider/get/services', {
-                    headers: {
-                        "Accept": "application/json",
-                        "X-CSRF-TOKEN": CSRF_TOKEN,
-                    },
-                    credentials: "same-origin",
-                    method: "POST",
-                    body:forD,
-                })
-                .then(res => {
-                    if (!res.ok) {
-                        throw res;
-                    }
-                    return res.json();
-                })
-                .then(res => {
-                    if (res.status) {
-                        if (res.data !==null) {
-                            this.loader = false;
-                            this.provider_services = res.data;
-                            this.services.visibility.service_id_by_provider = true;
-                            this.services.validations.provider_service_not_found= '';
-                        }
-                        else
-                        {
-                            this.loader = false;
-                            this.services.visibility.service_id_by_provider = false;
-                            this.services.validations.provider_service_not_found= 'Nothing found';
-                            this.services.form_fields.provider_service_id = null;
-
-                        }
-                    }
-                })
-                .catch(err=> {
-                    err.text().then(errMessage=>{
-                        this.services.validations.provider_service_not_found= errMessage;
-                        this.services.form_fields.provider_service_id = null;
-                    })
-                });
-            }
-
-        },
-        getProviderServicesByCategory() {
-            if (!this.provider_id) {
-                return false;
-            }
-
+            let forD = new FormData();
             this.loader = true;
-
-            let originUrl = window.location.origin;
-            if (originUrl == 'http://localhost') {
-                originUrl += '/go2top/public/';
+            if (this.services.form_fields.provider_id !== null && this.services.form_fields.provider_id !== '') {
+                forD.append('provider_id', this.services.form_fields.provider_id);
             }
-            else
+            else if(this.provider_id !== null)
             {
-                originUrl += '/';
+                if (!this.provider_id) {
+                    return false;
+                }
+                forD.append('provider_id', this.provider_id);
             }
 
-            fetch(originUrl + '/reseller/providers/' + this.provider_id + '/services', {
+            fetch(base_url+'/admin/provider/get/services', {
                 headers: {
                     "Accept": "application/json",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
                 },
                 credentials: "same-origin",
                 method: "POST",
+                body:forD,
             })
-                .then(res => {
-                    if (!res.ok) {
-                        throw res;
+            .then(res => {
+                if (!res.ok) {
+                    throw res;
+                }
+                return res.json();
+            })
+            .then(res => {
+                this.loader = false;
+                if (res.status) {
+                    if (res.data !==null) {
+                        this.provider_services = res.data;
+                        this.services.visibility.service_id_by_provider = true;
+                        this.services.validations.provider_service_not_found= '';
                     }
+                    else
+                    {
+                        this.services.visibility.service_id_by_provider = false;
+                        this.services.validations.provider_service_not_found= 'Nothing found';
+                        this.services.form_fields.provider_service_id = null;
 
-                    return res.json();
-                })
-                .then(response => {
-                    this.loader = false;
-
-                    if (response.status == 200) {
-                        this.categories = response.data;
-
-                        setTimeout(function () {
-                            $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
-                                if (!$(this).next().hasClass('show')) {
-                                    $(this).parents('.dropdown-menu').first().find('.show').removeClass("show");
-                                }
-                                var $subMenu = $(this).next(".dropdown-menu");
-                                $subMenu.toggleClass('show');
-
-
-                                $(this).parents('li.nav-item.dropdown.show').on('hidden.bs.dropdown', function(e) {
-                                    $('.dropdown-submenu .show').removeClass("show");
-                                });
-
-                                return false;
-                            });
-                        }, 1000);
-                    } else {
-                        alert(response.msg);
                     }
+                }
+            })
+            .catch(err=> {
+                this.loader = false;
+                err.text().then(errMessage=>{
+                    this.services.validations.provider_service_not_found= errMessage;
+                    this.services.form_fields.provider_service_id = null;
                 })
-                .catch(err => {
-                    console.log(err);
-                    this.loader = false;
-                    alert(err);
-                });
+            });
+
         },
         changeSelected() {
             this.provider_services.forEach(item => {
@@ -1227,7 +1219,7 @@ const App = new Vue({
                 });
             }
             return txt;
-        }
+        },
     },
 });
 function categorysortable() {
