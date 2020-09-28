@@ -67,3 +67,13 @@ jQuery(document).ready(function (e) {
     fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 // Sidebar Notification... (END)
+
+
+$(function() {
+    $('#service_type').change(function(){
+        let orderVal = $('#service_type').val();
+        $("table[id^= 'api_']").hide();
+        $('#api_'+orderVal).show();
+    });
+    $('#api_0').show();
+});

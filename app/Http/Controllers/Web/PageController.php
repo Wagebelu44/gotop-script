@@ -297,6 +297,7 @@ class PageController extends Controller
             $site['orderResponse'] = apiOrderResponse();
             $site['multiOrderResponse'] = apiMultiOrderResponse();
             $site['userBalance'] = apiUserBalance();
+            $site['apiAddOrder'] = apiAddOrder();
         } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
             $site['bitcoin'] = asset('assets/img/bit-icon.png');

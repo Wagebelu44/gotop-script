@@ -268,4 +268,126 @@ if ( ! function_exists('apiUserBalance')) {
     }
 }
 
+if ( ! function_exists('apiAddOrder')) {
+    function apiAddOrder()
+    {
+        $data = [
+            'name' => [
+                "0" => 'Default',
+                "10" => 'Package',
+                "1" => 'SEO',
+                "2" => 'Custom Comments',
+                "3" => 'Mentions with Hashtags',
+                "4" => 'Mentions Custom List',
+                "6" => 'Mentions Hashtag',
+                "7" => 'Mentions User Followers',
+                "14" => 'Custom Comments Package',
+                "15" => 'Comment Likes',
+                "17" => 'Poll',
+                "100" => 'Subscriptions',
+            ],
+            'data' => [
+                "0" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'runs (optional)', 'description' => 'Runs to deliver'],
+                    ['parameters' => 'interval (optional)', 'description' => 'Interval in minutes'],
+                ],
+                "10" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                ],
+                "1" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'keywords', 'description' => 'Keywords list separated by \r\n or \n'],
+                ],
+                "2" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'comments', 'description' => 'Comments list separated by \r\n or \n'],
+                ],
+                "3" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'usernames', 'description' => 'Usernames list separated by \r\n or \n'],
+                    ['parameters' => 'hashtags', 'description' => 'Hashtags list separated by \r\n or \n'],
+                ],
+                "4" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'usernames', 'description' => 'Usernames list separated by \r\n or \n'],
+                ],
+                "6" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'hashtag', 'description' => 'Hashtag to scrape usernames from'],
+                ],
+                "7" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'usernames', 'description' => 'URL to scrape followers from'],
+                ],
+                "14" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'comments', 'description' => 'Comments list separated by \r\n or \n'],
+                ],
+                "15" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'username', 'description' => 'Username of the comment owner'],
+                ],
+                "17" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'answer_number', 'description' => 'Answer number of the poll'],
+                ],
+                "100" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'username', 'description' => 'Username'],
+                    ['parameters' => 'min', 'description' => 'Quantity min'],
+                    ['parameters' => 'max', 'description' => 'Quantity max'],
+                    ['parameters' => 'posts', 'description' => 'New posts count'],
+                    ['parameters' => 'delay', 'description' => 'Delay in minutes. Possible values: 0, 5, 10, 15, 30, 60, 90'],
+                    ['parameters' => 'expiry (optional)', 'description' => 'Expiry date. Format d/m/Y'],
+                ],
+            ],
+        ];
+        return $data;
+    }
+}
+
 
