@@ -76,6 +76,8 @@ class PageController extends Controller
         $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
 
         $site['panel_name'] = $setting->panel_name;
+        $site['newsfeed'] = $setting->newsfeed;
+        $site['newsfeed_align'] = $setting->newsfeed_align;
         $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['logout_url'] = route('logout');
