@@ -131,13 +131,14 @@
     </div>
 </footer>
 
+{%  if site['newsfeed'] == 'Yes' %}
 <div id="fbmsg">
-    <div class="fbmsg-badge">
+    <div class="fbmsg-badge" {% if site['newsfeed_align'] == 'Left' %} style="left: 40px!important;" {% else %} style="right: 40px!important;" {% endif %}>
         <div class="messanger">
             <img style="cursor:pointer; width: 80px; z-index: 9999" src="{{ site['notifigIcon'] }}" alt="messanger">
         </div>
     </div>
-    <div class="wp-sheet" style="display:none">
+    <div class="wp-sheet" {% if site['newsfeed_align'] == 'Left' %} style="left: 0!important; display:none" {% else %} style="right: 0!important; display:none" {% endif %}>
         <div class="wp-sheet-head">
             <div class="wp-sheet-head-inner">{{ site['panel_name'] }}</div>
             <a href="#" class="wp-sheet-head-close">×</a>
@@ -156,6 +157,7 @@
         <div class="wp-sheet-footer"></div>
     </div>
 </div>
+{% endif %}
 
 {% for script in site['scripts'] %}
     <script type="text/javascript" {% if script['src'] %}src="{{ script['src'] }}"{% endif %}>
