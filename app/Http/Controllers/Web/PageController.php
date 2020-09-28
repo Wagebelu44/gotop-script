@@ -294,7 +294,7 @@ class PageController extends Controller
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
-        } elseif ($page->default_url == 'add-funds') 
+        } elseif ($page->default_url == 'add-funds')
         {
             $site['url'] = url('/');
             $site['bitcoin'] = asset('assets/img/bit-icon.png');
@@ -315,7 +315,7 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
-            $site['user_payment_methods'] = 
+            $site['user_payment_methods'] =
               auth()
             ->user()
             ->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
@@ -340,6 +340,8 @@ class PageController extends Controller
             }
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
+        }elseif ($page->default_url == 'child-panels') {
+            $site['panelsList'] = [];
         }
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
