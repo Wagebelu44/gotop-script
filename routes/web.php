@@ -89,6 +89,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('drip-feed', 'Panel\DripFeedController');
 
             #Services...
+            Route::post('providers/services/import', 'Panel\ServiceController@servicesImport')->name('provider.services.import');
             Route::post('service_custom_rate_reset', 'Panel\ServiceController@resetManyServiceCustomRate')->name('service.custom.rate.reset.all');
             Route::post('category/sortData', 'Panel\ServiceController@cateogrySortData')->name('category.sort.data');
             Route::post('services/sortData', 'Panel\ServiceController@sortData')->name('service.sort.data');
@@ -208,14 +209,16 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
     });
     Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
+    Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
     Route::post('/make_new_order', 'User\OrderController@store')->name('make.single.order');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
 
     /* payment gateways  */
     Route::post('/payment/add-funds/paypal', 'User\PaypalController@store');
-    Route::get('/payment/add-funds/paypal/success', 'User\PaypalController@success');
+    Route::get('/payment/add-funds/{paypal}/success', 'User\PaypalController@success');
     Route::get('/payment/add-funds/paypal/cancel', 'User\PaypalController@cancel');
     Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
+    Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
 
 
 

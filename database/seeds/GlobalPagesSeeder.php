@@ -68,17 +68,17 @@ class GlobalPagesSeeder extends Seeder
                 'is_editable' => 'Yes',
                 'status' => 'Active',
             ],
-            // [
-            //     'name' => 'Child Panels',
-            //     'url' => 'child-panels',
-            //     'content' => '',
-            //     'meta_title' => '',
-            //     'meta_keyword' => '',
-            //     'meta_description' => '',
-            //     'is_public' => 'No',
-            //     'is_editable' => 'Yes',
-            //     'status' => 'Active',
-            // ],
+             [
+                 'name' => 'Child Panels',
+                 'url' => 'child-panels',
+                 'content' => '',
+                 'meta_title' => '',
+                 'meta_keyword' => '',
+                 'meta_description' => '',
+                 'is_public' => 'No',
+                 'is_editable' => 'Yes',
+                 'status' => 'Active',
+             ],
             [
                 'name' => 'Drip Feed',
                 'url' => 'drip-feed',
@@ -201,7 +201,7 @@ class GlobalPagesSeeder extends Seeder
                 'status' => 'Active',
             ],
         ];
-        
+
         DB::table('global_pages')->insert($pages);
     }
 }

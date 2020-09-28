@@ -124,7 +124,7 @@ a.article:hover {
 
 #content {
     width: 100%;
-    min-height: 70vh;
+    min-height: 10vh;
     transition: all 0.3s;
 }
 
@@ -387,4 +387,8 @@ img {
     .hLogout{
         display: block;
     }
+}
+
+.custom-tab-pane{
+    padding: 20px !important;
 }

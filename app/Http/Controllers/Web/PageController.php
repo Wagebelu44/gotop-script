@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Models\AccountStatus;
 use App\Models\Blog;
-use App\Models\BlogSlider;
 use App\Models\Menu;
-use App\Models\Newsfeed;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Redeem;
 use App\Models\Ticket;
 use App\Models\Service;
+use App\Models\Newsfeed;
 use App\Models\ThemePage;
+use App\Models\BlogSlider;
 use App\Models\SettingFaq;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\AccountStatus;
 use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
-use App\Http\Controllers\Controller;
 use App\Models\NewsfeedCategory;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
@@ -74,6 +75,11 @@ class PageController extends Controller
         $setting = SettingGeneral::where('panel_id', $panelId)->first();
 
         $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
+        if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo)){
+            $logo = asset('storage/images/setting/'.$setting->logo);
+        }else{
+            $logo = isset($setting->panel_name) ? $setting->panel_name:null;
+        }
 
         $site['panel_name'] = $setting->panel_name;
         $site['newsfeed'] = $setting->newsfeed;
@@ -81,7 +87,7 @@ class PageController extends Controller
         $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['logout_url'] = route('logout');
-        $site['logo'] = asset('storage/images/setting/'.$setting->logo);
+        $site['logo'] = $logo;
         $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
         $site['notifigIcon'] = asset('assets/img/notifig.svg');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
@@ -90,7 +96,7 @@ class PageController extends Controller
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
             asset('assets/css/site-modal.css'),
-            asset('assets/css/style.css'),
+            asset('assets/css/style.css?var=0.2'),
         ];
         $site['scripts'] = [
             ['code' => '
@@ -219,6 +225,8 @@ class PageController extends Controller
             $site['status'] = $input['status']??'all';
         } elseif ($page->default_url == 'tickets') {
             $site['url'] = route('ticket.store');
+            $site['base_url'] = url('/tickets');
+            $site['single-ticket'] = null;
 
             $site['scripts'][] = ['src' => asset('user-assets/vue-scripts/ticket-vue.js')];
 
@@ -229,9 +237,18 @@ class PageController extends Controller
             if (Session::has('success')) {
                 $site['success'] = Session::get('success');
             }
-
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
             $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
             $site['ticketLists'] = $ticketLists;
+            if (isset($request->id) && !empty($request->id)) {
+                $site['comment-store'] = route('ticket.comment.store');
+                $site['single-ticket'] = Ticket::with('comments')->where('id', $request->id)->first();
+            }
         } elseif ($page->default_url == 'new-order' || $page->default_url == 'mass-order') {
             $site['single_order_url'] = route('make.single.order');
             $site['mass_order_url'] = route('massOrder.store');
@@ -293,6 +310,8 @@ class PageController extends Controller
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
+        } elseif ($page->default_url == 'add-funds')
+        {
             $site['serviceApi'] = apiServiceJson();
             $site['orderResponse'] = apiOrderResponse();
             $site['multiOrderResponse'] = apiMultiOrderResponse();
@@ -311,6 +330,15 @@ class PageController extends Controller
             $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
             $site['pay_op_store'] = route('payment.payOp');
             $site['user_payment_methods'] =
+            $site['user_payment_route'] = route('make.user.payment');
+
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+            $site['user_payment_methods'] =
               auth()
             ->user()
             ->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
@@ -319,6 +347,14 @@ class PageController extends Controller
                 $q->where('visibility', 'enabled');
                 $q->where('payment_methods.panel_id', $panelId);
             })->get()->toArray();
+
+            $site['transactions']  = Transaction::where(function($q){
+                $q->where('transaction_flag', 'payment_gateway');
+                $q->orWhere('transaction_flag', 'admin_panel');
+            })
+            ->where('status', 'done')
+            ->where('amount', '>' , 0)
+            ->where('user_id', auth()->user()->id)->orderBy('id', 'DESC')->latest()->take(10)->get()->toArray();
             if (Session::has('success')) {
                 $site['success'] = Session::get('success');
             }
