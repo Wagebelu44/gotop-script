@@ -206,7 +206,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     /* payment gateways  */
     Route::post('/payment/add-funds/paypal', 'User\PaypalController@store');
-    Route::get('/payment/add-funds/paypal/success', 'User\PaypalController@success');
+    Route::get('/payment/add-funds/{paypal}/success', 'User\PaypalController@success');
     Route::get('/payment/add-funds/paypal/cancel', 'User\PaypalController@cancel');
     Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
     Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
