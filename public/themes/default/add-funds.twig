@@ -10,8 +10,35 @@
                     </li>
                   </ul>
                   <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                        <form action="" method="post">
+                    <div class="tab-pane custom-tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                     {% if site['validation_error'] > 0 %}
+                        {% for error in site['errors'] %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Error!</strong> {{error}}.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                     {% if site['error']  %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> {{site['error']}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                     {% if site['success']  %}
+                           <div class="alert alert-success alert-dismissible fade show" role="alert">
+                              <strong>Success!</strong> {{site['success']}}.
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                              </button>
+                           </div>
+                     {% endif %} 
+                        <form action="{{site['user_payment_route']}}" method="post">
+                           {{ site['csrf_field'] | raw }}
                             <div class="form-group">
                               <label for="">Select a Payment Method</label>
                               <select class="form-control" name="payment_method" id="payment_method">
@@ -24,29 +51,28 @@
                               <label for="">Amount</label>
                               <input type="text" name="amount" id="amount" class="form-control" placeholder="" aria-describedby="helpId">
                             </div>
-                           <button type="button" class="btn btn-success">Make Payment</button>
+                           <button type="submit" class="btn btn-success">Make Payment</button>
                         </form>
                     </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="tab-pane custom-tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Method</th>
+                                    <th>Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td scope="row"></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
+                                {% for tnx in site['transactions'] %}
+                                    <tr>
+                                       <td>{{ tnx['id'] }}</td>
+                                       <td>{{ tnx['created_at'] }}</td>
+                                       <td> PayPal </td>
+                                       <td> {{ tnx['amount'] }} </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -67,9 +93,9 @@
                     </li>
                   </ul>
                   <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+                    <div class="tab-pane custom-tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
+                    <div class="tab-pane custom-tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                    <div class="tab-pane custom-tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
                   </div>
             </div>
         </div>

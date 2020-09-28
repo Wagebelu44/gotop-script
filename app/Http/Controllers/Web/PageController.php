@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Models\AccountStatus;
 use App\Models\Blog;
-use App\Models\BlogSlider;
 use App\Models\Menu;
-use App\Models\Newsfeed;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Redeem;
 use App\Models\Ticket;
 use App\Models\Service;
+use App\Models\Newsfeed;
 use App\Models\ThemePage;
+use App\Models\BlogSlider;
 use App\Models\SettingFaq;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\AccountStatus;
 use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
-use App\Http\Controllers\Controller;
 use App\Models\NewsfeedCategory;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
@@ -306,6 +307,14 @@ class PageController extends Controller
             $site['pay_pal_store'] = url('/payment/add-funds/paypal');
             $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
             $site['pay_op_store'] = route('payment.payOp');
+            $site['user_payment_route'] = route('make.user.payment');
+
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
             $site['user_payment_methods'] = 
               auth()
             ->user()
@@ -315,6 +324,14 @@ class PageController extends Controller
                 $q->where('visibility', 'enabled');
                 $q->where('payment_methods.panel_id', $panelId);
             })->get()->toArray();
+
+            $site['transactions']  = Transaction::where(function($q){
+                $q->where('transaction_flag', 'payment_gateway');
+                $q->orWhere('transaction_flag', 'admin_panel');
+            })
+            ->where('status', 'done')
+            ->where('amount', '>' , 0)
+            ->where('user_id', auth()->user()->id)->orderBy('id', 'DESC')->latest()->take(10)->get()->toArray();
             if (Session::has('success')) {
                 $site['success'] = Session::get('success');
             }

@@ -117,14 +117,18 @@ class PayPalController extends Controller
                         $url .= http_build_query($params);
                         return redirect()->away($url);
                     }
+                    else
+                    {
+                        return  redirect()->back()->withError('NO Email setting found, please contact administrator');
+                    }
                 }
           }
           else
           {
-            return redirect()->back()->withErrors(['error' => 'No setting found, contact your reseller']);
+            return redirect()->back()->withError('No setting found, contact your reseller');
           }
       } catch (\Exception $e) {
-
+        return redirect()->back()->withError($e->getMessage());
           dd($e->getMessage());
       }
 
