@@ -3,14 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class ExportedPayment extends Model
 {
-    use LogsActivity;
+    use SoftDeletes, LogsActivity;
+
     protected $table = 'exported_payments';
-    protected $fillable = ['id','from','to','status','mode','format','include_columns','user_ids','panel_id','created_at','updated_at'];
+    protected $fillable = ['id', 'from', 'to', 'status', 'mode', 'format', 'include_columns', 'user_ids', 'panel_id', 'created_at', 'updated_at'];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
