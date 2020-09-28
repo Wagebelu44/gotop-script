@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
 use App\Models\G\GlobalPaymentMethod;
+use App\Models\SettingGeneral;
 use Illuminate\Http\Request;
 use App\PanelAdmin;
 use Spatie\Activitylog\Models\Activity;
@@ -71,13 +72,27 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
-    public function saveAdminUser(Request $request)
+    public function activePanel(Request $request)
     {
         if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
             return false;
         }
 
         app('App\Http\Controllers\PanelSeedController')->index('live', $request);
+        
+        return response()->json(['success' => true]);
+    }
+
+    public function canceledPanel(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+
+        SettingGeneral::where(['panel_id' => $request->panel_id])->update([
+            'updated_by' => $request->id,
+            'status' => $request->status,
+        ]);
         
         return response()->json(['success' => true]);
     }
