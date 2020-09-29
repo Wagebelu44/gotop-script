@@ -60,7 +60,7 @@ class ChildPanelController extends Controller
                     $user->balance = $user->balance - $amount;
                     $user->save();
 
-                    if (env('PROJECT') == 'sandbox') {
+                    if (env('PROJECT') == 'live') {
                         try {
                             $response = Http::post(env('PROJECT_LIVE_URL').'/api/child-panel-store', [
                                 'child' => $child->toArray(),
