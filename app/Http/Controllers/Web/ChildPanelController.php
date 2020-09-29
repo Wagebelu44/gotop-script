@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Web;
 
+use Exception;
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use App\Models\UserChildPanel;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
+use App\User;
 
 class ChildPanelController extends Controller
 {
@@ -57,6 +59,34 @@ class ChildPanelController extends Controller
                 if ($transaction) {
                     $user->balance = $user->balance - $amount;
                     $user->save();
+
+                    if (env('PROJECT') == 'sandbox') {
+                        try {
+                            $response = Http::post(env('PROJECT_LIVE_URL').'/api/child-panel-store', [
+                                'child' => $child->toArray(),
+                                'token' => env('PANLE_REQUEST_TOKEN'),
+                            ]);
+        
+                            if ($response->ok()) {
+                                if ($response->successful()) {
+        
+                                    $data = json_decode($response->body());
+                                    if ($data->success) {
+                                        return redirect()->back()->with('success', 'Child panel created successfully. Wait for activation.');
+                                    } else {
+                                        return redirect()->back()->with('error', "Child panel saving failed for server error!");
+                                    }
+                                } else {
+                                    return redirect()->back()->with('error', "Child panel saving failed for server error!");
+                                }
+                            } else {
+                                return redirect()->back()->with('error', "Child panel saving failed for server error!");
+                            }
+                        } catch(Exception $e) {
+                            return redirect()->back()->with('error', "Child panel saving failed for server error!");
+                        }
+                    }                    
+
                     return redirect()->back()->with('success', 'Child panel created successfully. Wait for activation.');
                 } else {
                     return redirect()->back()->with('error', "Child panel saving failed for payment transaction issue!");
