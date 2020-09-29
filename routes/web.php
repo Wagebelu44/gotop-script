@@ -12,31 +12,7 @@ Route::get('command', function () {
 });
 //Test Route::END
 
-
-
-//Test Route::START
-Route::get('bal', function () {
-    $apiAddOrder = apiAddOrder();
-
-});
-
 Route::group(['middleware' => 'checkPanel'], function () {
-    Route::get('/', 'Web\PageController@index')->name('home');
-    Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
-
-    Auth::routes(['verify' => true]);
-    Route::group(['middleware' => ['auth', 'verified']], function () {
-        Route::get('/home', 'User\DashboardController@index')->name('home');
-
-        /* User order module */
-        Route::get('/order/{order_id?}', 'User\OrderController@index')->name('order');
-        Route::get('/get-category-services', 'User\OrderController@getCateServices');
-      /*   Route::get('/orders', 'User\OrderController@orderLists'); */
-
-        Route::post('statusChanges', 'User\OrderController@refillStatusChange')->name('user.changeRefillStatus');
-        Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
-
-    });
 
     Route::group(['prefix' => 'admin'], function () {
         // Authentication Routes...
@@ -202,16 +178,20 @@ Route::group(['middleware' => 'checkPanel'], function () {
         });
     });
 
+    Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
+    Route::post('/login', 'Auth\LoginController@login')->name('login');
+    Route::post('/register', 'Auth\RegisterController@register')->name('register');
 
-    Route::get('/', 'Web\PageController@index')->name('home');
-    Auth::routes(['verify' => true]);
     Route::group(['middleware' => ['auth', 'verified']], function () {
-        Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
+        Route::post('/mass-order-store', 'Web\OrderController@storeMassOrder')->name('massOrder.store');
+        Route::post('/make_new_order', 'Web\OrderController@store')->name('make.single.order');
+        
+        Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
+        Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
+
+        Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     });
-    Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
-    Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
-    Route::post('/make_new_order', 'User\OrderController@store')->name('make.single.order');
-    Route::get('/{url}', 'Web\PageController@page')->name('route');
+
 
     /* payment gateways  */
     Route::post('/payment/add-funds/paypal', 'User\PaypalController@store');
@@ -222,7 +202,6 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
 
 
-    //Route::get('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@showForm');
     Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');
     Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');
     Route::get('/payment/add-funds/bitcoin/success', 'User\CoinPaymentsController@success');
@@ -231,11 +210,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
 
-       // Authentication Routes...
- /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
-       Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
 
-       Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
-       Route::post('/register', 'Panel\Auth\RegisterController@register'); */
-
+    Route::get('/', 'Web\PageController@index')->name('home');
+    Route::get('/{url}', 'Web\PageController@page')->name('route');
 });
