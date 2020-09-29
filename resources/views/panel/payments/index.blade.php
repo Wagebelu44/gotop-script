@@ -14,7 +14,9 @@
                         <div class="row pb-3 pt-3">
                             <div class="col-md-6">
                                 <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#paymentAddModal">Add Payment</button>
+                                @if(isset($setting) && $setting->redeem === 'Yes')
                                 <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#redeemPointModal">Redeem Point</button>
+                                @endif
                             </div>
                             <div class="col-md-6">
                                 <form class="d-flex pull-right" method="get" @submit.prevent="filterType">

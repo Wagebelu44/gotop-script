@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\Models\SettingGeneral;
 use App\User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use App\Models\PaymentMethod;
 use App\Models\SettingBonuse;
 use App\Exports\PaymentsExport;
 use App\Models\ExportedPayment;
+use Illuminate\Support\Facades\Auth;
 use Spatie\ArrayToXml\ArrayToXml;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
@@ -19,7 +21,8 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        return view('panel.payments.index');
+        $setting = SettingGeneral::where('panel_id', Auth::user()->panel_id)->first();
+        return view('panel.payments.index', compact('setting'));
     }
 
     public function getPaymentLists(Request $request)
@@ -64,13 +67,13 @@ class PaymentController extends Controller
                     $filte_type = request()->query('filter_type');
                     $search_input = request()->query('data');
                     if ($search_input != null) {
-                      
+
                         if ($filte_type == 'user') {
-                            
+
                             $q->whereHas('user', function($q) use($search_input) {
                                 $q->where('username','like', '%' . $search_input . '%');
                             });
-                            
+
                         }
                     }
                 }
@@ -225,7 +228,7 @@ class PaymentController extends Controller
     {
         return Transaction::find($id);
     }
-    
+
     public function export()
     {
         $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
