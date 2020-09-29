@@ -17,7 +17,7 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->enum('transaction_type', ['withdraw', 'deposit']);
             $table->double('amount', 10, 2)->nullable();
-            $table->string('transaction_flag', 200)->comment('payment_gateway', 'refund', 'admin_panel', 'order_place', 'free_balance', 'bonus_deposit', 'drip_feed_cancel', 'redeem', 'child_panel_create', 'other');
+            $table->string('transaction_flag', 200)->comment('payment_gateway', 'refund', 'admin_panel', 'order_place', 'free_balance', 'bonus_deposit', 'drip_feed_cancel', 'redeem', 'child_panel', 'other');
             $table->integer('user_id')->unsigned();
             $table->integer('admin_id')->unsigned()->nullable();
             $table->enum('status', ['hold', 'done']);

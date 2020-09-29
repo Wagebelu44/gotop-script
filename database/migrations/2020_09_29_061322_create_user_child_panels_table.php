@@ -22,6 +22,9 @@ class CreateUserChildPanelsTable extends Migration
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->decimal('price', 10, 2)->nullable();
+            $table->enum('status', ['Pending', 'Active', 'Frozen', 'Terminated', 'Canceled'])->default('Pending');
+            $table->dateTime('expired_at')->nullable();
+            $table->dateTime('invoice_sent_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -97,42 +97,9 @@
                         <div class="form-group">
                             <label class="control-label" for="createorderform-currency">Currency</label>
                             <select id="createorderform-currency" class="form-control" name="currency" aria-required="true">
-                                <option value="USD">United States Dollars (USD)</option>
-                                <option value="RUB">Russian Rubles (RUB)</option>
-                                <option value="THB">Thai Baht (THB)</option>
-                                <option value="TRY">Turkish Lira (TRY)</option>
-                                <option value="EUR">Euro (EUR)</option>
-                                <option value="IDR">Indonesian Rupiah (IDR)</option>
-                                <option value="BRL">Brazilian Real (BRL)</option>
-                                <option value="CNY">Chinese Yuan (CNY)</option>
-                                <option value="KRW">South Korean Won (KRW)</option>
-                                <option value="INR">Indian Rupee (INR)</option>
-                                <option value="IRR">Iranian Rial (IRR)</option>
-                                <option value="SAR">Saudi Arabia Riyal (SAR)</option>
-                                <option value="PLN">Polish złoty (PLN)</option>
-                                <option value="MYR">Malaysian Ringgit (MYR)</option>
-                                <option value="GBP">Pound sterling (GBP)</option>
-                                <option value="KWD">Kuwaiti dinar (KWD)</option>
-                                <option value="SEK">Swedish krona (SEK)</option>
-                                <option value="ILS">Israeli shekel (ILS)</option>
-                                <option value="HKD">Hong Kong dollar (HKD)</option>
-                                <option value="NGN">Nigerian naira (NGN)</option>
-                                <option value="KES">Kenyan shilling (KES)</option>
-                                <option value="JPY">Japanese Yen (JPY)</option>
-                                <option value="ARS">Argentine peso (ARS)</option>
-                                <option value="VND">Vietnamese đồng (VND)</option>
-                                <option value="CAD">Canadian dollar (CAD)</option>
-                                <option value="IQD">Iraqi dinar (IQD)</option>
-                                <option value="TWD">New Taiwan Dollars (TWD)</option>
-                                <option value="AZN">Azerbaijani manat (AZN)</option>
-                                <option value="BYN">Belarusian ruble (BYN)</option>
-                                <option value="KZT">Kazakhstani tenge (KZT)</option>
-                                <option value="UAH">Ukrainian hryvnia (UAH)</option>
-                                <option value="RON">Romanian leu (RON)</option>
-                                <option value="AED">United Arab Emirates dirham (AED)</option>
-                                <option value="COP">Colombian peso (COP)</option>
-                                <option value="PKR">Pakistan Rupee (PKR)</option>
-                                <option value="EGP">Egyptian Pound (EGP)</option>
+                                {% for cur in site['currencies'] %}
+                                    <option value="{{ cur['code'] }}">{{ cur['name'] }} ({{ cur['code'] }})</option>
+                                {% endfor %}
                             </select>
                             <small id="currencyMsg" class="text-danger"></small>
                         </div>

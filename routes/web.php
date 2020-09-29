@@ -213,7 +213,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
 
     #User child panel
-    Route::resource('child-panel', 'User\ChildPanelController');
+    Route::resource('child-panel', 'Web\ChildPanelController');
 
     //Route::get('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@showForm');
     Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');

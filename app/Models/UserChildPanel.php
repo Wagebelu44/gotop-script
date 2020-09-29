@@ -14,13 +14,13 @@ class UserChildPanel extends Model
     protected $table = 'user_child_panels';
 
     protected $fillable = [
-        'panel_id', 'user_id', 'domain', 'currency', 'email', 'password', 'price',
+        'panel_id', 'user_id', 'domain', 'currency', 'email', 'password', 'price', 'expired_at', 'invoice_sent_at', 'status',
     ];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'User child panels'; //custom_log_name_for_this_model
+    protected static $logName = 'Child panels'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

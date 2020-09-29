@@ -70,7 +70,7 @@ jQuery(document).ready(function (e) {
 
 
 $(function() {
-    $('#service_type').change(function(){
+    $('#service_type').change(function() {
         let orderVal = $('#service_type').val();
         $("table[id^= 'api_']").hide();
         $('#api_'+orderVal).show();
@@ -87,19 +87,19 @@ function userChildPanelValidation() {
     if (domain === "") {
         $('#domainMsg').text('Domain is required');
         return false;
-    }else if (currency === ""){
+    } else if (currency === "") {
         $('#currencyMsg').text('Currency is required');
         return false;
-    }else if (email === ""){
+    } else if (email === "") {
         $('#emailMsg').text('Email is required');
         return false;
-    }else if (password === ""){
+    } else if (password === "") {
         $('#passwordMsg').text('Password is required');
         return false;
-    }else if (password_confirmation === ""){
+    } else if (password_confirmation === "") {
         $('#cpMsg').text('Confirm Password is required');
         return false;
-    }else if (password !== password_confirmation){
+    } else if (password !== password_confirmation) {
         $('#passwordMsg').text('Yur confirm password not match');
         return false;
     }

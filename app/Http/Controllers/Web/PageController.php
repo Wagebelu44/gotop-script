@@ -22,6 +22,7 @@ use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
 use App\Models\NewsfeedCategory;
 use App\Http\Controllers\Controller;
+use App\Models\G\GlobalCurrencies;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
@@ -339,15 +340,12 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
-            $site['user_payment_methods'] =
-              auth()
-            ->user()
-            ->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
-            ->join('payment_methods', function($q) use($panelId) {
-                $q->on('payment_methods.id', '=', 'user_payment_methods.payment_id');
-                $q->where('visibility', 'enabled');
-                $q->where('payment_methods.panel_id', $panelId);
-            })->get()->toArray();
+            $site['user_payment_methods'] = auth()->user()->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
+                ->join('payment_methods', function($q) use($panelId) {
+                    $q->on('payment_methods.id', '=', 'user_payment_methods.payment_id');
+                    $q->where('visibility', 'enabled');
+                    $q->where('payment_methods.panel_id', $panelId);
+                })->get()->toArray();
 
             $site['transactions']  = Transaction::where(function($q){
                 $q->where('transaction_flag', 'payment_gateway');
@@ -364,9 +362,26 @@ class PageController extends Controller
             }
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
-        }elseif ($page->default_url == 'child-panels') {
+        } elseif ($page->default_url == 'child-panels') {
             $site['panel_store'] = route('child-panel.store');
             $site['token'] = csrf_field();
+
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+            }
+
+            if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+            }
+
+            $site['validation_error'] = 0;
+
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+            $site['currencies'] = GlobalCurrencies::where('status', 'Active')->get();
             $site['panelsList'] =  UserChildPanel::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
         }
 

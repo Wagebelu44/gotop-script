@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
@@ -12,22 +12,22 @@ use Illuminate\Support\Facades\Validator;
 
 class ChildPanelController extends Controller
 {
-
     public function store(Request $request)
     {
         $data = $request->all();
         $validate = Validator::make($data, [
-            'domain'   => 'required',
+            'domain'   => 'required|max:255|unique:user_child_panels|regex:/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/i',
             'currency' => 'required',
             'email'    => 'required|unique:user_child_panels',
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => 'required|string|min:8|confirmed',
         ]);
         if ($validate->fails()) {
             return redirect()->back()->withErrors($validate)->withInput();
         }
 
+        $amount = '25.00';
         $user = User::find(Auth::user()->id);
-        if ($user->balance > "25"){
+        if ($user->balance > $amount){
             $child = UserChildPanel::create([
                 'panel_id' => Auth::user()->panel_id,
                 'user_id'  => Auth::user()->id,
@@ -35,16 +35,16 @@ class ChildPanelController extends Controller
                 'currency' => $request->currency,
                 'email'    => $request->email,
                 'password' => bcrypt($request->password),
-                'price'    => "25.00",
+                'price'    => $amount,
+                'status'   => 'Pending',
             ]);
 
-            if ($child){
-                $user->balance = $user->balance - "25.00";
-                $user->save();
-                Transaction::create([
+            if ($child) {
+                $transaction = Transaction::create([
+                    'panel_id' => Auth::user()->panel_id,
                     'transaction_type' => 'withdraw',
-                    'amount' => "25.00",
-                    'transaction_flag' => 'child_panel_create',
+                    'amount' => $amount,
+                    'transaction_flag' => 'child_panel',
                     'user_id' => Auth::user()->id,
                     'admin_id' => null,
                     'status' => 'done',
@@ -52,14 +52,20 @@ class ChildPanelController extends Controller
                     'fraud_risk' => null,
                     'payment_gateway_response' => null,
                     'reseller_payment_methods_setting_id' => 0,
-                    'panel_id' => Auth::user()->panel_id,
                 ]);
-            }
 
-            return redirect()->back()->with('success', 'Child save successfully');
-        }else{
-            return redirect()->back()->with('error', "You have't enough balance");
+                if ($transaction) {
+                    $user->balance = $user->balance - $amount;
+                    $user->save();
+                    return redirect()->back()->with('success', 'Child panel created successfully. Wait for activation.');
+                } else {
+                    return redirect()->back()->with('error', "Child panel saving failed for payment transaction issue!");
+                }
+            } else {
+                return redirect()->back()->with('error', "Child panel saving failed!");
+            }
+        } else {
+            return redirect()->back()->with('error', "You have't enough balance!");
         }
     }
-
 }

@@ -23,6 +23,8 @@ Route::post('/save-user', 'Panel\ApiController@saveUser');
 Route::post('/user-password', 'Panel\ApiController@userPasswordUpdate');
 Route::post('/save-payment-method', 'Panel\ApiController@saveMethod');
 Route::post('/delete-payment-method', 'Panel\ApiController@deleteMethod');
+Route::post('/save-currency', 'Panel\ApiController@saveCurrency');
+Route::post('/delete-currency', 'Panel\ApiController@deleteCurrency');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

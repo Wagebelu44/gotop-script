@@ -21,6 +21,8 @@ class CreateSettingGeneralsTable extends Migration
             $table->string('panel_name')->nullable();
             $table->string('timezone')->nullable();
             $table->string('currency')->nullable();
+            $table->string('currency_sign')->nullable();
+            $table->string('currency_name')->nullable();
             $table->string('currency_format')->nullable();
             $table->string('rates_rounding')->nullable();
             $table->unsignedTinyInteger('ticket_system')->nullable()->comment('0 => Disabled, 1 => Enabled');

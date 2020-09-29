@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Models\G\GlobalCurrencies;
 use App\Models\G\GlobalPaymentMethod;
 use App\Models\SettingGeneral;
 use Illuminate\Http\Request;
@@ -148,6 +149,36 @@ class ApiController extends Controller
         $method = GlobalPaymentMethod::where('uuid', $request->uuid)->first();
         if (!empty($method)) {
             $method->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
+    }
+
+    public function saveCurrency(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        GlobalCurrencies::updateOrCreate([
+            'code' => $request->code
+        ], [
+            'code' => $request->code,
+            'name' => $request->name,
+            'sign' => $request->sign,
+        ]);
+        return response()->json(['success' => true]);
+    }
+
+    public function deleteCurrency(Request $request)
+    {
+        if (!$request->token == env('PANLE_REQUEST_TOKEN')) {
+            return false;
+        }
+        
+        $currency = GlobalCurrencies::where('code', $request->code)->first();
+        if (!empty($currency)) {
+            $currency->delete();
             return response()->json(['success' => true]);
         }
         return response()->json(['success' => false]);
