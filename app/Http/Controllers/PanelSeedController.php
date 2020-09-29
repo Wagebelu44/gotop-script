@@ -19,6 +19,8 @@ class PanelSeedController
                 'updated_by' => $user->id,
                 'status' => $request->status,
                 'currency' => $request->currency,
+                'currency_sign' => $request->currency_sign,
+                'currency_name' => $request->currency_name,
                 'timezone' => $request->timezone,
             ]);
         } else {
@@ -37,6 +39,8 @@ class PanelSeedController
                 'updated_by' => 1,
                 'status' => 'Active',
                 'currency' => 'USD',
+                'currency_sign' => '$',
+                'currency_name' => 'Us Dollar',
                 'timezone' => '-11',
             ]);
         }
@@ -111,13 +115,14 @@ class PanelSeedController
 
             $pages = DB::table('pages')->where('panel_id', $user->panel_id)->get();
             foreach ($pages as $page) {
+                $pageName = Str::slug(strtolower($page->name), '-').'.twig';
                 $themePageData[] = [
                     'panel_id' => $user->panel_id,
                     'theme_id' => $theme->id,
                     'page_id' => $page->id,
                     'group' => 'twig',
-                    'name' => strtolower($page->name).'.twig',
-                    'content' => (file_exists(public_path($theme->location.'/'.Str::slug($page->name, '-').'.twig')))?file_get_contents(public_path($theme->location.'/'.Str::slug($page->name, '-').'.twig')):'',
+                    'name' => $pageName,
+                    'content' => (file_exists(public_path($theme->location.'/'.$pageName)))?file_get_contents(public_path($theme->location.'/'.$pageName)):'',
                     'sort' => 2,
                 ];
             }
