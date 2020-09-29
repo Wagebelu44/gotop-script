@@ -48,7 +48,8 @@ class LoginController extends Controller
         return view('panel.auth.login', compact('setting'));
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $this->validate($request, [
             'email' => 'required',
             'password' => 'required|min:8'
