@@ -12,14 +12,6 @@ Route::get('command', function () {
 });
 //Test Route::END
 
-
-
-//Test Route::START
-Route::get('bal', function () {
-    $apiAddOrder = apiAddOrder();
-
-});
-
 Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/', 'Web\PageController@index')->name('home');
     Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
@@ -220,7 +212,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
     Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
 
-
+    #User child panel
+    Route::resource('child-panel', 'User\ChildPanelController');
 
     //Route::get('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@showForm');
     Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');

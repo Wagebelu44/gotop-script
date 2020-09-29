@@ -4,48 +4,54 @@
         <div class="col-md-10">
             <button class="btn btn-info mb-3" data-toggle="modal" data-target="#exampleModalLong">Add Panel</button>
             <div class="well well-float">
-                {% if error %}
-                    <div class="alert alert-dismissible alert-danger {% if site['rtl'] %} rtl-alert {% endif %}">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        {{ errorMessage }}
+                {% if site['error']  %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> {{site['error']}}.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 {% endif %}
-                {% if success %}
-                    <div class="alert alert-dismissible alert-success {% if site['rtl'] %} rtl-alert {% endif %}">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        {{ successMessage }}
+                {% if site['success']  %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Success!</strong> {{site['success']}}.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 {% endif %}
-                {% if renew %}
-                    <div class="alert alert-danger" role="alert">
-                        <div class="pull-right">
-                            <a href="{{ renewUrl }}" class="btn btn-xs btn-default">Renew</a>
+                {% if site['validation_error'] > 0 %}
+                    {% for error in site['errors'] %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> {{error}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        {{ renewMessage }}
-                    </div>
+                    {% endfor %}
                 {% endif %}
                 <table class="table">
                     <thead>
                     <tr>
                         <th>Domain</th>
-                        <th>Status</th>
+                        <th>Email</th>
                         <th>Created</th>
                         <th>Expiry</th>
                         <th class="col-md-1"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for panel in panelsList %}
+                    {% for panel in site['panelsList'] %}
                         <tr>
                             <td>{{ panel['domain'] }}</td>
-                            <td>{{ panel['status'] }}</td>
-                            <td nowrap>{{ panel['created'] }}</td>
+                            <td>{{ panel['email'] }}</td>
+                            <td nowrap>{{ panel['created_at'] }}</td>
                             <td nowrap>{{ panel['expiry'] }}</td>
                             <td nowrap>
-                                {% if panel['admin'] %}
+                                {#{% if panel['admin'] %}
                                     <a href="{{ panel['admin_url'] }}" class="btn btn-xs btn-default"
                                        target="_blank">Admin</a>
-                                {% endif %}
+                                {% endif %}#}
                             </td>
                         </tr>
                     {% endfor %}
@@ -65,13 +71,14 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="" method="post">
+                <form id="userChildForm" action="{{ site['panel_store'] }}" onsubmit="return userChildPanelValidation()" method="post">
+                    {{ site['token'] | raw }}
                     <div class="modal-body">
-
                         <div class="first">
                             <div class="form-group">
                                 <label for="domain" class="control-label">Domain</label>
                                 <input type="text" class="form-control" id="domain" name="domain" value="">
+                                <small id="domainMsg" class="text-danger"></small>
                             </div>
                             <div class="alert alert-info">
                                 <ol style="padding: 10px;">
@@ -89,7 +96,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="createorderform-currency">Currency</label>
-                            <select id="createorderform-currency" class="form-control" name="CreateOrderForm[currency]" aria-required="true">
+                            <select id="createorderform-currency" class="form-control" name="currency" aria-required="true">
                                 <option value="USD">United States Dollars (USD)</option>
                                 <option value="RUB">Russian Rubles (RUB)</option>
                                 <option value="THB">Thai Baht (THB)</option>
@@ -127,18 +134,22 @@
                                 <option value="PKR">Pakistan Rupee (PKR)</option>
                                 <option value="EGP">Egyptian Pound (EGP)</option>
                             </select>
+                            <small id="currencyMsg" class="text-danger"></small>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="createorderform-username">Admin username</label>
-                            <input type="text" id="createorderform-username" class="form-control" name="username" aria-required="true" value="">
+                            <label class="control-label" for="createorderform-email">Email</label>
+                            <input type="text" id="createorderform-email" class="form-control" name="email" aria-required="true" value="">
+                            <small id="emailMsg" class="text-danger"></small>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="createorderform-password">Admin password</label>
+                            <label class="control-label" for="createorderform-password">Password</label>
                             <input type="password" id="createorderform-password" class="form-control" name="password" aria-required="true">
+                            <small id="passwordMsg" class="text-danger"></small>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="createorderform-password_confirm">Confirm password</label>
-                            <input type="password" id="createorderform-password_confirm" class="form-control" name="password_confirm" aria-required="true">
+                            <input type="password" id="createorderform-password_confirm" class="form-control" name="password_confirmation" aria-required="true">
+                            <small id="cpMsg" class="text-danger"></small>
                         </div>
                         <div class="form-group">
                             <label for="price" class="control-label">Price per month</label>
@@ -147,7 +158,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save Panel</button>
+                        <button type="submit" class="btn btn-primary">Save Panel</button>
                     </div>
                 </form>
             </div>

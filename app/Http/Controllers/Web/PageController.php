@@ -14,6 +14,7 @@ use App\Models\ThemePage;
 use App\Models\BlogSlider;
 use App\Models\SettingFaq;
 use App\Models\Transaction;
+use App\Models\UserChildPanel;
 use Illuminate\Http\Request;
 use App\Models\AccountStatus;
 use App\Models\DripFeedOrders;
@@ -364,7 +365,9 @@ class PageController extends Controller
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
         }elseif ($page->default_url == 'child-panels') {
-            $site['panelsList'] = [];
+            $site['panel_store'] = route('child-panel.store');
+            $site['token'] = csrf_field();
+            $site['panelsList'] =  UserChildPanel::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
         }
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
