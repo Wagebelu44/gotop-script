@@ -55,6 +55,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('orders/update/status', 'Panel\OrderController@bulkStatusChange');
             Route::get('get-orders', 'Panel\OrderController@getOrderLists');
             Route::post('orders/update/{id}', 'Panel\OrderController@updateOrder');
+            Route::get('orders/subscription/lists', 'Panel\OrderController@getSubsciptionLists')->name('subscription.lists');
+            Route::get('orders/subscription', 'Panel\OrderController@getSubscription')->name('subscriptions');
             Route::resource('orders', 'Panel\OrderController');
             Route::resource('exported_orders', 'Panel\ExportedOrderController')->only('index', 'store');
             Route::post('exported_orders/{exported_order}/download', 'Panel\ExportedOrderController@download')->name('exported_orders.download');
@@ -113,6 +115,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('reports/orders', 'Panel\ReportController@order');
             Route::get('reports/payment', 'Panel\ReportController@payments');
             Route::resource('reports', 'Panel\ReportController');
+
+            #Child panels...
+            Route::get('child-panels', 'Panel\ChildPanelController@index')->name('child-panels');
+            Route::get('child-panels-cancel-and-refund/{id}', 'Panel\ChildPanelController@cancelAndRefund')->name('child-panels.cancelRefund');
 
             #Appearance...
             Route::group(['prefix' => 'appearance', 'as' => 'appearance.'], function () {

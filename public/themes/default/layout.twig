@@ -99,7 +99,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0)">
-                            <span class="pricestyle">${{ site['auth'].balance }}</span>
+                            <span class="pricestyle">${{ site['auth']['balance'] }}</span>
                         </a>
                     </li>
 
@@ -131,7 +131,7 @@
 <div id="fbmsg">
     <div class="fbmsg-badge" {% if site['newsfeed_align'] == 'Left' %} style="left: 40px!important;" {% else %} style="right: 40px!important;" {% endif %}>
         <div class="messanger">
-            <img style="cursor:pointer; width: 80px; z-index: 9999" src="{{ site['notifigIcon'] }}" alt="messanger">
+            <img style="cursor:pointer; width: 80px; z-index: 9999;" src="{{ site['notifigIcon'] }}" alt="messanger">
         </div>
     </div>
     <div class="wp-sheet" {% if site['newsfeed_align'] == 'Left' %} style="left: 0!important; display:none" {% else %} style="right: 0!important; display:none" {% endif %}>

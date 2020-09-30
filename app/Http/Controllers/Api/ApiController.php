@@ -16,17 +16,26 @@ class ApiController extends Controller
 
     public function index(Request $request)
     {
+        $panel_id = null;
+        $user = User::where('api_key', $request->api_token)->first();
+        if ($user) {
+            $panel_id = $user->panel_id;
+        }
         if (isset($request->action)) {
-            if ($request->action == 'services') {
-                $services = Service::join('categories', 'categories.id', '=', 'services.category_id')
-                ->select([DB::raw('services.id as service'), 'services.name', DB::raw('services.service_type as type'), DB::raw('categories.name as category'), DB::raw('services.price as rate'), DB::raw('services.min_quantity as min'), DB::raw('services.max_quantity as max')])
+            if ($request->action == 'services') 
+            {
+                $services = Service::join('service_categories', 'service_categories.id', '=', 'services.category_id')
+                ->select([DB::raw('services.id as service'), 'services.name', DB::raw('services.service_type as type'), DB::raw('service_categories.name as category'), DB::raw('services.price as rate'), DB::raw('services.min_quantity as min'), DB::raw('services.max_quantity as max')])
+                ->where('services.panel_id', $panel_id)
                 ->get();
                 return response()->json($services);
-            } elseif ($request->action == 'status') {
+            } 
+            elseif ($request->action == 'status') {
                 if (isset($request->order)) {
                     try {
                         $order = Order::where('order_id', $request->order)
                             ->select([DB::raw('start_counter AS start_count'), 'status', 'remains'])
+                            ->where('panel_id', $panel_id)
                             ->latest('id')
                             ->first();
                         return response()->json($order);
@@ -40,6 +49,7 @@ class ApiController extends Controller
                         $orderIds = explode(",", $request->orders);
                         foreach ($orderIds as $orderId) {
                             $orders[$orderId] = Order::where('order_id', $orderId)
+                                ->where('panel_id', $panel_id)
                                 ->select([DB::raw('start_counter AS start_count'), 'status', 'remains'])
                                 ->latest('id')
                                 ->first() ?? array("error" => "Incorrect order ID");
@@ -55,7 +65,9 @@ class ApiController extends Controller
             elseif ($request->action == 'balance') 
             {
                 try {
-                    $user = User::where('api_key', $request->api_token)->first(['balance']);
+                    $user = User::where('api_key', $request->api_token)
+                    ->where('panel_id', $panel_id)
+                    ->first(['balance']);
                     $user->currency = 'USD';
                     return response()->json($user);
                 } catch (\Exception $e) {
@@ -67,12 +79,16 @@ class ApiController extends Controller
 
                 try {
                     $user = User::where('api_key', $request->api_token)->first();
-                    $service = Service::find($request->service);
+                    $service = Service::
+                    where('panel_id', $panel_id)
+                    ->where('id', $request->service)
+                    ->first();
                     $data = $request->only('link');
                     $data['order_id'] = rand(0, round(microtime(true)));
                     $data['quantity'] = $request->input('quantity', 0);
                     $data['user_id'] = $user->id;
                     $data['source'] = 'API';
+                    $data['panel_id'] = $panel_id;
                     $data['mode'] = $request->comments || ($request->usernames && !$request->quantity) ? 'auto' : 'manual';
                     $data['service_id'] = $request->service;
                     $data['charges'] = $service->service_type == 'Package' ? $data['quantity'] * $service->price : $data['quantity'] * ($service->price/1000);
@@ -111,6 +127,7 @@ class ApiController extends Controller
                         $dripFeed = DripFeedOrders::create([
                             'user_id' => $user->id,
                             'runs' => $request->runs,
+                            'panel_id' => $panel_id,
                             'interval' => $request->interval,
                             'total_quantity' => $totalQuantity,
                             'total_charges' => $totalCharges,
@@ -128,7 +145,8 @@ class ApiController extends Controller
                         }
         
                         $order_res = Order::insert($orders);
-                        User::where('id', $user->id)->update(['balance' => $user->balance - $totalCharges]);
+                        User::where('panel_id', $panel_id)
+                        ->where('id', $user->id)->update(['balance' => $user->balance - $totalCharges]);
                     } 
                     else 
                     {
@@ -138,7 +156,9 @@ class ApiController extends Controller
                         }
         
                         $order_res = Order::create($data);
-                        User::where('id', $user->id)->update(['balance' => $user->balance - $data['charges']]);
+                        User::where('id', $user->id)
+                        ->where('panel_id', $panel_id)
+                        ->update(['balance' => $user->balance - $data['charges']]);
                     }
                     \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
                     return response()->json(array('order' => isset($order_res->id)?$order_res->id: $order_res), 201);
