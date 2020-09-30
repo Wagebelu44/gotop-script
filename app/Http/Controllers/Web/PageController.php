@@ -206,7 +206,7 @@ class PageController extends Controller
             $site['orderList'] = $orders;
             $site['url'] = $url;
             $site['status'] = $input['status'] ?? 'all';
-        } elseif ($page->default_url ==  'drip-feed') {
+        } elseif ($page->default_url == 'drip-feed') {
             $date = (new \DateTime())->format('Y-m-d H:i:s');
             $d_feeds = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
             ->join('users','users.id','=','drip_feed_orders.user_id')
@@ -313,8 +313,6 @@ class PageController extends Controller
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
-        } elseif ($page->default_url == 'add-funds')
-        {
             $site['serviceApi'] = apiServiceJson();
             $site['orderResponse'] = apiOrderResponse();
             $site['multiOrderResponse'] = apiMultiOrderResponse();
@@ -322,17 +320,9 @@ class PageController extends Controller
             $site['apiAddOrder'] = apiAddOrder();
         } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
-            $site['bitcoin'] = asset('assets/img/bit-icon.png');
-            $site['FreeReviewCopy'] = asset('assets/img/FreeReviewCopy.png');
-            $site['payoneer1'] = asset('assets/img/payoneer1.png');
-            $site['pp-icon'] = asset('assets/img/pp-icon.png');
-            $site['skrill2'] = asset('assets/img/skrill2.png');
-            $site['visa1'] = asset('assets/img/visa1.png');
-            $site['payop'] = asset('assets/img/payop.png');
             $site['pay_pal_store'] = url('/payment/add-funds/paypal');
             $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
             $site['pay_op_store'] = route('payment.payOp');
-            $site['user_payment_methods'] =
             $site['user_payment_route'] = route('make.user.payment');
 
             $site['validation_error'] = 0;

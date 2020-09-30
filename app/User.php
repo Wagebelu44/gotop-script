@@ -52,7 +52,8 @@ class User extends Authenticatable
         $activity->panel_id = auth()->user()->panel_id??1;
     }
 
-    public function paymentMethods(){
+    public function paymentMethods()
+    {
         return $this->hasMany(UserPaymentMethod::class, 'user_id', 'id');
     }
 }
