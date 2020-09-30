@@ -187,9 +187,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/register', 'Auth\RegisterController@register')->name('register');
 
     Route::group(['middleware' => ['auth', 'verified']], function () {
+        Route::get('/get-category-services', 'Web\OrderController@getCateServices');
         Route::post('/mass-order-store', 'Web\OrderController@storeMassOrder')->name('massOrder.store');
         Route::post('/make_new_order', 'Web\OrderController@store')->name('make.single.order');
-
         Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
         Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
 
@@ -211,7 +211,6 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');
     Route::get('/payment/add-funds/bitcoin/success', 'User\CoinPaymentsController@success');
     Route::post('/payment/add-funds/bitcoin/bit-ipn', 'User\CoinPaymentsController@ipn');
-
 
     Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
 

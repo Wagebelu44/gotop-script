@@ -78,10 +78,16 @@ class PageController extends Controller
         $setting = SettingGeneral::where('panel_id', $panelId)->first();
 
         $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
-        if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo)){
+        if (isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo)) {
             $logo = asset('storage/images/setting/'.$setting->logo);
-        }else{
+        } else {
             $logo = isset($setting->panel_name) ? $setting->panel_name:null;
+        }
+
+        if (isset($setting->favicon) && file_exists('storage/images/setting/'.$setting->favicon)) {
+            $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
+        } else {
+            $site['favicon'] = null;
         }
 
         $site['panel_name'] = $setting->panel_name;
@@ -91,8 +97,8 @@ class PageController extends Controller
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['logout_url'] = route('logout');
         $site['logo'] = $logo;
-        $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
-        $site['notifigIcon'] = asset('assets/img/notifig.svg');
+
+        $site['notifigIcon'] = asset('assets/img/notify.png');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
         $site['styles'] = [
@@ -103,7 +109,7 @@ class PageController extends Controller
         ];
         $site['scripts'] = [
             ['code' => '
-                window.CSRF_TOKEN = "'.csrf_token().';
+                window.CSRF_TOKEN = "'.csrf_token().'";
                 window.base_url = "'.url('/').'";'],
             ['src' => asset('assets/js/jquery.js')],
             ['src' => asset('assets/js/bootstrap.js')],
