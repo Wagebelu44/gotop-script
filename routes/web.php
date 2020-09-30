@@ -218,6 +218,11 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
 
+    Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
+        Route::post('pay', 'Payment\CoinbaseController@install')->name('install');
+        Route::get('success', 'Payment\CoinbaseController@success')->name('success');
+        Route::get('failed', 'Payment\CoinbaseController@failed')->name('failed');
+    });
 
     Route::get('/', 'Web\PageController@index')->name('home');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
