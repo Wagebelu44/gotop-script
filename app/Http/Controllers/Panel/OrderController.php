@@ -19,6 +19,16 @@ class OrderController extends Controller
         return view('panel.orders.index');
     }
 
+    public function getSubscription()
+    {
+        return view('panel.orders.subscription');
+    }
+
+    public function getSubsciptionLists(Request $request)
+    {
+        
+    }
+
     public function updateOrder(Request $request, $id)
     {
         try {

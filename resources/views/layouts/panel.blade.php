@@ -59,6 +59,12 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':''}} {{  Request::routeIs('admin.exported_orders*') ? 'selected':'' }} ">
+                            <a class="sidebar-link {{ Request::routeIs('admin.orders*') ? 'active':'' }}" href="{{ route('admin.orders.index') }}">
+                                <span class="hide-menu">Subscription</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item {{ Request::routeIs('admin.drip-feed*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.drip-feed*') ? 'active':'' }}" href="{{ route('admin.drip-feed.index') }}">
                                 <span class="hide-menu">Drip-Feed</span>
