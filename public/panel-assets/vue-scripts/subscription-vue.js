@@ -30,7 +30,6 @@ const orderModule = new Vue({
         visibleStartCount :false,
         visiblePartical :false,
         visibleRemain :false,
-
         
         orderStatus : '',
         order_id : null,
@@ -92,22 +91,6 @@ const orderModule = new Vue({
         {
             this.filter.status = status;
             this.getSubscription();
-        },
-        filterType()
-        {
-            
-        },
-        update_service()
-        { 
-
-        },
-        yes()
-        {
-
-        },
-        no()
-        {
-
         },
     }
 });
