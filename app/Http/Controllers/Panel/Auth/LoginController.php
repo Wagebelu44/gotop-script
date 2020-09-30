@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SettingGeneral;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -42,10 +43,13 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        return view('panel.auth.login');
+        $panelId = session('panel');
+        $setting = SettingGeneral::where('panel_id', $panelId)->first();
+        return view('panel.auth.login', compact('setting'));
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $this->validate($request, [
             'email' => 'required',
             'password' => 'required|min:8'

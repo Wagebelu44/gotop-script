@@ -19,7 +19,7 @@ class CreateProviderServicesTable extends Migration
             $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('provider_id');
             $table->unsignedBigInteger('provider_service_id');
-            $table->string('name', 100)->nullable();
+            $table->text('name')->nullable();
             $table->string('type', 100)->nullable();
             $table->string('category', 100)->nullable();
             $table->double('rate', 15, 8)->nullable();

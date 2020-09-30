@@ -21,6 +21,8 @@ class CreateSettingGeneralsTable extends Migration
             $table->string('panel_name')->nullable();
             $table->string('timezone')->nullable();
             $table->string('currency')->nullable();
+            $table->string('currency_sign')->nullable();
+            $table->string('currency_name')->nullable();
             $table->string('currency_format')->nullable();
             $table->string('rates_rounding')->nullable();
             $table->unsignedTinyInteger('ticket_system')->nullable()->comment('0 => Disabled, 1 => Enabled');
@@ -44,6 +46,8 @@ class CreateSettingGeneralsTable extends Migration
             $table->enum('account_status', ['Yes', 'No'])->default('No');
             $table->enum('redeem', ['Yes', 'No'])->default('No');
             $table->enum('status', ['Active', 'Canceled'])->default('Active');
+            $table->enum('panel_type', ['Main', 'Child'])->default('Main');
+            $table->unsignedBigInteger('main_panel_id')->nullable()->comment('Main panel ID for Child Panel');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();
             $table->softDeletes();

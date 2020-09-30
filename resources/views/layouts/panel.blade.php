@@ -59,6 +59,12 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item {{ Request::routeIs('admin.subscriptions*') ? 'selected':''}} {{  Request::routeIs('admin.subscriptions*') ? 'selected':'' }} ">
+                            <a class="sidebar-link {{ Request::routeIs('admin.subscriptions*') ? 'active':'' }}" href="{{ route('admin.subscriptions') }}">
+                                <span class="hide-menu">Subscription</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item {{ Request::routeIs('admin.drip-feed*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.drip-feed*') ? 'active':'' }}" href="{{ route('admin.drip-feed.index') }}">
                                 <span class="hide-menu">Drip-Feed</span>
@@ -92,6 +98,12 @@
                         {{--<li class="sidebar-item">
                             <a class="sidebar-link" href="javascript:void(0)"><span class="hide-menu">Affiliates</span></a>
                         </li>--}}
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.child-panels*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.child-panels*') ? 'active':'' }}" href="{{ route('admin.child-panels') }}">
+                                <span class="hide-menu">Child panels</span>
+                            </a>
+                        </li>
 
                         <li class="sidebar-item {{ Request::routeIs('admin.reports*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.reports*') ? 'active':'' }}" href="{{ route('admin.reports.index') }}">

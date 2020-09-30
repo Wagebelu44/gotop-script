@@ -17,9 +17,11 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>{{ referral_link }}</td>
-                        <td>{{ commission_rate }}</td>
-                        <td>{{ minimum_payout }}</td>
+                        {% if site['commission_rate'] and site['minimum_payout'] %}
+                        <td>{{ site['ref_link'] }}</td>
+                        <td>{{ site['commission_rate'] }}%</td>
+                        <td>${{ site['minimum_payout'] }}</td>
+                        {% endif %}
                     </tr>
                     </tbody>
                 </table>

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +20,8 @@ class UserSeeder extends Seeder
                 'username' => 'user_'.$i,
                 'skype_name' => 'User_'.$i,
                 'email' => 'user'.$i.'@gmail.com',
-                'password' => bcrypt('12345678'),
+                'password' => bcrypt('12345678'),         
+                'api_key'  => Str::random(18),
                 'status' => 'Active',
                 'last_login_at' => now(),
             ]);

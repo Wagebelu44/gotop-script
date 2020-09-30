@@ -2,9 +2,7 @@
 
 namespace App;
 
-use App\User;
 use App\Models\Service;
-use App\Models\PaymentMethod;
 use App\Models\UserPaymentMethod;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Contracts\Activity;
@@ -20,10 +18,8 @@ class User extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
-        'panel_id', 'username', 'skype_name', 'phone', 'balance', 'email', 'api_key', 'referral_key', 'email_verified_at', 'password', 'status',
+        'uuid', 'panel_id', 'username', 'skype_name', 'phone', 'balance', 'email', 'api_key', 'referral_key', 'email_verified_at', 'password', 'status',
     ];
-
-    protected $appends = ['balance'];
 
     protected $hidden = [
         'password', 'remember_token',
@@ -33,14 +29,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function balance()
-    {
-        return 5000;
-    }
-    public function getBalanceAttribute()
-    {
-        return 50000;
-    }
     public function servicesList()
     {
         return $this->belongsToMany(Service::class, 'service_price_user', 'user_id', 'service_id')->withPivot('price', 'panel_id');
@@ -62,7 +50,8 @@ class User extends Authenticatable
         $activity->panel_id = auth()->user()->panel_id??1;
     }
 
-    public function paymentMethods(){
+    public function paymentMethods()
+    {
         return $this->hasMany(UserPaymentMethod::class, 'user_id', 'id');
     }
 }

@@ -19,6 +19,22 @@ class OrderController extends Controller
         return view('panel.orders.index');
     }
 
+    public function getSubscription()
+    {
+        return view('panel.orders.subscription');
+    }
+
+    public function getSubsciptionLists(Request $request)
+    {
+        return Order::select('orders.*', \DB::raw('services.name as service_name'), 'users.username')
+        ->join('services', function($q){
+            $q->on('services.id', '=', 'orders.service_id');
+            $q->where('service_type', 'Subscriptions');
+        })
+        ->join('users', 'users.id', '=', 'orders.user_id')
+        ->paginate(100);
+    }
+
     public function updateOrder(Request $request, $id)
     {
         try {
@@ -48,58 +64,55 @@ class OrderController extends Controller
                         ]);
                         $order->status = 'cancelled';
                         $order->save();
-            }
-            elseif (isset($data['partial']) && !empty($data['partial'])) {
+            } elseif (isset($data['partial']) && !empty($data['partial'])) {
 
                 $current_b = $order->charges;
                 $now_b = $data['partial'] * ($order->unit_price / 1000);
                 $updateable_balance =  $current_b - $now_b;
 
                 $user = User::find($order->user_id);
-                    $user->balance = $user->balance + $updateable_balance;
-                    $user->save();
+                $user->balance = $user->balance + $updateable_balance;
+                $user->save();
+
                 Transaction::create([
-                'transaction_type' => 'deposit',
-                'amount' => $updateable_balance,
-                'transaction_flag' => 'refund',
-                'user_id' =>  $order->user_id,
-                'admin_id' => auth()->user()->id,
-                'status' => 'done',
-                'memo' => null,
-                'fraud_risk' => null,
-                'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
-                'payment_gateway_response' => null,
-                'reseller_payment_methods_setting_id' =>  null,
-                'reseller_id' => 1,
+                    'transaction_type' => 'deposit',
+                    'amount' => $updateable_balance,
+                    'transaction_flag' => 'refund',
+                    'user_id' =>  $order->user_id,
+                    'admin_id' => auth()->user()->id,
+                    'status' => 'done',
+                    'memo' => null,
+                    'fraud_risk' => null,
+                    'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
+                    'payment_gateway_response' => null,
+                    'reseller_payment_methods_setting_id' =>  null,
+                    'reseller_id' => 1,
                 ]);
                 $order->update([
                     'quantity' => $data['partial'],
                     'status'   => 'partial',
                     'charges'  => $now_b,
                 ]);
-            }
-            else
-            {
+            } else {
                 $order->update($data);
             }
-            if ($order)
+
+            if ($order) {
                 return response()->json(['status'=>200, 'data'=>$order,  'success'=>'successfully updated']);
-            else return response()->json(['status'=>401,  'data'=>$order, 'error'=>'Could not updated']);
-        }catch (\Exception $e)
-        {
+            } else {
+                return response()->json(['status'=>401,  'data'=>$order, 'error'=>'Could not updated']);
+            }
+        } catch (\Exception $e) {
             return response()->json(['status'=>500, 'error'=>$e->getMessage()]);
         }
     }
 
-    public function bulkStatusChange(Request $r)
+    public function bulkStatusChange(Request $request)
     {
-        if ($r->status == 'cancel_refund') {
-            $orders = Order::whereIn('id',explode(',',$r->service_ids))->get();
+        if ($request->status == 'cancel_refund') {
+            $orders = Order::whereIn('id',explode(',', $request->service_ids))->get();
             foreach ($orders as $order) {
-                $user = User::find($order->user_id);
-                $user->balance = $user->balance + $order->charges;
-                $user->save();
-                Transaction::create([
+                $transaction = Transaction::create([
                     'transaction_type' => 'deposit',
                     'amount' => $order->charges,
                     'transaction_flag' => 'refund',
@@ -112,40 +125,40 @@ class OrderController extends Controller
                     'payment_gateway_response' => null,
                     'reseller_payment_methods_setting_id' =>  null,
                     'reseller_id' => 1,
-                    ]);
+                ]);
+
+                if ($transaction) {
+                    $user = User::find($order->user_id);
+                    $user->balance = $user->balance + $order->charges;
+                    $user->save();
+                    
                     $order->status = 'cancelled';
                     $order->save();
+                }
             }
-        }
-        elseif ($r->status == 'failed_resend')
-        {
-            $orders = Order::whereIn('id',explode(',',$r->service_ids))->get();
-            foreach ($orders as $order) 
-            {
+        } elseif ($request->status == 'failed_resend') {
+            $orders = Order::whereIn('id',explode(',',$request->service_ids))->get();
+            foreach ($orders as $order) {
                 $this->resendMultipleOrders($order->order_id);
             }
-        }
-        else
-        {
-            Order::whereIn('id',explode(',',$r->service_ids))->update([
-                'status' => $r->status
+        } else {
+            Order::whereIn('id',explode(',',$request->service_ids))->update([
+                'status' => $request->status
             ]);
         }
-        return response()->json(['status'=>200, 'data'=> 'null', 'message'=>'successfully status changed']);
+
+        return response()->json(['status' => 200, 'data' => 'null', 'message' => 'successfully status changed']);
     }
 
-    public function resendMultipleOrders($order_id)
+    public function resendMultipleOrders($orderId)
     {
-        $make_order = Order::where('order_id', $order_id)->where('refill_status', 0)->first();
-        if ($make_order) 
-        {
+        $make_order = Order::where('order_id', $orderId)->where('refill_status', 0)->first();
+        if ($make_order) {
             $ps = ProviderService::where('service_id', $make_order->service_id)->first();
             $provider_info = null;
             if ($ps != null) {
                 $provider_info = SettingProvider::find($ps->provider_id);
-            }
-            else
-            {
+            } else {
                 $make_order->status =  "cancelled";
                 $make_order->auto_order_response  =  json_encode(['error'=> 'service ID has some issue, not found, ID'.$make_order->service_id]);
                 $make_order->save();
@@ -170,18 +183,14 @@ class OrderController extends Controller
                     'link' => $make_order->link,
                     'quantity' => $make_order->quantity,
                     );
-            }
-            elseif ($ps->type == 'Package')
-            {
+            } elseif ($ps->type == 'Package') {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
                     'action' => 'add',
                     'service' => $ps->provider_service_id,
                     'link' => $make_order->link,
                     );
-            }
-            elseif ($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package')
-            {
+            } elseif ($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package') {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
                     'action' => 'add',
@@ -189,9 +198,7 @@ class OrderController extends Controller
                     'link' => $make_order->link,
                     'comments' => $make_order->text_area_1,
                     );
-            }
-            elseif ($ps->type ==  'Mentions Custom List')
-            {
+            } elseif ($ps->type ==  'Mentions Custom List') {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
                     'action' => 'add',
@@ -199,9 +206,7 @@ class OrderController extends Controller
                     'link' => $make_order->link,
                     'usernames' => $make_order->text_area_1,
                     );
-            }
-            elseif ($ps->type == 'Mentions Hashtag')
-            {
+            } elseif ($ps->type == 'Mentions Hashtag') {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
                     'action' => 'add',
@@ -210,9 +215,7 @@ class OrderController extends Controller
                     'quantity' => $make_order->quantity,
                     'hashtag' => $make_order->additional_inputs,
                     );
-            }
-            elseif ($ps->type == 'Comment Likes')
-            {
+            } elseif ($ps->type == 'Comment Likes') {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
                     'action' => 'add',
@@ -221,9 +224,7 @@ class OrderController extends Controller
                     'quantity' => $make_order->quantity,
                     'username' => $make_order->additional_inputs,
                     );
-            }
-            elseif ($ps->type == 'Poll')
-            {
+            } elseif ($ps->type == 'Poll') {
                 $dataArray = array(
                     'key' =>$provider_info->api_key,
                     'action' => 'add',
@@ -232,9 +233,7 @@ class OrderController extends Controller
                     'quantity' => $make_order->quantity,
                     'answer_number' => $make_order->additional_inputs,
                     );
-            }
-            elseif ($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers')
-            {
+            } elseif ($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers') {
                 $make_order->status =  "cancelled";
                 $make_order->auto_order_response  =  json_encode(['error'=> 'subscription is not implemented yet']);
                 $make_order->save();
@@ -250,18 +249,14 @@ class OrderController extends Controller
             curl_close ($ch);
             $result  =  json_decode($server_output, true);
             $make_order->auto_order_response  =  json_encode($result);
-            if (isset($result['order'])) 
-            {
+            if (isset($result['order'])) {
                 $make_order->status =  "pending";
                 $make_order->provider_order_id = $result['order'];
-            }
-            else
-            {
+            } else {
                 $make_order->status =  "failed";
             }
 
-            if ( $make_order->save() )
-            {
+            if ( $make_order->save() ) {
                 return true;
             }
             return false;
@@ -292,10 +287,7 @@ class OrderController extends Controller
                             $q->where('orders.status', 'inprogress');
                             $q->orWhere('orders.status', 'In progress');
                         });
-                    }
-                    else
-                    {
-
+                    } else {
                         $q->where('orders.status', strtolower(request()->query('status')));
                     }
                 }
@@ -307,6 +299,7 @@ class OrderController extends Controller
                 if (request()->query('service')) {
                     $q->where('orders.service_id', request()->query('service'));
                 }
+
                 if (request()->query('mode') && request()->query('mode') != 'all') {
                     $q->where('orders.mode', strtolower(request()->query('mode')));
                 }
@@ -317,22 +310,16 @@ class OrderController extends Controller
                     if ($search_input != null) {
                         if ($filte_type == 'order_id') {
                             $q->where('orders.order_id', '=', $search_input);
-                        }
-                        elseif ($filte_type == 'link') {
+                        } elseif ($filte_type == 'link') {
                             $q->where('orders.link', '=', $search_input);
-                        }
-                        elseif ($filte_type == 'service_id') {
+                        } elseif ($filte_type == 'service_id') {
                             $q->where('orders.service_id', '=', $search_input);
-                        }
-                        elseif ($filte_type == 'username') {
-                            if (request()->has('query_service') && !empty(request()->query('query_service'))) 
-                            {
+                        } elseif ($filte_type == 'username') {
+                            if (request()->has('query_service') && !empty(request()->query('query_service'))) {
                                 $q->whereHas('user', function($q) use($search_input) {
                                     $q->where('username','like', '%' . $search_input . '%');
                                 })->where('orders.service_id', request()->query('query_service'));
-                            }
-                            else
-                            {
+                            } else {
                                 $q->whereHas('user', function($q) use($search_input) {
                                     $q->where('username','like', '%' . $search_input . '%');
                                 });
@@ -340,25 +327,21 @@ class OrderController extends Controller
                         }
                     }
                 }
+
                 if (request()->query('filter_type') && request()->query('services')) {
                     $filte_type = request()->query('filter_type');
                     $search_input = request()->query('search');
-                    if ($search_input != null) 
-                    {
-                        if ($filte_type == 'order_id') 
-                        {
+                    if ($search_input != null) {
+                        if ($filte_type == 'order_id') {
                             $q->where('orders.order_id', '=', $search_input)
                             ->where('orders.service_id', request()->query('services'));
-                        }
-                        elseif ($filte_type == 'link') {
+                        }elseif ($filte_type == 'link') {
                             $q->where('orders.link', '=', $search_input)
                             ->where('orders.service_id', request()->query('services'));
-                        }
-                        elseif ($filte_type == 'service_id') {
+                        } elseif ($filte_type == 'service_id') {
                             $q->where('orders.service_id', '=', $search_input)
                             ->where('orders.service_id', request()->query('services'));
-                        }
-                        elseif ($filte_type == 'username') {
+                        } elseif ($filte_type == 'username') {
                             $q->whereHas('user', function($q) use($search_input) {
                                 $q->where('username','like', '%' . $search_input . '%');
                             })->where('orders.service_id', request()->query('services'));
@@ -378,18 +361,14 @@ class OrderController extends Controller
         $failed_order = 0;
         $order_mode=['auto'=>0, 'manual'=>0];
         $auto_order_statuss = [];
-        foreach ($orders as $order)
-        {
-            if ($order->status == 'failed') 
-            {
+        foreach ($orders as $order) {
+            if ($order->status == 'failed') {
                 $failed_order++;
             }
-            if ($order->mode =='auto') 
-            {
+
+            if ($order->mode =='auto') {
                 $order_mode['auto']++;
-            }
-            elseif ($order->mode =='manual')
-            {
+            } elseif ($order->mode =='manual') {
                 $order_mode['manual']++;
             }
         }
@@ -401,37 +380,4 @@ class OrderController extends Controller
         ];
         return response()->json($data, 200);
     }
-
-    public function create()
-    {
-        //
-    }
-
-    
-    public function store(Request $request)
-    {
-
-    }
-
-    public function show($id)
-    {
-        //
-    }
-
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    public function destroy($id)
-    {
-        //
-    }
-
-    
 }

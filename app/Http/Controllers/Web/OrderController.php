@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Web;
 
 use App\User;
 use App\Models\Order;
@@ -17,16 +17,6 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return view('user.order.index');
-    }
-
     public function getCateServices(Request $request)
     {
         return ServiceCategory::with(['services' => function($q){
@@ -36,253 +26,10 @@ class OrderController extends Controller
         ->where('panel_id', auth()->user()->panel_id)
         ->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
     }
-
-    public function dripFeed(Request $r)
-    {
-        $date = (new \DateTime())->format('Y-m-d H:i:s');
-        $d_feeds = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
-            ->join('users','users.id','=','drip_feed_orders.user_id')
-            ->join(\DB::raw('(SELECT COUNT(orders.drip_feed_id) AS totalOrders, orders.drip_feed_id, GROUP_CONCAT(DISTINCT(orders.link)) AS orders_link,
-            GROUP_CONCAT(DISTINCT(services.name)) AS service_name, GROUP_CONCAT(DISTINCT(orders.quantity)) AS service_quantity FROM orders INNER JOIN services
-            ON services.id = orders.service_id GROUP BY orders.drip_feed_id) as A'), 'drip_feed_orders.id', '=', 'A.drip_feed_id') 
-            ->leftJoin(\DB::raw("(SELECT drip_feed_id, COUNT(drip_feed_id) AS runOrders FROM orders
-            WHERE order_viewable_time <='".$date."' GROUP BY drip_feed_id) AS B"), 'drip_feed_orders.id', '=', 'B.drip_feed_id');
-
-        if (isset($r->status))
-        {
-            if ($r->status != 'all')
-            $d_feeds->where('drip_feed_orders.status',$r->status);
-        }
-
-        $drip_feeds = $d_feeds->OrderBy('id', 'DESC')->get();
-        //dd($drip_feeds);
-
-        return view('reseller.order.drip_feed', compact('drip_feeds'));
-    }
-    public function orderLists(Request $r)
-    {
-        $input = $r->all();
-        $order = Order::where('user_id', auth()->user()->id)->where('refill_status', 0);
-        if (isset($input['query']))
-        {
-            $orders =  $order->where('status', $input['query'])->orderBy('id', 'DESC')->paginate(10);
-        }
-        elseif (isset($input['user_search_keyword'])) {
-            if ($input['status'] !='all') {
-                $order->where('status', $input['status']);
-            }
-            $q_string = $input['user_search_keyword'];
-            $orders =  $order->where(function($q) use($q_string) {
-                    $q->where('id', 'LIKE', '%' . $q_string . '%');
-                    $q->orWhere('link', 'LIKE', '%' . $q_string . '%');
-                    $q->orWhere('service_id', 'LIKE', '%' . $q_string . '%');
-                    $q->orWhere('status', 'LIKE', '%' . $q_string . '%');
-            })->orderBy('id', 'DESC')->paginate(10);
-        }
-        else
-        {
-            $orders = $order->orderBy('id', 'DESC')->paginate(10);
-        }
-        $role =  'user';
-        $page_name =  'orders';
-        $auto_order_statuss = [];
-        return view('user.order.lists',compact('orders','role','page_name', 'auto_order_statuss'));
-    }
-
-
-    public function refillStatusChange(Request $r)
-    {
-        try {
-            $refill_status =  Order::where([
-                ['id', '=', $r->order_table_id],
-                ['order_id', '=', $r->order_id],
-            ])->first();
-
-            $order_cloned  = Order::create([
-                'order_id' => $refill_status->order_id,
-                'status' => 'COMPLETED',
-                'panel_id' => auth()->user()->panel_id,
-                'charges' => $refill_status->charges,
-                'link' => $refill_status->link,
-                'start_counter' => $refill_status->start_counter,
-                'remains' => $refill_status->remains,
-                'quantity' => $refill_status->quantity,
-                'user_id' => $refill_status->user_id,
-                'service_id' => $refill_status->service_id,
-                'category_id' => $refill_status->category_id,
-                'custom_comments' => $refill_status->custom_comments,
-                'mode'  => $refill_status->mode,
-                'source' => $refill_status->source,
-                'drip_feed_id'  => $refill_status->drip_feed_id,
-                'order_viewable_time' => $refill_status->order_viewable_time,
-                'text_area_1' => $refill_status->text_area_1,
-                'text_area_2' => $refill_status->text_area_2,
-                'additional_inputs'  => $refill_status->additional_inputs,
-                'refill_status' => false,
-                'refill_order_status' => 'PENDING',
-                ]);
-
-                $refill_status->refill_status =  true;
-                $refill_status->refill_order_status = $r->refill_order_status;
-
-            if ($refill_status->save()) {
-                return redirect()->back()->with('success', 'Status changes');
-            }
-            else
-            {
-                return redirect()->back()->with('error', 'Could not change, error occured');
-            }
-        } catch (\Exception $e) {
-             return redirect()->back()->with('error', $e->getMessage());
-        }
-
-    }
-
-   
-
-    public function storeMassOrder(Request $r)
-    {
-        try {
-            $data = $r->all();
-            $validate = Validator::make($data, [
-                'content' => 'required',
-            ]);
-            if ($validate->fails()) {
-                return redirect()->back()
-                    ->withErrors($validate)
-                    ->withInput();
-            }
-            $each_line = preg_split("/\r\n|\n|\r/", $data['content']);
-            $orders = [];
-            $total_amount = 0;
-            foreach ($each_line as $line) {
-                $input_line = explode('|', $line);
-                if (count($input_line) != 3) return redirect()->back()->with('error', 'Please follow the instruction for filling up the form')->withInput();
-                $ser = Service::find($input_line[0]);
-                if ($ser==null) {
-                     return redirect()->back()->with('error', 'No service found with this ID'. $input_line[0]);
-                }
-                /* sdfsd */
-                $order_status = 'pending';
-                $provider_id = null;
-                $original_unit_price = 0;
-                $original_charges = 0;
-                $auto_order_response = null;
-                if ($ser->mode == 'auto') {
-                    $ps = ProviderService::where('service_id', $ser->id)->first();
-                    $provider_info = null;
-                    if ($ps != null) {
-                        $provider_info = SettingProvider::find($ps->provider_id);
-                    }
-                    if ($provider_info == null) {
-                        $order_status =  "cancelled";
-                        $original_unit_price = $ps->rate;
-                        $auto_order_response  =  json_encode(['error'=> 'provider not found, provider_id '.$ps->provider_id]);
-                        $original_charges = ($ps->rate / 1000) *  $input_line[1];
-                    }
-                    else
-                    {
-                        $original_unit_price = $ps->rate;
-                        $original_charges = ($ps->rate / 1000) *  $input_line[1];
-                        $ch = curl_init();
-                        curl_setopt($ch, CURLOPT_URL, $provider_info->api_url);
-                        curl_setopt($ch, CURLOPT_POST, 1);
-                        curl_setopt($ch, CURLOPT_POSTFIELDS,
-                                http_build_query(array(
-                                    'key' => $provider_info->api_key,
-                                    'action' => 'add',
-                                    'service' => $ps->provider_service_id,
-                                    'link' => $input_line[2],
-                                    'quantity' => $input_line[1],
-                                    )));
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                        $server_output = curl_exec($ch);
-                        curl_close ($ch);
-                        $result  =  json_decode($server_output, true);
-                        $auto_order_response = json_encode($result);
-                        if (isset($result['order'])) {
-                            $provider_id = $result['order'];
-                        }
-                        else
-                        {
-                            $order_status =  "failed";
-                        }
-                    }
-                }
-                /* asdfasdf */
-                $service_for_price = auth()->user()->servicesList()->where('id', $input_line[0])->first();
-                $s_price = $ser->price;
-                if ($service_for_price !=null) {
-                    $s_price = $service_for_price->pivot->price;
-                }
-                $total_amount += ($s_price / 1000) * $input_line[1];
-                $orders[] = [
-                    'order_id' => rand(0, round(microtime(true))),
-                    'status' => $order_status,
-                    'charges' => ($s_price / 1000) * $input_line[1],
-                    'unit_price' => $s_price,
-                    'original_charges' => ($ser->price / 1000) * $input_line[1],
-                    'original_unit_price' => $ser->price,
-                    'provider_order_id' => $provider_id,
-                    'link' => $input_line[2],
-                    'quantity' => $input_line[1],
-                    'user_id' => auth()->user()->id,
-                    'category_id' => $ser->category_id,
-                    'service_id' => $input_line[0],
-                    'created_at' => now(),
-                    'order_viewable_time' => now(),
-                    'panel_id' => auth()->user()->panel_id,
-                    'auto_order_response' => $auto_order_response,
-                    'mode' =>  $ser->mode,
-                ];
-            }
-            // if (auth()->user()->user_balance < $total_amount) {
-            //     return redirect()->back()->with('error', 'You do not have sufficient Balance');
-            // }
-            if (Order::insert($orders))
-            {
-
-                \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
-                $update_balance = auth()->user()->balance() - $total_amount;
-                User::where('id', auth()->user()->id)->update(['balance'=> $update_balance ]);
-                $log = Transaction::create([
-                    'transaction_type' => 'withdraw',
-                    'amount' => $total_amount,
-                    'transaction_flag' => 'order_place',
-                    'user_id' =>  auth()->user()->id,
-                    'admin_id' => null,
-                    'status' => 'done',
-                    'memo' => null,
-                    'fraud_risk' => null,
-                    'payment_gateway_response' => null,
-                    'reseller_payment_methods_setting_id' =>  null,
-                    'reseller_id' => 1,
-                    ]);
-                return redirect()->back()->with('success', 'Successfully saved');
-            }
-            else return redirect()->back()->with('error', 'Please make sure you are following correct format.');
-
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-    }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-   
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
     {
         try {
-
             $data = $request->all();
             if (isset($data['drip_feed']) && $data['drip_feed']=='on')
             {
@@ -310,10 +57,6 @@ class OrderController extends Controller
                     ->withErrors($validate)
                     ->withInput();
             }
-            /* commented for now but important line of code */
-            /* if (auth()->user()->user_balance < $data['charge']) {
-                return redirect()->back()->with('error', 'You do not have sufficient Balance');
-            } */
 
             $service = Service::find($data['service_id']);
             if ($service != null) {
@@ -477,7 +220,7 @@ class OrderController extends Controller
                     $ps = ProviderService::where('service_id', $make_order->service_id)->first();
                     $provider_info = null;
                     if ($ps != null) {
-                        $provider_info = Provider::find($ps->provider_id);
+                        $provider_info = SettingProvider::find($ps->provider_id);
                     }
                     else
                     {
@@ -594,7 +337,7 @@ class OrderController extends Controller
                     }
                     $make_order->save();
                 }
-                return redirect()->route('order', ['order_id'=>$make_order->id])
+                return redirect('new-order?order_id='.$make_order->id)
                 ->with('success', 'Successfully saved');
             }
             else return redirect()->back()->with('error', 'Error Occuered');
@@ -603,48 +346,130 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function storeMassOrder(Request $r)
     {
-        //
-    }
+        try {
+            $data = $r->all();
+            $validate = Validator::make($data, [
+                'content' => 'required',
+            ]);
+            if ($validate->fails()) {
+                return redirect()->back()
+                    ->withErrors($validate)
+                    ->withInput();
+            }
+            $each_line = preg_split("/\r\n|\n|\r/", $data['content']);
+            $orders = [];
+            $total_amount = 0;
+            foreach ($each_line as $line) {
+                $input_line = explode('|', $line);
+                if (count($input_line) != 3) return redirect()->back()->with('error', 'Please follow the instruction for filling up the form')->withInput();
+                $ser = Service::find($input_line[0]);
+                if ($ser==null) {
+                     return redirect()->back()->with('error', 'No service found with this ID'. $input_line[0]);
+                }
+                /* sdfsd */
+                $order_status = 'pending';
+                $provider_id = null;
+                $original_unit_price = 0;
+                $original_charges = 0;
+                $auto_order_response = null;
+                if ($ser->mode == 'auto') {
+                    $ps = ProviderService::where('service_id', $ser->id)->first();
+                    $provider_info = null;
+                    if ($ps != null) {
+                        $provider_info = SettingProvider::find($ps->provider_id);
+                    }
+                    if ($provider_info == null) {
+                        $order_status =  "cancelled";
+                        $original_unit_price = $ps->rate;
+                        $auto_order_response  =  json_encode(['error'=> 'provider not found, provider_id '.$ps->provider_id]);
+                        $original_charges = ($ps->rate / 1000) *  $input_line[1];
+                    }
+                    else
+                    {
+                        $original_unit_price = $ps->rate;
+                        $original_charges = ($ps->rate / 1000) *  $input_line[1];
+                        $ch = curl_init();
+                        curl_setopt($ch, CURLOPT_URL, $provider_info->api_url);
+                        curl_setopt($ch, CURLOPT_POST, 1);
+                        curl_setopt($ch, CURLOPT_POSTFIELDS,
+                                http_build_query(array(
+                                    'key' => $provider_info->api_key,
+                                    'action' => 'add',
+                                    'service' => $ps->provider_service_id,
+                                    'link' => $input_line[2],
+                                    'quantity' => $input_line[1],
+                                    )));
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        $server_output = curl_exec($ch);
+                        curl_close ($ch);
+                        $result  =  json_decode($server_output, true);
+                        $auto_order_response = json_encode($result);
+                        if (isset($result['order'])) {
+                            $provider_id = $result['order'];
+                        }
+                        else
+                        {
+                            $order_status =  "failed";
+                        }
+                    }
+                }
+                /* asdfasdf */
+                $service_for_price = auth()->user()->servicesList()->where('id', $input_line[0])->first();
+                $s_price = $ser->price;
+                if ($service_for_price !=null) {
+                    $s_price = $service_for_price->pivot->price;
+                }
+                $total_amount += ($s_price / 1000) * $input_line[1];
+                $orders[] = [
+                    'order_id' => rand(0, round(microtime(true))),
+                    'status' => $order_status,
+                    'charges' => ($s_price / 1000) * $input_line[1],
+                    'unit_price' => $s_price,
+                    'original_charges' => ($ser->price / 1000) * $input_line[1],
+                    'original_unit_price' => $ser->price,
+                    'provider_order_id' => $provider_id,
+                    'link' => $input_line[2],
+                    'quantity' => $input_line[1],
+                    'user_id' => auth()->user()->id,
+                    'category_id' => $ser->category_id,
+                    'service_id' => $input_line[0],
+                    'created_at' => now(),
+                    'order_viewable_time' => now(),
+                    'panel_id' => auth()->user()->panel_id,
+                    'auto_order_response' => $auto_order_response,
+                    'mode' =>  $ser->mode,
+                ];
+            }
+            // if (auth()->user()->user_balance < $total_amount) {
+            //     return redirect()->back()->with('error', 'You do not have sufficient Balance');
+            // }
+            if (Order::insert($orders))
+            {
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+                \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
+                $update_balance = auth()->user()->balance() - $total_amount;
+                User::where('id', auth()->user()->id)->update(['balance'=> $update_balance ]);
+                $log = Transaction::create([
+                    'transaction_type' => 'withdraw',
+                    'amount' => $total_amount,
+                    'transaction_flag' => 'order_place',
+                    'user_id' =>  auth()->user()->id,
+                    'admin_id' => null,
+                    'status' => 'done',
+                    'memo' => null,
+                    'fraud_risk' => null,
+                    'payment_gateway_response' => null,
+                    'reseller_payment_methods_setting_id' =>  null,
+                    'reseller_id' => 1,
+                    ]);
+                return redirect()->back()->with('success', 'Successfully saved');
+            }
+            else return redirect()->back()->with('error', 'Please make sure you are following correct format.');
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

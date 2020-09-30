@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Redeem;
+use App\Models\SettingModule;
 use App\Models\Ticket;
 use App\Models\Service;
 use App\Models\Newsfeed;
@@ -14,6 +15,7 @@ use App\Models\ThemePage;
 use App\Models\BlogSlider;
 use App\Models\SettingFaq;
 use App\Models\Transaction;
+use App\Models\UserChildPanel;
 use Illuminate\Http\Request;
 use App\Models\AccountStatus;
 use App\Models\DripFeedOrders;
@@ -21,6 +23,7 @@ use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
 use App\Models\NewsfeedCategory;
 use App\Http\Controllers\Controller;
+use App\Models\G\GlobalCurrencies;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
@@ -75,6 +78,17 @@ class PageController extends Controller
         $setting = SettingGeneral::where('panel_id', $panelId)->first();
 
         $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
+        if (isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo)) {
+            $logo = asset('storage/images/setting/'.$setting->logo);
+        } else {
+            $logo = isset($setting->panel_name) ? $setting->panel_name:null;
+        }
+
+        if (isset($setting->favicon) && file_exists('storage/images/setting/'.$setting->favicon)) {
+            $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
+        } else {
+            $site['favicon'] = null;
+        }
 
         $site['panel_name'] = $setting->panel_name;
         $site['newsfeed'] = $setting->newsfeed;
@@ -82,20 +96,20 @@ class PageController extends Controller
         $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['logout_url'] = route('logout');
-        $site['logo'] = asset('storage/images/setting/'.$setting->logo);
-        $site['favicon'] = asset('storage/images/setting/'.$setting->favicon);
-        $site['notifigIcon'] = asset('assets/img/notifig.svg');
+        $site['logo'] = $logo;
+
+        $site['notifigIcon'] = asset('assets/img/notify.png');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';
         $site['csrf_field'] = csrf_field();
         $site['styles'] = [
             asset('assets/css/bootstrap.css'),
             asset('assets/css/fontawesome.css'),
             asset('assets/css/site-modal.css'),
-            asset('assets/css/style.css?var=0.1'),
+            asset('assets/css/style.css?var=0.2'),
         ];
         $site['scripts'] = [
             ['code' => '
-                window.CSRF_TOKEN = "'.csrf_token().';
+                window.CSRF_TOKEN = "'.csrf_token().'";
                 window.base_url = "'.url('/').'";'],
             ['src' => asset('assets/js/jquery.js')],
             ['src' => asset('assets/js/bootstrap.js')],
@@ -198,7 +212,7 @@ class PageController extends Controller
             $site['orderList'] = $orders;
             $site['url'] = $url;
             $site['status'] = $input['status'] ?? 'all';
-        } elseif ($page->default_url ==  'drip-feed') {
+        } elseif ($page->default_url == 'drip-feed') {
             $date = (new \DateTime())->format('Y-m-d H:i:s');
             $d_feeds = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
             ->join('users','users.id','=','drip_feed_orders.user_id')
@@ -220,6 +234,8 @@ class PageController extends Controller
             $site['status'] = $input['status']??'all';
         } elseif ($page->default_url == 'tickets') {
             $site['url'] = route('ticket.store');
+            $site['base_url'] = url('/tickets');
+            $site['single-ticket'] = null;
 
             $site['scripts'][] = ['src' => asset('user-assets/vue-scripts/ticket-vue.js')];
 
@@ -230,9 +246,18 @@ class PageController extends Controller
             if (Session::has('success')) {
                 $site['success'] = Session::get('success');
             }
-
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
             $ticketLists = Ticket::where('user_id', auth()->user()->id)->get()->toArray();
             $site['ticketLists'] = $ticketLists;
+            if (isset($request->id) && !empty($request->id)) {
+                $site['comment-store'] = route('ticket.comment.store');
+                $site['single-ticket'] = Ticket::with('comments')->where('id', $request->id)->first();
+            }
         } elseif ($page->default_url == 'new-order' || $page->default_url == 'mass-order') {
             $site['single_order_url'] = route('make.single.order');
             $site['mass_order_url'] = route('massOrder.store');
@@ -294,16 +319,13 @@ class PageController extends Controller
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
-        } elseif ($page->default_url == 'add-funds') 
-        {
+            $site['serviceApi'] = apiServiceJson();
+            $site['orderResponse'] = apiOrderResponse();
+            $site['multiOrderResponse'] = apiMultiOrderResponse();
+            $site['userBalance'] = apiUserBalance();
+            $site['apiAddOrder'] = apiAddOrder();
+        } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
-            $site['bitcoin'] = asset('assets/img/bit-icon.png');
-            $site['FreeReviewCopy'] = asset('assets/img/FreeReviewCopy.png');
-            $site['payoneer1'] = asset('assets/img/payoneer1.png');
-            $site['pp-icon'] = asset('assets/img/pp-icon.png');
-            $site['skrill2'] = asset('assets/img/skrill2.png');
-            $site['visa1'] = asset('assets/img/visa1.png');
-            $site['payop'] = asset('assets/img/payop.png');
             $site['pay_pal_store'] = url('/payment/add-funds/paypal');
             $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
             $site['pay_op_store'] = route('payment.payOp');
@@ -315,15 +337,12 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
-            $site['user_payment_methods'] = 
-              auth()
-            ->user()
-            ->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
-            ->join('payment_methods', function($q) use($panelId) {
-                $q->on('payment_methods.id', '=', 'user_payment_methods.payment_id');
-                $q->where('visibility', 'enabled');
-                $q->where('payment_methods.panel_id', $panelId);
-            })->get()->toArray();
+            $site['user_payment_methods'] = auth()->user()->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
+                ->join('payment_methods', function($q) use($panelId) {
+                    $q->on('payment_methods.id', '=', 'user_payment_methods.payment_id');
+                    $q->where('visibility', 'enabled');
+                    $q->where('payment_methods.panel_id', $panelId);
+                })->get()->toArray();
 
             $site['transactions']  = Transaction::where(function($q){
                 $q->where('transaction_flag', 'payment_gateway');
@@ -340,6 +359,33 @@ class PageController extends Controller
             }
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
+        } elseif ($page->default_url == 'child-panels') {
+            $site['child_selling_amount'] = SettingModule::select('amount')->where('panel_id', $panelId)->where('type', 'child_panels')->first();
+            $site['panel_store'] = route('child-panel.store');
+            $site['token'] = csrf_field();
+
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+            }
+
+            if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+            }
+
+            $site['validation_error'] = 0;
+
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+            $site['currencies'] = GlobalCurrencies::where('status', 'Active')->get();
+            $site['panelsList'] =  UserChildPanel::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
+        } elseif ($page->default_url == 'affiliates') {
+            $aff = SettingModule::where('panel_id', $panelId)->where('type', 'affiliate')->first();
+            $site['ref_link'] = route('panel.referralLink', Auth::user()->referral_key);
+            $site['commission_rate'] = round($aff->commission_rate);
+            $site['minimum_payout'] = $aff->amount;
         }
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();

@@ -13,27 +13,6 @@ Route::get('command', function () {
 //Test Route::END
 
 Route::group(['middleware' => 'checkPanel'], function () {
-    Route::get('/', 'Web\PageController@index')->name('home');
-    Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
-
-    Auth::routes(['verify' => true]);
-    Route::group(['middleware' => ['auth', 'verified']], function () {
-        Route::get('/home', 'User\DashboardController@index')->name('home');
-
-        /* User order module */
-        Route::get('/order/{order_id?}', 'User\OrderController@index')->name('order');
-        Route::get('/get-category-services', 'User\OrderController@getCateServices');
-      /*   Route::get('/orders', 'User\OrderController@orderLists'); */
-
-        Route::post('statusChanges', 'User\OrderController@refillStatusChange')->name('user.changeRefillStatus');
-        Route::post('/mass-order-store', 'User\OrderController@storeMassOrder')->name('massOrder.store');
-
-        Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
-            Route::post('pay', 'Payment\CoinbaseController@install')->name('install');
-            Route::get('success', 'Payment\CoinbaseController@success')->name('success');
-            Route::get('failed', 'Payment\CoinbaseController@failed')->name('failed');
-        });
-    });
 
     Route::group(['prefix' => 'admin'], function () {
         // Authentication Routes...
@@ -76,6 +55,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('orders/update/status', 'Panel\OrderController@bulkStatusChange');
             Route::get('get-orders', 'Panel\OrderController@getOrderLists');
             Route::post('orders/update/{id}', 'Panel\OrderController@updateOrder');
+            Route::get('orders/subscription/lists', 'Panel\OrderController@getSubsciptionLists')->name('subscription.lists');
+            Route::get('orders/subscription', 'Panel\OrderController@getSubscription')->name('subscriptions');
             Route::resource('orders', 'Panel\OrderController');
             Route::resource('exported_orders', 'Panel\ExportedOrderController')->only('index', 'store');
             Route::post('exported_orders/{exported_order}/download', 'Panel\ExportedOrderController@download')->name('exported_orders.download');
@@ -86,6 +67,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::resource('drip-feed', 'Panel\DripFeedController');
 
             #Services...
+            Route::post('providers/services/import', 'Panel\ServiceController@servicesImport')->name('provider.services.import');
             Route::post('service_custom_rate_reset', 'Panel\ServiceController@resetManyServiceCustomRate')->name('service.custom.rate.reset.all');
             Route::post('category/sortData', 'Panel\ServiceController@cateogrySortData')->name('category.sort.data');
             Route::post('services/sortData', 'Panel\ServiceController@sortData')->name('service.sort.data');
@@ -133,6 +115,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('reports/orders', 'Panel\ReportController@order');
             Route::get('reports/payment', 'Panel\ReportController@payments');
             Route::resource('reports', 'Panel\ReportController');
+
+            #Child panels...
+            Route::get('child-panels', 'Panel\ChildPanelController@index')->name('child-panels');
+            Route::get('child-panels-cancel-and-refund/{id}', 'Panel\ChildPanelController@cancelAndRefund')->name('child-panels.cancelRefund');
 
             #Appearance...
             Route::group(['prefix' => 'appearance', 'as' => 'appearance.'], function () {
@@ -198,15 +184,22 @@ Route::group(['middleware' => 'checkPanel'], function () {
         });
     });
 
+    Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
+    Route::post('/login', 'Auth\LoginController@login')->name('login');
+    Route::post('/register', 'Auth\RegisterController@register')->name('register');
 
-    Route::get('/', 'Web\PageController@index')->name('home');
-    Auth::routes(['verify' => true]);
+    Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('panel.referralLink');
+
     Route::group(['middleware' => ['auth', 'verified']], function () {
-        Route::get('/dashboard', 'User\DashboardController@index')->name('dashboard');
+        Route::get('/get-category-services', 'Web\OrderController@getCateServices');
+        Route::post('/mass-order-store', 'Web\OrderController@storeMassOrder')->name('massOrder.store');
+        Route::post('/make_new_order', 'Web\OrderController@store')->name('make.single.order');
+        Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
+        Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
+
+        Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     });
-    Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
-    Route::post('/make_new_order', 'User\OrderController@store')->name('make.single.order');
-    Route::get('/{url}', 'Web\PageController@page')->name('route');
+
 
     /* payment gateways  */
     Route::post('/payment/add-funds/paypal', 'User\PaypalController@store');
@@ -215,22 +208,22 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
     Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
 
+    #User child panel
+    Route::resource('child-panel', 'Web\ChildPanelController');
 
-
-    //Route::get('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@showForm');
     Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');
     Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');
     Route::get('/payment/add-funds/bitcoin/success', 'User\CoinPaymentsController@success');
     Route::post('/payment/add-funds/bitcoin/bit-ipn', 'User\CoinPaymentsController@ipn');
 
-
     Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
 
-       // Authentication Routes...
- /*       Route::post('/login', 'Web\Auth\LoginController@login')->name('web.login.action');
-       Route::post('logout', 'Panel\Auth\LoginController@logout')->name('panel.logout');
+    Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
+        Route::post('pay', 'Payment\CoinbaseController@install')->name('install');
+        Route::get('success', 'Payment\CoinbaseController@success')->name('success');
+        Route::get('failed', 'Payment\CoinbaseController@failed')->name('failed');
+    });
 
-       Route::get('/register', 'Panel\Auth\RegisterController@showRegistrationForm')->name('panel.register');
-       Route::post('/register', 'Panel\Auth\RegisterController@register'); */
-
+    Route::get('/', 'Web\PageController@index')->name('home');
+    Route::get('/{url}', 'Web\PageController@page')->name('route');
 });

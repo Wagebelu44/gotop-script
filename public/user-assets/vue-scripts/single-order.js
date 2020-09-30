@@ -265,6 +265,7 @@ const NewOrder = new Vue({
             fetch(base_url+"/get-category-services")
             .then(res=>res.json())
             .then(res=>{
+                console.log(res);
                 this.categoryjs = res;
             });
         },
