@@ -102,7 +102,7 @@ class PageController extends Controller
         ];
         $site['scripts'] = [
             ['code' => '
-                window.CSRF_TOKEN = "'.csrf_token().';
+                window.CSRF_TOKEN = "'.csrf_token().'";
                 window.base_url = "'.url('/').'";'],
             ['src' => asset('assets/js/jquery.js')],
             ['src' => asset('assets/js/bootstrap.js')],

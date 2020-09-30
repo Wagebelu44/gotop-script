@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\DripFeedOrders;
 use App\Models\ProviderService;
+use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
 use App\Models\DripFeedOrderLists;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,16 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    public function getCateServices(Request $request)
+    {
+        return ServiceCategory::with(['services' => function($q){
+            $q->where('status', 'active');
+        }, 'services.provider'])
+        ->where('status', 'active')
+        ->where('panel_id', auth()->user()->panel_id)
+        ->where('panel_id', auth()->user()->panel_id)->orderBy('id', 'ASC')->get();
+    }
+    
     public function store(Request $request)
     {
         try {
@@ -209,7 +220,7 @@ class OrderController extends Controller
                     $ps = ProviderService::where('service_id', $make_order->service_id)->first();
                     $provider_info = null;
                     if ($ps != null) {
-                        $provider_info = Provider::find($ps->provider_id);
+                        $provider_info = SettingProvider::find($ps->provider_id);
                     }
                     else
                     {
