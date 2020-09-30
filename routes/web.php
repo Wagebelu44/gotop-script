@@ -182,6 +182,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/login', 'Auth\LoginController@login')->name('login');
     Route::post('/register', 'Auth\RegisterController@register')->name('register');
 
+    Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('panel.referralLink');
+
     Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/get-category-services', 'Web\OrderController@getCateServices');
         Route::post('/mass-order-store', 'Web\OrderController@storeMassOrder')->name('massOrder.store');
