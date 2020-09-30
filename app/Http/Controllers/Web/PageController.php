@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Redeem;
+use App\Models\SettingModule;
 use App\Models\Ticket;
 use App\Models\Service;
 use App\Models\Newsfeed;
@@ -359,6 +360,7 @@ class PageController extends Controller
         } elseif ($page->default_url == 'faq') {
             $site['faqs'] = SettingFaq::where('panel_id', $panelId)->where('status', 'Active')->orderBy('sort', 'asc')->get();
         } elseif ($page->default_url == 'child-panels') {
+            $site['child_selling_amount'] = SettingModule::select('amount')->where('panel_id', $panelId)->where('type', 'child_panels')->first();
             $site['panel_store'] = route('child-panel.store');
             $site['token'] = csrf_field();
 
