@@ -76,21 +76,38 @@ const orderModule = new Vue({
                 const url = base_url+'/admin/orders'+ page_id;
                 history.pushState(state, title, url)
             }
-            fetch(base_url+'/admin/getSubsciptionLists'+ page_id)
+            fetch(getLists + page_id)
                 .then(res => res.json())
                 .then(res => {
+                    console.log(res, 'adfas');
                     this.loader = false;
-                    this.orders = res.orders.data;
+                    this.orders = res.data;
                     this.users = res.users;
                     this.services = res.services;
                     this.order_mode_count = res.order_mode_count;
-                    this.pagination = res.orders;
+                    this.pagination = res;
                 });
         },
         filterStatus(status)
         {
             this.filter.status = status;
             this.getSubscription();
+        },
+        filterType()
+        {
+            
+        },
+        update_service()
+        { 
+
+        },
+        yes()
+        {
+
+        },
+        no()
+        {
+
         },
     }
 });

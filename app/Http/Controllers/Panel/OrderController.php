@@ -26,7 +26,13 @@ class OrderController extends Controller
 
     public function getSubsciptionLists(Request $request)
     {
-        
+        return Order::select('orders.*', \DB::raw('services.name as service_name'), 'users.username')
+        ->join('services', function($q){
+            $q->on('services.id', '=', 'orders.service_id');
+            $q->where('service_type', 'Subscriptions');
+        })
+        ->join('users', 'users.id', '=', 'orders.user_id')
+        ->paginate(100);
     }
 
     public function updateOrder(Request $request, $id)

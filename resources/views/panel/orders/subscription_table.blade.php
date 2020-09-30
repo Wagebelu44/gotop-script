@@ -45,7 +45,6 @@
                       </a>
                    </div>
                 </div>
-                Service
              </th>
              <th scope="col" width="120">Status</th>
              <th scope="col" width="100">Created</th>
@@ -58,17 +57,15 @@
                 <input type="checkbox" name="order_checkbox" class="order_checkbox" v-model="order_checkbox" :value="o.id" />
              </td>
              <td>@{{ o.id }}</td>
-             <td>
-                @{{ o.username }}</td>
-             <td>@{{ o.charges }}</td>
-             <td>@{{ o.link }}</td>
-             <td>@{{ o.start_counter }}</td>
+             <td>@{{ o.username }}</td>
+             <td> username </td>
              <td>@{{ o.quantity }}</td>
+             <td> ---- </td>
+             <td> ---- </td>
              <td>@{{ o.service_name }}</td>
              <td class="status-value">@{{ o.status }}</td>
-             <td>@{{ o.remains }}</td>
              <td>@{{ o.created_at }}</td>
-             <td>@{{ o.mode }}</td>
+             <td>@{{ o.updated_at }}</td>
           </tr>
        </tbody>
     </table>
