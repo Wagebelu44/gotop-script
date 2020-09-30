@@ -22,6 +22,8 @@ class PanelSeedController
                 'currency_sign' => $request->currency_sign,
                 'currency_name' => $request->currency_name,
                 'timezone' => $request->timezone,
+                'panel_type' => $request->panel_type,
+                'main_panel_id' => $request->main_panel_id,
             ]);
         } else {
             $user = PanelAdmin::create([
@@ -42,6 +44,8 @@ class PanelSeedController
                 'currency_sign' => '$',
                 'currency_name' => 'Us Dollar',
                 'timezone' => '-11',
+                'panel_type' => 'Main',
+                'main_panel_id' => null,
             ]);
         }
 
