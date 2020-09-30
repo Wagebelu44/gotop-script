@@ -337,7 +337,7 @@ class OrderController extends Controller
                     }
                     $make_order->save();
                 }
-                return redirect()->route('order', ['order_id'=>$make_order->id])
+                return redirect('new-order?order_id='.$make_order->id)
                 ->with('success', 'Successfully saved');
             }
             else return redirect()->back()->with('error', 'Error Occuered');
