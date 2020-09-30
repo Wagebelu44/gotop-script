@@ -2,9 +2,7 @@
 
 namespace App;
 
-use App\User;
 use App\Models\Service;
-use App\Models\PaymentMethod;
 use App\Models\UserPaymentMethod;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Contracts\Activity;

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Models\SettingModule;
 use Exception;
 use App\Http\Controllers\Controller;
-use App\Models\Transaction;
-use App\Models\UserChildPanel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use App\Models\Transaction;
+use App\Models\UserChildPanel;
+use App\Models\SettingModule;
 use App\User;
 
 class ChildPanelController extends Controller
@@ -31,7 +31,7 @@ class ChildPanelController extends Controller
         $childSelling = SettingModule::select('amount')->where('panel_id', Auth::user()->panel_id)->where('type', 'child_panels')->first();
         $amount = $childSelling->amount;
         $user = User::find(Auth::user()->id);
-        if ($user->balance > $amount){
+        if ($user->balance > $amount) {
             $child = UserChildPanel::create([
                 'panel_id' => Auth::user()->panel_id,
                 'user_id'  => Auth::user()->id,
@@ -71,7 +71,6 @@ class ChildPanelController extends Controller
 
                             if ($response->ok()) {
                                 if ($response->successful()) {
-
                                     $data = json_decode($response->body());
                                     if ($data->success) {
                                         return redirect()->back()->with('success', 'Child panel created successfully. Wait for activation.');

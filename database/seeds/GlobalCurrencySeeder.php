@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class GlobalCurrencySeeder extends Seeder
 {
@@ -265,7 +265,6 @@ class GlobalCurrencySeeder extends Seeder
 				'status' => 'Active',
 				'created_at' => now(),
 			],
-
 		]);
     }
 }
