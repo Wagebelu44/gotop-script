@@ -381,6 +381,11 @@ class PageController extends Controller
             }
             $site['currencies'] = GlobalCurrencies::where('status', 'Active')->get();
             $site['panelsList'] =  UserChildPanel::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
+        } elseif ($page->default_url == 'affiliates') {
+            $aff = SettingModule::where('panel_id', $panelId)->where('type', 'affiliate')->first();
+            $site['ref_link'] = route('panel.referralLink', Auth::user()->referral_key);
+            $site['commission_rate'] = round($aff->commission_rate);
+            $site['minimum_payout'] = $aff->amount;
         }
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
