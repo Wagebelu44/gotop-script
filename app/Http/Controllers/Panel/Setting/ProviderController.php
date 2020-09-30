@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Panel\Setting;
 
+use Exception;
 use App\Http\Controllers\Controller;
 use App\Models\SettingProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class ProviderController extends Controller
 {
@@ -25,16 +27,49 @@ class ProviderController extends Controller
             $this->validate($request, [
                 'domain' => 'required',
             ]);
+            
+            $storePermission = false;
+            if (env('PROJECT') == 'live') {
+                try {
+                    $response = Http::post(env('PROJECT_LIVE_URL').'/api/check-provider', [
+                        'name' => $request->domain,
+                        'token' => env('PANLE_REQUEST_TOKEN'),
+                    ]);
 
-            SettingProvider::create([
-                'panel_id'      => Auth::user()->panel_id,
-                'domain'        => $request->domain,
-                'api_url'       => $request->url,
-                'api_key'       => $request->api_key,
-                'created_by'    => Auth::user()->id
-            ]);
+                    if ($response->ok()) {
+                        if ($response->successful()) {
+                            $data = json_decode($response->body());
+                            if ($data->success) {
+                                $storePermission = true;
+                            } else {
+                                return redirect()->back()->with('error', "Provider not found!");
+                            }
+                        } else {
+                            return redirect()->back()->with('error', "Provider adding failed for server error!");
+                        }
+                    } else {
+                        return redirect()->back()->with('error', "Provider adding failed for server error!");
+                    }
+                } catch(Exception $e) {
+                    return redirect()->back()->with('error', "Provider adding failed for server error!");
+                }
+            } else {
+                $storePermission = true;
+            }
 
-            return redirect()->back()->with('success', 'Provider save successfully!');
+            if ($storePermission) {
+                SettingProvider::create([
+                    'panel_id'      => Auth::user()->panel_id,
+                    'domain'        => $request->domain,
+                    'api_url'       => $request->url,
+                    'api_key'       => $request->api_key,
+                    'created_by'    => Auth::user()->id
+                ]);
+                return redirect()->back()->with('success', 'Provider added successfully!');
+            } else {
+                return redirect()->back()->with('success', 'Provider adding failed!');
+            }
+
         } else {
             return view('panel.permission');
         }
