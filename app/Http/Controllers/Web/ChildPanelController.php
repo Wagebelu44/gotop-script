@@ -29,6 +29,10 @@ class ChildPanelController extends Controller
         }
 
         $childSelling = SettingModule::select('amount')->where('panel_id', Auth::user()->panel_id)->where('type', 'child_panels')->first();
+        if (empty($childSelling)) {
+            return redirect()->back()->with('error', "Child panel not enabled!");
+        }
+        
         $amount = $childSelling->amount;
         $user = User::find(Auth::user()->id);
         if ($user->balance > $amount) {
