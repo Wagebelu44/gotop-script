@@ -116,6 +116,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('reports/payment', 'Panel\ReportController@payments');
             Route::resource('reports', 'Panel\ReportController');
 
+            #Child panels...
+            Route::get('child-panels', 'Panel\ChildPanelController@index')->name('child-panels');
+            Route::get('child-panels-cancel-and-refund/{id}', 'Panel\ChildPanelController@cancelAndRefund')->name('child-panels.cancelRefund');
+
             #Appearance...
             Route::group(['prefix' => 'appearance', 'as' => 'appearance.'], function () {
                 Route::resource('page', 'Panel\Appearance\PageController');
