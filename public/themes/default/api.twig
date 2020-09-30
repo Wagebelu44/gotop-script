@@ -65,21 +65,7 @@
                                 </button>
                                 <pre id="json">
                                     <code id="copyServiceListCode_services" class="language-json jsonData">
-
                                         {{ site['serviceApi'] | json_encode }}
-                                        {#<span class="float-left">[</span>
-                                    {% for api in site['serviceApi'] %}
-                                        <span class="float-left">{</span>
-                                            <span class="float-left">"service":</span> <span class="float-left"> 1,</span>
-                                            <span class="float-left">"name":</span> <span class="float-left"> "Followers",</span>
-                                            <span class="float-left">"type":</span> <span class="float-left"> "Default",</span>
-                                            <span class="float-left">"category":</span> <span class="float-left"> "First Category",</span>
-                                            <span class="float-left">"rate":</span> <span class="float-left"> "0.90",</span>
-                                            <span class="float-left">"min":</span> <span class="float-left"> "50",</span>
-                                            <span class="float-left">"max":</span> <span class="float-left"> "10000"</span>
-                                        <span class="float-left">}</span>,
-                                    {% endfor %}
-                                    <span class="float-left">]</span>#}
                                     </code>
                                 </pre>
                             </div>
@@ -178,13 +164,6 @@
                                 <pre>
                                     <code id="copyServiceListCode_status" class="language-json jsonData">
                                         {{ site['orderResponse'] | json_encode }}
-                                        {#{
-                                           <span class="token property">"charge":</span> <span class="token operator"> "0.27819"</span>,
-                                           <span class="token property">"start_count":</span> <span class="token operator"> "3572"</span>,
-                                           <span class="token property">"status":</span> <span class="token operator"> "Partial"</span>,
-                                           <span class="token property">"remains":</span> <span class="token operator"> "157"</span>,
-                                           <span class="token property">"currency":</span> <span class="token operator"> "USD"</span>
-                                        }#}
                                     </code>
                                 </pre>
                             </div>
@@ -230,27 +209,6 @@
                                 <pre>
                                     <code id="copyServiceListCode_multi_status" class="language-json jsonData">
                                         {{ site['multiOrderResponse'] | json_encode }}
-
-                                        {#{
-                                            <span class="token property">"1":</span> {
-                                           <span class="token property">"charge":</span> <span class="token operator"> "0.27819"</span>,
-                                           <span class="token property">"start_count":</span> <span class="token operator"> "3572"</span>,
-                                           <span class="token property">"status":</span> <span class="token operator"> "Partial"</span>,
-                                           <span class="token property">"remains":</span> <span class="token operator"> "157"</span>,
-                                           <span class="token property">"currency":</span> <span class="token operator"> "USD"</span>
-
-                                            },
-                                        <span class="token property">"10":</span> {
-                                        <span class="token property">"error":</span> <span class="token operator"> "Incorrect order ID"</span>
-                                        },
-                                        <span class="token property">"100":</span> {
-                                       <span class="token property">"charge":</span> <span class="token operator"> "1.44219"</span>,
-                                       <span class="token property">"start_count":</span> <span class="token operator"> "234"</span>,
-                                       <span class="token property">"status":</span> <span class="token operator"> "In progress"</span>,
-                                       <span class="token property">"remains":</span> <span class="token operator"> "10"</span>,
-                                       <span class="token property">"currency":</span> <span class="token operator"> "USD"</span>
-                                        }
-                                    }#}
                                     </code>
                                 </pre>
                             </div>
@@ -292,10 +250,6 @@
                                 <pre>
                                     <code id="copyServiceListCode_balance" class="language-json jsonData">
                                         {{ site['userBalance'] | json_encode }}
-                                       {#{
-                                       <span class="token property">"balance":</span> <span class="token operator">"100.84292"</span>,
-                                       <span class="token property">"currency":</span> <span class="token operator">"USD"</span>
-                                       }#}
                                     </code>
                                 </pre>
                             </div>
