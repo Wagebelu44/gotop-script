@@ -2,7 +2,15 @@
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <button class="btn btn-info mb-3" data-toggle="modal" data-target="#exampleModalLong">Add Panel</button>
+            <div class="row">
+				<div class="col-sm-10">
+					You can now buy a child panel for ${{ site['child_selling_amount'].amount }} per month! (deducted from your balance). A child panel is your own website to sell services. You will simply connect it to us and sell directly to your clients!
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-info mb-3" data-toggle="modal" data-target="#exampleModalLong">Add Panel</button>
+				</div>
+			</div>
+
             <div class="well well-float">
                 {% if site['error']  %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
