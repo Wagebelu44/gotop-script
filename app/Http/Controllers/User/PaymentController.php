@@ -15,7 +15,7 @@ class PaymentController extends Controller
             $paypal = new PayPalController;
             return $paypal->store($request);
         }
-        elseif ($request->payment_method == 2) {
+        elseif ($request->payment_method == 4) {
             $pm = new PerfectMoneyController;
             return $pm->getPaymentProcsseded($request);
         }

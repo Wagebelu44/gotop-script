@@ -43,7 +43,7 @@
                               <label for="">Select a Payment Method</label>
                               <select class="form-control" name="payment_method" id="payment_method">
                                	{% for pm in site['user_payment_methods'] %}
-                                 <option value='{{pm["payment_id"]}}'> {{ pm['method_name'] }}</option>
+                                 <option value='{{pm["global_payment_method_id"]}}'> {{ pm['method_name'] }}</option>
 								         {% endfor %}
                               </select>
                             </div>
