@@ -44,7 +44,12 @@ class GlobalPaymentSeeder extends Seeder
 			[
                 'uuid' => Str::uuid(),
 				'name' => 'WebMoney',
-				'fields' => '{"LMI_PAYEE_PURSE":"  i.e:  Z297212868786", "LMI_PAYMENT_DESC":" I.e : shop name (optional)"}',
+				'fields' => '{
+					"LMI_PAYEE_PURSE":" i.e:  Z297212868786", 
+					"LMI_PAYMENT_DESC":" I.e : shop name (optional)", 
+					"SUCCESS_URL":"www.yourdomain.com/webmoney/success (set his URL to your marchent config)", 
+					"FAIL_URL":"www.yourdomain.com/webmoney/failed (set his URL to your marchent config)"
+				    }',
 				'status' => '1',
 				'created_at' => now(),
 			],
