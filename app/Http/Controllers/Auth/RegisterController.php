@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\SettingModule;
-use App\Models\UserReferral;
-use App\Models\UserReferralVisit;
-use App\Providers\RouteServiceProvider;
-use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Str;
+use App\Models\PaymentMethod;
+use App\Models\SettingModule;
+use App\Models\Transaction;
+use App\Models\UserPaymentMethod;
+use App\Models\UserReferral;
+use App\Models\UserReferralVisit;
+use App\User;
 
 class RegisterController extends Controller
 {
@@ -82,20 +85,65 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        if (request()->cookie('referral_id') > 0 && $user) {
-            $aff = SettingModule::where('panel_id', $panelId)->where('type', 'affiliate')->first();
-            UserReferral::create([
-                'panel_id' => $panelId,
-                'referral_id' => request()->cookie('referral_id'),
-                'user_id' => $user->id,
-                'commission_rate' => round($aff->commission_rate),
-                'minimum_payout' => $aff->amount,
-            ]);
-            Cookie::queue(Cookie::forget('referral_id'));
-            Cookie::queue(Cookie::forget('referral'));
-        }
+        if ($user) {
+            activity()->disableLogging();
 
-        return $user;
+            //Set user payment Method...
+            $paymentMethods = PaymentMethod::where('panel_id', $panelId)->where('new_user_status', 'Active')->get();
+            if (!empty($paymentMethods)) {
+                $userPaymentMethods = [];
+                foreach ($paymentMethods as $pm) {
+                    $userPaymentMethods [] = [
+                        'panel_id'   => $pm->panel_id,
+                        'payment_id' => $pm->id,
+                        'user_id'    => $user->id,
+                    ];
+                }
+                if (!empty($userPaymentMethods)) {
+                    UserPaymentMethod::insert($userPaymentMethods);
+                }
+            }
+
+            //Add Free Balance for user...
+            $freeBalance = SettingModule::where('panel_id', $panelId)->where('type', 'free_balance')->first();
+            if (!empty($freeBalance)) {
+                $transaction = Transaction::create([
+                    'panel_id' => $panelId,
+                    'transaction_type' => 'deposit',
+                    'amount' => $freeBalance->amount,
+                    'transaction_flag' => 'free_balance',
+                    'user_id' => $user->id,
+                    'admin_id' => null,
+                    'status' => 'done',
+                    'memo' => 'Get Free balance on registration',
+                    'fraud_risk' => null,
+                    'payment_gateway_response' => null,
+                    'reseller_payment_methods_setting_id' => 0,
+                ]);
+
+                if ($transaction) {
+                    $user->update(['balance' => $freeBalance->amount]);
+                }
+            }
+
+            //Set referral user if referral exists...
+            if (request()->cookie('referral_id') > 0) {
+                $affiliate = SettingModule::where('panel_id', $panelId)->where('type', 'affiliate')->first();
+                if (!empty($affiliate)) {
+                    UserReferral::create([
+                        'panel_id' => $panelId,
+                        'referral_id' => request()->cookie('referral_id'),
+                        'user_id' => $user->id,
+                        'commission_rate' => round($affiliate->commission_rate),
+                        'minimum_payout' => $affiliate->amount,
+                    ]);
+                }
+                Cookie::queue(Cookie::forget('referral_id'));
+                Cookie::queue(Cookie::forget('referral'));
+            }
+    
+            return $user;
+        }
     }
 
     public function referralLink(Request $request, $code)

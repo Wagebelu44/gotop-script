@@ -39,16 +39,12 @@ class UserController extends Controller
         $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
         ->where('visibility', 'enabled')
         ->get();
+
         return response()->json([
             'status' => 200,
             'data' => $users,
             'global_payment_methods' => $globalMethods,
         ]);
-    }
-
-    public function create()
-    {
-        //
     }
 
     public function store(Request $request)
