@@ -11,11 +11,11 @@ use App\Models\UserChildPanel;
 use App\Models\Transaction;
 use App\User;
 
-class ChildPanelController extends Controller
+class AffiliateController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::user()->can('see child-panels')) {
+        if (Auth::user()->can('see affiliate')) {
             $status = 'All';
 
             $sql = UserChildPanel::where('panel_id', Auth::user()->panel_id);
@@ -31,7 +31,7 @@ class ChildPanelController extends Controller
             }
             
             $data = $sql->orderBy('id', 'DESC')->get();
-            return view('panel.child_panel.index', compact('data', 'status'));
+            return view('panel.affiliate.affiliate', compact('data', 'status'));
         } else {
             return view('panel.permission');
         }

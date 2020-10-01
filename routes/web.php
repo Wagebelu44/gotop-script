@@ -120,6 +120,13 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('child-panels', 'Panel\ChildPanelController@index')->name('child-panels');
             Route::get('child-panels-cancel-and-refund/{id}', 'Panel\ChildPanelController@cancelAndRefund')->name('child-panels.cancelRefund');
 
+            
+            Route::group(['prefix' => 'affiliates', 'as' => 'affiliates.'], function () {
+                Route::get('/', 'Panel\AffiliateController@index')->name('index');
+                Route::get('referrals', 'Panel\AffiliateController@referrals')->name('referrals');
+                Route::get('payouts', 'Panel\AffiliateController@payouts')->name('payouts');
+            });
+
             #Appearance...
             Route::group(['prefix' => 'appearance', 'as' => 'appearance.'], function () {
                 Route::resource('page', 'Panel\Appearance\PageController');

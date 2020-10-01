@@ -95,9 +95,11 @@
                             </a>
                         </li>
 
-                        {{--<li class="sidebar-item">
-                            <a class="sidebar-link" href="javascript:void(0)"><span class="hide-menu">Affiliates</span></a>
-                        </li>--}}
+                        <li class="sidebar-item {{ Request::routeIs('admin.affiliates*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.affiliates*') ? 'active':'' }}" href="{{ route('admin.affiliates.index') }}">
+                                <span class="hide-menu">Affiliates</span>
+                            </a>
+                        </li>
 
                         <li class="sidebar-item {{ Request::routeIs('admin.child-panels*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.child-panels*') ? 'active':'' }}" href="{{ route('admin.child-panels') }}">

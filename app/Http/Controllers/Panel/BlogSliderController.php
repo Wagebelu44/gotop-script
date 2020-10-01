@@ -7,9 +7,6 @@ use App\Http\Controllers\MediaController;
 use App\Models\BlogSlider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Image;
-use Validator;
 
 class BlogSliderController extends Controller
 {
