@@ -11,39 +11,35 @@
         <div class="col-md-8">
             <div class="card panel-default">
                 <div class="card-body">
-                    <button type="button" class="btn btn-default m-b add-page"  data-toggle="modal" data-target="#cmsPaymentMethodAddPopUp">Add Provider</button>
+                    @if($setting->panel_type == 'Main')
+                        <button type="button" class="btn btn-default m-b add-page"  data-toggle="modal" data-target="#cmsPaymentMethodAddPopUp">Add Provider</button>
+                    @endif
+
                     <table class="table">
                         <thead>
-                        <tr>
-                            <th class="p-l">Domain</th>
-                            <th>Api Key</th>
-                            <th>Api Url</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
+                            <tr>
+                                <th class="p-l">Domain</th>
+                                <th>Api Key</th>
+                                <th>Api Url</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
+
                         <tbody class="payment-method-list ui-sortable-handle">
-                        @foreach($data as $provider)
-                            <tr id="">
-                                @if (isset($provider->domain))
-                                    <td class="p-l">{{ $provider->domain }}</td>
-                                @endif
-                                @if (isset($provider->api_key))
-                                    <td>{{ $provider->api_key }}</td>
-                                @endif
-                                @if (isset($provider->api_url))
-                                    <td>{{ $provider->api_url }}</td>
-                                @endif
-                                @if (isset($provider->status))
-                                    <td>{{ $provider->status }}</td>
-                                @endif
+                            @foreach($data as $provider)
+                            <tr>
+                                <td class="p-l">{{ $provider->domain }}</td>
+                                <td>{{ $provider->api_key }}</td>
+                                <td>{{ $provider->api_url }}</td>
+                                <td>{{ $provider->status }}</td>
                                 <td class="p-r text-right">
                                     <button data-url="{{ route($resource.'edit', $provider->id) }}" data-id="{!! $provider->id !!}" class="edit btn btn-default m-t-20">
                                         Edit
                                     </button>
                                 </td>
                             </tr>
-                        @endforeach
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -139,7 +135,10 @@
                                 @csrf
                                 <button type="button" onclick="document.getElementById('editFormPro').submit();" class="btn btn-primary"> <i class="fa fa-check"></i> Update Provider</button>
                                 <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal" >Cancel</button>
-                                <button type="submit" onclick="return confirm('Are you sure...?')" class="btn btn-secondary waves-effect text-right">Delete</button>
+                                
+                                @if($setting->panel_type == 'Main')
+                                    <button type="submit" onclick="return confirm('Are you sure...?')" class="btn btn-secondary waves-effect text-right">Delete</button>
+                                @endif
                             </form>
                         </div>
                     </div>

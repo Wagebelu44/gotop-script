@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SettingProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\PanelAdmin;
@@ -24,7 +25,17 @@ class PanelSeedController
                 'timezone' => $request->timezone,
                 'panel_type' => $request->panel_type,
                 'main_panel_id' => $request->main_panel_id,
+                'main_panel_domain' => $request->main_panel_domain,
             ]);
+
+            if ($request->main_panel_id > 0) {
+                SettingProvider::create([
+                    'panel_id' => $user->panel_id,
+                    'domain' => $request->main_panel_domain,
+                    'api_url' => $request->main_panel_domain.'/api/v2',
+                    'api_key' => null,
+                ]);
+            }
         } else {
             $user = PanelAdmin::create([
                 'uuid' => Str::uuid(),
@@ -46,6 +57,7 @@ class PanelSeedController
                 'timezone' => '-11',
                 'panel_type' => 'Main',
                 'main_panel_id' => null,
+                'main_panel_domain' => null,
             ]);
         }
 

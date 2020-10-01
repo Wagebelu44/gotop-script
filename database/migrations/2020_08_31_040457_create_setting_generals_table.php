@@ -47,6 +47,7 @@ class CreateSettingGeneralsTable extends Migration
             $table->enum('redeem', ['Yes', 'No'])->default('No');
             $table->enum('panel_type', ['Main', 'Child'])->default('Main');
             $table->unsignedBigInteger('main_panel_id')->nullable()->comment('Main panel ID for Child Panel');
+            $table->string('main_panel_domain')->nullable()->comment('Main panel Domain for Child Panel');
             $table->enum('status', ['Active', 'Canceled'])->default('Active');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();
