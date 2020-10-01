@@ -224,6 +224,12 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::get('failed', 'Payment\CoinbaseController@failed')->name('failed');
     });
 
+    Route::group(['prefix' => 'perfectmoney', 'as' => 'perfectmoney.'], function () {
+        Route::post('pay', 'Payment\PerfectMoneyController@install')->name('install');
+        Route::post('success', 'Payment\PerfectMoneyController@success')->name('success');
+        Route::post('failed', 'Payment\PerfectMoneyController@cancel')->name('failed');
+    });
+
     Route::get('/', 'Web\PageController@index')->name('home');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
 });
