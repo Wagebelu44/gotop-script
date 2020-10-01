@@ -41,8 +41,7 @@ const paymentModule = new Vue({
        
     },
     watch: {
-        checkAllOrders(oldval, newval)
-        {
+        checkAllOrders(oldval, newval) {
             if (oldval) {
                 this.order_checkbox = this.orders.map(it=>it.id);
             }
@@ -54,7 +53,6 @@ const paymentModule = new Vue({
     },
    
     methods: {
-        //
         getPayments(page=1) {
             this.loader = true;
             let page_number = this.pagination.current_page;
@@ -99,8 +97,7 @@ const paymentModule = new Vue({
             }
             
             fetch(base_url+'/admin/payments-lists'+ page_id)
-                .then(res =>
-                    {
+                .then(res => {
                         if (!res.ok) {
                             throw res.json();
                         }
@@ -121,14 +118,13 @@ const paymentModule = new Vue({
                 })
                 
         },
-        savePayment(evt)
-        {
+        savePayment(evt) {
             this.loader.payment = true;
             let payment_form = null;
             payment_form = new FormData(document.getElementById('payment-form'));
             var userId = document.getElementById('select2-payment-user').value;
-            console.log(userId, 'asdfdas');
             payment_form.append('user_id', userId);
+
             if (this.payment_edit_id) {
                 payment_form.append('edit_id', this.payment_edit_id);
                 payment_form.append('edit_mode', true);
@@ -170,15 +166,13 @@ const paymentModule = new Vue({
 
 
                     }, 2000);
-                }
-                else if (res.status === 401)
-                {
+                } else if (res.status === 401) {
                     this.loader.payment = false;
                     this.errors.services = res.data;
                 }
 
             }).
-            catch(err=>{
+            catch( err => {
                 this.loader = false;
                 let prepare = [];
                 err.then(erMesg => {
@@ -191,20 +185,16 @@ const paymentModule = new Vue({
                             prepare.push(obj);
                         }
                         this.errors.payment = prepare;
-                    }
-                    else if ('data' in erMesg)
-                    {
+                    } else if ('data' in erMesg) {
                         this.errors.common = erMesg.data;
                     }
                 });
             });
         },
-        errorFilter(name)
-        {
+        errorFilter(name) {
             let txt = '';
-            if (this.errors.payment.length>0) 
-            {
-                this.errors.payment.forEach(item=>{
+            if (this.errors.payment.length>0) {
+                this.errors.payment.forEach(item => {
                     if (item.name === name) {
                         txt = item.desc;
                     }
@@ -212,21 +202,18 @@ const paymentModule = new Vue({
             }
             return txt;
         },
-        addToPaymentList(payment)
-        {
+        addToPaymentList(payment) {
             this.payments.unshift(payment);
         },
-        async getPayment(payment_id)
-        {
+        async getPayment(payment_id) {
           return await fetch(base_url+'/admin/payments/'+payment_id)
-            .then(res=>res.json())
-            .then(res=>{
+            .then(res => res.json())
+            .then(res => {
                 return this.api_payment_obj = res;
             });
         },
-        editPayment(payment_id)
-        {
-            this.getPayment(payment_id).then(re=>{
+        editPayment(payment_id) {
+            this.getPayment(payment_id).then(re => {
                 this.payment_edit = true;
                 this.payment_edit_id = payment_id;
                 this.payment_obj = {...re};
@@ -234,30 +221,24 @@ const paymentModule = new Vue({
             });
          
         },
-        updatePaymentLists(payment)
-        {
-            this.payments = this.payments.map(item=>{
+        updatePaymentLists(payment) {
+            this.payments = this.payments.map(item => {
                 if (payment.id === item.id) {
                     return payment;
                 }
                 return item;
             });
         },
-        filterType()
-        {
+        filterType() {
             this.getPayments();
         },
-        filterPaymentMethod(method_id)
-        {
+        filterPaymentMethod(method_id) {
             this.filter.payment_method = method_id;
             this.getPayments();
         },
-        searchPayment(flag)
-        {
+        searchPayment(flag) {
             this.filter.txn_flag = flag;
             this.getPayments();
         }
-
-       
     }
 });

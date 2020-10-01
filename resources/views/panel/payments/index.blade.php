@@ -116,12 +116,9 @@
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for=""><strong>User @{{ payment_obj.user_id }}</strong></label>
-                                                {{-- <div class="ui-widget">
-                                                  <input type="text" name="user_id" id="user_id_payment" class="form-control custom-form-control" placeholder="type user name" />
-                                                </div> --}}
-                                                <select name="user_id" v-model='payment_obj.user_id' class="form-control custom-form-control" id="select2-payment-user" required>
+                                                <select name="user_id" class="form-control custom-form-control" id="select2-payment-user" required>
                                                     <option disabled selected>Choose user</option>
-                                                <option :value="u.id" v-for="(u, i) in users">@{{ u.username }} </option>
+                                                    <option :value="u.id" v-for="(u, i) in users">@{{ u.username }} </option>
                                                 </select>
                                                 <span class="text-danger" v-if="errorFilter('user_id')!==''"> @{{ errorFilter('user_id') }} </span>
                                             </div>
