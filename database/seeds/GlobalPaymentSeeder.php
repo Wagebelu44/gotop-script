@@ -41,6 +41,13 @@ class GlobalPaymentSeeder extends Seeder
 				'status' => '1',
 				'created_at' => now(),
 			],
+			[
+                'uuid' => Str::uuid(),
+				'name' => 'WebMoney',
+				'fields' => '{"LMI_PAYEE_PURSE":"  i.e:  Z297212868786", "LMI_PAYMENT_DESC":" I.e : shop name (optional)"}',
+				'status' => '1',
+				'created_at' => now(),
+			],
 		]);
     }
 }

@@ -225,9 +225,12 @@ Route::group(['middleware' => 'checkPanel'], function () {
     });
 
     Route::group(['prefix' => 'perfectmoney', 'as' => 'perfectmoney.'], function () {
-        Route::post('pay', 'Payment\PerfectMoneyController@install')->name('install');
         Route::post('success', 'Payment\PerfectMoneyController@success')->name('success');
         Route::post('failed', 'Payment\PerfectMoneyController@cancel')->name('failed');
+    });
+    Route::group(['prefix' => 'webmoney', 'as' => 'webmoney.'], function () {
+        Route::post('success', 'Payment\WebmoneyController@success')->name('success');
+        Route::post('failed', 'Payment\WebmoneyController@cancel')->name('failed');
     });
 
     Route::get('/', 'Web\PageController@index')->name('home');
