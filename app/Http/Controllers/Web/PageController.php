@@ -412,7 +412,7 @@ class PageController extends Controller
 
             $site['affiliates']['unpaid_earnings'] = ($site['affiliates']['total_earnings']-$site['affiliates']['total_payouts']);
             
-            $site['affiliates']['conversion_rate'] = ($site['affiliates']['total_earnings'] > 0)?numberFormat(($site['affiliates']['total_earnings'] * 100) / $site['affiliates']['total_visits']):0;
+            $site['affiliates']['conversion_rate'] = ($site['affiliates']['total_visits'] > 0)?numberFormat(($site['affiliates']['total_visits'] * 100) / $site['affiliates']['paid_referrals']):0;
 
             $site['affiliates']['request_payout'] = ($site['affiliates']['unpaid_earnings'] >= $site['minimum_payout']) ? true : false;
 

@@ -9,7 +9,7 @@ class UserReferralPayout extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'user_referral_amounts';
+    protected $table = 'user_referral_payouts';
 
     protected $fillable = [
         'panel_id', 'referral_id', 'amount', 'date', 'status'
