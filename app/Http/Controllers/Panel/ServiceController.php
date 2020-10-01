@@ -223,10 +223,10 @@ class ServiceController extends Controller
         {
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
-                'price' => 'required',
-                'min_quantity' => 'required',
-                'max_quantity' => 'required',
-                'provider_id' => 'required',
+                'price' => 'required|numeric',
+                'min_quantity' => 'required|integer',
+                'max_quantity' => 'required|integer',
+                'provider_id' => 'required|integer',
                 'category_id' => 'required|integer|exists:service_categories,id',
             ]);
         }
@@ -234,9 +234,9 @@ class ServiceController extends Controller
         {
             $request->validate([
                 'name' => ['required', 'string', 'max:255'],
-                'price' => 'required',
-                'min_quantity' => 'required',
-                'max_quantity' => 'required',
+                'price' => 'required|numeric',
+                'min_quantity' => 'required|integer',
+                'max_quantity' => 'required|integer',
                 'category_id' => 'required|integer|exists:service_categories,id',
             ]);
         }
