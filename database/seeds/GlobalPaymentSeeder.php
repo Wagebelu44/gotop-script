@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class GlobalPaymentSeeder extends Seeder
 {
@@ -13,22 +14,32 @@ class GlobalPaymentSeeder extends Seeder
     {
         DB::table('global_payment_methods')->insert([
 			[
-			'name' => 'PayPal',
-			'fields' => '{"PAYPAL_EMAIL":"PayPal Email Address"}',
-			'status' => '1',
-			'created_at' => now(),
+                'uuid' => Str::uuid(),
+				'name' => 'PayPal',
+				'fields' => '{"PAYPAL_EMAIL":"PayPal Email Address"}',
+				'status' => '1',
+				'created_at' => now(),
 			],
 			[
-			'name' => 'PayOP',
-			'fields' => '{"PAYOP_SECRET_KEY":"Secret Key", "PAYOP_PUBLIC_KEY":"Public Key"}',
-			'status' => '1',
-			'created_at' => now(),
+                'uuid' => Str::uuid(),
+				'name' => 'PayOP',
+				'fields' => '{"PAYOP_SECRET_KEY":"Secret Key", "PAYOP_PUBLIC_KEY":"Public Key", "PAYOP_JWT_TOKEN": "JWT token"}',
+				'status' => '1',
+				'created_at' => now(),
 			],
 			[
-			'name' => 'Coinbase',
-			'fields' => '{"MERCHANT_ID":"Merchant ID", "COINBASE_SECRET_KEY":"Secret Key"}',
-			'status' => '1',
-			'created_at' => now(),
+                'uuid' => Str::uuid(),
+				'name' => 'Coinbase',
+				'fields' => '{"MERCHANT_ID":"Merchant ID", "COINBASE_SECRET_KEY":"Secret Key"}',
+				'status' => '1',
+				'created_at' => now(),
+			],
+			[
+                'uuid' => Str::uuid(),
+				'name' => 'PerfectMoney',
+				'fields' => '{"PAYEE_ACCOUNT":"  i.e:  U25983854", "PAYEE_NAME":" I.e : shop name (optional)"}',
+				'status' => '1',
+				'created_at' => now(),
 			],
 		]);
     }
