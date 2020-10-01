@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\User;
+use GuzzleHttp\Client;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class PayPalController extends Controller
 {
@@ -40,77 +47,88 @@ class PayPalController extends Controller
     public function store(Request $request)
     {
       try {
-          $this->paypal_email = ResellerPaymentMethodsParameter::where('reseller_id',auth()->user()->reseller_id)
-          ->where('key', 'PAYPAL_EMAIL')->first()->value;
-          $this->paypal_mode  = 'live';
-          $settings = ResellerPaymentMethodsSetting::where('reseller_id', auth()->user()->reseller_id)->first();
-
-          if ($settings == null)
+          /* get PayPal Email */
+          $settings =  PaymentMethod::where('panel_id', auth()->user()->panel_id)->where('global_payment_method_id', 1)->first();
+          
+          if ($settings) 
           {
-              return redirect()->back()->withErrors(['error' => 'No setting found, contact your reseller']);
+          
+                $this->paypal_mode  = 'sandbox'; // live / sandbox
+                $details = current(json_decode($settings->details,  true));
+                if ($details['key'] == 'PAYPAL_EMAIL') 
+                {
+                    if (!empty($details['value'])) 
+                    {
+
+                        //dd('her ', $request->all(), $settings);
+                      
+                        $min_amount = $settings->minimum;
+                        $validator = Validator::make($request->all(), [
+                            'amount' => 'required|numeric|min:' . $min_amount,
+                        ]);
+
+                        $this->paypal_email = $details['value'];
+
+                        if ($validator->fails()) {
+                            return redirect()
+                                ->back()
+                                ->withErrors($validator)
+                                ->withInput();
+                        }
+
+
+                        $paymentLogSecret = bcrypt(Auth::user()->email . 'PayPal' . time() . rand(1, 90000));
+
+                        $log = Transaction::create([
+                            'transaction_type' => 'deposit',
+                            'transaction_detail' => json_encode(['payment_secrete'=>  $paymentLogSecret, 'currency_code'=> 'USD']),
+                            'tnx_id' => $paymentLogSecret,
+                            'amount' => $request->input('amount'),
+                            'transaction_flag' => 'payment_gateway',
+                            'user_id' =>  Auth::user()->id,
+                            'admin_id' => null,
+                            'status' => 'hold',
+                            'memo' => null,
+                            'fraud_risk' => null,
+                            'payment_gateway_response' => null,
+                            'reseller_payment_methods_setting_id' =>  $this->payment_method_id,
+                            'reseller_id' => 1,
+                        ]);
+                        $params = [
+                            'cmd' => '_xclick',
+                            'business' => $this->paypal_email,
+                            'no_note' => 1,
+                            'item_name' => 'Add Funds',
+                            'item_number' => '160',
+                            'amount' => $request->input('amount'),
+                            'currency_code' => 'USD',
+                            'charset' => 'utf-8',
+                            'return' => url('/payment/add-funds/paypal/success'),
+                            'cancel_return' => url('/payment/add-funds/paypal/cancel'),
+                            'notify_url' => url('/payment/add-funds/paypal/ipn'),
+                            'no_shipping' => 1,
+                            'quantity' => 1,
+                            'custom' => $paymentLogSecret,
+                        ];
+                        $url = self::PAYPAL_URL;
+                        if (strtolower($this->paypal_mode) == 'sandbox') {
+                            $url = self::PAYPAL_SANDBOX_URL;
+                        }
+                        $url .= http_build_query($params);
+                        return redirect()->away($url);
+                    }
+                    else
+                    {
+                        return  redirect()->back()->withError('NO Email setting found, please contact administrator');
+                    }
+                }
           }
-          $min_amount = $settings->minimum;
-            $validator = Validator::make($request->all(), [
-                'amount' => 'required|numeric|min:' . $min_amount,
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()
-                    ->back()
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $paymentLogSecret = bcrypt(Auth::user()->email . 'PayPal' . time() . rand(1, 90000));
-
-            // Create payment logs
-            /* PaymentLog::create([
-                'user_id' => Auth::user()->id
-            ]); */
-
-
-
-               $log = Transaction::create([
-              'transaction_type' => 'deposit',
-              'transaction_detail' => json_encode(['payment_secrete'=>  $paymentLogSecret, 'currency_code'=> 'USD']),
-              'tnx_id' => $paymentLogSecret,
-              'amount' => $request->input('amount'),
-              'transaction_flag' => 'payment_gateway',
-              'user_id' =>  Auth::user()->id,
-              'admin_id' => null,
-              'status' => 'hold',
-              'memo' => null,
-              'fraud_risk' => null,
-              'payment_gateway_response' => null,
-              'reseller_payment_methods_setting_id' =>  $this->payment_method_id,
-              'reseller_id' => 1,
-              ]);
-
-            $params = [
-                'cmd' => '_xclick',
-                'business' => $this->paypal_email,
-                'no_note' => 1,
-                'item_name' => 'Add Funds',
-                'item_number' => '160',
-                'amount' => $request->input('amount'),
-                'currency_code' => 'USD',
-                'charset' => 'utf-8',
-                'return' => url('/payment/add-funds/paypal/success'),
-                'cancel_return' => url('/payment/add-funds/paypal/cancel'),
-                'notify_url' => url('/payment/add-funds/paypal/ipn'),
-                'no_shipping' => 1,
-                'quantity' => 1,
-                'custom' => $paymentLogSecret,
-            ];
-
-            $url = self::PAYPAL_URL;
-            if (strtolower($this->paypal_mode) == 'sandbox') {
-                $url = self::PAYPAL_SANDBOX_URL;
-            }
-            $url .= http_build_query($params);
-            return redirect()->away($url);
+          else
+          {
+            return redirect()->back()->withError('No setting found, contact your reseller');
+          }
       } catch (\Exception $e) {
-
+        return redirect()->back()->withError($e->getMessage());
           dd($e->getMessage());
       }
 
@@ -121,10 +139,10 @@ class PayPalController extends Controller
     public function store_Log($data)
     {
         $dir = public_path("payment_log/");
-        if(!file_exists( $dir ) && !is_dir( $dir ))
+        if (!file_exists( $dir ) && !is_dir( $dir ))
         {
             $md = mkdir($dir, 0777, true);
-            if($md)
+            if ($md)
             {
                 $this->putResultData($dir, $data);
             }
@@ -303,7 +321,7 @@ class PayPalController extends Controller
                       $total += $amount_after_fee;
                     }
 
-                    $bonus = CmsSettingBonuse::where('global_payment_method_id', $this->payment_method_id)->get()->last();
+                    $bonus = SettingBonuse::where('global_payment_method_id', $this->payment_method_id)->get()->last();
                     if ($bonus !=null) {
                         if ( floatval($amount_after_fee) >= floatval($bonus->deposit_from)) {
                             $bonus = ($bonus->bonus_amount / 100) * floatval($amount_after_fee);
@@ -344,11 +362,12 @@ class PayPalController extends Controller
 
                     //transaction($transaction, $user);
 
-                    $notification = notification('Payment received', 2);
+                    // important to uncomment
+                    //$notification = notification('Payment received', 2);
 
-                    if ($notification && $notification->status) {
+                    /* if ($notification && $notification->status) {
                         Mail::to(staffEmails('payment_received'))->send(new PaymentReceived($paymentLog, $notification));
-                    }
+                    } */
 
                     /**
                      * NOTE:
@@ -401,15 +420,13 @@ class PayPalController extends Controller
 
     public function success(Request $request)
     {
-        Session::flash('alert', __('messages.payment_success'));
-        Session::flash('alertClass', 'success');
-        return redirect('/thank-you');
+        Session::flash('success', 'Payment is succesfully added');
+        return redirect('/add-funds');
     }
 
     public function cancel(Request $request)
     {
-        Session::flash('alert', __('messages.payment_failed'));
-        Session::flash('alertClass', 'danger no-auto-close');
-        return redirect('/payment/add-funds/paypal');
+        Session::flash('error', 'Payment is cancelled');
+        return redirect('/add-funds');
     }
 }

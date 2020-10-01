@@ -22,7 +22,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($data))
+                            @if (!empty($data))
                                 @foreach($data as $file)
                                 <tr>
                                     <td>

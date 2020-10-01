@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
+use App\User;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
+use App\Models\SettingBonuse;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class PayOpController extends Controller
 {
@@ -16,28 +23,35 @@ class PayOpController extends Controller
     public function store(Request $request)
     {
         try {
-            $settings = ResellerPaymentMethodsSetting::where('reseller_id', auth()->user()->reseller_id)->where('global_payment_method_id', 2)->first();
-            $pk = ResellerPaymentMethodsParameter::where('global_payment_methods_id', 2)->where('key','PAYOP_PUBLIC_KEY')->where('status', '1')->first();
-            $sk = ResellerPaymentMethodsParameter::where('global_payment_methods_id', 2)->where('key','PAYOP_SECRET_KEY')->where('status', '1')->first();
-
-            if ($pk ==null) {
-                return redirect()->back()->with('error' , 'public key not found');
-            }
-            if ($sk ==null) {
-                return redirect()->back()->with('error' , 'Secret key not found');
-            }
-            $public_key  = $pk->value;
-            $secret_key  = $sk->value;
-
-                if ($settings == null)
-                {
-                    return redirect()->back()->withErrors('error', 'No setting found, contact your reseller');
+            $settings =  PaymentMethod::where('panel_id', auth()->user()->panel_id)->where('global_payment_method_id', 2)->first();
+            if ($settings) 
+            {
+                $details = json_decode($settings->details,  true);
+                $pk = '';
+                $sk = '';
+                foreach ($details as $detail) {
+                    if ($detail['key'] == 'PAYOP_SECRET_KEY') {
+                        $pk = $detail['value'];
+                    }
+                    if ($detail['key'] == 'PAYOP_PUBLIC_KEY') {
+                        $sk = $detail['value'];
+                    }
                 }
-               
+
+                if ($pk ==null || $pk=='') {
+                    return redirect()->back()->with('error' , 'public key not found');
+                }
+                if ($sk ==null || $sk=='' ) {
+                    return redirect()->back()->with('error' , 'Secret key not found');
+                }
+
+                $public_key  = $pk;
+                $secret_key  = $sk;
+
                 $min_amount = $settings->minimum;
-                    $validator = Validator::make($request->all(), [
-                        'amount' => 'required|numeric|min:' . $min_amount,
-                    ]);
+                $validator = Validator::make($request->all(), [
+                    'amount' => 'required|numeric|min:' . $min_amount,
+                ]);
 
                 if ($validator->fails()) {
                     return redirect()
@@ -45,6 +59,7 @@ class PayOpController extends Controller
                         ->withErrors($validator)
                         ->withInput();
                 }
+
 
                 $paymentLogSecret = bcrypt(Auth::user()->email . 'PayOp' . time() . rand(1, 90000));
                 //dd($paymentLogSecret);
@@ -67,7 +82,7 @@ class PayOpController extends Controller
                     'reseller_payment_methods_setting_id' => 2,
                     'reseller_id' => 1,
                     ]);
-
+                    
                 $order = ['id' => $log->id, 'amount' => $request->input('amount'), 'currency' => 'USD'];
                 ksort($order, SORT_STRING);
                 $dataSet = array_values($order);
@@ -102,39 +117,44 @@ class PayOpController extends Controller
                     "failPath" => url('add-funds')
                 ));
                // dd($data);
+               $ch = curl_init();
 
-                $ch = curl_init();
+               curl_setopt($ch, CURLOPT_URL, 'https://payop.com/v1/invoices/create');
+               curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+               curl_setopt($ch, CURLOPT_VERBOSE, 1);
+               curl_setopt($ch, CURLOPT_HEADER, 1);
+               curl_setopt($ch, CURLOPT_POST, 1);
+               curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
-                curl_setopt($ch, CURLOPT_URL, 'https://payop.com/v1/invoices/create');
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_VERBOSE, 1);
-                curl_setopt($ch, CURLOPT_HEADER, 1);
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+               $headers = array();
+               $headers[] = 'Content-Type: application/json';
+               curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-                $headers = array();
-                $headers[] = 'Content-Type: application/json';
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+               $result = curl_exec($ch);
+               if (curl_errno($ch)) {
+                   echo 'Error:' . curl_error($ch);
+               }
+               curl_close($ch);
 
-                $result = curl_exec($ch);
-                if (curl_errno($ch)) {
-                    echo 'Error:' . curl_error($ch);
-                }
-                curl_close($ch);
+               list($header, $body) = explode("\r\n\r\n", $result, 2);
+               $body = json_decode($body, 1);
+               $header = explode("\r\n", $header);
 
-                list($header, $body) = explode("\r\n\r\n", $result, 2);
-                $body = json_decode($body, 1);
-                $header = explode("\r\n", $header);
+               $identifierHeader = preg_grep('/^identifier/', $header);
+               $identifierHeader = array_values($identifierHeader);
+               if ($header[0] == 'HTTP/1.1 200 OK') 
+               {
+                   $identifierData = explode(': ', $identifierHeader[0]);
+                   return redirect()->away('https://payop.com/en/payment/invoice-preprocessing/' . $identifierData[1]);
+               } else {
+                   return redirect()->back()->with('error' ,'Whoops! Something went wrong! Please try again or contact support' . '<br>Technical info: ' . $body['message']);
+               }
 
-                $identifierHeader = preg_grep('/^identifier/', $header);
-                $identifierHeader = array_values($identifierHeader);
-                if ($header[0] == 'HTTP/1.1 200 OK') {
-                    $identifierData = explode(': ', $identifierHeader[0]);
-                    
-                    return redirect()->away('https://payop.com/en/payment/invoice-preprocessing/' . $identifierData[1]);
-                } else {
-                    return redirect()->back()->with('error' ,'Whoops! Something went wrong! Please try again or contact support' . '<br>Technical info: ' . $body['message']);
-                }
+            }
+            else 
+            {
+                return redirect()->back()->with('error', 'No setting found, contact your reseller');
+            }
 
         }
         catch (\Exception $e) {
@@ -152,7 +172,9 @@ class PayOpController extends Controller
     public function success(Request $request)
     {
         if ($request->query('skey') && $request->query('tranID')) {
-            return redirect('/thank-you')->with(['alert' => __('messages.payment_success'), 'alertClass' => 'success']);
+            Session::flash('success', 'Payment is succesfully added');
+            return redirect('/add-funds');
+            //return redirect('/thank-you')->with(['alert' => __('messages.payment_success'), 'alertClass' => 'success']);
         } else {
             abort(404);
         }
@@ -167,7 +189,9 @@ class PayOpController extends Controller
     public function fail(Request $request)
     {
         if ($request->query('skey') && $request->query('tranID')) {
-            return redirect('/addfunds')->with(['alert' => __('messages.payment_failed'), 'alertClass' => 'danger no-auto-close']);
+            Session::flash('error', 'Payment is cancelled');
+            return redirect('/add-funds');
+            //return redirect('/addfunds')->with(['alert' => __('messages.payment_failed'), 'alertClass' => 'danger no-auto-close']);
         } else {
             abort(404);
         }
@@ -199,16 +223,27 @@ class PayOpController extends Controller
 
         $paymentLog = Transaction::find($data['transaction']['order']['id']); // PaymentLog::find($data['transaction']['order']['id']);
         $user = User::find($paymentLog->user_id);
-        $jwt = ResellerPaymentMethodsParameter::where('global_payment_methods_id', 2)
-        ->where('key','PAYOP_JWT_TOKEN')
-        ->where('status', '1')->first();
+        $settings =  PaymentMethod::where('panel_id', auth()->user()->panel_id)->where('global_payment_method_id', 2)->first();
+        $jwt_token = '';
+        if ($settings) 
+        {
+            $details = json_decode($settings->details,  true);
+            foreach ($details as $detail) {
+                if ($detail['key'] == 'PAYOP_JWT_TOKEN') {
+                    $jwt_token = $detail['value'];
+                }
+            }
+        }
+        if ($jwt_token == '') {
+            abort(404);
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://payop.com/v1/transactions/'.$data['invoice']['txid']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         $headers = array();
         $headers[] = 'Content-Type: application/json';
-        $headers[] = 'Authorization: Bearer '.$jwt->value;
+        $headers[] = 'Authorization: Bearer '.$jwt_token;
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $result = curl_exec($ch);
         //Log::info($result);
@@ -234,7 +269,7 @@ class PayOpController extends Controller
                         FROM transactions) s
                         SET t.sequence_number = s.new_sequence_number
                         WHERE t.id='.$paymentLog->id);
-                         $bonus = CmsSettingBonuse::where('global_payment_method_id', 2)->get()->last();
+                         $bonus = SettingBonuse::where('global_payment_method_id', 2)->get()->last();
                          if ($bonus !=null) 
                             {
 
@@ -272,10 +307,12 @@ class PayOpController extends Controller
                 $user->balance = $user->balance + $paymentLog->amount;
                 $user->save();
             }
-            $notification = notification('Payment received', 2);
+            /* they are needed, commenting for temporal */
+
+            /* $notification = notification('Payment received', 2);
             if ($notification && $notification->status) {
                 Mail::to(staffEmails('payment_received'))->send(new PaymentReceived($paymentLog, $notification));
-            }
+            } */
             //transaction($transaction, $user);
         }
     }

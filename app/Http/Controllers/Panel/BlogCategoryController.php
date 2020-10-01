@@ -15,7 +15,7 @@ class BlogCategoryController extends Controller
             $data = BlogCategory::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
             $page = 'index';
             return view('panel.blog.category-index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
 
@@ -27,7 +27,7 @@ class BlogCategoryController extends Controller
             $data = null;
             $page = 'create';
             return view('panel.blog.category-index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -48,7 +48,7 @@ class BlogCategoryController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'blog Category save successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -63,7 +63,7 @@ class BlogCategoryController extends Controller
 
             $page = 'edit';
             return view('panel.blog.category-index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -84,7 +84,7 @@ class BlogCategoryController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'blog Category update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -99,7 +99,7 @@ class BlogCategoryController extends Controller
             $data->delete();
 
             return redirect(route('admin.blog-category.index'))->with('success', 'blog delete successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

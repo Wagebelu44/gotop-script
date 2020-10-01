@@ -15,15 +15,15 @@
                             <div class="col-md-8">
                                 <table class="table table-bordered">
                                     <tbody class="tablecontents" id="public_menu">
-                                    @if(!empty($menus))
+                                    @if (!empty($menus))
                                         @foreach($menus as $key => $public_menu)
-                                            @if ($public_menu->menu_link_type == 'yes')
+                                            @if ($public_menu->menu_link_type == 'Yes')
                                                 <tr class="row1" data-id="{{ $public_menu->id }}">
                                                     <td>
                                                         <div class="settings-menu-drag">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
                                                         </div>
-                                                        {{ $public_menu->menu_name }}
+                                                        <a href="{{ url($public_menu->page->url) }}" target="_blank">{{ $public_menu->menu_name }}</a>
                                                     </td>
                                                     <td class="p-r text-right">
                                                         <button data-url="{{ route('admin.appearance.menu.edit', $public_menu->id) }}" data-id="{!! $public_menu->id !!}" class="edit btn btn-default m-t-20">
@@ -47,15 +47,15 @@
                                 <a href="javascript:void(0)" onclick="addMenuItem(1)" class="btn btn-default m-b add-modal-menu">Add menu item</a>
                                 <table class="table table-bordered" style="margin-top: 10px;">
                                     <tbody class="tablecontents" id="signed_menu">
-                                    @if(!empty($menus))
+                                    @if (!empty($menus))
                                         @foreach($menus as $key => $menu)
-                                            @if ($menu->menu_link_type == 'no')
+                                            @if ($menu->menu_link_type == 'No')
                                                 <tr class="row1" data-id="{{ $menu->id }}">
                                                     <td>
                                                         <div class="settings-menu-drag">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
                                                         </div>
-                                                        {{ $menu->menu_name }}
+                                                        <a href="{{ url($menu->page->url) }}" target="_blank">{{ $menu->menu_name }}</a>
                                                     </td>
                                                     <td class="p-r text-right">
                                                         <button data-url="{{ route('admin.appearance.menu.edit', $menu->id) }}" data-id="{!! $menu->id !!}" class="edit btn btn-default m-t-20">
@@ -169,12 +169,12 @@
 
                             </div>
                         </div>
-
                         <input type="hidden" value="" name="menu_type" id="menu_type">
+                    </form>
                         <div class="modal-footer">
                             <div class="col-md-6 submit-update-section">
                                 <div class="form-actions">
-                                    <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Update</button>
+                                    <button type="button" onclick="document.getElementById('menuEditForm').submit();" class="btn btn-success"> <i class="fa fa-check"></i> Update</button>
                                     <button type="button" class="btn btn-danger waves-effect text-left" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
@@ -191,7 +191,6 @@
                             </div>
                         </div>
 
-                    </form>
                 </div>
                 <!-- /.modal-content -->
             </div>
@@ -200,8 +199,8 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script>
-
         $(function () {
             $( ".tablecontents" ).sortable({
                 items: "tr",
@@ -230,9 +229,9 @@
                         _token: '{{csrf_token()}}'
                     },
                     success: function(response) {
-                        if(response.status === 'success'){
+                        if (response.status === 'success'){
                             toastr["success"](response.message);
-                        }else{
+                        } else {
                             toastr["error"](response.message);
                         }
 
@@ -289,13 +288,13 @@
                         $('#menu_link_edit').val(response.data.menu_link_id);
                         let selectedExtLink = '';
                         let extUrlLink = '';
-                        if(response.data.menu_link_id === 0){
+                        if (response.data.menu_link_id === 0){
                             $('#edit_external_url').val(response.data.external_link);
                             $('#edit_external_link').show();
-                        }else {
+                        } else {
                             $('#edit_external_link').hide();
                         }
-                        let updateUrl = "{{ url('admin/menu') }}/"+id;
+                        let updateUrl = "{{ url('admin/appearance/menu') }}/"+id;
                         $('#menuEditForm').attr('action', updateUrl);
                         $('#deleteFormPro').attr('action', updateUrl);
                     }

@@ -14,8 +14,9 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/sweetalert2/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/summernote/summernote.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/libs/b-datepicker/css/bootstrap-datepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.1') }}">
     @yield('styles')
 </head>
 
@@ -52,9 +53,15 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':'' }}">
+                        <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':''}} {{  Request::routeIs('admin.exported_orders*') ? 'selected':'' }} ">
                             <a class="sidebar-link {{ Request::routeIs('admin.orders*') ? 'active':'' }}" href="{{ route('admin.orders.index') }}">
                                 <span class="hide-menu">Orders</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.subscriptions*') ? 'selected':''}} {{  Request::routeIs('admin.subscriptions*') ? 'selected':'' }} ">
+                            <a class="sidebar-link {{ Request::routeIs('admin.subscriptions*') ? 'active':'' }}" href="{{ route('admin.subscriptions') }}">
+                                <span class="hide-menu">Subscription</span>
                             </a>
                         </li>
 
@@ -92,9 +99,21 @@
                             <a class="sidebar-link" href="javascript:void(0)"><span class="hide-menu">Affiliates</span></a>
                         </li>--}}
 
+                        <li class="sidebar-item {{ Request::routeIs('admin.child-panels*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.child-panels*') ? 'active':'' }}" href="{{ route('admin.child-panels') }}">
+                                <span class="hide-menu">Child panels</span>
+                            </a>
+                        </li>
+
                         <li class="sidebar-item {{ Request::routeIs('admin.reports*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.reports*') ? 'active':'' }}" href="{{ route('admin.reports.index') }}">
                                 <span class="hide-menu">Reports</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::routeIs('admin.newsfeed*') ? 'selected':'' }}">
+                            <a class="sidebar-link {{ Request::routeIs('admin.newsfeed*') ? 'active':'' }}" href="{{ route('admin.newsfeed.index') }}">
+                                <span class="hide-menu">News feed</span>
                             </a>
                         </li>
 
@@ -160,22 +179,18 @@
     <script src="{{ asset('panel-assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('panel-assets/libs/b-datepicker/js/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');
-        @elseif(session('error'))
+        @elseif (session('error'))
             toastr["error"]('{{ session('error') }}');
         @endif
         /* global instances */
         window.CSRF_TOKEN = '{{csrf_token()}}';
-        window.base_url = window.location.origin;
-        /* end of global instances */
-
-        /* global instances */
-        window.CSRF_TOKEN = '{{ csrf_token() }}';
-        window.base_url = window.location.origin;
+        window.base_url = "{{ url('/') }}";
         /* end of global instances */
     </script>
     @yield('scripts')

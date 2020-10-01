@@ -15,9 +15,10 @@ class CreateGlobalPaymentMethodsTable extends Migration
     {
         Schema::create('global_payment_methods', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid');
             $table->string('name')->nullable();
             $table->longText('fields')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->timestamps();
             $table->softDeletes();
         });

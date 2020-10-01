@@ -21,6 +21,8 @@ class CreateSettingGeneralsTable extends Migration
             $table->string('panel_name')->nullable();
             $table->string('timezone')->nullable();
             $table->string('currency')->nullable();
+            $table->string('currency_sign')->nullable();
+            $table->string('currency_name')->nullable();
             $table->string('currency_format')->nullable();
             $table->string('rates_rounding')->nullable();
             $table->unsignedTinyInteger('ticket_system')->nullable()->comment('0 => Disabled, 1 => Enabled');
@@ -35,7 +37,16 @@ class CreateSettingGeneralsTable extends Migration
             $table->string('drip_feed_interval')->nullable();
             $table->longText('custom_header_code')->nullable();
             $table->longText('custom_footer_code')->nullable();
+            $table->enum('newsfeed_align', ['Left', 'Right'])->default('Right');
+            $table->enum('newsfeed', ['Yes', 'No'])->default('Yes');
             $table->enum('horizontal_menu', ['Yes', 'No'])->default('Yes');
+            $table->enum('total_order', ['Yes', 'No'])->default('No');
+            $table->enum('total_spent', ['Yes', 'No'])->default('No');
+            $table->enum('point', ['Yes', 'No'])->default('No');
+            $table->enum('account_status', ['Yes', 'No'])->default('No');
+            $table->enum('redeem', ['Yes', 'No'])->default('No');
+            $table->enum('panel_type', ['Main', 'Child'])->default('Main');
+            $table->unsignedBigInteger('main_panel_id')->nullable()->comment('Main panel ID for Child Panel');
             $table->enum('status', ['Active', 'Canceled'])->default('Active');
             $table->unsignedBigInteger('updated_by');
             $table->timestamps();

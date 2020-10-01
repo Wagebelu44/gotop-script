@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Panel\Setting;
 use App\Http\Controllers\Controller;
 use App\Models\SettingFaq;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class FaqController extends Controller
 {
@@ -15,7 +15,7 @@ class FaqController extends Controller
             $data = SettingFaq::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
             $page = 'index';
             return view('panel.settings.faq', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -26,7 +26,7 @@ class FaqController extends Controller
             $data = null;
             $page = 'create';
             return view('panel.settings.faq', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -49,7 +49,7 @@ class FaqController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Faq save successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -64,7 +64,7 @@ class FaqController extends Controller
 
             $page = 'edit';
             return view('panel.settings.faq', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -87,7 +87,7 @@ class FaqController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Faq update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -101,7 +101,7 @@ class FaqController extends Controller
             }
             $data->delete();
             return redirect(route('admin.setting.faq.index'))->with('success', 'Faq delete successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -123,7 +123,7 @@ class FaqController extends Controller
                 'status' => 'success',
                 'message' => 'Update successfully',
             ], 200);
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

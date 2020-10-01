@@ -16,67 +16,9 @@ if ( ! function_exists('defaultThemePageContent')) {
     }
 }
 
-//Delete existing file
-if ( ! function_exists('deleteFile')) {
-    function deleteFile($path, $name)
-    {
-        if (file_exists($path.'/'.$name)) {
-            unlink($path.'/'.$name);
-        }
-    }
-}
-
-//Search string get and set an url
-if ( ! function_exists('qString')) {
-    function qString($query = null)
-    {
-        if (isset($_SERVER['QUERY_STRING'])) {
-            return '?'.$_SERVER['QUERY_STRING'].$query;
-        } else {
-            if ($query) {
-                return '?'.$query;
-            }
-        }
-    }
-}
-
-//Date View
-if ( ! function_exists('dateFormat')) {
-    function dateFormat($date, $time = null)
-    {
-        if ($time) {
-            return date('d/M/Y h:i A',(strtotime($date)));
-        } else {
-            return date('d/M/Y',strtotime($date));
-        }
-    }
-}
-
-//Time View
-if ( ! function_exists('timeFormat')) {
-    function timeFormat($date)
-    {
-        return date('h:i A',(strtotime($date)));
-    }
-}
-
-//Two Digit Number Format Function
-if ( ! function_exists('numberFormat')) {
-    function numberFormat($amount=0, $coma=null)
-    {
-        if ($coma) {
-            if ($amount==0)
-                return '-';
-            else
-                return number_format($amount,2);
-        } else {
-            return number_format($amount,2,'.','');
-        }
-    }
-}
-
 if ( ! function_exists('getTimezone')) {
-    function getTimezone() {
+    function getTimezone()
+    {
         $arr = [
             '-43200' => '(UTC -12:00) Baker/Howland Island',
             '-39600' => '(UTC -11:00) Niue',
@@ -124,7 +66,8 @@ if ( ! function_exists('getTimezone')) {
 }
 
 if ( ! function_exists('getCurrencyFormat')) {
-    function getCurrencyFormat() {
+    function getCurrencyFormat()
+    {
         $arr = [
             '0' => '1000.00',
             '1' => '1000,00',
@@ -136,7 +79,8 @@ if ( ! function_exists('getCurrencyFormat')) {
 }
 
 if ( ! function_exists('getRateFormat')) {
-    function getRateFormat() {
+    function getRateFormat()
+    {
         $arr = [
             '0' => 'Ones (1)',
             '1' => 'Hundredth (1.11)',
@@ -147,7 +91,8 @@ if ( ! function_exists('getRateFormat')) {
 }
 
 if ( ! function_exists('getTicketPerUser')) {
-    function getTicketPerUser(){
+    function getTicketPerUser()
+    {
         $arr = [];
         for ($i = 0; $i <= 9; $i++) :
             if ($i == 0) :
@@ -161,7 +106,8 @@ if ( ! function_exists('getTicketPerUser')) {
 }
 
 if ( ! function_exists('getFileSizeUnits')) {
-    function getFileSizeUnits($bytes){
+    function getFileSizeUnits($bytes)
+    {
         if ($bytes >= 1073741824) {
             $bytes = number_format($bytes / 1073741824, 2) . ' GB';
         } elseif ($bytes >= 1048576) {
@@ -178,4 +124,270 @@ if ( ! function_exists('getFileSizeUnits')) {
         return $bytes;
     }
 }
+
+if ( ! function_exists('accountStatusKeys')) {
+    function accountStatusKeys()
+    {
+        $data = [
+            '24/7 TICKETS SUPPORT',
+            '5% PAYMENTS BONUS**',
+            '500$ MONTHLY LOTTERY',
+            'FREE SMM PANEL',
+            'PRIORITY TICKET SUPPORT',
+            'CUSTOM SERVICE',
+            'EARLY NOTIFICATION ON NEW',
+            'SERVICES',
+            'SUPPORT HANDLED BY ADMINS',
+        ];
+        return $data;
+    }
+}
+
+if ( ! function_exists('accountPointKeys')) {
+    function accountPointKeys()
+    {
+        $data = [
+            'AVAILABLE',
+            'CAN REDEEM >= 500 POINTS',
+            'CAN REDEEM >= 250 POINTS',
+            'CAN REDEEM >= 100 POINTS',
+            'LESS THAN 4 DAYS CONVERSATION',
+        ];
+        return $data;
+    }
+}
+
+if ( ! function_exists('numberFormat')) {
+    function numberFormat($amount=0, $coma=null)
+    {
+        if ($coma) {
+            if ($amount==0)
+                return '-';
+            else
+                return number_format($amount,2);
+        } else {
+            return number_format($amount,2,'.','');
+        }
+    }
+}
+
+if ( ! function_exists('dateFormat')) {
+    function dateFormat($date, $time = null)
+    {
+        if ($time) {
+            return date('d/M/Y h:i A',(strtotime($date)));
+        } else {
+            return date('d/M/Y',strtotime($date));
+        }
+    }
+}
+
+if ( ! function_exists('apiServiceJson')) {
+    function apiServiceJson()
+    {
+       $data = [
+           [
+               "service" => 1,
+               "name" => "Followers",
+               "type" => "Default",
+               "category" => "First Category",
+               "rate" => "0.90",
+               "min" => "50",
+               "max" => "10000"
+           ],
+           [
+               "service" =>  2,
+                "name" =>  "Comments",
+                "type" =>  "Custom Comments",
+                "category" =>  "Second Category",
+                "rate" =>  "8",
+                "min" =>  "10",
+                "max" =>  "1500"
+           ]
+       ];
+
+       return $data;
+
+    }
+}
+
+if ( ! function_exists('apiOrderResponse')) {
+    function apiOrderResponse()
+    {
+       $data = [
+           "charge"=>  "0.27819",
+           "start_count"=>  "3572",
+           "status"=>  "Partial",
+           "remains"=>  "157",
+           "currency"=>  "USD"
+       ];
+       return $data;
+    }
+}
+
+if ( ! function_exists('apiMultiOrderResponse')) {
+    function apiMultiOrderResponse()
+    {
+       $data = [
+           [
+                1 => [
+                    "charge" =>  "0.27819",
+                   "start_count" =>  "3572",
+                   "status" =>  "Partial",
+                   "remains" =>  "157",
+                   "currency" =>  "USD"
+                ]
+           ],
+           [
+               10 => [
+                   "error" =>  "Incorrect order ID"
+               ]
+           ],
+           [
+               100 => [
+                   "charge" =>  "1.44219",
+                   "start_count" =>  "234",
+                   "status" =>  "In progress",
+                   "remains" =>  "10",
+                   "currency" =>  "USD"
+               ]
+           ]
+       ];
+       return $data;
+    }
+}
+
+if ( ! function_exists('apiUserBalance')) {
+    function apiUserBalance()
+    {
+        $data = [
+            "balance"=>  "100.84292",
+            "currency"=>  "USD"
+        ];
+        return $data;
+    }
+}
+
+if ( ! function_exists('apiAddOrder')) {
+    function apiAddOrder()
+    {
+        $data = [
+            'name' => [
+                "0" => 'Default',
+                "1" => 'Package',
+                "2" => 'SEO',
+                "3" => 'Custom Comments',
+                "4" => 'Mentions with Hashtags',
+                "5" => 'Mentions Custom List',
+                "6" => 'Mentions Hashtag',
+                "7" => 'Mentions User Followers',
+                "8" => 'Custom Comments Package',
+                "9" => 'Comment Likes',
+                "10" => 'Poll',
+                "11" => 'Subscriptions',
+            ],
+            'data' => [
+                "0" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'runs (optional)', 'description' => 'Runs to deliver'],
+                    ['parameters' => 'interval (optional)', 'description' => 'Interval in minutes'],
+                ],
+                "1" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                ],
+                "2" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'keywords', 'description' => 'Keywords list separated by \r\n or \n'],
+                ],
+                "3" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'comments', 'description' => 'Comments list separated by \r\n or \n'],
+                ],
+                "4" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'usernames', 'description' => 'Usernames list separated by \r\n or \n'],
+                    ['parameters' => 'hashtags', 'description' => 'Hashtags list separated by \r\n or \n'],
+                ],
+                "5" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'usernames', 'description' => 'Usernames list separated by \r\n or \n'],
+                ],
+                "6" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'hashtag', 'description' => 'Hashtag to scrape usernames from'],
+                ],
+                "7" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'usernames', 'description' => 'URL to scrape followers from'],
+                ],
+                "8" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'comments', 'description' => 'Comments list separated by \r\n or \n'],
+                ],
+                "9" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'username', 'description' => 'Username of the comment owner'],
+                ],
+                "10" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'link', 'description' => 'Link to page'],
+                    ['parameters' => 'quantity', 'description' => 'Needed quantity'],
+                    ['parameters' => 'answer_number', 'description' => 'Answer number of the poll'],
+                ],
+                "11" => [
+                    ['parameters' => 'key', 'description' => 'Your API key'],
+                    ['parameters' => 'action', 'description' => 'add'],
+                    ['parameters' => 'service', 'description' => 'Service ID'],
+                    ['parameters' => 'username', 'description' => 'Username'],
+                    ['parameters' => 'min', 'description' => 'Quantity min'],
+                    ['parameters' => 'max', 'description' => 'Quantity max'],
+                    ['parameters' => 'posts', 'description' => 'New posts count'],
+                    ['parameters' => 'delay', 'description' => 'Delay in minutes. Possible values: 0, 5, 10, 15, 30, 60, 90'],
+                    ['parameters' => 'expiry (optional)', 'description' => 'Expiry date. Format d/m/Y'],
+                ],
+            ],
+        ];
+        return $data;
+    }
+}
+
 

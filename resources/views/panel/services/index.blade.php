@@ -53,13 +53,6 @@
         font-size: 14px;
         color: rgba(0, 0, 0, 0.31);
     }
-
-    @media (min-width: 576px)
-    {
-        #import .__modal_dialog_custom {
-            max-width: 800px!important;
-        }
-    }
 </style>
 @endsection
 @section('content')
@@ -75,7 +68,7 @@
                             <input type="hidden" name="status">
                         </form>
                         <div class="__table-container" id="serviceApp">
-                            <div class="overlay-loader">
+                            <div class="overlay-loader" v-if="loader">
                                 <div class="loader-holder">
                                     <img src="{{asset('loader.gif')}}" alt="">
                                 </div>
@@ -95,23 +88,14 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
-
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <label for=""><strong>Category Name</strong></label>
                                                             <input type="text" v-model="category.name" name="name" class="form-control custom-form-control" placeholder="Name">
+                                                            <span class="text-danger" v-if="errors.category && errors.category['name']">@{{ errors.category['name'][0] }}</span>
                                                         </div>
                                                     </div>
-                                                </div>
-
-                                                <div class="error-display">
-                                                    <p class="error-display-item" v-for="errC in errors.category"></p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -141,12 +125,6 @@
                                            </button>
                                        </div>
                                        <div class="modal-body">
-                                           <div class="overlay-loader" v-if="loader.service">
-                                               <div class="loader-holder">
-                                                   <img src="{{asset('loader.gif')}}" alt="">
-                                               </div>
-                                           </div>
-               
                                            <div class="row">
                                                <div class="col-md-12">
                                                    <div class="form-group">
@@ -154,6 +132,7 @@
                                                            <label for="name"> <strong>Service Name <span class="badge badge-pill badge-dark"> English </span> </strong>  </label>
                                                            <input type="text" name="name" class="form-control"
                                                                    placeholder="Service Name" v-model="services.form_fields.name">
+                                                                   <span class="text-danger" v-if="errorFilter('name')!==''"> @{{ errorFilter('name') }} </span>
                                                        </div>
                                                    </div>
                                                </div>
@@ -166,6 +145,7 @@
                                                                <option value="" selected>Choose category</option>
                                                                <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
                                                            </select>
+                                                           <span class="text-danger" v-if="errorFilter('category_id')!==''"> @{{ errorFilter('category_id') }} </span>
                                                        </div>
                                                    </div>
                                                </div>
@@ -204,6 +184,7 @@
                                                                            class="style-chooser"
                                                                            :reduce="domain => domain.id" label="domain"></v-select>
                                                                <input type="hidden" name="provider_id" v-model="services.form_fields.provider_id">
+                                                               <span class="text-danger" v-if="errorFilter('provider_id')!==''"> @{{ errorFilter('provider_id') }} </span>
                                                            </div>
                                                            <span style="color: red" v-if="service_mode == 'Auto' && services.validations.provider_service_not_found !==''">@{{services.validations.provider_service_not_found}}</span>
                                                            <div class="form-group" v-if="services.visibility.service_id_by_provider">
@@ -238,7 +219,9 @@
                                                            <input type="hidden" name="price" v-model="services.form_fields.price">
                                                        </div>
                                                    </div>
+                                                   <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                </div>
+                                              
                                                <div class="col-11" v-else>
                                                    <div class="form-group">
                                                        <input type="text" class="form-control" name="price" v-model="services.form_fields.price">
@@ -259,6 +242,7 @@
                                                    <div class="form-group">
                                                        <input type="text" name="price" class="form-control"
                                                                v-model="services.form_fields.price" placeholder="Price">
+                                                               <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                    </div>
                                                    <div class="price_validation_messages" v-if='services.validations.price.visibility' >
                                                        <p class="text-danger">@{{services.validations.price.msg}}</p>
@@ -274,6 +258,7 @@
                                                            <div class="form-group">
                                                                <input type="text" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
                                                                <label for="">@{{services.form_fields.auto_min_quantity}} USD</label>
+                                                               <span class="text-danger" v-if="errorFilter('min_quantity')!==''"> @{{ errorFilter('min_quantity') }} </span>
                                                            </div>
                                                            <div class="overlay" v-if="auto_min_rate_toggler"></div>
                                                        </div>
@@ -296,11 +281,10 @@
                                                                        :class="{disabled :services.disable.min}"
                                                                        :disabled="services.disable.min"
                                                                />
+                                                               <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                            </div>
                                                        </div>
-                                                       <div class="price_validation_messages" v-if='services.validations.minQuantity.visibility' >
-                                                           <p class="text-danger">@{{services.validations.minQuantity.msg}}</p>
-                                                       </div>
+                                                     
                                                    </div>
                
                
@@ -313,6 +297,7 @@
                                                            <div class="form-group">
                                                                <input type="text" class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
                                                                <label for="">@{{services.form_fields.auto_max_quantity}} USD</label>
+                                                               <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                            </div>
                                                            <div class="overlay" v-if="auto_max_rate_toggler"></div>
                                                        </div>
@@ -336,10 +321,8 @@
                                                                        :class="{disabled :services.disable.max}"
                                                                        :disabled="services.disable.max"
                                                                />
+                                                               <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                            </div>
-                                                       </div>
-                                                       <div class="price_validation_messages" v-if='services.validations.maxQuantity.visibility' >
-                                                           <p class="text-danger">@{{services.validations.maxQuantity.msg}}</p>
                                                        </div>
                                                    </div>
                
@@ -368,9 +351,9 @@
                                                </div>
                                            </div>
                
-                                           <div v-if="errors.category.length != 0" class="error-display">
-                                               <p class="error-display-item" v-for="errC in errors.category"> @{{ errC.desc }}</p>
-                                           </div>
+                                           <div v-if="errors.common" class="error-display">
+                                            <p class="error-display-item"> @{{ errors.common }}</p>
+                                        </div>
                                        </div>
                                        <div class="modal-footer">
                                            <button type="submit" class="btn btn-primary custom-button"><i class="fa fa-check"></i> Save</button>
@@ -396,17 +379,13 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <div class="controls">
                                                                 <label for="name"> <strong>Service Name <span class="badge badge-pill badge-dark"> English </span> </strong>  </label>
                                                                 <input type="text" v-model="services.form_fields.name" name="name" class="form-control" id="name" placeholder="Service Name">
+                                                                <span class="text-danger" v-if="errorFilter('name')!==''"> @{{ errorFilter('name') }} </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -418,6 +397,7 @@
                                                                     <option value="" selected>Choose category</option>
                                                                     <option v-for="(c,i) in category_services" :value="c.id">@{{c.name}}</option>
                                                                 </select>
+                                                                <span class="text-danger" v-if="errorFilter('category_id')!==''"> @{{ errorFilter('category_id') }} </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -441,6 +421,7 @@
                                                                                 class="style-chooser"
                                                                                 :reduce="domain => domain.id" label="domain"></v-select>
                                                                     <input type="hidden" name="provider_id" v-model="services.form_fields.provider_id">
+                                                                    <span class="text-danger" v-if="errorFilter('provider_id')!==''"> @{{ errorFilter('provider_id') }} </span>
                                                                 </div>
                                                                 
                                                                 <span style="color: red" v-if="service_mode == 'Auto' && services.validations.provider_service_not_found !==''">@{{services.validations.provider_service_not_found}}</span>
@@ -459,7 +440,7 @@
                                                                     <label for=""><strong>Service Type</strong></label>
                                                                     <select name="service_type" id="service_type"
                                                                             class="form-control" v-model="service_type_selected">
-                                                                        <option v-for="st in service_type">@{{ st }}</option>
+                                                                        <option v-for="(st, ind) in service_type">@{{ ind }}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="form-group" v-if="services.visibility.drip_feed">
@@ -501,6 +482,7 @@
                                                                 <input type="hidden" name="price" v-model="services.form_fields.price">
                                                             </div>
                                                         </div>
+                                                        <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                     </div>
                                                     <div class="col-11 test-class" v-else>
                                                         <div class="form-group">
@@ -523,9 +505,7 @@
                                                         <div class="form-group">
                                                             <input type="text" name="price" class="form-control"
                                                                     v-model="services.form_fields.price" placeholder="Price">
-                                                        </div>
-                                                        <div class="price_validation_messages" v-if='services.validations.price.visibility' >
-                                                            <p class="text-danger">@{{services.validations.price.msg}}</p>
+                                                            <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -538,6 +518,7 @@
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
                                                                     <label for="">@{{services.form_fields.auto_min_quantity}} USD</label>
+                                                                    <span class="text-danger" v-if="errorFilter('min_quantity')!==''"> @{{ errorFilter('min_quantity') }} </span>
                                                                 </div>
                                                                 <div class="overlay" v-if="auto_min_rate_toggler"></div>
                                                             </div>
@@ -560,11 +541,10 @@
                                                                             :class="{disabled :services.disable.min}"
                                                                             :disabled="services.disable.min"
                                                                     />
+                                                                    <span class="text-danger" v-if="errorFilter('min_quantity')!==''"> @{{ errorFilter('min_quantity') }} </span>
                                                                 </div>
                                                             </div>
-                                                            <div class="price_validation_messages" v-if='services.validations.minQuantity.visibility' >
-                                                                <p class="text-danger">@{{services.validations.minQuantity.msg}}</p>
-                                                            </div>
+                                                            
                                                         </div>
                     
                     
@@ -577,6 +557,7 @@
                                                                 <div class="form-group">
                                                                     <input type="text" class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
                                                                     <label for="">@{{services.form_fields.auto_max_quantity}} USD</label>
+                                                                    <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                                 </div>
                                                                 <div class="overlay" v-if="auto_max_rate_toggler"></div>
                                                             </div>
@@ -592,7 +573,6 @@
                                                         <div v-else>
                                                             <div class="form-group">
                                                                 <div class="controls">
-                    
                                                                     <input type="text" name="max_quantity"
                                                                             class="form-control"
                                                                             placeholder="Max quantity"
@@ -600,11 +580,10 @@
                                                                             :class="{disabled :services.disable.max}"
                                                                             :disabled="services.disable.max"
                                                                     />
+                                                                    <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                                 </div>
                                                             </div>
-                                                            <div class="price_validation_messages" v-if='services.validations.maxQuantity.visibility' >
-                                                                <p class="text-danger">@{{services.validations.maxQuantity.msg}}</p>
-                                                            </div>
+                                                            
                                                         </div>
                     
                                                     </div>
@@ -650,8 +629,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div v-if="errors.category.length != 0" class="error-display">
-                                                    <p class="error-display-item" v-for="errC in errors.category"> @{{ errC.desc }}</p>
+                                                <div v-if="errors.common" class="error-display">
+                                                    <p class="error-display-item"> @{{ errors.common }}</p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -679,11 +658,6 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader" v-if="loader.description">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
                                                 <input type="hidden" name="id" v-model="service_edit_id"/>
                                                 <div class="form-group">
                                                     <label for="description"> <strong>Description</strong> </label>
@@ -720,11 +694,6 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
                                                 <input type="hidden" name="id" v-model="service_edit_id">
                                                 <div class="form-group">
                                                     <select name="bulk_category_id" id="bulk_category_id" class="form-control custom-form-control">
@@ -745,7 +714,7 @@
                                  aria-labelledby="serviceModalTitle" aria-hidden="true">
                                 <div class="modal-dialog __modal_dialog_custom" role="document">
                                     <div class="modal-content">
-                                        <form method="post" action="">
+                                        <form method="post" action="{{ route('admin.provider.services.import') }}">
                                             @csrf
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle"> <strong>Import services</strong> </h5>
@@ -754,18 +723,22 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <div class="overlay-loader">
-                                                    <div class="loader-holder">
-                                                        <img src="{{asset('loader.gif')}}" alt="">
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="form-group">
                                                             <label for=""><strong>Provider</strong></label>
+                                                            <v-select :options="providers_lists"
+                                                                v-model="provider_id"
+                                                                class="style-chooser"
+                                                                :reduce="domain => domain.id"
+                                                                label="domain"
+                                                                @input="getProviderServices">
+                                                            </v-select>
+                                                            <input type="hidden" name="provider_id" v-model='provider_id'>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label for=""><strong>Services</strong></label>
+                                                            <label for=""><strong>Services </strong></label>
                                                             <div class="card" style="height: 400px; overflow-y: scroll; overflow-x: hidden">
                                                                 <div class="material-card card" v-for="(category, index) in categories">
                                                                     <table class="table table-hover">
@@ -774,15 +747,15 @@
                                                                             <th colspan="2">
                                                                                 <div class="row">
                                                                                     <div class="col">
-                                                                                        Category
+                                                                                        @{{ category.category }}
                                                                                     </div>
                                                                                     <div class="col">
                                                                                         <div class="dropdown show goTopDropdown">
-                                                                                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                            <a class="btn btn-secondary dropdown-toggle" :class="'cat' + index" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                                                                 Create category
                                                                                             </a>
                                                                                             <ul class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuLink">
-                                                                                                <li><a class="dropdown-item">List name</a></li>
+                                                                                                <li v-for="(cs) in  category_services"><a class="dropdown-item" @click="selectDropDown(index, cs.name, cs.id)" > @{{ cs.name }} </a></li>
                                                                                             </ul>
                                                                                         </div>
                                                                                     </div>
@@ -791,28 +764,28 @@
                                                                         </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <label>
-                                                                                    <input type="checkbox"> Select all
-                                                                                </label>
-                                                                            </td>
-                                                                            <td class="text-right">
-                                                                                Rate, USD
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr v-for="service in category.services">
-                                                                            <td>
-                                                                                <label>
-                                                                                    <input type="checkbox" name="categories[]" class="d-none" value="create">
-                                                                                    <input type="checkbox" name="services[]"> Service name
-                                                                                </label>
-                                                                            </td>
-                                                                            <td class="text-right">
-                                                                                service rate
-                                                                            </td>
-                                                                        </tr>
-                                                                        </tbody>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <label>
+                                                                                        <input type="checkbox" @click="checkUncheckAll(index, $event)"> Select all
+                                                                                    </label>
+                                                                                </td>
+                                                                                <td class="text-right">
+                                                                                    Rate, USD
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr v-for="service in category.services">
+                                                                                <td>
+                                                                                    <label>
+                                                                                        <input type="checkbox" name="categories[]" class="d-none" :class="'catControl' + index" value="create">
+                                                                                        <input @change="checkSibling($event)" type="checkbox" name="services[]" :value="JSON.stringify(service)" :class="'category' + index"> @{{ service.name }}
+                                                                                    </label>
+                                                                                </td>
+                                                                                <td class="text-right">
+                                                                                    @{{ service.rate }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            </tbody>
                                                                     </table>
                                                                 </div>
                                                             </div>
@@ -872,8 +845,8 @@
                                                 aria-expanded="false">
                                             Type
                                         </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="service_type_filter">
-                                            <a class="dropdown-item type-dropdown-item"></a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item type-dropdown-item"  @click="serviceTypeFilter(ind)" v-for="(st, ind) in service_type">@{{ ind }} (@{{ st }}) </a>
                                         </div>
                                     </div>
                                 </div>
@@ -888,16 +861,14 @@
                                                 aria-expanded="false">
                                             Status
                                         </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"  id="status_type_filter">
-                                            <a data-key="all" class="dropdown-item type-dropdown-item">All</a>
-                                            <a data-key="inactive" class="dropdown-item type-dropdown-item">Disabled</a>
-                                            <a data-key="active" class="dropdown-item type-dropdown-item">Enabled</a>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item type-dropdown-item" @click="serviceStatusFilter(ind)" v-for="(st, ind) in autoManualCount">@{{ ind }} (@{{ st }}) </a>
                                         </div>
 
                                     </div>
                                 </div>
                                 <div class="__th no-drop-down __service_th_type" style="text-align:right;padding-right:4px; grid-column: span 3">
-                                    <div style="cursor: pointer">
+                                    <div style="cursor: pointer" onclick="toggleAllcategory()">
                                         <i class="fas fa-expand-arrows-alt" id="expand" style="display: none"></i>
                                         <i class="fas fa-compress" id="compress" ></i>
                                     </div>
@@ -931,7 +902,7 @@
                                                 </div>
                                             </div>
                                             <div class="__cate_toggler">
-                                                <div class="service-block__collapse-block">
+                                                <div class="service-block__collapse-block" onclick="hideService(this)">
                                                     <div class="service-block__collapse-button ">
                                                         <i class="fa fa-caret-down ml-1" aria-hidden="true"></i>
                                                     </div>
@@ -945,7 +916,7 @@
                                                         <path
                                                             d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path>
                                                     </svg>
-                                                    <input type="checkbox" class="service_checkbox" style="margin-top: 5px" v-model="service_checkbox"
+                                                    <input type="checkbox" :value='service.id' class="service_checkbox" style="margin-top: 5px" v-model="service_checkbox"
                                                     :value="service.id">
                                                 </div>
                                                 <div class="__service_td">
@@ -956,6 +927,10 @@
                                                 </div>
                                                 <div class="__service_td __service_td_span_type" id="sType">
                                                     @{{service.service_type}} 
+                                                        <span v-if="service.drip_feed_status === 'allow'">
+                                                            <i class="fas fa-tint"></i>
+                                                        </span>
+                                                        
                                                 </div>
                                                 <div class="__service_td __service_td_span_mode" id="sMode">
                                                     @{{service.mode}} 
@@ -977,7 +952,8 @@
                                                     <span class="d-block sub-price"> @{{service.provider?service.provider.max:null}} </span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sStatus">
-                                                    @{{service.status}}
+                                                    <span v-if="service.status === 'Deactivated'">Disabled</span>
+                                                    <span v-if="service.status === 'Active'">Enabled</span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" style="grid-column: span 3 / auto;padding: 0;text-align: right;">
                                                     <div class="dropdown __dropdown_buttons">
@@ -1011,6 +987,12 @@
     </div>
 @endsection
 @section('scripts')
+    <script>
+        var sortServiceRoute = '{{route("admin.service.sort.data")}}';
+        var sortCategoryRoute = '{{route("admin.category.sort.data")}}';
+        var resetCustomRatesRoute = '{{route("admin.service.custom.rate.reset.all")}}';
+    </script>
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
     <script src="{{asset('/panel-assets/vue-scripts/service-vue.js')}}"></script>
 @endsection

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Panel\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\SettingGeneral;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -41,8 +43,26 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        return view('panel.auth.login');
+        $panelId = session('panel');
+        $setting = SettingGeneral::where('panel_id', $panelId)->first();
+        return view('panel.auth.login', compact('setting'));
     }
+
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required',
+            'password' => 'required|min:8'
+        ]);
+
+        //attempt to log the admin in
+        if (Auth::guard('panelAdmin')->attempt(['email' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember)) {
+            return redirect()->intended(route('admin.panel.dashboard'));
+        } else {
+            return redirect()->back()->with('Input', $request->only('email', 'remember'))->with('error', 'Admin Login invalid !!');
+        }
+    }
+
 
     protected function guard()
     {

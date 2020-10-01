@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Panel;
 
-use Auth;
 use App\User;
+use App\Exports\UsersExport;
+use App\Models\ExportedUser;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use App\Models\ServiceCategory;
+use App\Models\UserPaymentMethod;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -24,16 +30,19 @@ class UserController extends Controller
                     if (isset($request->status) && $request->status != '') {
                         $q->where('status', $request->status);
                     }
-                    
-                    if (isset($request->search) && $request->search != '') {
-                        $q->where('username', $request->search);
-                        $q->orWhere('email', $request->search);
+
+                    if (isset($request->username) && $request->username != '') {
+                        $q->where('username', 'LIKE', "%$request->username%");
+                        $q->orWhere('email', 'LIKE', "%$request->username%");
                     }
         })->orderBy('id', 'DESC')->paginate(10);
-
+        $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
+        ->where('visibility', 'enabled')
+        ->get();
         return response()->json([
             'status' => 200,
             'data' => $users,
+            'global_payment_methods' => $globalMethods,
         ]);
     }
 
@@ -49,7 +58,7 @@ class UserController extends Controller
             'username'    => 'nullable|string|max:255|unique:users',
             'email'       => 'required|string|email|max:255|unique:users',
             'skype_name'  => 'nullable|string|max:255|unique:users',
-            'status'      => 'required|in:pending,active,inactive',
+            'status'      => 'required|in:Pending,Active,Deactivated',
             'password'    => 'required|string|min:8|confirmed',
         ];
         $validator = Validator::make($credentials, $rules);
@@ -59,8 +68,31 @@ class UserController extends Controller
 
         try {
             $data = $request->except('password_confirmation');
-            $data['password'] = Hash::make($data['password']);
-            $user = User::create($data);
+            $user = User::create([
+                'panel_id'   => Auth::user()->panel_id,
+                'email'      => $data['email'],
+                'username'   => $data['username'],
+                'skype_name' => $data['skype_name'],
+                'password'   => Hash::make($data['password']),
+                'status'     => $data['status'],
+                'phone'      => null,
+                'balance'    => 0,
+            ]);
+
+            if ($request->has('payment_methods')){
+                if ($user){
+                    $paymentIds = [];
+                    foreach ($request->payment_methods as $key => $payment){
+                        $paymentIds [] = [
+                            'panel_id'   => Auth::user()->panel_id,
+                            'user_id'    => $user->id,
+                            'payment_id' => $payment,
+                        ];
+                    }
+                    UserPaymentMethod::insert($paymentIds);
+                }
+            }
+            $user->services_list = [];
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
@@ -69,7 +101,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        return User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+        return User::with('paymentMethods')->where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
     }
 
     public function edit($id)
@@ -84,7 +116,7 @@ class UserController extends Controller
             'user_id' => 'required',
         ];
         $validator = Validator::make($credentials, $rules);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
         }
 
@@ -92,7 +124,7 @@ class UserController extends Controller
 
         try {
             $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $user_id)->first();
-            $user->update(['status' => $user->status == 'active' ? 'inactive' : 'active']);
+            $user->update(['status' => $user->status == 'Active' ? 'Deactivated' : 'Active']);
             return response()->json(['status' => true, 'data'=> $user], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
@@ -102,9 +134,25 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $data = $request->except('email', 'password','password_confirmation', 'created_at', 'updated_at');
+            $data = $request->except('email', 'password','password_confirmation', 'payment_methods', 'created_at', 'updated_at');
             $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->update($data);
-            return response()->json(['status' => true, 'data'=> $request->all()], 200);
+            if ($user){
+                UserPaymentMethod::where('user_id', $id)->delete();
+                if ($request->has('payment_methods')){
+                    $paymentIds = [];
+                    foreach ($request->payment_methods as $key => $payment){
+                        $paymentIds [] = [
+                            'panel_id'   => Auth::user()->panel_id,
+                            'user_id'    => $id,
+                            'payment_id' => $payment,
+                        ];
+                    }
+                    UserPaymentMethod::insert($paymentIds);
+                }
+            }
+            $returnData = $request->all();
+            $returnData['services_list'] = [];
+            return response()->json(['status' => true, 'data'=> $returnData], 200);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
         }
@@ -125,10 +173,10 @@ class UserController extends Controller
             'password'    => 'required|string|min:8|confirmed',
         ];
         $validator = Validator::make($credentials, $rules);
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
         }
-        
+
         try {
             User::where('panel_id', Auth::user()->panel_id)->where('id', $credentials['user_id'])->update([
                 'password' => Hash::make($credentials['password'])
@@ -139,13 +187,13 @@ class UserController extends Controller
         }
     }
 
-   
+
     /* service custom price */
     public function getCategoryService()
     {
         return ServiceCategory::with(['services'=>function($q){
-            $q->where('status', 'active');
-        }])->where('status', 'active')->orderBy('id', 'ASC')->get();
+            $q->where('status', 'Active');
+        }])->where('status', 'Active')->orderBy('id', 'ASC')->get();
     }
     public function getUserServices($user_id)
     {
@@ -154,7 +202,7 @@ class UserController extends Controller
     }
     public function serviceUpdate(Request $request)
     {
-        
+
         $request->validate([
             'user_id' => 'required|numeric',
             'services' => 'required',
@@ -168,8 +216,8 @@ class UserController extends Controller
             }
             $panel_id = auth()->user()->panel_id;
             $serviceLists  = json_decode($data['services']);
-            
-            foreach ($serviceLists as $index => $value) 
+
+            foreach ($serviceLists as $index => $value)
             {
                 $price = isset($value->update_price)?$value->update_price:$value->price;
                $user->servicesList()->attach($value->service_id, ['price' => $price, 'panel_id'=>$panel_id]);
@@ -204,16 +252,99 @@ class UserController extends Controller
                 $user->servicesList()->detach();
             }
         }
-        elseif ($data['status'] == 'active') {
+        elseif ($data['status'] == 'Active') {
             User::whereIn('id', $data['user_ids'])->update([
-                'status' => 'active'
+                'status' => 'Active'
             ]);
         }
-        elseif ($data['status'] == 'inactive') {
+        elseif ($data['status'] == 'Deactivated') {
             User::whereIn('id', $data['user_ids'])->update([
-                'status' => 'inactive'
+                'status' => 'Deactivated'
             ]);
         }
         return response()->json(['status' => true, 'data'=> 'Bulk users update'], 200);
+    }
+
+       /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function export()
+    {
+        $exported_users = ExportedUser::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
+  
+        return view('panel.users.user_export', compact('exported_users'));
+    }
+
+    /**
+     * Export users.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function exportUsers(Request $request)
+    {
+        // Validate form data
+        $request->validate([
+            'from' => 'required|date',
+            'to' => 'required|date|after_or_equal:from',
+            'status' => 'required|array|in:all,pending,active,inactive',
+            'format' => 'required|in:xml,json,csv',
+            'include_columns' => 'required|array|in:id,username,email,name,skype_name,balance,spent,status,created_at,last_login_at',
+        ]);
+
+        try {
+            $data = $request->except('_token');
+            $data['include_columns'] = serialize($request->include_columns);
+            $data['status'] = serialize($request->status);
+            $data['panel_id'] = auth()->user()->panel_id;
+            $data['from'] = date('Y-m-d H:i:s',  strtotime($request->from));
+            $data['to'] = date('Y-m-d H:i:s',  strtotime($request->to));
+            ExportedUser::create($data);
+            return redirect()->back()->withSuccess('Users exported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withError($e->getMessage());
+        }
+    }
+
+    /**
+     * Download exported users.
+     *
+     * @param \App\ExportedUser $exportedUser
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadExportedUser(ExportedUser $exportedUser)
+    {
+        try {
+            $users = User::whereBetween('created_at', [$exportedUser->from, $exportedUser->to])
+                ->where(function ($q) use ($exportedUser) {
+                    if (!in_array('all', unserialize($exportedUser->status))) {
+                        $q->whereIn('status', unserialize($exportedUser->status));
+                    }
+                })
+                ->leftJoin(\DB::raw("(SELECT sum(charges) as spent, user_id from orders where 
+                status!='cancelled' AND  status!='Canceled' AND  status!='Refunded' group by user_id) as A"), 'users.id', '=', 'A.user_id')
+                ->get(unserialize($exportedUser->include_columns));
+
+            if ($exportedUser->format == 'json') {
+                $filename = "public/exportedData/users.json";
+                Storage::disk('local')->put($filename, $users->toJson(JSON_PRETTY_PRINT));
+                $headers = array('Content-type' => 'application/json');
+
+                return response()->download('storage/exportedData/users.json', 'users.json', $headers);
+            } elseif ($exportedUser->format == 'xml') {
+                $data = ArrayToXml::convert(['__numeric' => $users->toArray()]);
+                $filename = "public/exportedData/users.xml";
+                Storage::disk('local')->put($filename, $data);
+                $headers = array('Content-type' => 'application/xml');
+
+                return response()->download('storage/exportedData/users.xml', 'users.xml', $headers);
+            } else {
+                return Excel::download(new UsersExport($users, unserialize($exportedUser->include_columns)), 'users.xlsx');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withError(['error' => $e->getMessage()]);
+        }
     }
 }

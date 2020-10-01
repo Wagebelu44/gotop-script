@@ -6,7 +6,7 @@
             <!--navbar-->
             @include('panel.blog.nav')
             <!--navbar-->
-            @if($page == 'index')
+            @if ($page == 'index')
             <div class="col-md-8">
                 <div class="card panel-default">
                     <div class="card-body">
@@ -23,7 +23,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(!empty($data))
+                            @if (!empty($data))
                                 @foreach($data as $key => $blog)
                                     <tr>
                                         <td>{{ $key+1 }}</td>
@@ -47,13 +47,13 @@
                     </div>
                 </div>
             </div>
-            @elseif($page == 'create' || $page == 'edit')
+            @elseif ($page == 'create' || $page == 'edit')
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
                             <form name="blogForm" action="{{ $page == 'edit' ? route('admin.blog.update', $data->id):route('admin.blog.store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
-                                @if($page == 'edit')
+                                @if ($page == 'edit')
                                     @method('PUT')
                                 @endif
                                 <div class="relative">
@@ -73,8 +73,8 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <img style="width: 100px" id="preview" src="">
-                                                @if(isset($data->image))
-                                                    <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog-post/'.$data->image) }}">
+                                                @if (isset($data->image))
+                                                    <img style="width: 200px" id="savedLogo" class="img-thumbnail" src="{{ asset('./storage/images/blog/'.$data->image) }}">
                                                 @endif
                                             </div>
                                         </div>
@@ -98,7 +98,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="control-label" for="post_title">Post title</label>
+                                        <label class="control-label" for="post_title">Title</label>
                                         <input type="text" id="post_title" class="form-control default-page-name page-name @error('title') is-invalid @enderror" name="title" value="{{ old('title', isset($data) ? $data->title : '') }}" onchange="string_to_slug(this.value)">
                                         @error('title')
                                         <span role="alert">
@@ -108,11 +108,11 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="control-label" for="post_content">Body</label>
+                                        <label class="control-label">Body</label>
                                         <textarea class="form-control summernote @error('blog_content') is-invalid @enderror" name="blog_content">
                                             {{ old('blog_content', isset($data) ? $data->content : '') }}
                                         </textarea>
-                                        @error('post_content')
+                                        @error('blog_content')
                                         <span role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -145,13 +145,13 @@
                                     <label class="control-label" for="createpageform-url">Type</label>
                                     <div class="input-group">
                                         <label class="radio-inline">
-                                            <input type="radio" value="trending_blog" name="type" id="blog_type1" {{ old('type', isset($data) ? $data->type : '') == 'trending_blog' ? 'checked' : '' }} required> Trending
+                                            <input type="radio" value="Trending" name="type" id="blog_type1" {{ old('type', isset($data) ? $data->type : '') == 'Trending' ? 'checked' : '' }} required> Trending
                                         </label>
                                         <label class="radio-inline radio-ml">
-                                            <input type="radio" value="popular_blog" name="type" id="blog_type2" {{ old('type', isset($data) ? $data->type : '') == 'popular_blog' ? 'checked' : '' }} required> Popular
+                                            <input type="radio" value="Popular" name="type" id="blog_type2" {{ old('type', isset($data) ? $data->type : '') == 'Popular' ? 'checked' : '' }} required> Popular
                                         </label>
                                         <label class="radio-inline radio-ml">
-                                            <input type="radio" value="blog" name="type" id="blog_type3" {{ old('type', isset($data) ? $data->type : '') == 'blog' ? 'checked' : '' }} required> None
+                                            <input type="radio" value="Blog" name="type" id="blog_type3" {{ old('type', isset($data) ? $data->type : '') == 'Blog' ? 'checked' : '' }} required> None
                                         </label>
                                     </div>
                                     @error('type')
@@ -164,8 +164,8 @@
                                 <div class="form-group">
                                     <label class="control-label" for="is_visibility">Status</label>
                                     <select class="form-control is-public" name="status" id="status" required>
-                                        <option value="active" {{ old('status', isset($data) ? $data->status : '') == 'active' ? 'selected' : '' }}>Active</option>
-                                        <option value="inactive" {{ old('status', isset($data) ? $data->status : '') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                        <option value="Active" {{ old('status', isset($data) ? $data->status : '') == 'Active' ? 'selected' : '' }}>Active</option>
+                                        <option value="Deactivated" {{ old('status', isset($data) ? $data->status : '') == 'Deactivated' ? 'selected' : '' }}>Deactivated</option>
                                     </select>
                                     @error('status')
                                     <span role="alert">
@@ -176,12 +176,12 @@
                                 <hr>
                                 <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                                 <a class="btn btn-default" href="{{ route('admin.blog.index') }}">Cancel</a>
-                                @if($page == 'edit')
+                                @if ($page == 'edit')
                                     <a href="javascript: void(0)" onclick="document.getElementById('deleteBlog').submit();" class="btn btn-default waves-effect pull-right" ><i>Delete</i></a>
                                 @endif
                             </form>
 
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 <form id="deleteBlog" action="{{ route('admin.blog.destroy', $data->id)}}" method="post">
                                     @csrf
                                     @method('DELETE')

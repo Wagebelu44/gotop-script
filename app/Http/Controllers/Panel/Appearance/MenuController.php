@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use App\Models\Page;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class MenuController extends Controller
 {
@@ -14,7 +14,7 @@ class MenuController extends Controller
     {
         if (Auth::user()->can('menu')) {
             $pages = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
-            $menus = Menu::where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
+            $menus = Menu::with('page')->where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
             return view('panel.appearance.menu', compact('pages', 'menus'));
         } else {
             return view('panel.permission');
@@ -38,7 +38,7 @@ class MenuController extends Controller
                 'menu_name'         => $request->menu_name,
                 'external_link'     => $external_url,
                 'menu_link_id'      => $request->menu_link,
-                'menu_link_type'    => $request->menu_type == 1 ? 'YES' : 'NO',
+                'menu_link_type'    => $request->menu_type == 1 ? 'Yes' : 'No',
                 'created_at'        => Auth::user()->id
             ]);
 

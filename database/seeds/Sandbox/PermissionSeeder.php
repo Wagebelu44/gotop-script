@@ -14,11 +14,11 @@ class PermissionSeeder extends Seeder
     {
         $arrPermissions = [
             'user' => [
-                'add user', 
-                'edit user', 
-                'change user status', 
-                'edit user custom rates', 
-                'export user', 
+                'add user',
+                'edit user',
+                'change user status',
+                'edit user custom rates',
+                'export user',
                 'user sign in history'
             ],
             'order' => [
@@ -110,6 +110,16 @@ class PermissionSeeder extends Seeder
                 'languages',
                 'files'
             ],
+
+            'newsfeed' => [
+                'create newsfeed',
+                'edit newsfeed',
+                'delete newsfeed',
+                'create newsfeed category',
+                'edit newsfeed category',
+                'delete newsfeed category'
+            ],
+
             'setting' => [
                 'general setting',
                 'provider setting',
@@ -117,7 +127,9 @@ class PermissionSeeder extends Seeder
                 'module setting',
                 'integration setting',
                 'notification setting',
-                'bonus setting'
+                'bonus setting',
+                'faq setting',
+                'account status setting'
             ]
         ];
 

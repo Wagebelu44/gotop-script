@@ -12,7 +12,7 @@
 
         <div class="col-md-8">
             <div class="card panel-default">
-                @if($page == 'index')
+                @if ($page == 'index')
                 <div class="card-body">
                     <div class="settings-emails-block">
                         <div class="settings-emails-block-title">
@@ -97,7 +97,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if(!empty($staffEmails))
+                                @if (!empty($staffEmails))
                                     @foreach ($staffEmails as $staffEmail)
                                         @php
                                             $countNotification = 0;
@@ -389,7 +389,7 @@
                 </div>
                 <!--End:Edit Modal-->
 
-                @elseif($page == 'edit')
+                @elseif ($page == 'edit')
                 <div class="card-body">
                     <form action="{{ route($resource.'update', $data->id) }}" method="post" enctype="multipart/form-data">
                         @csrf
@@ -408,8 +408,8 @@
                             <div class="form-group">
                                 <label class="control-label" for="status">Status</label>
                                 <select class="form-control" name="status" id="status" required>
-                                    <option value="active" {{ old('status', isset($data) ? $data->status : '') == 'active' ? 'selected' : '' }}>Enabled</option>
-                                    <option value="inactive" {{ old('status', isset($data) ? $data->status : '') == 'inactive' ? 'selected' : '' }}>Disabled</option>
+                                    <option value="Active" {{ old('status', isset($data) ? $data->status : '') == 'Active' ? 'selected' : '' }}>Enabled</option>
+                                    <option value="Deactivated" {{ old('status', isset($data) ? $data->status : '') == 'Deactivated' ? 'selected' : '' }}>Disabled</option>
                                 </select>
                                 @error('status')
                                 <span role="alert">
@@ -461,31 +461,31 @@
 
                     if (responce.data.payment_received > 0) {
                         $('#edit_payment_received').attr("checked", "checked")
-                    }else{
+                    } else {
                         $('#edit_payment_received').prop("checked", false)
                     }
 
                     if (responce.data.new_manual_orders > 0) {
                         $('#edit_new_manual_orders').attr("checked", "checked")
-                    }else{
+                    } else {
                         $('#edit_new_manual_orders').prop("checked", false)
                     }
 
                     if (responce.data.fail_orders > 0) {
                         $('#edit_fail_orders').attr("checked", "checked")
-                    }else{
+                    } else {
                         $('#edit_fail_orders').prop("checked", false)
                     }
 
                     if (responce.data.new_messages > 0) {
                         $('#edit_new_messages').attr("checked", "checked")
-                    }else{
+                    } else {
                         $('#edit_new_messages').prop("checked", false)
                     }
 
                     if (responce.data.new_manual_payout > 0) {
                         $('#edit_new_manual_payout').attr("checked", "checked")
-                    }else{
+                    } else {
                         $('#edit_new_manual_payout').prop("checked", false)
                     }
 

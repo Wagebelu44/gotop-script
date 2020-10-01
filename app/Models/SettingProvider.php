@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\Contracts\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SettingProvider extends Model
 {
@@ -32,5 +33,10 @@ class SettingProvider extends Model
     {
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'provider_id');
     }
 }

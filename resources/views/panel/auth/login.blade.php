@@ -2,13 +2,27 @@
 
 @section('content')
 <div class="logo">
-    <span class="db"><img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" /></span>
+    <span class="db">
+        @if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo))
+            <img src="{{ asset('storage/images/setting/'.$setting->logo) }}" alt="logo" />
+        @elseif($setting->panel_name)
+            <h2>{{ $setting->panel_name }}</h2>
+        @else
+            <img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" />
+        @endif
+    </span>
     <h5 class="font-medium mb-3">Sign In to Admin</h5>
 </div>
 
 <div class="row">
     <div class="col-12">
-        <form class="form-horizontal mt-3" method="POST" action="{{ route('panel.login') }}">
+        @if (session('error'))
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+                <h3 class="text-warning"><i class="fa fa-exclamation-triangle"></i> Warning</h3> {{ Session::get('error') }}
+            </div>
+        @endif
+        <form class="form-horizontal mt-3" method="POST" action="{{ route('panel.login.action') }}">
             @csrf
 
             <div class="input-group mb-3">
@@ -59,5 +73,18 @@
             </div>
         </form>
     </div>
+</div>
+
+<div class="logo" style="position: absolute;bottom: 10px;left: 35%;">
+    <h5 class="font-medium mb-3">Powered by</h5>
+    <span class="db">
+        @if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo))
+            <img src="{{ asset('storage/images/setting/'.$setting->logo) }}" alt="logo" />
+        @elseif($setting->panel_name)
+            <h2>{{ $setting->panel_name }}</h2>
+        @else
+            <img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" />
+        @endif
+    </span>
 </div>
 @endsection

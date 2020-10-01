@@ -20,7 +20,7 @@ class Blog extends Model
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
     protected static $submitEmptyLogs = false;
-    protected static $logName = 'blog'; //custom_log_name_for_this_model
+    protected static $logName = 'Blog'; //custom_log_name_for_this_model
 
     public function getDescriptionForEvent(string $eventName): string
     {

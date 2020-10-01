@@ -8825,7 +8825,7 @@
 
   ContentEditableInput.prototype.screenReaderLabelChanged = function (label) {
     // Label for screenreaders, accessibility
-    if(label) {
+    if (label) {
       this.div.setAttribute('aria-label', label);
     } else {
       this.div.removeAttribute('aria-label');
@@ -9374,7 +9374,7 @@
 
   TextareaInput.prototype.screenReaderLabelChanged = function (label) {
     // Label for screenreaders, accessibility
-    if(label) {
+    if (label) {
       this.textarea.setAttribute('aria-label', label);
     } else {
       this.textarea.removeAttribute('aria-label');

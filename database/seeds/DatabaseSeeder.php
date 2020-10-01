@@ -17,5 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(GlobalThemesSeeder::class);
         $this->call(GlobalPaymentSeeder::class);
         $this->call(PanelAdminSeeder::class);
+        $this->call(ProviderSeeder::class);
+        $this->call(GlobalCurrencySeeder::class);
     }
 }

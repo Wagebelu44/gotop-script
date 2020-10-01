@@ -8,7 +8,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                @if(!empty($page))
+                @if (!empty($page))
                     <form method="POST" action="{{ route($resource.'update', $page->id) }}">
                 @else
                     <form>
@@ -29,7 +29,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-3">
-                                    <ul class="list-style-none" style="max-height:500px; overflow:auto;">
+                                    <ul class="list-style-none" style="height:565px; overflow:auto;">
                                         @foreach($pages as $k => $gr)
                                         <li>
                                             <a href="javascript:void(0)" onclick="hideShow({{ $k }})"><i class="fa fa-folder text-info"></i> {{ strtoupper($gr->group) }}</a>
@@ -47,7 +47,7 @@
                                     </ul>
                                 </div>
                                 <div class="col-sm-9">
-                                    @if(!empty($page))
+                                    @if (!empty($page))
                                     <div class="alert alert-success">{{ strtoupper($page->group).'/'.$page->name }}</div>
                                     <textarea id="content" name="content">{{ $page->content }}</textarea>
                                     @else
@@ -57,8 +57,8 @@
                             </div>
                         </div>
                         <div class="card-footer text-right">
-                            @if(!empty($page))
-                                @if($page->updated_at != null)
+                            @if (!empty($page))
+                                @if ($page->updated_at != null)
                                     <a type="reset" class="btn btn-default" href="javascript:void(0);" onclick="reset('{{ route($resource.'reset', $page->id) }}')">Reset</a>
                                 @endif
                                 <button type="submit" class="btn btn-primary">Save</button>
@@ -71,7 +71,7 @@
     </div>
 @endsection
 
-@if(!empty($page))
+@if (!empty($page))
     @section('styles')
         <link href="{{ asset('panel-assets/libs/codemirror/codemirror.css') }}" rel="stylesheet">
         <link href="{{ asset('panel-assets/libs/codemirror/addon/display/fullscreen.css') }}" rel="stylesheet">
@@ -79,7 +79,7 @@
 @endif
 
 @section('scripts')
-    @if(!empty($page))
+    @if (!empty($page))
     <script src="{{ asset('panel-assets/libs/codemirror/codemirror.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/codemirror/mode/css/css.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/codemirror/addon/display/fullscreen.js') }}"></script>
@@ -98,6 +98,8 @@
                     }
                 }
             });
+            editor.setSize(null, 500);
+
 
             $("#full-screen").click(function() {
                 editor.setOption("fullScreen", true);

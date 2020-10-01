@@ -1,7 +1,7 @@
 const userModule = new Vue({
     el: '#user_panel_module',
     data: {
-        users: null,
+        users: [],
         pagination: {current_page: 1},
         formUser:{
             panel_id: 1,
@@ -13,9 +13,11 @@ const userModule = new Vue({
             password_confirmation: '',
             status: '',
             balance: 0.00,
+            payment_methods: [],
         },
+        global_payment_methods: [],
         filter: {
-            status: "", 
+            status: "",
             search: "",
         },
         validationErros: [],
@@ -26,7 +28,9 @@ const userModule = new Vue({
         current_user_id: null,
         selectedUsers: [],
         checkAlluser: false,
-    },
+        isEdit: false,
+    },  
+    mixins: [mixin],
     created () {
         let myUrl = new URL (window.location.href);
         if (myUrl.search.includes('page=')) {
@@ -40,7 +44,7 @@ const userModule = new Vue({
                 this.selectedUsers = this.users.map(it=>it.id);
             }
             else this.selectedUsers = [];
-        }  
+        }
     },
     mounted () {
         this.getUsers();
@@ -52,13 +56,16 @@ const userModule = new Vue({
     methods: {
         getCategoryServices()
         {
+            this.loader = true;
             fetch(base_url+'/admin/category-services/')
             .then(res => res.json())
             .then(res => {
+                this.loader = false;
                 this.categoryServices = res;
             });
         },
         getUsers(page=1) {
+            this.loader = true;
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {
@@ -67,7 +74,6 @@ const userModule = new Vue({
                 const url = base_url+'/admin/users'+ page_id;
                 history.pushState(state, title, url)
             }
-
             if (this.filter.status !== "") {
                 const state = { 'status': this.filter.status};
                 const title = '';
@@ -77,20 +83,23 @@ const userModule = new Vue({
             }
 
             if (this.filter.search !== "") {
-                const state = { 'search': this.filter.search};
+                const state = { 'username': this.filter.search};
                 const title = '';
-                page_id += '&status='+this.filter.search;
+                page_id += '&username='+this.filter.search;
                 const url = base_url+'/admin/users'+ page_id;
                 history.pushState(state, title, url)
             }
             fetch(base_url+'/admin/getusers'+ page_id)
                 .then(res => res.json())
                 .then(res => {
+                    this.loader = false;
                     this.users = res.data.data;
+                    this.global_payment_methods = res.global_payment_methods;
                     this.pagination = res.data;
                 });
         },
         saveUserInfo() {
+            this.loader = true;
             fetch(base_url+'/admin/users', {
                 headers: {
                     "Accept": "application/json, text/plain, */*'",
@@ -107,10 +116,14 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 if (res.status) {
-                    this.users.unshift(res.data);
+                    this.users =  [res.data, ...this.users];
                     this.formClear();
                     $("#userModal").modal('hide');
+                    $( '#user-form' ).each(function(){
+                        this.reset();
+                    });
                 }
             })
             .catch(res => {
@@ -135,9 +148,11 @@ const userModule = new Vue({
                 password: '',
                 password_confirmation: '',
                 status: '',
+                payment_methods: [],
             };
         },
         editUser(id) {
+            this.loader = true;
             fetch(base_url+'/admin/users/'+id).then(res => {
                 if (!res.ok) {
                     throw res;
@@ -145,9 +160,13 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 $("#userModal").modal('show');
-                this.formUser = res;
+                this.formUser = {...res};
+                let payment_ids = res.payment_methods.map(it=>it.payment_id);
+                this.formUser.payment_methods = [...payment_ids]; // res.payment_methods.map(it=>it.payment_id);
                 this.edit_user_id = res.id;
+                this.isEdit = true;
             })
             .catch(res => {
                 res.text().then(err=>{
@@ -162,6 +181,7 @@ const userModule = new Vue({
             });
         },
         updateUser() {
+            this.loader = true;
             fetch(base_url+'/admin/users/'+this.edit_user_id, {
                 headers: {
                     "Accept": "application/json, text/plain, */*'",
@@ -178,6 +198,7 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 if (res.status) {
                     this.users = this.users.map(item => {
                         if (item.id === res.data.id) {
@@ -187,6 +208,7 @@ const userModule = new Vue({
                     });
                     this.formClear();
                     $("#userModal").modal('hide');
+                    this.isEdit = false;
                 }
             })
             .catch(res => {
@@ -203,6 +225,7 @@ const userModule = new Vue({
         },
         suspendUser(user_id) {
             if (confirm('Are you sure?')) {
+                this.loader = true;
                 fetch(base_url+'/admin/suspendUser', {
                     headers: {
                         "Accept": "application/json, text/plain, */*'",
@@ -219,6 +242,7 @@ const userModule = new Vue({
                     return res.json();
                 })
                 .then(res => {
+                    this.loader = false;
                     this.users = this.users.map(item => {
                         if (item.id === res.data.id) {
                             return res.data;
@@ -242,14 +266,16 @@ const userModule = new Vue({
         },
         customeRate(user_id) {
             this.current_user_id = user_id;
+            this.loader = true;
             fetch(base_url+'/admin/users-services/'+ user_id)
             .then(res => res.json())
             .then(res => {
+                this.loader = false;
                 this.userServices = [];
                 if (res.length>0) {
                     res.forEach(item=>{
                         let provider_service = null; //provider_rate(item.id);
-                        let rateObj = {}; 
+                        let rateObj = {};
                         rateObj.service_id = item.id;
                         rateObj.name = item.name;
                         rateObj.price =  item.pivot.price;
@@ -258,7 +284,7 @@ const userModule = new Vue({
                         this.userServices.unshift(rateObj);
                     });
                 }
-                
+
                 $('#customRateAddModal').modal('show');
             });
         },
@@ -268,6 +294,7 @@ const userModule = new Vue({
         },
         updatePassword() {
             let formD = new FormData(document.getElementById('password-update-form'));
+            this.loader = true;
             fetch(base_url+'/admin/updatePassword/', {
                 headers: {
                     "Accept": "application/json",
@@ -283,6 +310,7 @@ const userModule = new Vue({
                 return res.json();
             })
             .then(res => {
+                this.loader = false;
                 if (res.status) {
                     document.getElementById('password-update-form').reset();
                     $("#passwordUpdateModal").modal('hide');
@@ -303,15 +331,15 @@ const userModule = new Vue({
         statusFilter(txt) {
             this.filter.status = txt;
             this.getUsers();
-        }, 
+        },
         searchFilter() {
             this.getUsers();
         },
-        addCustomRate(obj) 
+        addCustomRate(obj)
         {
             let service_ids = obj.id;
             let provider_service = null; //provider_rate(service_ids);
-            
+
             let pushAble = false;
             if (this.userServices.length>0) {
                 this.userServices.forEach(item=>{
@@ -320,9 +348,9 @@ const userModule = new Vue({
                     }
                 });
             }
-            if (!pushAble) 
+            if (!pushAble)
             {
-                let rateObj = {}; 
+                let rateObj = {};
                 rateObj.service_id = obj.id;
                 rateObj.name = obj.name;
                 rateObj.price =  obj.price;
@@ -344,7 +372,7 @@ const userModule = new Vue({
             if (this.userServices.length>0) {
                 this.userServices.forEach(item=>{
                     if (item.service_id == service_id) {
-                        if (item.back_end) 
+                        if (item.back_end)
                         {
                            /*  $('#deleteCustomRate').attr('action', originUrl + 'reseller/users/' + current_user_id + '/services/' + service_id);
                             $('#deleteCustomRate').submit(); */
@@ -356,7 +384,7 @@ const userModule = new Vue({
                     }
                 });
             }
-        }, 
+        },
         storeUserService()
         {
             if (this.userServices.length===0) {
@@ -384,7 +412,7 @@ const userModule = new Vue({
                 })
                 .then(res => {
                     if (res.status) {
-                        $("#customRateAddModal").modal('hide'); 
+                        $("#customRateAddModal").modal('hide');
                     }
                 })
                 .catch(res => {
@@ -432,7 +460,7 @@ const userModule = new Vue({
                 })
                 .then(res => {
                     if (res.status) {
-                        $("#customRateAddModal").modal('hide'); 
+                        $("#customRateAddModal").modal('hide');
                     }
                 })
                 .catch(res => {
@@ -483,7 +511,7 @@ const userModule = new Vue({
                     });
                 });
             }
-            else 
+            else
             {
                 alert('No User is selected');
             }
@@ -498,7 +526,7 @@ const userModule = new Vue({
                     },
                     credentials: "same-origin",
                     method: "POST",
-                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'inactive'}),
+                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'Deactivated'}),
                 }).then(res => {
                     if (!res.ok) {
                         throw res;
@@ -522,11 +550,11 @@ const userModule = new Vue({
                     });
                 });
             }
-            else 
+            else
             {
                 alert('No User is selected');
             }
-        
+
         },
         resetAlluserRate()
         {
@@ -562,11 +590,11 @@ const userModule = new Vue({
                     });
                 });
             }
-            else 
+            else
             {
                 alert('No User is selected');
             }
         }
-       
+
     }
 });

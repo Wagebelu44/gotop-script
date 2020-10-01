@@ -3,44 +3,42 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MediaController;
 use App\Models\Blog;
 use App\Models\BlogCategory;
 use Illuminate\Http\Request;
-use Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Image;
-use Validator;
+use Illuminate\Support\Facades\Auth;
 
 class BlogController extends Controller
 {
 
     public function index()
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = Blog::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
             $page = 'index';
             return view('panel.blog.index', compact('data', 'page'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function create()
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = null;
             $page = 'create';
             $categories = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
             return view('panel.blog.index', compact('data', 'page', 'categories'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function store(Request $request)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $this->validate($request, [
                 'image'         => 'required|image',
                 'title'         => 'required',
@@ -49,24 +47,10 @@ class BlogController extends Controller
                 'status'        => 'required'
             ]);
 
-            $checkBlogPostImage = Blog::where('panel_id', Auth::user()->panel_id)->first();
             if ($request->hasFile('image')) {
-                if (!empty($checkBlogPostImage->image)) {
-                    deleteFile('./storage/images/blog-post/', $checkBlogPostImage->image);
-                }
-                $image = $request->file('image');
-                $mime= $image->getClientOriginalExtension();
-                $imageName = time()."_post.".$mime;
-                $image = Image::make($image)->resize(1880, 1254);
-                Storage::disk('public')->put("images/blog-post/".$imageName, (string) $image->encode());
+                $file = $request->file('image');
+                $image = (new MediaController())->imageUpload($file, 'images/blog', 1, null, [800, 450]);
             }
-
-            if (isset($imageName)) {
-                $image =  $imageName;
-            } else {
-                $image = isset($checkBlogPostImage->image) ? $checkBlogPostImage->image:null;
-            }
-
             Blog::create([
                 'panel_id'          => Auth::user()->panel_id,
                 'title'             => $request->title,
@@ -76,20 +60,20 @@ class BlogController extends Controller
                 'meta_title'        => $request->meta_title,
                 'meta_keyword'      => $request->meta_keyword,
                 'meta_description'  => $request->meta_description,
-                'image'             => $image,
+                'image'             => isset($image) ? $image['name']:'',
                 'status'            => $request->status,
                 'type'              => $request->type,
                 'created_by'        => Auth::user()->id,
             ]);
             return redirect()->back()->with('success', 'blog Post save successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function edit($id)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = Blog::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
                 return redirect()->route(' admin.blog.index');
@@ -97,14 +81,14 @@ class BlogController extends Controller
             $categories = BlogCategory::where('panel_id', Auth::user()->panel_id)->get();
             $page = 'edit';
             return view('panel.blog.index', compact('data', 'page', 'categories'));
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function update(Request $request, $id)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $this->validate($request, [
                 'image'        => 'sometimes|image',
                 'title'        => 'required',
@@ -113,22 +97,13 @@ class BlogController extends Controller
                 'status'       => 'required'
             ]);
 
-            $checkBlogPostImage = Blog::where('panel_id', Auth::user()->panel_id)->first();
             if ($request->hasFile('image')) {
+                $checkBlogPostImage = Blog::where('panel_id', Auth::user()->panel_id)->first();
                 if (!empty($checkBlogPostImage->image)) {
-                    deleteFile('./storage/images/blog-post/', $checkBlogPostImage->image);
+                    (new MediaController())->delete('images/blog', $checkBlogPostImage->image, 1);
                 }
-                $image = $request->file('image');
-                $mime= $image->getClientOriginalExtension();
-                $imageName = time()."_post.".$mime;
-                $image = Image::make($image)->resize(1880, 1254);
-                Storage::disk('public')->put("images/blog-post/".$imageName, (string) $image->encode());
-            }
-
-            if (isset($imageName)) {
-                $image =  $imageName;
-            } else {
-                $image = isset($checkBlogPostImage->image) ? $checkBlogPostImage->image:null;
+                $file = $request->file('image');
+                $image = (new MediaController())->imageUpload($file, 'images/blog', 1, null, [800, 450]);
             }
 
             Blog::find($id)->update([
@@ -140,27 +115,30 @@ class BlogController extends Controller
                 'meta_keyword'      => $request->meta_keyword,
                 'meta_description'  => $request->meta_description,
                 'content'           => $request->blog_content,
-                'image'             => $image,
+                'image'             => isset($image) ? $image['name']:'',
                 'type'              => $request->type,
                 'status'            => $request->status,
                 'created_by'        => Auth::user()->id,
             ]);
             return redirect()->back()->with('success', 'blog Post update successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
 
     public function destroy($id)
     {
-        if(Auth::user()->can('blog')) {
+        if (Auth::user()->can('blog')) {
             $data = Blog::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
                 return redirect()->route('admin.blog.index');
             }
+            if (!empty($data->image)) {
+                (new MediaController())->delete('images/blog', $data->image, 1);
+            }
             $data->delete();
             return redirect(route('admin.blog.index'))->with('success', 'blog delete successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

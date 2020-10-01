@@ -15,12 +15,17 @@ class Page extends Model
     protected $table = 'pages';
 
     protected $fillable = [
-        'panel_id', 'global_page_id', 'name', 'content', 'url', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'status', 'created_by', 'updated_by',
+        'panel_id', 'global_page_id', 'name', 'content', 'url', 'default_url', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'status', 'created_by', 'updated_by',
     ];
 
     function globalPage()
     {
         return $this->belongsTo(GlobalPage::class);
+    }
+
+    public function menu() 
+    {
+        return $this->hasOne(Menu::class, 'menu_link_id', 'id');
     }
 
     protected static $logAttributes = ['*'];

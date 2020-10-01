@@ -8,7 +8,7 @@
     <div class="row all-mt-30">
         @include('panel.settings.navbar')
 
-        @if($page == 'index')
+        @if ($page == 'index')
         <div class="col-md-8">
             <a href="{{ route($resource.'create') }}" class="btn btn-sm btn-primary">Add Faq</a>
             <div class="card panel-default" style="margin-top: 10px;">
@@ -16,7 +16,7 @@
                     <div class="col-md-12">
                         <table class="setting-table">
                             <tbody id="tablecontents">
-                            @if(!empty($data))
+                            @if (!empty($data))
                                 @foreach($data as $key => $faq)
                                 <tr class="row1" data-id="{{ $faq->id }}" style="border-bottom: 1px solid lightgray">
                                     <td>
@@ -39,14 +39,14 @@
             </div>
         </div>
 
-        @elseif($page == 'create' || $page == 'edit')
+        @elseif ($page == 'create' || $page == 'edit')
             <div class="col-md-8">
                 <a href="{{ route($resource.'index') }}" class="btn btn-sm btn-primary">Back</a>
                 <div class="card panel-default" style="margin-top: 10px;">
                     <div class="card-body">
                         <form action="{{ $page == 'edit' ? route($resource.'update', $data->id):route($resource.'store') }}" method="post">
                             @csrf
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 @method('PUT')
                             @endif
 
@@ -73,8 +73,8 @@
                             <div class="form-group">
                                 <label class="control-label" for="status">Status</label>
                                 <select class="form-control @error('status') is-invalid @enderror" name="status" id="status">
-                                    <option value="active" {{ isset($data) && $data->status == 'active' ? 'selected':'' }}>Active</option>
-                                    <option value="inactive" {{ isset($data) && $data->status == 'inactive' ? 'selected':'' }}>Inactive</option>
+                                    <option value="Active" {{ isset($data) && $data->status == 'Active' ? 'selected':'' }}>Active</option>
+                                    <option value="Deactivated" {{ isset($data) && $data->status == 'Deactivated' ? 'selected':'' }}>Deactivated</option>
                                 </select>
                                 @error('answer')
                                     <span class="invalid-feedback" role="alert">
@@ -86,11 +86,11 @@
                             <hr>
                             <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                             <a class="btn btn-default" href="">Cancel</a>
-                            @if($page == 'edit')
+                            @if ($page == 'edit')
                                 <a href="javascript: void(0)" onclick="document.getElementById('deleteFaq').submit();" class="btn btn-default waves-effect pull-right" ><i>Delete</i></a>
                             @endif
                         </form>
-                        @if($page == 'edit')
+                        @if ($page == 'edit')
                         <form id="deleteFaq" action="{{ route($resource.'destroy', $data->id)}}" method="post">
                             @csrf
                             @method('DELETE')
@@ -104,8 +104,9 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script type="text/javascript">
-        @if($page == 'index')
+        @if ($page == 'index')
             $(function () {
             $( "#tablecontents" ).sortable({
                 items: "tr",
@@ -134,9 +135,9 @@
                         _token: '{{csrf_token()}}'
                     },
                     success: function(response) {
-                        if(response.status === 'success'){
+                        if (response.status === 'success'){
                             toastr["success"](response.message);
-                        }else{
+                        } else {
                             toastr["error"](response.message);
                         }
 

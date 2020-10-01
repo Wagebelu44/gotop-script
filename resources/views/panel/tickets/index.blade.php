@@ -36,100 +36,98 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table" id="tickets">
-                                <thead>
-                                <tr>
-                                    <th><input type="checkbox" name="select_all" onchange="checkAllTicket()"></th>
-                                    <th colspan="9" style="display: none">
-                                        <span id="user-no"></span> tickets selected
-                                        <div class="btn-group">
-                                            <button type="button" class="btn custom-dropdown-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Action
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
-                                                   onclick="bulkStatusChange('closed')">Mark as Closed</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
-                                                   onclick="bulkStatusChange('pending')">Mark as Pending</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
-                                                   onclick="bulkStatusChange('answered')">Mark as Answered</a>
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
-                                                   onclick="bulkStatusChange('delete')">Delete</a>
-                                            </div>
+                        <table class="table" id="tickets">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" name="select_all" onchange="checkAllTicket()"></th>
+                                <th colspan="9" style="display: none">
+                                    <span id="user-no"></span> tickets selected
+                                    <div class="btn-group">
+                                        <button type="button" class="btn custom-dropdown-button dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
+                                                onclick="bulkStatusChange('closed')">Mark as Closed</a>
+                                            <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
+                                                onclick="bulkStatusChange('pending')">Mark as Pending</a>
+                                            <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
+                                                onclick="bulkStatusChange('answered')">Mark as Answered</a>
+                                            <a class="dropdown-item type-dropdown-item" href="javascript:void(0)"
+                                                onclick="bulkStatusChange('delete')">Delete</a>
                                         </div>
-                                    </th>
+                                    </div>
+                                </th>
 
-                                    <th>ID</th>
-                                    <th>Subject</th>
-                                    <th>Request</th>
-                                    <th style="width: 30%">Description</th>
-                                    <th width="15%">Client name</th>
-                                    <th width="15%">
-                                        <div class="input-group">
-                                            <div class="input-group-append">
-                                                <button class="btn custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status</button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item type-dropdown-item" href="{{ route('admin.tickets.index') }}">All</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'pending')">Pending</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'answered')">Answered</a>
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'closed')">Resolved</a>
-                                                </div>
-                                                <form class="text-right" id="search-form">
-                                                </form>
+                                <th>ID</th>
+                                <th>Subject</th>
+                                <th>Request</th>
+                                <th style="width: 30%">Description</th>
+                                <th width="15%">Client name</th>
+                                <th width="15%">
+                                    <div class="input-group">
+                                        <div class="input-group-append">
+                                            <button class="btn custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status</button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item type-dropdown-item" href="{{ route('admin.tickets.index') }}">All</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'pending')">Pending</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'answered')">Answered</a>
+                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" onclick="searchTickets('status', 'closed')">Resolved</a>
                                             </div>
+                                            <form class="text-right" id="search-form">
+                                            </form>
                                         </div>
-                                    </th>
-                                    <th>Created at</th>
-                                    <th>Last update</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($tickets as $key => $ticket)
-                                    <tr>
-                                        <td><input type="checkbox" name="tickets[]" value="{{ $ticket->id }}" class="ticket_check" onchange="checkTicket()" {{ $ticket->status == 2 ? 'disabled' : '' }}></td>
-                                        <td>{{ $ticket->id }}</td>
-                                        <td>{{ ucfirst($ticket->subject) }}</td>
-                                        <td>{{ ucfirst($ticket->payment_type) }}</td>
-                                        <td style="width: 30%">
-                                            {!! substr(strip_tags($ticket->description), $limit = 200) !!}
-                                            @if (strlen(strip_tags($ticket->description)) > 200)
-                                                <a href="{{ route('admin.tickets.show', $ticket->id) }}"
-                                                   class="btn btn-link">Read More</a>
-                                            @endif
-                                        </td>
-                                        <td>{{ $ticket->user->name }}</td>
-                                        <td style="width: 10%">
-                                            <p style="background-color: {{isset($colors[$ticket->status])?$colors[$ticket->status]['bg']:"#fff"}}; color:#fff; padding: 0px 5px; text-align:center;"> {{ucfirst($ticket->status)}} </p>
-                                        </td>
-                                        <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->created_at)) }}</td>
-                                        <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->updated_at)) }}</td>
-                                        <td>
-                                            <div class="d-flex">
-                                                <div class="dropdown show goTopDropdown">
-                                                    <a class="btn btn-default dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fa fa-cog"></i>
-                                                    </a>
-                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                        <li class="dropdown-submenu" style="cursor: pointer"><a class="dropdown-item dropdown-toggle type-dropdown-item">Change status</a>
-                                                            <ul class="dropdown-menu">
-                                                                <li><a href="{{route('admin.tickets.status.change', ['status' => 'pending', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Pending</a></li>
-                                                                <li><a  href="{{route('admin.tickets.status.change', ['status' => 'answered', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Answered</a></li>
-                                                                <li><a  href="{{route('admin.tickets.status.change', ['status' => 'closed', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Closed</a></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <a href="{{ route('admin.tickets.show', $ticket->id) }}" class="btn custom-dropdown-button"><i class="fa fa-eye"></i> </a>
+                                    </div>
+                                </th>
+                                <th>Created at</th>
+                                <th>Last update</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($tickets as $key => $ticket)
+                                <tr>
+                                    <td><input type="checkbox" name="tickets[]" value="{{ $ticket->id }}" class="ticket_check" onchange="checkTicket()" {{ $ticket->status == 2 ? 'disabled' : '' }}></td>
+                                    <td>{{ $ticket->id }}</td>
+                                    <td>{{ ucfirst($ticket->subject) }}</td>
+                                    <td>{{ ucfirst($ticket->payment_type) }}</td>
+                                    <td style="width: 30%">
+                                        {!! substr(strip_tags($ticket->description), $limit = 200) !!}
+                                        @if (strlen(strip_tags($ticket->description)) > 200)
+                                            <a href="{{ route('admin.tickets.show', $ticket->id) }}"
+                                                class="btn btn-link">Read More</a>
+                                        @endif
+                                    </td>
+                                    <td>{{ $ticket->user->username }}</td>
+                                    <td style="width: 10%">
+                                        <p style="background-color: {{isset($colors[$ticket->status])?$colors[$ticket->status]['bg']:"#fff"}}; color:#fff; padding: 0px 5px; text-align:center;"> {{ucfirst($ticket->status)}} </p>
+                                    </td>
+                                    <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->created_at)) }}</td>
+                                    <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->updated_at)) }}</td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <div class="dropdown show goTopDropdown">
+                                                <a class="btn btn-default dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-cog"></i>
+                                                </a>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                    <li class="dropdown-submenu" style="cursor: pointer"><a class="dropdown-item dropdown-toggle type-dropdown-item">Change status</a>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="{{route('admin.tickets.status.change', ['status' => 'pending', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Pending</a></li>
+                                                            <li><a  href="{{route('admin.tickets.status.change', ['status' => 'answered', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Answered</a></li>
+                                                            <li><a  href="{{route('admin.tickets.status.change', ['status' => 'closed', 'ticket_id' => $ticket->id ])}}" class="dropdown-item type-dropdown-item">Closed</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
                                             </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                            {{ $tickets->links() }}
-                        </div>
+                                            <a href="{{ route('admin.tickets.show', $ticket->id) }}" class="btn custom-dropdown-button"><i class="fa fa-eye"></i> </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        {{ $tickets->links() }}
                         <!--Ticket add modal-->
                         <div class="modal bs-example-modal-lg" id="ticketAddModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                             <div class="modal-dialog  __modal_dialog_custom">
@@ -161,7 +159,7 @@
                                                                 required data-validation-required-message="This field is required"
                                                                 multiple="multiple">
                                                                 @foreach($users as $key => $user)
-                                                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                                 <option value="{{ $user->id }}">{{ $user->username }}</option>
                                                                 @endforeach
                                                         </select>
                                                         @error('user_id')

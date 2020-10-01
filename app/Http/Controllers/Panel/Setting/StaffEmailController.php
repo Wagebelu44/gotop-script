@@ -34,7 +34,7 @@ class StaffEmailController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Staff Email save successfully');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -49,7 +49,7 @@ class StaffEmailController extends Controller
                     'data'   => $data
                 ], 200);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error',
             ], 500);
@@ -74,7 +74,7 @@ class StaffEmailController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Staff Email update successfully');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }
@@ -88,7 +88,7 @@ class StaffEmailController extends Controller
             }
             $data->delete();
             return redirect()->back()->with('success', 'This email delete successfully !!');
-        }else{
+        } else {
             return view('panel.permission');
         }
     }

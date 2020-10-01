@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Service;
+use App\Models\SettingProvider;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
@@ -47,7 +49,11 @@ class Order extends Model
             'partial' => "#17a2b8",
         ];
         return $colors[$this->status]??'#77B243';
+    }
 
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id');
     }
 
     public function user()
@@ -55,5 +61,8 @@ class Order extends Model
         return $this->belongsTo('App\User');
     }
 
-
+    public function provider()
+    {
+        return $this->belongsTo(SettingProvider::class, 'provider_id');
+    }
 }

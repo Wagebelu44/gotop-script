@@ -1,0 +1,135 @@
+<div class="container-fluid">
+    <style>
+    .filter-active {
+        background-color: blue;
+        color: #fff;
+    }
+    </style>
+    <div class="row">
+        <div class="col-lg-12">
+           {#  <ul class="nav nav-pills {% if site['rtl'] %} rtl-nav {% endif %}">
+                <li {% if 'all' == status %}class="active"{% endif %}><a href="{{ page['url'] }}">All</a></li>
+                <li {% if 'pending' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/pending">Pending</a></li>
+                <li {% if 'inprogress' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/inprogress">Inprogress</a></li>
+                <li {% if 'completed' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/completed">Completed</a></li>
+                <li {% if 'partial' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/partial">Partial</a></li>
+                <li {% if 'processing' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/processing">Processing</a></li>
+                <li {% if 'canceled' == status %}class="active"{% endif %}><a href="{{ page['url'] }}/canceled">Canceled</a></li>
+                <li class="pull-right search">
+                    <form action="{{ page['url'] }}" method="get" id="history-search">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" value="{{ search }}" placeholder="placeholder">
+                            <span class="input-group-btn">
+                <button type="submit" class="btn btn-default"><i class="fa fa-search" aria-hidden="true"></i></button>
+              </span>
+                        </div>
+                    </form>
+                </li>
+            </ul> #}
+   
+            <nav class="nav">
+                <a class="nav-link {% if site['status'] =='all' %} filter-active  {% endif %}" href="{{ site['url'] }}">All</a>
+                <a class="nav-link  {% if site['status'] =='pending' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=pending">Pending</a>
+                <a class="nav-link {% if site['status'] =='Inprogress' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Inprogress">Inprogress</a>
+                <a class="nav-link {% if site['status'] =='Completed' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Completed">Completed</a>
+                <a class="nav-link {% if site['status'] =='Partial' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Partial">Partial</a>
+                <a class="nav-link {% if site['status'] =='Processing' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Processing">Processing</a>
+                <a class="nav-link {% if site['status'] =='Canceled' %} filter-active  {% endif %}" href="{{ site['url'] }}?status=Canceled">Canceled</a>
+            </nav>
+            <div class="card card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>date</th>
+                            <th class="width-40">link</th>
+                            <th>charge</th>
+                            <th class="nowrap">startcount</th>
+                            <th>quantity</th>
+                            <th>service</th>
+                            <th>status</th>
+                            <th>remains</th>
+                            {% if task == 1 %}<th>&nbsp;</th>{% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in site['orderList'] %}
+                            <tr>
+                                <td>{{ order['id'] }}</td>
+                                <td>{{ order['created_at'] }}</td>
+                                <td class="width-40">{{ order['link'] }}</td>
+                                <td>{{ order['charges'] }}</td>
+                                <td class="nowrap">{{ order['start_counter'] }}</td>
+                                <td>{{ order['quantity'] }}</td>
+                                <td>{{ order['service_name'] }}</td>
+                                <td>{{ order['status'] }}</td>
+                                <td>{{ order['remains'] }}</td>
+                                {% if task == 1 %}
+                                    <td>
+                                        <div class="order-actions">
+                                            {% if order['refilling'] == 1 %}
+                                                refilling
+                                            {% else %}
+                                                {% if order['refill'] == 1 %}<a href="{{ page['url'] }}/{{order['id']}}/refill" class="btn btn-xs btn-primary">Refill</a>{% endif %}
+                                                {% if order['cancel'] == 1 %}<a href="{{ page['url'] }}/{{order['id']}}/cancel" class="btn btn-xs btn-default">Cancel</a>{% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% if pagination['count'] > 100 %}
+                {% if searchList %}
+                    {% set params = {} %}
+                    {% for search in searchList %}
+                        {% set params = params | merge([search['name'] ~ '=' ~ search['value']]) %}
+                    {% endfor %}
+                    {% set params = '?' ~ params|join('&') %}
+                {% endif %}
+                <ul class="pagination {% if site['rtl'] %} rtl-pagination {% endif %}">
+                    {% if pagination['current'] != 1 %}<li>
+                        <a href="{{ page['url'] }}/{{ status }}/{{ pagination['last'] }}{{ params }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                        </li>
+                    {% endif %}
+
+                    {% set r, l = 3, 3 %}
+
+                    {% if pagination['current'] == 1 %}
+                        {% set r = 6 %}
+                    {% endif %}
+
+                    {% if pagination['current'] == 2 %}
+                        {% set r = 5 %}
+                    {% endif %}
+
+                    {% if pagination['current'] >= pagination['pages'] %}
+                        {% set l = 5 %}
+                    {% endif %}
+
+                    {# {% for i in 1..ceil(pagination['pages']) %}
+            {% if i >= (pagination['current']-l) and i <= (pagination['current']+r) %}
+              <li{% if i == pagination['current'] %} class="active"{%endif%}><a href="{{ page['url'] }}/{{ status }}/{{i}}{{ params }}">{{i}}</a></li>
+            {%endif%}
+           {% endfor %} #}
+
+                    {% if pagination['current'] < pagination['pages'] %}
+                        <li>
+                            <a href="{{ page['url'] }}/{{ status }}/{{ pagination['next'] }}{{ params }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
