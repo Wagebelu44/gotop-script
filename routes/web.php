@@ -210,6 +210,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     #User child panel
     Route::resource('child-panel', 'Web\ChildPanelController');
+    Route::get('request-payout', 'Web\AffiliateController@payout')->name('request-payout');
 
     Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');
     Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');

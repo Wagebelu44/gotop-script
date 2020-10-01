@@ -119,7 +119,6 @@ class ProviderController extends Controller
         } else {
             return view('panel.permission');
         }
-
     }
 
     public function destroy($id)

@@ -24,7 +24,12 @@ use App\Models\ServiceCategory;
 use App\Models\NewsfeedCategory;
 use App\Http\Controllers\Controller;
 use App\Models\G\GlobalCurrencies;
+use App\Models\UserReferral;
+use App\Models\UserReferralAmount;
+use App\Models\UserReferralPayout;
+use App\Models\UserReferralVisit;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 
@@ -384,8 +389,34 @@ class PageController extends Controller
         } elseif ($page->default_url == 'affiliates') {
             $aff = SettingModule::where('panel_id', $panelId)->where('type', 'affiliate')->first();
             $site['ref_link'] = route('panel.referralLink', Auth::user()->referral_key);
-            $site['commission_rate'] = round($aff->commission_rate);
-            $site['minimum_payout'] = $aff->amount;
+            $site['commission_rate'] = (!empty($aff)) ? round($aff->commission_rate) : '0';
+            $site['minimum_payout'] = (!empty($aff)) ? $aff->amount : '0';
+            $site['url'] = route('request-payout');
+
+            $site['affiliates']['total_visits'] = UserReferralVisit::where('panel_id', $panelId)->where('referral_id', Auth::user()->id)->count();
+
+            $site['affiliates']['unpaid_referrals'] = UserReferral::where('user_referrals.panel_id', $panelId)
+            ->where('user_referrals.referral_id', Auth::user()->id)
+            ->leftJoin(DB::raw("(SELECT user_id FROM transactions WHERE transaction_flag='payment_gateway' AND status='done' GROUP BY user_id) AS A"), 'user_referrals.user_id', '=', 'A.user_id')
+            ->whereNull('A.user_id')
+            ->count('user_referrals.user_id');
+
+            $site['affiliates']['paid_referrals'] = UserReferral::where('user_referrals.panel_id', $panelId)
+            ->where('user_referrals.referral_id', Auth::user()->id)
+            ->join(DB::raw("(SELECT user_id FROM transactions WHERE transaction_flag='payment_gateway' AND status='done' GROUP BY user_id) AS A"), 'user_referrals.user_id', '=', 'A.user_id')
+            ->count('user_referrals.user_id');
+
+            $site['affiliates']['total_earnings'] = UserReferralAmount::where('panel_id', $panelId)->where('referral_id', Auth::user()->id)->sum('amount');
+
+            $site['affiliates']['total_payouts'] = UserReferralPayout::where('panel_id', $panelId)->where('referral_id', Auth::user()->id)->sum('amount');
+
+            $site['affiliates']['unpaid_earnings'] = ($site['affiliates']['total_earnings']-$site['affiliates']['total_payouts']);
+            
+            $site['affiliates']['conversion_rate'] = ($site['affiliates']['total_earnings'] > 0)?numberFormat(($site['affiliates']['total_earnings'] * 100) / $site['affiliates']['total_visits']):0;
+
+            $site['affiliates']['request_payout'] = ($site['affiliates']['unpaid_earnings'] >= $site['minimum_payout']) ? true : false;
+
+            $site['affiliates']['payouts'] = UserReferralPayout::where('panel_id', $panelId)->where('referral_id', Auth::user()->id)->paginate(10);
         }
 
         $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();

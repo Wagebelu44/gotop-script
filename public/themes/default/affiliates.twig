@@ -1,13 +1,15 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
+
             {% if affiliates %}
-                <div class="well well-float {% if site['rtl'] %} rtl-content {% endif %}">
+                <div class="well well-float">
                     {{ affiliates }}
                 </div>
             {% endif %}
+
             <div class="well well-float">
-                <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
+                <table class="table">
                     <thead>
                     <tr>
                         <th>Referral link</th>
@@ -17,17 +19,16 @@
                     </thead>
                     <tbody>
                     <tr>
-                        {% if site['commission_rate'] and site['minimum_payout'] %}
                         <td>{{ site['ref_link'] }}</td>
                         <td>{{ site['commission_rate'] }}%</td>
                         <td>${{ site['minimum_payout'] }}</td>
-                        {% endif %}
                     </tr>
                     </tbody>
                 </table>
             </div>
+
             <div class="well well-float">
-                <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
+                <table class="table">
                     <thead>
                     <tr>
                         <th>Total visits</th>
@@ -36,22 +37,22 @@
                         <th>Conversion rate</th>
                         <th>Total earnings</th>
                         <th>Unpaid earnings</th>
-                        {% if statistics['request_payout'] %}
+                        {% if site['affiliates']['request_payout'] %}
                             <th></th>
                         {% endif %}
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>{{ statistics['total_visits'] }}</td>
-                        <td>{{ statistics['unpaid_referrals'] }}</td>
-                        <td>{{ statistics['paid_referrals'] }}</td>
-                        <td>{{ statistics['conversion_rate'] }}</td>
-                        <td>{{ statistics['total_earnings'] }}</td>
-                        <td>{{ statistics['unpaid_earnings'] }}</td>
-                        {% if statistics['request_payout'] %}
+                        <td>{{ site['affiliates']['total_visits'] }}</td>
+                        <td>{{ site['affiliates']['unpaid_referrals'] }}</td>
+                        <td>{{ site['affiliates']['paid_referrals'] }}</td>
+                        <td>{{ site['affiliates']['conversion_rate'] }}</td>
+                        <td>{{ site['affiliates']['total_earnings'] }}</td>
+                        <td>{{ site['affiliates']['unpaid_earnings'] }}</td>
+                        {% if site['affiliates']['request_payout'] %}
                             <td>
-                                <a href="{{ page['url'] }}/request-payout" class="btn btn-xs btn-default">Request payout</a>
+                                <a href="{{ site['url'] }}" class="btn btn-xs btn-default">Request payout</a>
                             </td>
                         {% endif %}
                     </tr>
@@ -59,68 +60,31 @@
                 </table>
             </div>
 
-            {%  if payments|length %}
+            {%  if site['affiliates']['payouts']|length %}
                 <div class="well well-float">
-                    <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
+                    <table class="table">
                         <thead>
                         <tr>
-                            <th>Payout cdate</th>
+                            <th>Payout date</th>
                             <th>Payout amount</th>
                             <th>Payout status</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for payment in payments %}
+                        {% for payout in site['affiliates']['payouts'] %}
                             <tr>
-                                <td>{{ payment['date'] }}</td>
-                                <td>{{ payment['amount'] }}</td>
-                                <td>{{ payment['status'] }}</td>
+                                <td>{{ payout['date'] }}</td>
+                                <td>{{ payout['amount'] }}</td>
+                                <td>{{ payout['status'] }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            {% endif %}
 
-            {% if pagination['count'] > 100 %}
-                <ul class="pagination {% if site['rtl'] %} rtl-pagination {% endif %}">
-                    {% if pagination['current'] != 1 %}
-                        <li>
-                            <a href="{{ page['url'] }}/{{ status }}/{{ pagination['last'] }}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    {% endif %}
-
-                    {% set r, l = 3, 3 %}
-
-                    {% if pagination['current'] == 1 %}
-                        {% set r = 6 %}
-                    {% endif %}
-
-                    {% if pagination['current'] == 2 %}
-                        {% set r = 5 %}
-                    {% endif %}
-
-                    {% if pagination['current'] >= pagination['pages'] %}
-                        {% set l = 5 %}
-                    {% endif %}
-
-                    {#{% for i in 1..ceil(pagination['pages']) %}
-                        {% if i >= (pagination['current']-l) and i <= (pagination['current']+r) %}
-                            <li{% if i == pagination['current'] %} class="active"{% endif %}><a href="{{ page['url'] }}/{{i}}">{{i}}</a></li>
-                        {% endif %}
-                    {% endfor %}
-                    #}
-
-                    {% if pagination['current'] < pagination['pages'] %}
-                        <li>
-                            <a href="{{ page['url'] }}/{{ status }}/{{ pagination['next'] }}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    {%endif%}
-                </ul>
+                <div class="col-md-12 d-flex justify-content-center">
+                    {{ site['affiliates']['payouts'].links|raw }}
+                </div>
             {% endif %}
         </div>
     </div>

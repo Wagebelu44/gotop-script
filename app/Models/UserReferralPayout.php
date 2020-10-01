@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserReferral extends Model
+class UserReferralPayout extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'user_referrals';
+    protected $table = 'user_referral_amounts';
 
     protected $fillable = [
-        'panel_id', 'referral_id', 'user_id', 'commission_rate', 'minimum_payout', 'status'
+        'panel_id', 'referral_id', 'amount', 'date', 'status'
     ];
 }
