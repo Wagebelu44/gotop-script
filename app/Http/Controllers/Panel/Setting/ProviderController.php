@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel\Setting;
 
 use Exception;
 use App\Http\Controllers\Controller;
+use App\Models\SettingGeneral;
 use App\Models\SettingProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,8 @@ class ProviderController extends Controller
     {
         if (Auth::user()->can('provider setting')) {
             $data = SettingProvider::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'DESC')->get();
-            return view('panel.settings.providers', compact('data'));
+            $setting = SettingGeneral::select('panel_type')->where('panel_id', Auth::user()->panel_id)->first();
+            return view('panel.settings.providers', compact('setting', 'data'));
         } else {
             return view('panel.permission');
         }
@@ -27,6 +29,11 @@ class ProviderController extends Controller
             $this->validate($request, [
                 'domain' => 'required',
             ]);
+
+            $setting = SettingGeneral::select('panel_type')->where('panel_id', Auth::user()->panel_id)->first();
+            if ($setting->panel_type == 'Child') {
+                return redirect()->back()->with('error', "You can Add only your mother provider domain.");
+            }
             
             $storePermission = false;
             if (env('PROJECT') == 'live') {
@@ -95,6 +102,11 @@ class ProviderController extends Controller
                 'domain' => 'required',
             ]);
 
+            $setting = SettingGeneral::select('panel_type', 'main_panel_domain')->where('panel_id', Auth::user()->panel_id)->first();
+            if ($setting->panel_type == 'Child' && $setting->main_panel_domain != $request->domain) {
+                return redirect()->back()->with('error', "You can Edit only your mother provider domain.");
+            }
+
             SettingProvider::find($id)->update([
                 'panel_id'      => Auth::user()->panel_id,
                 'domain'        => $request->domain,
@@ -113,6 +125,11 @@ class ProviderController extends Controller
     public function destroy($id)
     {
         if (Auth::user()->can('provider setting')) {
+            $setting = SettingGeneral::select('panel_type')->where('panel_id', Auth::user()->panel_id)->first();
+            if ($setting->panel_type == 'Child') {
+                return redirect()->back()->with('error', "You can not delete your mother provider domain.");
+            }
+
             $data = SettingProvider::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (empty($data)) {
                 return redirect()->route('admin.setting.provider.index');
