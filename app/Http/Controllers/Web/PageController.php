@@ -87,9 +87,11 @@ class PageController extends Controller
 
         $page['meta_title'] = ($page['meta_title'] != null)? $page['meta_title'] : $setting->panel_name;
         if (isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo)) {
-            $logo = asset('storage/images/setting/'.$setting->logo);
+            $site['logo'] = '<img style="width: 100px;" src="'.asset('storage/images/setting/'.$setting->logo).'">';
+        } elseif ($setting->panel_name != null) {
+            $site['logo'] = $setting->panel_name;
         } else {
-            $logo = isset($setting->panel_name) ? $setting->panel_name:null;
+            $site['logo'] = null;
         }
 
         if (isset($setting->favicon) && file_exists('storage/images/setting/'.$setting->favicon)) {
@@ -104,7 +106,6 @@ class PageController extends Controller
         $site['site_url'] = url('/');
         $site['auth'] = (Auth::check()) ? Auth::user() : false;
         $site['logout_url'] = route('logout');
-        $site['logo'] = $logo;
 
         $site['notifigIcon'] = asset('assets/img/notify.png');
         $site['horizontal_menu'] = (Auth::check()) ? $setting->horizontal_menu : 'Yes';

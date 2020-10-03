@@ -21,7 +21,7 @@
             {% if site['logo'] %}
             <div class="sidebar-header">
                 <a class="navbar-brand" href="{{ site['site_url'] }}">
-                    <img style="width: 100px;" src="{{ site['logo'] }}">
+                    {{ site['logo']|raw }}
                 </a>
             </div>
             {% endif %}
@@ -52,7 +52,7 @@
             {% if site['horizontal_menu'] == 'Yes' %}
                 {% if site['logo'] %}
                     <a class="navbar-brand" href="{{ site['site_url'] }}">
-                        <img style="width: 100px;" src="{{ site['logo'] }}">
+                        {{ site['logo']|raw }}
                     </a>
                 {% endif %}
             {% endif %}
