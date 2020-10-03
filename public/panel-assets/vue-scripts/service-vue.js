@@ -3,7 +3,7 @@ const capitalize = (s) => {
     return s.charAt(0).toUpperCase() + s.slice(1)
 }
 Vue.component('v-select', VueSelect.VueSelect);
-const App = new Vue({
+const ServiceApp = new Vue({
     el: '#serviceApp',
     data: {
         options: [ {country: 'atik', code: 1}, {country: 'sudip', code: 2},],
@@ -230,7 +230,10 @@ const App = new Vue({
         'services.form_fields.provider_id': {
             handler: function(oldval,newval)
             {
-                this.getProviderServices(oldval);
+                if (oldval!==null) {
+                    
+                    this.getProviderServices(oldval);
+                }
             },
             deep: true,
         },
@@ -238,7 +241,10 @@ const App = new Vue({
             
             handler: function(oldval,newval)
             {
-                this.changeSelected();
+                if (oldval!==null) {
+                    
+                    this.changeSelected();
+                }
             },
             deep: true,
         },
@@ -564,6 +570,7 @@ const App = new Vue({
                         }
                         else
                         {
+                            this.service_modal = false;
                             $('#serviceAddModal').modal('hide');
                         }
                         if (isEdit) 
@@ -1014,14 +1021,6 @@ const App = new Vue({
             });
             if (this.provider_service_selected !== null) {
                 this.services.visibility.drip_feed = true;
-                /* if (this.provider_service_selected.dripfeed === true) {
-                    this.services.visibility.drip_feed = true;
-                }
-                else
-                {
-                    this.services.visibility.drip_feed = false;
-                } */
-
                 this.services.form_fields.price = this.provider_service_selected.rate;
                 this.services.form_fields.price_original = this.provider_service_selected.rate;
 
@@ -1067,19 +1066,6 @@ const App = new Vue({
                 this.formReset();
             }
         },
-        serviceModalToggle() {
-            
-            if (!this.service_modal) {
-                $("#serviceAddModal").modal('show');
-                this.service_modal = true;
-            }
-            else
-            {
-                $("#serviceAddModal").modal('hide');
-                this.service_modal = false;
-                this.formReset();
-            }
-        },
         formReset() {
             this.services = {
                 visibility: {
@@ -1104,8 +1090,8 @@ const App = new Vue({
                     provider_id: null,
                     provider_service_id: null,
                     service_type: null,
-                    drip_feed_status: null,
-                    refill_status: null,
+                    drip_feed_status: 'Allow',
+                    refill_status: 'Allow',
                     short_name: '',
                     price: null,
                     price_original: null,
@@ -1133,6 +1119,8 @@ const App = new Vue({
                     provider_service_not_found: '',
                 }
             }
+        this.service_mode =  'Auto';
+        this.manipulateInputs();
         },
         closeServiceForm() {
             $("#serviceModal").modal('hide');

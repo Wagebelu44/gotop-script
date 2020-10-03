@@ -803,7 +803,7 @@
                             </div>
                             <div class="__control_panel">
                                 <div class="__left_control_panel">
-                                    <button class="btn btn-outline-secondary"  type="button" @click="serviceModalToggle">Add Service</button>
+                                    <button class="btn btn-outline-secondary"  type="button" data-toggle="modal" data-target="#serviceAddModal">Add Service</button>
                                     <button class="btn btn-outline-secondary" type="button" @click="openSubscriptionModal()">Add Subscription</button>
                                     <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModalCenter">Create Category</button>
                                     <div v-if="service_checkbox.length >0" class="d-inline service-checkbox-action">
@@ -994,5 +994,10 @@
     </script>
     <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
-    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js')}}"></script>
+    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.4')}}"></script>
+    <script>
+        $('#serviceAddModal').on('hidden.bs.modal', function () {
+            ServiceApp.formReset();
+        });
+    </script>
 @endsection
