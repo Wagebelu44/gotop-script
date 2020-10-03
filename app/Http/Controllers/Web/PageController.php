@@ -55,7 +55,12 @@ class PageController extends Controller
 
         // If without authentication hit authentic url...
         if ($page->menu->menu_link_type == 'No' && Auth::check() == false) {
-            abort(404);
+            return $this->page($request, 'sign-in');
+        }
+
+        // If after authentication hit un authentic url...
+        if ($page->menu->menu_link_type == 'Yes' && Auth::check() == true) {
+            return redirect('new-order');
         }
 
         //Menu data fetch...
