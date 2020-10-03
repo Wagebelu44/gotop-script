@@ -19,6 +19,10 @@
         margin-left: .1rem;
         margin-right: .1rem;
     }
+    .unseenOrder{
+        border: 1px solid green !important;
+        background: #0080000f;
+    }
 </style>
     <div class="container-fluid all-mt-30" id="order_module">
         <div class="row">
@@ -189,7 +193,10 @@
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/order-vue.js')}}"></script>
+<script>
+    let adminSeenRoute  = '{{ route("make.order.lists.seen") }}';
+</script>
+<script src="{{asset('/panel-assets/vue-scripts/order-vue.js?var=0.1')}}"></script>
 <script>
     setTimeout(function () {
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {

@@ -18,6 +18,14 @@ class OrderController extends Controller
     {
         return view('panel.orders.index');
     }
+    public function makeOrderUnseen(Request $request)
+    {
+        Order::where('panel_id', auth()->user()->panel_id)->where('admin_seen', 'Unseen')
+        ->update([
+            'admin_seen' => 'Seen'
+        ]);
+        return response()->json(['status'=>true], 200);
+    }
 
     public function getSubscription()
     {
@@ -379,5 +387,11 @@ class OrderController extends Controller
             'order_mode_count' => $order_mode,
         ];
         return response()->json($data, 200);
+    }
+
+    // seamless functions
+    public function getUnseenOrderCount()
+    {
+       return Order::where('panel_id', auth()->user()->panel_id)->where('admin_seen', 'Unseen')->count();
     }
 }

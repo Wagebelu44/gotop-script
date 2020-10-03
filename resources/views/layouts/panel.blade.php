@@ -55,7 +55,12 @@
 
                         <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':''}} {{  Request::routeIs('admin.exported_orders*') ? 'selected':'' }} ">
                             <a class="sidebar-link {{ Request::routeIs('admin.orders*') ? 'active':'' }}" href="{{ route('admin.orders.index') }}">
-                                <span class="hide-menu">Orders</span>
+                                <span class="hide-menu mr-1">Orders
+
+                                    <span style="background: rgba(255,255,255,0%);">
+                                        <span class="badge badge-danger d-inline-block" id="unread_order_counter"
+                                          style="background: #77b243;"> <b>0</b></span>
+                                </span>
                             </a>
                         </li>
 
@@ -96,9 +101,6 @@
                                       <span class="badge badge-danger d-block" id="unread_ticket_counter"
                                         style="background: #77b243;"> <b>0</b></span>
                                 </span>
-                                {{-- <span class="hide-menu">Tickets
-                                    
-                                    <span class="badge badge-danger">( 150 )</span> </span> --}}
                             </a>
                         </li>
 
@@ -204,16 +206,17 @@
         // update ticket info
         function getInfo()
         {
-            fetch('{{ route("ticket.unread.count") }}')
+            fetch('{{ route("header.unread.count") }}')
             .then(res=>res.json())
             .then(res=>{
-                $('#unread_ticket_counter b').html(res.data);
+                $('#unread_ticket_counter b').html(res.tickets);
+                $('#unread_order_counter b').html(res.orders);
             });
         }
         getInfo();
         setInterval(()=>{
             getInfo();
-        }, 1000);
+        }, 1000 * 5 * 60);
     </script>
     @yield('scripts')
     

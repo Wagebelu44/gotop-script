@@ -16,7 +16,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     Route::group(['prefix' => 'admin'], function () {
         // hader file information
-        Route::get('/header-information', 'Panel\DashboardController@getTicketCount')->name('ticket.unread.count');
+        Route::get('/header-information', 'Panel\DashboardController@getHeaderCountData')->name('header.unread.count');
+        Route::get('make-order-unseen', 'Panel\OrderController@makeOrderUnseen')->name('make.order.lists.seen');
         // Authentication Routes...
         Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
         Route::post('/login', 'Panel\Auth\LoginController@login')->name('panel.login.action');

@@ -88,7 +88,7 @@
           </tr>
        </thead>
        <tbody>
-          <tr v-for="(o,i) in orders">
+          <tr v-for="(o,i) in orders" :class="{ unseenOrder: o.admin_seen === 'Unseen'}">
              <td>
                 <input type="checkbox" name="order_checkbox" class="order_checkbox" v-model="order_checkbox" :value="o.id" />
              </td>
