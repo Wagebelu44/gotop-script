@@ -11,16 +11,15 @@ class TicketNotification extends Notification
 {
     use Queueable;
 
-    private $comment;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($comment)
+    public function __construct()
     {
-        $this->comment = $comment;
+        
     }
 
     /**

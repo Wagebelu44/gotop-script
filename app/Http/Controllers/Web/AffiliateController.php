@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\User;
 use Exception;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Http;
 use App\Models\Transaction;
-use App\Models\UserChildPanel;
+use Illuminate\Http\Request;
 use App\Models\SettingModule;
+use App\Models\UserChildPanel;
+use App\Mail\ManualPayoutPlaced;
 use App\Models\UserReferralAmount;
 use App\Models\UserReferralPayout;
-use App\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class AffiliateController extends Controller
 {
@@ -63,6 +65,15 @@ class AffiliateController extends Controller
                 }
 
                 //Payout mail...
+                $staffmails = staffEmails('new_manual_payout', auth()->user()->panel_id);
+                if (count($staffmails)>0) {
+                    $notification =  $notification = notification('New manual payout', 2, auth()->user()->panel_id);
+                    if ($notification) {
+                        if ($notification->status =='Active') {
+                            Mail::to($staffmails)->send(new ManualPayoutPlaced($notification));
+                        }
+                    }
+                }
 
                 return redirect()->back()->with('success', 'Affiliate payout amount request sent to admin. Please wait for admin approval.');
             }

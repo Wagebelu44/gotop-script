@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Web;
 use App\User;
 use App\Models\Order;
 use App\Models\Service;
+use App\Mail\FailedOrders;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\DripFeedOrders;
+use App\Mail\ManualOrderPlaced;
 use App\Models\ProviderService;
 use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
 use App\Models\DripFeedOrderLists;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -197,6 +200,17 @@ class OrderController extends Controller
             \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
             if (isset($make_order))
             {
+                if ( strtolower($make_order->mode)  == 'manual') {
+                    $staffmails = staffEmails('new_manual_orders', auth()->user()->panel_id);
+                    if (count($staffmails)>0) {
+                        $notification =  $notification = notification('New manual orders', 2, auth()->user()->panel_id);
+                        if ($notification) {
+                            if ($notification->status =='Active') {
+                                Mail::to($staffmails)->send(new ManualOrderPlaced($notification, $make_order));
+                            }
+                        }
+                    }
+                }
                 if (!(isset($data['drip_feed']) && $data['drip_feed']=='on'))
                 {
 
@@ -334,6 +348,15 @@ class OrderController extends Controller
                     else
                     {
                         $make_order->status =  "failed";
+                        $staffmails = staffEmails('fail_orders', auth()->user()->panel_id);
+                        if (count($staffmails)>0) {
+                            $notification =  $notification = notification('Fail orders', 2, auth()->user()->panel_id);
+                            if ($notification) {
+                                if ($notification->status =='Active') {
+                                    Mail::to($staffmails)->send(new FailedOrders($notification, $make_order));
+                                }
+                            }
+                        }
                     }
                     $make_order->save();
                 }

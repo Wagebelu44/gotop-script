@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\Ticket;
+use App\Mail\SupportTicket;
 use Illuminate\Http\Request;
 use App\Models\TicketComment;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use App\Notifications\TicketNotification;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification;
 
 class TicketController extends Controller
 {
@@ -57,11 +61,11 @@ class TicketController extends Controller
             ]);
 
             if ($s_tickets) {
-                //Mail::to("thesocialmediagrowthh@gmail.com")->send(new SupportTickets($s_tickets));
-                //Notification::send(auth()->user(),  new SupportTicketCreated);
-                /* if (count(Mail::failures()) > 0){
-                    $errors = 'Failed to send password reset email, please try again.';
-                } */
+                $staffmails = staffEmails('new_messages', auth()->user()->panel_id);
+                if (count($staffmails)>0) {
+                    Mail::to($staffmails)->send(new SupportTicket($s_tickets));
+                    Notification::send(auth()->user(),  new TicketNotification);
+                }
                 return redirect()->back()->with('success', 'Ticket has been created successfully');
             } else {
                 return redirect()->back()->with('error', 'There is an error');
