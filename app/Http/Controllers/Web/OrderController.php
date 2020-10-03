@@ -8,11 +8,13 @@ use App\Models\Service;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\DripFeedOrders;
+use App\Mail\ManualOrderPlaced;
 use App\Models\ProviderService;
 use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
 use App\Models\DripFeedOrderLists;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
@@ -197,6 +199,14 @@ class OrderController extends Controller
             \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
             if (isset($make_order))
             {
+                if ( strtolower($make_order->mode)  == 'manual') {
+                    $staffmails = staffEmails('new_manual_orders', auth()->user()->panel_id);
+                    if (count($staffmails)>0) {
+                        
+                        $notification =  $notification = notification('New manual orders', 2, auth()->user()->panel_id);
+                        Mail::to($staffmails)->send(new ManualOrderPlaced($notification, $make_order));
+                    }
+                }
                 if (!(isset($data['drip_feed']) && $data['drip_feed']=='on'))
                 {
 
