@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Panel;
 
-use App\Http\Controllers\Controller;
-use App\Mail\TicketRepliedMail;
-use App\Models\Ticket;
-use App\Models\TicketComment;
-use App\Notifications\TicketNotification;
 use App\User;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
+use App\Models\TicketComment;
+use App\Mail\TicketRepliedMail;
+use App\Http\Controllers\Controller;
+use App\Mail\AdminSendSupportTicket;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\TicketNotification;
 use Illuminate\Support\Facades\Notification;
 
 class TicketController extends Controller
@@ -66,6 +67,7 @@ class TicketController extends Controller
             }
 
             $ticketsData = [];
+            $allmailable_user = [];
             foreach ($request->user_id as $key => $user_id) {
                 $ticketsData[] = [
                     'panel_id'       => Auth::user()->panel_id,
@@ -79,9 +81,22 @@ class TicketController extends Controller
                     'status'         => 'pending',
                     'created_by'     => Auth::user()->id,
                 ];
+                $allmailable_user[] = $user_id;
             }
 
             $tickets = Ticket::insert($ticketsData);
+
+            $signle_user = User::find($allmailable_user);
+            foreach ($signle_user as $d) 
+            {
+                foreach ($ticketsData as &$ticket) {
+                     if ($d->id == $ticket['user_id']) 
+                     {
+                        $ticket['username'] = $d->username;
+                        Mail::to($d)->send(new AdminSendSupportTicket($ticket));
+                     }
+                }
+            }
             if ($tickets) {
                 return redirect()->back()->with('success', 'Ticket has been sent');
             } else {
