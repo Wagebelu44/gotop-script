@@ -12,6 +12,6 @@ class UserReferralAmount extends Model
     protected $table = 'user_referral_amounts';
 
     protected $fillable = [
-        'panel_id', 'referral_id', 'user_id', 'amount'
+        'panel_id', 'referral_id', 'user_id', 'fund_amount', 'amount'
     ];
 }

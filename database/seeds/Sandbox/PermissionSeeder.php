@@ -96,6 +96,10 @@ class PermissionSeeder extends Seeder
                 'see affiliate payouts',
                 'approve or reject affiliate payout'
             ],
+            'child-panels' => [
+                'see child-panels',
+                'cancel and refund child-panels'
+            ],
             'report' => [
                 'payment report',
                 'order report',

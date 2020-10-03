@@ -159,8 +159,6 @@ class UserController extends Controller
         //
     }
 
-
-
     public function updatePassword(Request $request)
     {
         $credentials = $request->only('user_id', 'password', 'password_confirmation');
@@ -183,7 +181,6 @@ class UserController extends Controller
         }
     }
 
-
     /* service custom price */
     public function getCategoryService()
     {
@@ -191,11 +188,13 @@ class UserController extends Controller
             $q->where('status', 'Active');
         }])->where('status', 'Active')->orderBy('id', 'ASC')->get();
     }
+
     public function getUserServices($user_id)
     {
         $user = User::find($user_id);
         return $user->servicesList()->get();
     }
+
     public function serviceUpdate(Request $request)
     {
 
@@ -223,6 +222,7 @@ class UserController extends Controller
             return response()->json(['status' => false, 'data'=> $e->getMessage()], 401);
         }
     }
+
     public function deleteUsersService(Request $request)
     {
         $request->validate([
@@ -260,25 +260,13 @@ class UserController extends Controller
         }
         return response()->json(['status' => true, 'data'=> 'Bulk users update'], 200);
     }
-
-       /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
+    
     public function export()
     {
         $exported_users = ExportedUser::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
-  
         return view('panel.users.user_export', compact('exported_users'));
     }
-
-    /**
-     * Export users.
-     *
-     * @param \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+    
     public function exportUsers(Request $request)
     {
         // Validate form data
@@ -303,13 +291,7 @@ class UserController extends Controller
             return redirect()->back()->withError($e->getMessage());
         }
     }
-
-    /**
-     * Download exported users.
-     *
-     * @param \App\ExportedUser $exportedUser
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-     */
+    
     public function downloadExportedUser(ExportedUser $exportedUser)
     {
         try {

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\G\GlobalPaymentMethod;
 use App\Models\SettingBonuse;
 use Illuminate\Http\Request;
-use Validator;
 use Illuminate\Support\Facades\Auth;
 
 class BonusesController extends Controller

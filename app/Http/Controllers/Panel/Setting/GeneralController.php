@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\MediaController;
 use App\Models\SettingGeneral;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Validator;
-use Image;
 use Illuminate\Support\Facades\Auth;
 
 class GeneralController extends Controller

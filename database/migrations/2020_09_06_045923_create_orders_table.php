@@ -42,6 +42,7 @@ class CreateOrdersTable extends Migration
             $table->string('refill_status')->default(0);
             $table->enum('refill_order_status', ['success', 'processing', 'pending', 'rejected', 'cancelled', 'error'])->nullable();
             $table->enum('status', ['awaiting', 'processing', 'inprogress', 'completed', 'pending', 'partial', 'cancelled', 'failed', 'error'])->nullable();
+            $table->enum('admin_seen', ['Seen', 'Unseen'])->default('Seen');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();

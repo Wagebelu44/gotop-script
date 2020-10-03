@@ -19,6 +19,7 @@ class CreateUserReferralPayoutsTable extends Migration
             $table->unsignedBigInteger('referral_id');
             $table->unsignedTinyInteger('amount');
             $table->date('date');
+            $table->enum('mode', ['Auto', 'Manual']);
             $table->enum('status', ['Pending', 'Approved', 'Canceled'])->default('Pending');
             $table->timestamps();
             $table->softDeletes();
