@@ -7,8 +7,10 @@ use GuzzleHttp\Client;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
+use App\Mail\ManualOrderPlaced;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -94,6 +96,16 @@ class PayPalController extends Controller
                             'reseller_payment_methods_setting_id' =>  $this->payment_method_id,
                             'reseller_id' => 1,
                         ]);
+
+                        $staffmails = staffEmails('payment_received', auth()->user()->panel_id);
+                        if (count($staffmails)>0) {
+                            $notification =  $notification = notification('Payment received', 2, auth()->user()->panel_id);
+                            if ($notification) {
+                                if ($notification->status =='Active') {
+                                    Mail::to($staffmails)->send(new ManualOrderPlaced($log, $notification));
+                                }
+                            }
+                        }
                         $params = [
                             'cmd' => '_xclick',
                             'business' => $this->paypal_email,

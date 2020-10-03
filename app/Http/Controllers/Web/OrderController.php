@@ -202,9 +202,12 @@ class OrderController extends Controller
                 if ( strtolower($make_order->mode)  == 'manual') {
                     $staffmails = staffEmails('new_manual_orders', auth()->user()->panel_id);
                     if (count($staffmails)>0) {
-                        
                         $notification =  $notification = notification('New manual orders', 2, auth()->user()->panel_id);
-                        Mail::to($staffmails)->send(new ManualOrderPlaced($notification, $make_order));
+                        if ($notification) {
+                            if ($notification->status =='Active') {
+                                Mail::to($staffmails)->send(new ManualOrderPlaced($notification, $make_order));
+                            }
+                        }
                     }
                 }
                 if (!(isset($data['drip_feed']) && $data['drip_feed']=='on'))
