@@ -36,7 +36,7 @@ class AffiliateController extends Controller
                 'mode' => $affiliate->approve_payout,
                 'status' => ($affiliate->approve_payout == 'auto') ? 'Approved' : 'Pending',
             ]);
-            
+
             if ($payout) {
                 if ($affiliate->approve_payout == 'auto') {
                     $transaction = Transaction::create([
@@ -61,6 +61,8 @@ class AffiliateController extends Controller
                     }
                     return redirect()->back()->with('success', "Affiliate payout amount request sent to admin. Please wait for admin approval!");                
                 }
+
+                //Payout mail...
 
                 return redirect()->back()->with('success', 'Affiliate payout amount request sent to admin. Please wait for admin approval.');
             }
