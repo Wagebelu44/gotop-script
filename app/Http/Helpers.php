@@ -390,4 +390,11 @@ if ( ! function_exists('apiAddOrder')) {
     }
 }
 
+if (! function_exists('notification')) {
+    function notification($title, $type, $panel_id)
+    {
+        return \App\Models\SettingNotification::where(['title' => $title, 'type' => $type, 'panel_id' => $panel_id])->first();
+    }
+}
+
 

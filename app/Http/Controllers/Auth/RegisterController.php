@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use App\Providers\RouteServiceProvider;
+use App\User;
+use App\Models\Transaction;
 use Illuminate\Support\Str;
+use App\Mail\UserRegistered;
+use App\Models\UserReferral;
+use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Models\SettingModule;
-use App\Models\Transaction;
 use App\Models\UserPaymentMethod;
-use App\Models\UserReferral;
 use App\Models\UserReferralVisit;
-use App\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cookie;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
 {
@@ -88,6 +90,12 @@ class RegisterController extends Controller
         if ($user) {
             activity()->disableLogging();
 
+            $notification =  $notification = notification('Welcome', 1, $panelId);
+            if ($notification) {
+                if ($notification->status =='Active') {
+                    Mail::to($user->email)->send(new UserRegistered($user, $notification));
+                }
+            }
             //Set user payment Method...
             $paymentMethods = PaymentMethod::where('panel_id', $panelId)->where('new_user_status', 'Active')->get();
             if (!empty($paymentMethods)) {
