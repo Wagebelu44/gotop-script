@@ -195,6 +195,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
     <script>
+        toastr.options.timeOut = 500;
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');
         @elseif (session('error'))

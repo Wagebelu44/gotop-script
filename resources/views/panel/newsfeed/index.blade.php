@@ -36,7 +36,7 @@
                                         </td>
                                         <td>{{ $newfeed->created_at }}</td>
                                         <td>{{ $newfeed->status }}</td>
-                                        <td class="p-r text-right">
+                                        <td class="p-r text-center">
                                             <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $newfeed->id) }}">Edit</a>
                                         </td>
                                     </tr>

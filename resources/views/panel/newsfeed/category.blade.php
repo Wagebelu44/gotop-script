@@ -33,7 +33,7 @@
                                     <td>{{ $category->name }}</td>
                                     <td><span class="badge" style="background-color: {{ $category->color }}">&nbsp;&nbsp;&nbsp;</span></td>
                                     <td>{{ $category->status }}</td>
-                                    <td class="p-r text-right">
+                                    <td class="p-r text-center">
                                         <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $category->id) }}">Edit</a>
                                     </td>
                                 </tr>

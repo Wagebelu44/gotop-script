@@ -33,7 +33,7 @@
                                 <td>{{ $provider->api_key }}</td>
                                 <td>{{ $provider->api_url }}</td>
                                 <td>{{ $provider->status }}</td>
-                                <td class="p-r text-right">
+                                <td class="p-r text-center">
                                     <button data-url="{{ route($resource.'edit', $provider->id) }}" data-id="{!! $provider->id !!}" class="edit btn btn-default m-t-20">
                                         Edit
                                     </button>

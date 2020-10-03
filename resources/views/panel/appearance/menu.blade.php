@@ -25,7 +25,7 @@
                                                         </div>
                                                         <a href="{{ url($public_menu->page->url) }}" target="_blank">{{ $public_menu->menu_name }}</a>
                                                     </td>
-                                                    <td class="p-r text-right">
+                                                    <td class="p-r text-center">
                                                         <button data-url="{{ route('admin.appearance.menu.edit', $public_menu->id) }}" data-id="{!! $public_menu->id !!}" class="edit btn btn-default m-t-20">
                                                             Edit
                                                         </button>
@@ -57,7 +57,7 @@
                                                         </div>
                                                         <a href="{{ url($menu->page->url) }}" target="_blank">{{ $menu->menu_name }}</a>
                                                     </td>
-                                                    <td class="p-r text-right">
+                                                    <td class="p-r text-center">
                                                         <button data-url="{{ route('admin.appearance.menu.edit', $menu->id) }}" data-id="{!! $menu->id !!}" class="edit btn btn-default m-t-20">
                                                             Edit
                                                         </button>

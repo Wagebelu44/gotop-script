@@ -41,7 +41,7 @@
                                             </td>
                                             <td>{{ $info->public }}</td>
                                             <td>{{ $info->created_at }}</td>
-                                            <td class="p-r text-right">
+                                            <td class="p-r text-center">
                                                 <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $info->id) }}">Edit</a>
                                             </td>
                                         </tr>
