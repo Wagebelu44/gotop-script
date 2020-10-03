@@ -7,7 +7,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row pb-3">
                             <div class="col-md-4">
                                 <div class="settings-menu-title">Public</div>
                                 <div class="settings-menu-description">Shown for any visitors</div>
@@ -36,15 +36,17 @@
                                     @endif
                                     </tbody>
                                 </table>
+
+                                <a href="javascript:void(0)" onclick="addMenuItem(1)" class="btn btn-default m-b add-modal-menu">Add menu item</a>
                             </div>
                         </div>
+
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="settings-menu-title">Signed</div>
                                 <div class="settings-menu-description">Available for signed in users</div>
                             </div>
                             <div class="col-md-8">
-                                <a href="javascript:void(0)" onclick="addMenuItem(1)" class="btn btn-default m-b add-modal-menu">Add menu item</a>
                                 <table class="table table-bordered" style="margin-top: 10px;">
                                     <tbody class="tablecontents" id="signed_menu">
                                     @if (!empty($menus))
