@@ -94,15 +94,16 @@ function affiliateStatus(id, status) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('admin.affiliates.payout-status') }}",
-                data: { 'user_id': id, 'status': status },
+                data: { 'id': id, 'status': status },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function( res ) {
                     if (res.status) {
-                        window.location.reload();
+                        toastr["success"](res.message);
+                        setTimeout(function(){ window.location.reload(); }, 2000);
                     } else {
-                        toastr["error"](res.errors);                        
+                        toastr["error"](res.errors);
                     }
                 }
             });
