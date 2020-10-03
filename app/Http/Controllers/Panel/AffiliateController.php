@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Panel;
 
-use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use App\Models\UserChildPanel;
 use App\Models\Transaction;
+use App\Models\UserReferral;
+use App\Models\UserReferralPayout;
 use App\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 class AffiliateController extends Controller
@@ -31,81 +31,116 @@ class AffiliateController extends Controller
             
             ->leftJoin(DB::raw("(SELECT X.referral_id, COUNT(X.id) AS paid_referrals FROM user_referrals AS X INNER JOIN(SELECT user_id FROM transactions WHERE transaction_flag='payment_gateway' AND status='done' GROUP BY user_id) AS Y ON X.user_id=Y.user_id WHERE X.panel_id=$panelId GROUP BY X.referral_id) AS E"), 'users.id', '=', 'E.referral_id');
 
-            if (isset($request->status)) {
-                $status = $request->status;
-                $sql->where('status', $request->status);
+            if (isset($request->q)) {
+                $sql->where('users.id', $request->q);
+                $sql->orWhere('users.username', $request->q);
             }
             
-            $affiliates = $sql->orderBy('users.id', 'DESC')->get();
+            $affiliates = $sql->orderBy('users.id', 'DESC')->paginate(50);
             return view('panel.affiliate.affiliate', compact('affiliates'));
         } else {
             return view('panel.permission');
         }
     }
 
-    public function cancelAndRefund($childId)
+    public function affiliateStatus(Request $request)
     {
-        if (Auth::user()->can('cancel and refund child-panels')) {
-            $child = UserChildPanel::find($childId);
-            $child->update(['status' => 'Canceled']);
+        if (Auth::user()->can('change affiliate status')) {
+            $credentials = $request->only('user_id', 'affiliate_status');
+            $rules = [
+                'user_id'           => 'required',
+                'affiliate_status'  => 'required|string',
+            ];
+            $validator = Validator::make($credentials, $rules);
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'errors'=> implode(", " , $validator->messages()->all())], 200);
+            }
 
-            if ($child) {
-                $panelCreate = false;
-                if (env('PROJECT') == 'live') {
-                    try {
-                        $response = Http::post(env('PROJECT_LIVE_URL').'/api/child-panel-canceled', [
-                            'child' => $child->toArray(),
-                            'token' => env('PANLE_REQUEST_TOKEN'),
-                        ]);
-
-                        if ($response->ok()) {
-                            if ($response->successful()) {
-                                $data = json_decode($response->body());
-                                if ($data->success) {
-                                    $panelCreate = true;
-                                } else {
-                                    return redirect()->back()->with('error', "Child panel cancelling failed for server error!");
-                                }
-                            } else {
-                                return redirect()->back()->with('error', "Child panel cancelling failed for server error!");
-                            }
-                        } else {
-                            return redirect()->back()->with('error', "Child panel cancelling failed for server error!");
-                        }
-                    } catch(Exception $e) {
-                        return redirect()->back()->with('error', "Child panel cancelling failed for server error!");
-                    }
-                } else {
-                    $panelCreate = true;
-                }
-
-                if ($panelCreate) {
-                    $transaction = Transaction::create([
-                        'panel_id' => Auth::user()->panel_id,
-                        'transaction_type' => 'deposit',
-                        'amount' => $child->price,
-                        'transaction_flag' => 'child_panel',
-                        'user_id' => Auth::user()->id,
-                        'admin_id' => null,
-                        'status' => 'done',
-                        'memo' => 'Child panel cancel refund',
-                        'fraud_risk' => null,
-                        'payment_gateway_response' => null,
-                        'reseller_payment_methods_setting_id' => 0,
-                    ]);
-                    if ($transaction) {
-                        $user = User::find($child->user_id);
-                        $user->balance = $user->balance + $child->price;
-                        $user->save();
-        
-                        return redirect()->back()->with('success', 'Child panel cancelled successfully.');
-                    } else {
-                        return redirect()->back()->with('error', "Child panel canceled successfully. But payment not deposited. Please contact with admin!");
-                    }
-                }
+            try {
+                User::where('panel_id', Auth::user()->panel_id)->where('id', $request->user_id)->update([
+                    'affiliate_status' => $request->affiliate_status
+                ]);
+                return response()->json(['status' => true], 200);
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
             }
         } else {
+            return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
+        }
+    }
+
+    public function referrals(Request $request)
+    {
+        if (Auth::user()->can('see affiliate referrals')) {
+            $panelId = Auth::user()->panel_id;
+
+            $sql = UserReferral::select('user_referrals.user_id', 'user_referrals.referral_id', 'A.commissions', 'A.payments')->with(['referral', 'user'])->where('panel_id', Auth::user()->panel_id)
+
+            ->leftJoin(DB::raw("(SELECT user_id, SUM(fund_amount) AS payments, SUM(amount) AS commissions FROM user_referral_amounts WHERE panel_id=$panelId GROUP BY user_id) AS A"), 'user_referrals.user_id', '=', 'A.user_id');
+
+            if (isset($request->q)) {
+                $sql->where('user_referrals.user_id', $request->q)
+                ->orWhereHas('referral', function($q) use($request) {
+                    $q->where('username', $request->q);
+                })
+                ->orWhereHas('user', function($q) use($request) {
+                    $q->where('username', $request->q);
+                });
+            }
+            $referrals = $sql->orderBy('user_referrals.id', 'DESC')->paginate(50);
+
+            return view('panel.affiliate.referral', compact('referrals'));
+        } else {
             return view('panel.permission');
+        }
+    }
+
+    public function payouts(Request $request)
+    {
+        if (Auth::user()->can('see affiliate payouts')) {
+            $panelId = Auth::user()->panel_id;
+
+            $sql = UserReferralPayout::with(['referral'])->where('panel_id', Auth::user()->panel_id);
+
+            if (isset($request->q)) {
+                $sql->where('user_id', $request->q)
+                ->orWhereHas('referral', function($q) use($request) {
+                    $q->where('username', $request->q);
+                });
+            }
+            $payouts = $sql->orderBy('id', 'DESC')->paginate(50);
+
+            return view('panel.affiliate.payout', compact('payouts'));
+        } else {
+            return view('panel.permission');
+        }
+    }
+
+    public function affiliatePayout(Request $request)
+    {
+        if (Auth::user()->can('approve or reject affiliate payout')) {
+            $credentials = $request->only('user_id', 'status');
+            $rules = [
+                'user_id'           => 'required',
+                'status'  => 'required|string',
+            ];
+            $validator = Validator::make($credentials, $rules);
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'errors'=> implode(", " , $validator->messages()->all())], 200);
+            }
+
+            try {
+                $payout = UserReferralPayout::find();
+
+                User::where('panel_id', Auth::user()->panel_id)->where('id', $request->user_id)->update([
+                    'status' => $request->status
+                ]);
+                return response()->json(['status' => true], 200);
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
+            }
+        } else {
+            return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
 }

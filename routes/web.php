@@ -123,8 +123,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             
             Route::group(['prefix' => 'affiliates', 'as' => 'affiliates.'], function () {
                 Route::get('/', 'Panel\AffiliateController@index')->name('index');
+                Route::post('affiliate-status', 'Panel\AffiliateController@affiliateStatus')->name('status');
                 Route::get('referrals', 'Panel\AffiliateController@referrals')->name('referrals');
                 Route::get('payouts', 'Panel\AffiliateController@payouts')->name('payouts');
+                Route::post('payout-status', 'Panel\AffiliateController@affiliatePayout')->name('payout-status');
             });
 
             #Appearance...

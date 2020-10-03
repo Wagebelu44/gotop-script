@@ -9,10 +9,10 @@
             <div class="card-body">
                 <div class="row pb-3 pt-3">
                     <div class="col-md-6">
-                        <h3>Affiliates</h3>
+                        <h3>Payouts</h3>
                     </div>
                     <div class="col-md-6">
-                        <form class="d-flex pull-right" method="get" action="{{ route('admin.affiliates.index') }}">
+                        <form class="d-flex pull-right" method="get" action="{{ route('admin.affiliates.payouts') }}">
                             <div class="form-group mb-2 mr-0">
                                 <input type="search" name="q" value="{{ Request::get('q') }}" class="form-control" placeholder="search...">
                             </div>
@@ -27,40 +27,39 @@
                         <thead>
                             <tr>
                                 <th scope="col">User ID</th>
-                                <th>Username</th>
-                                <th>Status</th>
-                                <th scope="col">Total visits</th>
-                                <th scope="col">Unpaid referrals</th>
-                                <th scope="col">Paid referrals</th>
-                                <th scope="col">Conversion rate</th>
-                                <th scope="col">Total earnings</th>
-                                <th scope="col">Unpaid earnings</th>
+                                <th>Affiliate</th>
+                                <th>Payout amount</th>
+                                <th scope="col">Created</th>
+                                <th scope="col">Updated</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Mode</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if(!empty($affiliates))
-                                @foreach($affiliates as $aff)
-                                <tr {!! ($aff->affiliate_status == 'Active') ? '' : 'class=deactive' !!}>
+                            @if(!empty($payouts))
+                                @foreach($payouts as $aff)
+                                <tr>
                                     <td>{{ $aff->id }}</td>
-                                    <td>{{ $aff->username }}</td>
-                                    <td>{{ $aff->affiliate_status }}</td>
-                                    <td>{{ $aff->total_visits }}</td>
-                                    <td>{{ $aff->unpaid_referrals }}</td>
-                                    <td>{{ $aff->paid_referrals }}</td>
-                                    <td>{{ $aff->conversion_rate }}</td>
-                                    <td>{{ $aff->total_earnings }}</td>
-                                    <td>{{ $aff->unpaid_earnings }}</td>
+                                    <td>{{ $aff->referral->username }}</td>
+                                    <td>{{ $aff->amount }}</td>
+                                    <td>{{ $aff->created_at }}</td>
+                                    <td>{{ $aff->updated_at }}</td>
+                                    <td>{{ $aff->mode }}</td>
+                                    <td>{{ $aff->status }}</td>
                                     <td class="td-caret">
                                         <div class="btn-group">
                                             <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Action
                                             </button>
                                             <div class="dropdown-menu">
-                                                @if($aff->affiliate_status == 'Active')
-                                                    <a class="dropdown-item type-dropdown-item" href="#" onclick="affiliateStatus({{ $aff->id }}, 'Deactivated')">Deactive Affiliate</a>
+                                                @if($aff->status == 'Canceled')
+                                                    <a class="dropdown-item type-dropdown-item" href="#" onclick="affiliateStatus({{ $aff->id }}, 'Approved')">Approve Payout</a>
+                                                @elseif($aff->status == 'Approved')
+                                                    <a class="dropdown-item type-dropdown-item" href="#" onclick="affiliateStatus({{ $aff->id }}, 'Canceled')">Cancel Payout</a>
                                                 @else
-                                                    <a class="dropdown-item type-dropdown-item" href="#" onclick="affiliateStatus({{ $aff->id }}, 'Active')">Active Affiliate</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="#" onclick="affiliateStatus({{ $aff->id }}, 'Approved')">Approve Payout</a>
+                                                    <a class="dropdown-item type-dropdown-item" href="#" onclick="affiliateStatus({{ $aff->id }}, 'Canceled')">Cancel Payout</a>
                                                 @endif
                                             </div>
                                         </div>
@@ -72,7 +71,7 @@
                     </table>
                 </div>
 
-                {{ $affiliates->appends(Request::except('page'))->links() }}
+                {{ $payouts->appends(Request::except('page'))->links() }}
             </div>
         </div>
     </div>
@@ -94,8 +93,8 @@ function affiliateStatus(id, status) {
         if (result.value) {
             $.ajax({
                 type: "POST",
-                url: "{{ route('admin.affiliates.status') }}",
-                data: { 'user_id': id, 'affiliate_status': status },
+                url: "{{ route('admin.affiliates.payout-status') }}",
+                data: { 'user_id': id, 'status': status },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
