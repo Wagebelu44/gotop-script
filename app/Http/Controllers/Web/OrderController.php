@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\User;
 use App\Models\Order;
 use App\Models\Service;
+use App\Mail\FailedOrders;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\DripFeedOrders;
@@ -347,6 +348,15 @@ class OrderController extends Controller
                     else
                     {
                         $make_order->status =  "failed";
+                        $staffmails = staffEmails('fail_orders', auth()->user()->panel_id);
+                        if (count($staffmails)>0) {
+                            $notification =  $notification = notification('Fail orders', 2, auth()->user()->panel_id);
+                            if ($notification) {
+                                if ($notification->status =='Active') {
+                                    Mail::to($staffmails)->send(new FailedOrders($notification, $make_order));
+                                }
+                            }
+                        }
                     }
                     $make_order->save();
                 }
