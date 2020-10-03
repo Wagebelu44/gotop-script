@@ -17,5 +17,7 @@ class VerifyCsrfToken extends Middleware
         '/payment/add-funds/paypal/ipn',
         '/payment/add-funds/bitcoin/bit-ipn',
         '/payopcallback',
+        '/perfectmoney/*',
+        '/webmoney/*',
     ];
 }

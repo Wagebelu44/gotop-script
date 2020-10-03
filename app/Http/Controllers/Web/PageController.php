@@ -342,13 +342,13 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
-            $site['user_payment_methods'] = auth()->user()->paymentMethods()->select('user_payment_methods.*', 'payment_methods.method_name')
+            $site['user_payment_methods'] = auth()->user()->paymentMethods()
+            ->select('user_payment_methods.*', 'payment_methods.method_name', 'payment_methods.global_payment_method_id')
                 ->join('payment_methods', function($q) use($panelId) {
                     $q->on('payment_methods.id', '=', 'user_payment_methods.payment_id');
                     $q->where('visibility', 'enabled');
                     $q->where('payment_methods.panel_id', $panelId);
                 })->get()->toArray();
-
             $site['transactions']  = Transaction::where(function($q){
                 $q->where('transaction_flag', 'payment_gateway');
                 $q->orWhere('transaction_flag', 'admin_panel');
