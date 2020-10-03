@@ -12,7 +12,7 @@
                         <thead>
                         <tr>
                             <th scope="col">User ID</th>
-                            <th>Affiliate</th>
+                            <th>Username</th>
                             <th>Status</th>
                             <th scope="col">Total visits</th>
                             <th scope="col">Unpaid referrals</th>
@@ -25,25 +25,31 @@
                         </thead>
                         <tbody>
                         <tbody>
-                        @if(!empty($data))
-                            @foreach($data as $key => $child)
+                        @if(!empty($affiliates))
+                            @foreach($affiliates as $aff)
                             <tr>
-                                <td>{{ $child->domain }}</td>
-                                <td>{{ $child->user->name }}</td>
-                                <td>{{ $child->status }}</td>
-                                <td><span class="nowrap">{{ $child->created_at }}</span></td>
-                                <td><span class="nowrap"></span></td>
+                                <td>{{ $aff->id }}</td>
+                                <td>{{ $aff->username }}</td>
+                                <td>{{ $aff->affiliate_status }}</td>
+                                <td>{{ $aff->total_visits }}</td>
+                                <td>{{ $aff->unpaid_referrals }}</td>
+                                <td>{{ $aff->paid_referrals }}</td>
+                                <td>{{ $aff->conversion_rate }}</td>
+                                <td>{{ $aff->total_earnings }}</td>
+                                <td>{{ $aff->unpaid_earnings }}</td>
                                 <td class="td-caret">
-                                    @if($child->status == 'Pending')
                                     <div class="btn-group">
                                         <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             Action
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item type-dropdown-item" href="{{ route('admin.child-panels.cancelRefund', $child->id) }}">Cancel and refund</a>
+                                            @if($aff->affiliate_status == 'Active')
+                                                <a class="dropdown-item type-dropdown-item" href="#">Deactive Affiliate</a>
+                                            @else
+                                                <a class="dropdown-item type-dropdown-item" href="#">Active Affiliate</a>
+                                            @endif
                                         </div>
                                     </div>
-                                    @endif
                                 </td>
                             </tr>
                             @endforeach
