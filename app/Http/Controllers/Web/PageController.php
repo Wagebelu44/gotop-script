@@ -9,7 +9,6 @@ use App\Models\Order;
 use App\Models\Redeem;
 use App\Models\SettingModule;
 use App\Models\Ticket;
-use App\Models\Service;
 use App\Models\Newsfeed;
 use App\Models\ThemePage;
 use App\Models\BlogSlider;
@@ -30,7 +29,6 @@ use App\Models\UserReferralPayout;
 use App\Models\UserReferralVisit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
@@ -129,6 +127,10 @@ class PageController extends Controller
 
         if ($page->default_url == 'sign-in') {
             $site['url'] = route('login');
+            $site['sign_up'] = ($setting->signup_page == 1) ? true : false;
+            $site['reset_password'] = ($setting->reset_password == 1) ? true : false;
+            $site['sign_up_url'] = url('/sign-up');
+            $site['reset_password_url'] = url('/password-reset');
 
             $site['validation_error'] = 0;
             if (Session::has('errors')) {
@@ -138,8 +140,22 @@ class PageController extends Controller
             }
         } elseif ($page->default_url == 'sign-up') {
             $site['url'] = route('register');
-            $site['validation_error'] = 0;
+            $site['sign_in_url'] = url('/sign-in');
+            $site['reset_password_url'] = url('/password-reset');
 
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+        } elseif ($page->default_url == 'password-reset') {
+            $site['url'] = route('password.email');
+            $site['sign_up'] = ($setting->signup_page == 1) ? true : false;
+            $site['sign_up_url'] = url('/sign-up');
+            $site['sign_in_url'] = url('/sign-in');
+
+            $site['validation_error'] = 0;
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
@@ -393,7 +409,7 @@ class PageController extends Controller
             $site['panelsList'] =  UserChildPanel::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->orderBy('id', 'desc')->get();
         } elseif ($page->default_url == 'affiliates') {
             $aff = SettingModule::where('panel_id', $panelId)->where('type', 'affiliate')->first();
-            $site['ref_link'] = route('panel.referralLink', Auth::user()->referral_key);
+            $site['ref_link'] = route('referral.link', Auth::user()->referral_key);
             $site['commission_rate'] = (!empty($aff)) ? round($aff->commission_rate) : '0';
             $site['minimum_payout'] = (!empty($aff)) ? $aff->amount : '0';
             $site['url'] = route('request-payout');

@@ -15,9 +15,6 @@ Route::get('command', function () {
 Route::group(['middleware' => 'checkPanel'], function () {
 
     Route::group(['prefix' => 'admin'], function () {
-        // hader file information
-        Route::get('/header-information', 'Panel\DashboardController@getHeaderCountData')->name('header.unread.count');
-        Route::get('make-order-unseen', 'Panel\OrderController@makeOrderUnseen')->name('make.order.lists.seen');
         // Authentication Routes...
         Route::get('/', 'Panel\Auth\LoginController@showLoginForm')->name('panel.login');
         Route::post('/login', 'Panel\Auth\LoginController@login')->name('panel.login.action');
@@ -32,6 +29,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('password/reset', 'Panel\Auth\ResetPasswordController@reset')->name('panel.password.update');
         Route::get('password/reset/{token}', 'Panel\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
 
+        // hader file information
+        Route::get('/header-information', 'Panel\DashboardController@getHeaderCountData')->name('header.unread.count');
+        Route::get('make-order-unseen', 'Panel\OrderController@makeOrderUnseen')->name('make.order.lists.seen');
+        
         Route::group(['middleware' => 'auth:panelAdmin', 'as' => 'admin.'], function () {
             Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
 
@@ -199,8 +200,11 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
     Route::post('/login', 'Auth\LoginController@login')->name('login');
     Route::post('/register', 'Auth\RegisterController@register')->name('register');
+    Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+    Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+    Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 
-    Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('panel.referralLink');
+    Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('referral.link');
 
     Route::group(['middleware' => ['auth', 'verified']], function () {
         Route::get('/get-category-services', 'Web\OrderController@getCateServices');

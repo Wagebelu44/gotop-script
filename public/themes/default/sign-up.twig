@@ -2,10 +2,10 @@
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col-md-8 col-md-offset-2">
             <div class="card">
-                <div class="card-header"> <h1> Register </h1> </div>
+                <div class="card-header"><h3 class="col-sm-12">Register</h3></div>
 
                 <div class="card-body">
-                {% if site['validation_error'] > 0 %}
+                    {% if site['validation_error'] > 0 %}
 						{% for error in site['errors'] %}
                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
 							<strong>Error!</strong> {{error}}.
@@ -15,6 +15,7 @@
                             </div>
                     	{% endfor %}
 					{% endif %}
+
                     <form method="POST" action="{{ site['url'] }}">
                         {{ site['csrf_field'] | raw }}
 
@@ -52,9 +53,16 @@
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Register
-                                </button>
+                                <button type="submit" class="btn btn-primary btn-block">Signup</button>
+                                <div class="py-3">
+                                    {% if site['sign_in_url'] %}
+                                        <a href="{{ site['sign_in_url'] }}">Signin</a>
+                                    {% endif %}
+
+                                    {% if site['reset_password_url'] %}
+                                        <a href="{{ site['reset_password_url'] }}" class="float-right">Forgot password?</a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </form>
