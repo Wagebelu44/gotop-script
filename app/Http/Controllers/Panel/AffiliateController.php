@@ -119,9 +119,9 @@ class AffiliateController extends Controller
     public function affiliatePayout(Request $request)
     {
         if (Auth::user()->can('approve or reject affiliate payout')) {
-            $credentials = $request->only('user_id', 'status');
+            $credentials = $request->only('id', 'status');
             $rules = [
-                'user_id'           => 'required',
+                'id'           => 'required',
                 'status'  => 'required|string',
             ];
             $validator = Validator::make($credentials, $rules);
@@ -130,12 +130,70 @@ class AffiliateController extends Controller
             }
 
             try {
-                $payout = UserReferralPayout::find();
+                $payout = UserReferralPayout::where('panel_id', Auth::user()->panel_id)->where('id', $request->id)->first();
+                if (empty($payout)) {
+                    return response()->json(['status' => false, 'errors'=> 'payout not found!'], 200);
+                }                
 
-                User::where('panel_id', Auth::user()->panel_id)->where('id', $request->user_id)->update([
-                    'status' => $request->status
-                ]);
-                return response()->json(['status' => true], 200);
+                if ($request->status == 'Approved') {
+                    $transaction = Transaction::create([
+                        'panel_id' => Auth::user()->panel_id,
+                        'transaction_type' => 'deposit',
+                        'amount' => $payout->amount,
+                        'transaction_flag' => 'affiliate',
+                        'user_id' => $payout->referral_id,
+                        'admin_id' => null,
+                        'status' => 'done',
+                        'memo' => 'Affiliate payout',
+                        'fraud_risk' => null,
+                        'payment_gateway_response' => null,
+                        'reseller_payment_methods_setting_id' => 0,
+                    ]);
+    
+                    if ($transaction) {
+                        $user = User::find($payout->referral_id);
+                        $user->update(['balance' => ($user->balance+$payout->amount)]);
+                        
+                        $payout->update(['status' => $request->status]);
+    
+                        return response()->json(['status' => true, 'message' => 'Affiliate payout amount successfully added in user balance.'], 200);
+                    }
+
+                    return response()->json(['status' => false, 'errors' => 'Affiliate payout status changing failed!'], 200);
+
+                } else if ($request->status == 'Canceled') {
+                    if ($payout->status == 'Approved') {
+                        $transaction = Transaction::create([
+                            'panel_id' => Auth::user()->panel_id,
+                            'transaction_type' => 'withdraw',
+                            'amount' => $payout->amount,
+                            'transaction_flag' => 'affiliate',
+                            'user_id' => $payout->referral_id,
+                            'admin_id' => null,
+                            'status' => 'done',
+                            'memo' => 'Affiliate payout',
+                            'fraud_risk' => null,
+                            'payment_gateway_response' => null,
+                            'reseller_payment_methods_setting_id' => 0,
+                        ]);
+        
+                        if ($transaction) {
+                            $user = User::find($payout->referral_id);
+                            $user->update(['balance' => ($user->balance-$payout->amount)]);
+                        
+                            $payout->update(['status' => $request->status]);
+        
+                            return response()->json(['status' => true, 'message' => 'Affiliate payout request is canceled!'], 200);
+                        }
+
+                        return response()->json(['status' => false, 'errors' => 'Affiliate payout status changing failed!'], 200);
+                    }
+                        
+                    $payout->update(['status' => $request->status]);
+
+                    return response()->json(['status' => true, 'message' => 'Affiliate payout request is canceled!'], 200);
+                }
+
             } catch (\Exception $e) {
                 return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
             }
