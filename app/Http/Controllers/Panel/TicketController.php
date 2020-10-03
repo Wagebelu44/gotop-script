@@ -87,14 +87,12 @@ class TicketController extends Controller
             $tickets = Ticket::insert($ticketsData);
 
             $signle_user = User::find($allmailable_user);
-            foreach ($signle_user as $d) 
-            {
+            foreach ($signle_user as $d) {
                 foreach ($ticketsData as &$ticket) {
-                     if ($d->id == $ticket['user_id']) 
-                     {
+                    if ($d->id == $ticket['user_id']) {
                         $ticket['username'] = $d->username;
                         Mail::to($d)->send(new AdminSendSupportTicket($ticket));
-                     }
+                    }
                 }
             }
             if ($tickets) {
