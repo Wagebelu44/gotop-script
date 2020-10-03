@@ -18,7 +18,8 @@ class CreateUserReferralAmountsTable extends Migration
             $table->unsignedBigInteger('panel_id');
             $table->unsignedBigInteger('referral_id');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedTinyInteger('amount');
+            $table->decimal('fund_amount')->unsigned()->comment('user add fund amount');
+            $table->decimal('amount')->unsigned()->comment('referral commission');
             $table->timestamps();
             $table->softDeletes();
         });

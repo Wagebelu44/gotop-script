@@ -9,7 +9,6 @@ use App\Models\NewsfeedCategory;
 use App\Models\NewsfeedRelation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class NewsfeedController extends Controller
 {

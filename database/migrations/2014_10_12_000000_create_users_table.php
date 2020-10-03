@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->enum('affiliate_status', ['Active', 'Deactivated'])->default('Active');
             $table->enum('status', ['Pending', 'Active', 'Deactivated'])->default('Pending');
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
