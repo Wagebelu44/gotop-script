@@ -5,6 +5,7 @@ namespace App;
 use App\Models\Service;
 use App\Models\UserPaymentMethod;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\UserResetPasswordNotification;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -53,5 +54,11 @@ class User extends Authenticatable
     public function paymentMethods()
     {
         return $this->hasMany(UserPaymentMethod::class, 'user_id', 'id');
+    }
+
+    //Send password reset notification
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new UserResetPasswordNotification($token));
     }
 }

@@ -38,7 +38,7 @@ class PageController extends Controller
         return $this->page($request, 'sign-in');
     }
 
-    public function page(Request $request, $url)
+    public function page(Request $request, $url, $param = null)
     {
         $panelId = session('panel');
         $page = Page::with(['menu' => function($q) use($panelId) {
@@ -154,6 +154,20 @@ class PageController extends Controller
             $site['sign_up'] = ($setting->signup_page == 1) ? true : false;
             $site['sign_up_url'] = url('/sign-up');
             $site['sign_in_url'] = url('/sign-in');
+
+            $site['reset_status'] = session('status');
+
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+        } elseif ($page->default_url == 'password-set') {
+            $site['url'] = route('password.update');
+            $site['token'] = $param;
+            
+            $site['reset_status'] = session('status');
 
             $site['validation_error'] = 0;
             if (Session::has('errors')) {

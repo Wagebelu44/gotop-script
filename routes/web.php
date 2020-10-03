@@ -32,7 +32,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
         // hader file information
         Route::get('/header-information', 'Panel\DashboardController@getHeaderCountData')->name('header.unread.count');
         Route::get('make-order-unseen', 'Panel\OrderController@makeOrderUnseen')->name('make.order.lists.seen');
-        
+
         Route::group(['middleware' => 'auth:panelAdmin', 'as' => 'admin.'], function () {
             Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
 
@@ -202,7 +202,6 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/register', 'Auth\RegisterController@register')->name('register');
     Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
-    Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 
     Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('referral.link');
 
@@ -252,4 +251,5 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     Route::get('/', 'Web\PageController@index')->name('home');
     Route::get('/{url}', 'Web\PageController@page')->name('route');
+    Route::get('/{url}/{token}', 'Web\PageController@page');
 });
