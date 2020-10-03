@@ -36,7 +36,7 @@ class BlogCategoryController extends Controller
     {
         if (Auth::user()->can('blog')) {
             $this->validate($request, [
-                'name'     => 'required',
+                'name'     => 'required|max:191',
                 'status'   => 'required'
             ]);
 
@@ -72,7 +72,7 @@ class BlogCategoryController extends Controller
     {
         if (Auth::user()->can('blog')) {
             $this->validate($request, [
-                'name'     => 'required',
+                'name'     => 'required|max:191',
                 'status'   => 'required'
             ]);
 

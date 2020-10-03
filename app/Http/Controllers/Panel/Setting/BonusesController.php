@@ -26,9 +26,9 @@ class BonusesController extends Controller
     {
         if (Auth::user()->can('bonus setting')) {
             $this->validate($request, [
-                'bonus_amount'              => 'required',
+                'bonus_amount'              => 'required|numeric|between:0,999.99',
                 'global_payment_method_id'  => 'required|integer',
-                'deposit_from'              => 'required',
+                'deposit_from'              => 'required|numeric|between:0,99999.99',
                 'status'                    => 'required',
             ]);
 
@@ -64,9 +64,9 @@ class BonusesController extends Controller
     {
         if (Auth::user()->can('bonus setting')) {
             $this->validate($request, [
-                'bonus_amount'              => 'required',
+                'bonus_amount'              => 'required|numeric|between:0,999.99',
                 'global_payment_method_id'  => 'required|integer',
-                'deposit_from'              => 'required',
+                'deposit_from'              => 'required|numeric|between:0,99999.99',
                 'status'                    => 'required',
             ]);
 

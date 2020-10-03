@@ -31,7 +31,7 @@
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>{{ $category->status }}</td>
-                                    <td class="p-r text-right">
+                                    <td class="p-r">
                                         <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $category->id) }}">Edit</a>
                                     </td>
                                 </tr>
@@ -58,6 +58,11 @@
                             <div class="form-group">
                                 <label class="form-control-label">Category name</label>
                                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('question', isset($data) && $data->name ? $data->name:'' ) }}" placeholder="Category name">
+                                @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label class="form-control-label">Status</label>

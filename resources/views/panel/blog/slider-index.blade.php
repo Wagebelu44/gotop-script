@@ -35,7 +35,7 @@
                                     </td>
                                     <td>{{ $slider->read_more }}</td>
                                     <td>{{ $slider->status }}</td>
-                                    <td class="p-r text-right">
+                                    <td class="p-r">
                                         <a class="btn btn-default btn-xs" href="{{ route($resource.'edit', $slider->id) }}">Edit</a>
                                     </td>
                                 </tr>

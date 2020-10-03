@@ -41,7 +41,7 @@ class BlogController extends Controller
         if (Auth::user()->can('blog')) {
             $this->validate($request, [
                 'image'         => 'required|image',
-                'title'         => 'required',
+                'title'         => 'required|max:191',
                 'blog_content'  => 'required',
                 'type'          => 'required',
                 'status'        => 'required'
@@ -91,7 +91,7 @@ class BlogController extends Controller
         if (Auth::user()->can('blog')) {
             $this->validate($request, [
                 'image'        => 'sometimes|image',
-                'title'        => 'required',
+                'title'        => 'required|max:191',
                 'blog_content' => 'required',
                 'type'         => 'required',
                 'status'       => 'required'

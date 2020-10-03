@@ -36,8 +36,8 @@ class BlogSliderController extends Controller
     {
         if (Auth::user()->can('blog')) {
             $this->validate($request, [
-                'title'     => 'required',
-                'read_more' => 'required',
+                'title'     => 'required|max:191',
+                'read_more' => 'required|max:191',
                 'image'     => 'required',
                 'status'    => 'required'
             ]);
@@ -80,8 +80,8 @@ class BlogSliderController extends Controller
     {
         if (Auth::user()->can('blog')) {
             $this->validate($request, [
-                'title'     => 'required',
-                'read_more' => 'required',
+                'title'     => 'required|max:191',
+                'read_more' => 'required|max:191',
                 'image'     => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:1024',
                 'status'    => 'required'
             ]);

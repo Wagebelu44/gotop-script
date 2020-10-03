@@ -19,7 +19,7 @@
                                 <thead>
                                 <tr>
                                     <th>SL</th>
-                                    <th>name</th>
+                                    <th>Name</th>
                                     <th>Minimum spent amount</th>
                                     <th>Point</th>
                                     <th width="5%"></th>

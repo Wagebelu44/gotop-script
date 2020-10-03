@@ -49,7 +49,7 @@
                                         Disabled
                                     @endif
                                 </td>
-                                <td class="p-r text-right">
+                                <td class="p-r">
                                     <button data-url="{{ route($resource.'edit', $bonuse->id) }}" data-id="{!! $bonuse->id !!}" class="edit btn btn-default m-t-20">
                                         Edit
                                     </button>

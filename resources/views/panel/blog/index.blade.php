@@ -32,7 +32,7 @@
                                         </td>
                                         <td>{{ $blog->created_at }}</td>
                                         <td>{{ $blog->status }}</td>
-                                        <td class="p-r text-right">
+                                        <td class="p-r">
                                             <a class="btn btn-default btn-xs" href="{{ route('admin.blog.edit', $blog->id) }}">Edit</a>
                                         </td>
                                     </tr>

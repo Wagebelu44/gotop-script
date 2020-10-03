@@ -36,7 +36,7 @@ class AccountStatusController extends Controller
     {
         if (Auth::user()->can('account status setting')) {
             $this->validate($request, [
-                'name' => 'required',
+                'name' => 'required|max:191',
                 'minimum_spent_amount' => 'required|numeric',
                 'point' => 'required|numeric',
             ]);
@@ -77,7 +77,7 @@ class AccountStatusController extends Controller
     {
         if (Auth::user()->can('account status setting')) {
             $this->validate($request, [
-                'name' => 'required',
+                'name' => 'required|max:191',
                 'minimum_spent_amount' => 'required|numeric',
                 'point' => 'required|numeric',
             ]);
