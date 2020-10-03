@@ -52,6 +52,16 @@ const orderModule = new Vue({
         if (this.getParameterByName('mode')) {
             this.filter.mode = this.getParameterByName('mode');
         }
+        setTimeout(()=>{
+            fetch(adminSeenRoute)
+            .then(res=>res.json())
+            .then(res=>{
+                if (res.status) {
+                    getInfo();    
+                    this.getOrders();    
+                }
+            });
+        }, 15000)
     },
     watch: {
         checkAllOrders(oldval, newval)

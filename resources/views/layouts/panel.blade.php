@@ -55,7 +55,12 @@
 
                         <li class="sidebar-item {{ Request::routeIs('admin.orders*') ? 'selected':''}} {{  Request::routeIs('admin.exported_orders*') ? 'selected':'' }} ">
                             <a class="sidebar-link {{ Request::routeIs('admin.orders*') ? 'active':'' }}" href="{{ route('admin.orders.index') }}">
-                                <span class="hide-menu">Orders</span>
+                                <span class="hide-menu mr-1">Orders
+
+                                    <span style="background: rgba(255,255,255,0%);">
+                                        <span class="badge badge-danger d-inline-block" id="unread_order_counter"
+                                          style="background: #77b243;"> <b>0</b></span>
+                                </span>
                             </a>
                         </li>
 
@@ -91,7 +96,11 @@
 
                         <li class="sidebar-item {{ Request::routeIs('admin.tickets*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.tickets*') ? 'active':'' }}" href="{{ route('admin.tickets.index') }}">
-                                <span class="hide-menu">Tickets</span>
+                                <span class="hide-menu mr-1">Tickets</span> 
+                                    <span style="background: rgba(255,255,255,0%);">
+                                      <span class="badge badge-danger d-block" id="unread_ticket_counter"
+                                        style="background: #77b243;"> <b>0</b></span>
+                                </span>
                             </a>
                         </li>
 
@@ -184,6 +193,7 @@
     <script src="{{ asset('panel-assets/libs/b-datepicker/js/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');
@@ -194,7 +204,23 @@
         window.CSRF_TOKEN = '{{csrf_token()}}';
         window.base_url = "{{ url('/') }}";
         /* end of global instances */
+      
+        // update ticket info
+        function getInfo()
+        {
+            fetch('{{ route("header.unread.count") }}')
+            .then(res=>res.json())
+            .then(res=>{
+                $('#unread_ticket_counter b').html(res.tickets);
+                $('#unread_order_counter b').html(res.orders);
+            });
+        }
+        getInfo();
+        setInterval(()=>{
+            getInfo();
+        }, 1000 * 5 * 60);
     </script>
     @yield('scripts')
+    
 </body>
 </html>

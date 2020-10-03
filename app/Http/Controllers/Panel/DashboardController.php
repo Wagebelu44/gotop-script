@@ -13,4 +13,14 @@ class DashboardController extends Controller
         //return view('panel.dashboard');
     }
 
+    public function getHeaderCountData(Request $request)
+    {
+        $ticket = new \App\Http\Controllers\Panel\TicketController;
+        $order = new \App\Http\Controllers\Panel\OrderController;
+        return response()->json(['status'=> true, 
+        'tickets'=> $ticket->getAdminUnreadCount(),
+        'orders'=> $order->getUnseenOrderCount(),
+    ], 200);
+    }
+
 }
