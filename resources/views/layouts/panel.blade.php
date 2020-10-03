@@ -210,10 +210,10 @@
                 $('#unread_ticket_counter b').html(res.data);
             });
         }
-        // getInfo();
-        // setInterval(()=>{
-        //     getInfo();
-        // }, 1000);
+        getInfo();
+        setInterval(()=>{
+            getInfo();
+        }, 1000);
     </script>
     @yield('scripts')
     
