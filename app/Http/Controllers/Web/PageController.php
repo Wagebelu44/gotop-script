@@ -143,6 +143,11 @@ class PageController extends Controller
             $site['url'] = route('register');
             $site['sign_in_url'] = url('/sign-in');
             $site['reset_password_url'] = url('/password-reset');
+            
+            $site['signup_page'] = ($setting->signup_page == 1) ? true : false;
+            $site['name_fields'] = ($setting->name_fields == 1) ? true : false;
+            $site['skype_field'] = ($setting->skype_field == 1) ? true : false;
+            $site['terms_checkbox'] = ($setting->terms_checkbox == 1) ? true : false;
 
             $site['validation_error'] = 0;
             if (Session::has('errors')) {

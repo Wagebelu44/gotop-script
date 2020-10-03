@@ -79,8 +79,9 @@ class RegisterController extends Controller
         $user =  User::create([
             'uuid' => Str::uuid(),
             'panel_id' => $panelId,
-            'name' => $data['name'],
-            'username' => Str::slug($data['name']),
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'username' => isset($data['name']) ? Str::slug($data['name']) : Str::random(8),
+            'skype_field' => isset($data['skype_field']) ? $data['skype_field'] : null,
             'email' => $data['email'],
             'api_key' => Str::random(20),
             'referral_key' => substr(md5(microtime()), 0, 6),
