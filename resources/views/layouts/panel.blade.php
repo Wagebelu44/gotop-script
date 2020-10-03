@@ -91,7 +91,14 @@
 
                         <li class="sidebar-item {{ Request::routeIs('admin.tickets*') ? 'selected':'' }}">
                             <a class="sidebar-link {{ Request::routeIs('admin.tickets*') ? 'active':'' }}" href="{{ route('admin.tickets.index') }}">
-                                <span class="hide-menu">Tickets</span>
+                                <span class="hide-menu mr-1">Tickets</span> 
+                                    <span style="background: rgba(255,255,255,0%);">
+                                      <span class="badge badge-danger d-block" id="unread_ticket_counter"
+                                        style="background: #77b243;"> <b>0</b></span>
+                                </span>
+                                {{-- <span class="hide-menu">Tickets
+                                    
+                                    <span class="badge badge-danger">( 150 )</span> </span> --}}
                             </a>
                         </li>
 
@@ -182,6 +189,7 @@
     <script src="{{ asset('panel-assets/libs/b-datepicker/js/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
     <script>
         @if (session('success'))
             toastr["success"]('{{ session('success') }}');
@@ -192,7 +200,22 @@
         window.CSRF_TOKEN = '{{csrf_token()}}';
         window.base_url = "{{ url('/') }}";
         /* end of global instances */
+      
+        // update ticket info
+        function getInfo()
+        {
+            fetch('{{ route("ticket.unread.count") }}')
+            .then(res=>res.json())
+            .then(res=>{
+                $('#unread_ticket_counter b').html(res.data);
+            });
+        }
+        getInfo();
+        setInterval(()=>{
+            getInfo();
+        }, 1000);
     </script>
     @yield('scripts')
+    
 </body>
 </html>

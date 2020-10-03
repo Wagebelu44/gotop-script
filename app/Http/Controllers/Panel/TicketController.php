@@ -180,6 +180,6 @@ class TicketController extends Controller
     /* seamless functions */
     public function getAdminUnreadCount()
     {
-        return Ticket::where('seen_by_admin', 0)->count();
+        return Ticket::where('seen_by_admin', 0)->where('panel_id', auth()->user()->panel_id)->count();
     }
 }

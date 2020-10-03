@@ -13,4 +13,10 @@ class DashboardController extends Controller
         //return view('panel.dashboard');
     }
 
+    public function getTicketCount(Request $request)
+    {
+        $ticket = new \App\Http\Controllers\Panel\TicketController;
+        return response()->json(['status'=> true, 'data'=> $ticket->getAdminUnreadCount()], 200);
+    }
+
 }
