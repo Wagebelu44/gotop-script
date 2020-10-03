@@ -397,4 +397,11 @@ if (! function_exists('notification')) {
     }
 }
 
+if (! function_exists('staffEmails')) {
+    function staffEmails($action, $panel_id)
+    {
+        return \App\Models\StaffEmail::where($action, '1')->where('panel_id', $panel_id)->pluck('email');
+    }
+}
+
 
