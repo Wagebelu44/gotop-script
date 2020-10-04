@@ -104,7 +104,11 @@ class PageController extends Controller
         } else {
             $site['favicon'] = null;
         }
-
+        if ($setting->ticket_system == 0) {
+            $menus = $menus->filter(function($q){
+                return $q->menu_name !='Tickets';
+            });
+        }
         $site['panel_name'] = $setting->panel_name;
         $site['newsfeed'] = $setting->newsfeed;
         $site['newsfeed_align'] = $setting->newsfeed_align;
