@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use App\Mail\SupportTicket;
 use Illuminate\Http\Request;
 use App\Models\TicketComment;
+use App\Models\SettingGeneral;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\TicketNotification;
@@ -18,7 +19,20 @@ class TicketController extends Controller
     {
         try {
             // important to uncomment. but for now 
-            // if (generalSetting('tickets_per_user') && generalSetting('tickets_per_user')->value && (auth()->guard('web')->user()->tickets()->where('status', 'open')->count() == generalSetting('tickets_per_user')->value || auth()->guard('web')->user()->tickets()->where('status', 'open')->count() > generalSetting('tickets_per_user')->value)) {
+            $gs = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
+            $userTicketcount = Ticket::where('panel_id', auth()->user()->panel_id)->where('status', 'pending')->count();
+            if ($gs->tickets_per_user !='Unlimited') {
+                $limit_number = explode(' ',$gs->tickets_per_user);
+                if (current($limit_number) <= $userTicketcount) {
+                    return redirect()->back()->withError('You can\'t submit ticket. Please contact admin.');
+                }
+            }
+
+            // if (
+            //         generalSetting('tickets_per_user') 
+            //     &&  generalSetting('tickets_per_user')->value 
+            //     && (auth()->guard('web')->user()->tickets()->where('status', 'open')->count() == generalSetting('tickets_per_user')->value 
+            //     || auth()->guard('web')->user()->tickets()->where('status', 'open')->count() > generalSetting('tickets_per_user')->value)) {
             //     return redirect()->back()->withError('You can\'t submit ticket. Please contact admin.');
             // }
 

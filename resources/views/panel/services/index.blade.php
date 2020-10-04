@@ -588,14 +588,16 @@
                     
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="form-group">
-                                                            <label for=""> <strong>Average Time</strong></label>
-                                                            <input type="text" name="service_average_time" v-model="services.form_fields.service_average_time" class="form-control">
+                                                @if ($gs->average_time == 1)
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <label for=""> <strong>Average Time</strong></label>
+                                                                <input type="text" name="service_average_time" v-model="services.form_fields.service_average_time" class="form-control">
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                @endif
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="form-group">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Models\Service;
 use Illuminate\Http\Request;
+use App\Models\SettingGeneral;
 use App\Models\ProviderService;
 use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
@@ -17,7 +18,8 @@ class ServiceController extends Controller
 
     public function index()
     {
-        return view('panel.services.index');
+        $gs = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
+        return view('panel.services.index', compact('gs'));
     }
     public function sortData(Request $request)
     {
