@@ -33,11 +33,6 @@ use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
-    public function __construct(Auth $auth)
-    {
-        $this->middleware('user.verified');
-    }
-
     public function index(Request $request)
     {
         return $this->page($request, 'sign-in');
@@ -73,6 +68,7 @@ class PageController extends Controller
         }])
         ->select('menu_link_id', 'menu_name', 'external_link')
         ->where('panel_id', $panelId)
+        ->where('page_in_menu', 'Yes')
         ->where('status', 'Active')
         ->orderBy('sort', 'ASC');
         if (Auth::check()) {

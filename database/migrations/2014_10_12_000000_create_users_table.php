@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('api_key')->unique()->nullable();
             $table->string('referral_key')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->unsignedTinyInteger('email_confirmation_status')->nullable()->comment('1 => Enabled');
             $table->string('password');
             $table->rememberToken();
             $table->enum('affiliate_status', ['Active', 'Deactivated'])->default('Active');

@@ -85,7 +85,7 @@ class GlobalPagesSeeder extends Seeder
                 'meta_title' => '',
                 'meta_keyword' => '',
                 'meta_description' => '',
-                'is_public' => 'Yes',
+                'is_public' => 'No',
                 'is_editable' => 'No',
                 'status' => 'Active',
                 'page_in_menu' => 'No',

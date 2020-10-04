@@ -202,10 +202,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('/register', 'Auth\RegisterController@register')->name('register');
     Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
-
-    //Route::get('email-verify', 'Auth\VerificationController@show')->name('verification.notice');
-    Route::get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
-    Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+    Route::get('email-verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
+    Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
     Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('referral.link');
 
@@ -215,8 +213,17 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('/make_new_order', 'Web\OrderController@store')->name('make.single.order');
         Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
         Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
+        
+        #User child panel
+        Route::resource('child-panel', 'Web\ChildPanelController')->only('store');
+        Route::get('request-payout', 'Web\AffiliateController@payout')->name('request-payout');
 
         Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+    });
+    Route::group(['middleware' => ['user.verified']], function () {
+        Route::get('/', 'Web\PageController@index')->name('home');
+        Route::get('/{url}', 'Web\PageController@page')->name('route');
+        Route::get('/{url}/{token}', 'Web\PageController@page');
     });
 
 
@@ -226,10 +233,6 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('/payment/add-funds/paypal/cancel', 'User\PaypalController@cancel');
     Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
     Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
-
-    #User child panel
-    Route::resource('child-panel', 'Web\ChildPanelController');
-    Route::get('request-payout', 'Web\AffiliateController@payout')->name('request-payout');
 
     Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');
     Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');
@@ -248,12 +251,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('success', 'Payment\PerfectMoneyController@success')->name('success');
         Route::post('failed', 'Payment\PerfectMoneyController@cancel')->name('failed');
     });
+    
     Route::group(['prefix' => 'webmoney', 'as' => 'webmoney.'], function () {
         Route::post('success', 'Payment\WebmoneyController@success')->name('success');
         Route::post('failed', 'Payment\WebmoneyController@cancel')->name('failed');
     });
-
-    Route::get('/', 'Web\PageController@index')->name('home');
-    Route::get('/{url}', 'Web\PageController@page')->name('route');
-    Route::get('/{url}/{token}', 'Web\PageController@page');
 });

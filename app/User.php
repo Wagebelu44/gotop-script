@@ -13,14 +13,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use Notifiable, SoftDeletes, LogsActivity;
 
     protected $table = 'users';
 
     protected $fillable = [
-        'uuid', 'panel_id', 'first_name', 'last_name', 'skype_name', 'phone', 'balance', 'email', 'username', 'api_key', 'referral_key', 'email_verified_at', 'password', 'affiliate_status', 'status',
+        'uuid', 'panel_id', 'first_name', 'last_name', 'skype_name', 'phone', 'balance', 'email', 'username', 'api_key', 'referral_key', 'email_verified_at', 'email_confirmation_status', 'password', 'affiliate_status', 'status',
     ];
 
     protected $hidden = [

@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SettingGeneral;
 
 class UserEmailIsVerified
 {
@@ -16,17 +16,14 @@ class UserEmailIsVerified
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $redirectToRoute = null)
+    public function handle($request, Closure $next)
     {
         if (Auth::check()) {
-            if (Auth::user()->email_verified_at == null) {
-                if (!$request->user('web') ||
-                ($request->user('web') instanceof MustVerifyEmail &&
-                !$request->user('web')->hasVerifiedEmail())) {
-                return $request->expectsJson()
-                ? abort(403, 'Your email address is not verified.')
-                //: Redirect::route($redirectToRoute ?: 'verification.notice');
-                : redirect('email-verify');
+            if (Auth::user()->email_confirmation_status == 1) {
+                if (!$request->is('email-verify') && !$request->is('logout')) { 
+                    if (!$request->user('web') || !$request->user('web')->hasVerifiedEmail()) {
+                        return $request->expectsJson() ? abort(403, 'Your email address is not verified.') : redirect('email-verify');
+                    }
                 }
             }
         }

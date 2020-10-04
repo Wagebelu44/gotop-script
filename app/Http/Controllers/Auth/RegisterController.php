@@ -13,6 +13,7 @@ use App\Models\SettingModule;
 use App\Models\UserPaymentMethod;
 use App\Models\UserReferralVisit;
 use App\Http\Controllers\Controller;
+use App\Models\SettingGeneral;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cookie;
@@ -75,9 +76,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $panelId = session('panel');
         $first_name = isset($data['first_name']) ? $data['first_name'] : '';
         $last_name = isset($data['last_name']) ? $data['last_name'] : '';
-        $panelId = session('panel');
+
+        $setting = SettingGeneral::select('email_confirmation')->where('panel_id', $panelId)->first();
+
         $user =  User::create([
             'uuid' => Str::uuid(),
             'panel_id' => $panelId,
@@ -89,18 +93,25 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'api_key' => Str::random(20),
             'referral_key' => substr(md5(microtime()), 0, 6),
+            'email_confirmation_status' => $setting->email_confirmation,
             'password' => Hash::make($data['password']),
         ]);
 
         if ($user) {
             activity()->disableLogging();
 
-            $notification =  $notification = notification('Welcome', 1, $panelId);
+            //Send email verify notification...
+            if ($user->email_confirmation_status == 1) {
+                $user->sendEmailVerificationNotification();
+            }
+
+            $notification = notification('Welcome', 1, $panelId);
             if ($notification) {
                 if ($notification->status =='Active') {
                     Mail::to($user->email)->send(new UserRegistered($user, $notification));
                 }
             }
+
             //Set user payment Method...
             $paymentMethods = PaymentMethod::where('panel_id', $panelId)->where('new_user_status', 'Active')->get();
             if (!empty($paymentMethods)) {
