@@ -12,6 +12,6 @@ class GlobalPage extends Model
     protected $table = 'global_pages';
 
     protected $fillable = [
-        'name', 'url', 'content', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'status',
+        'name', 'url', 'content', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'page_in_menu', 'sorting', 'status',
     ];
 }

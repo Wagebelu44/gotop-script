@@ -15,7 +15,7 @@ class Page extends Model
     protected $table = 'pages';
 
     protected $fillable = [
-        'panel_id', 'global_page_id', 'name', 'content', 'url', 'default_url', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'status', 'created_by', 'updated_by',
+        'panel_id', 'global_page_id', 'name', 'content', 'url', 'default_url', 'meta_title', 'meta_keyword', 'meta_description', 'is_public', 'is_editable', 'page_in_menu', 'sorting', 'status', 'created_by', 'updated_by',
     ];
 
     function globalPage()

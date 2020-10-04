@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\Web;
 
 use App\User;
-use Exception;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\SettingModule;
-use App\Models\UserChildPanel;
 use App\Mail\ManualPayoutPlaced;
 use App\Models\UserReferralAmount;
 use App\Models\UserReferralPayout;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
 
 class AffiliateController extends Controller
 {

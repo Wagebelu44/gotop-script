@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Service;
 use App\Models\UserPaymentMethod;
+use App\Notifications\UserEmailVerificationNotification;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\UserResetPasswordNotification;
 use Spatie\Activitylog\Contracts\Activity;
@@ -19,7 +20,7 @@ class User extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
-        'uuid', 'panel_id', 'first_name', 'last_name', 'skype_name', 'phone', 'balance', 'email', 'username', 'api_key', 'referral_key', 'email_verified_at', 'password', 'affiliate_status', 'status',
+        'uuid', 'panel_id', 'first_name', 'last_name', 'skype_name', 'phone', 'balance', 'email', 'username', 'api_key', 'referral_key', 'email_verified_at', 'email_confirmation_status', 'password', 'affiliate_status', 'status',
     ];
 
     protected $hidden = [
@@ -54,6 +55,12 @@ class User extends Authenticatable
     public function paymentMethods()
     {
         return $this->hasMany(UserPaymentMethod::class, 'user_id', 'id');
+    }
+
+    //Send email verify notification
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new UserEmailVerificationNotification());
     }
 
     //Send password reset notification

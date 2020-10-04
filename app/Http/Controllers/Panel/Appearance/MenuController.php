@@ -14,7 +14,7 @@ class MenuController extends Controller
     {
         if (Auth::user()->can('menu')) {
             $pages = Page::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'asc')->get();
-            $menus = Menu::with('page')->where('panel_id', Auth::user()->panel_id)->orderBy('sort', 'asc')->get();
+            $menus = Menu::with('page')->where('panel_id', Auth::user()->panel_id)->where('page_in_menu', 'Yes')->orderBy('sort', 'asc')->get();
             return view('panel.appearance.menu', compact('pages', 'menus'));
         } else {
             return view('panel.permission');

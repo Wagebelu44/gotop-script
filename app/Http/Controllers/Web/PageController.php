@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use App\Models\Blog;
 use App\Models\Menu;
 use App\Models\Page;
@@ -15,21 +20,16 @@ use App\Models\BlogSlider;
 use App\Models\SettingFaq;
 use App\Models\Transaction;
 use App\Models\UserChildPanel;
-use Illuminate\Http\Request;
 use App\Models\AccountStatus;
 use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
 use App\Models\NewsfeedCategory;
-use App\Http\Controllers\Controller;
 use App\Models\G\GlobalCurrencies;
 use App\Models\UserReferral;
 use App\Models\UserReferralAmount;
 use App\Models\UserReferralPayout;
 use App\Models\UserReferralVisit;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
@@ -68,6 +68,7 @@ class PageController extends Controller
         }])
         ->select('menu_link_id', 'menu_name', 'external_link')
         ->where('panel_id', $panelId)
+        ->where('page_in_menu', 'Yes')
         ->where('status', 'Active')
         ->orderBy('sort', 'ASC');
         if (Auth::check()) {
@@ -147,11 +148,23 @@ class PageController extends Controller
             $site['url'] = route('register');
             $site['sign_in_url'] = url('/sign-in');
             $site['reset_password_url'] = url('/password-reset');
+            $site['terms_url'] = url('/terms');
             
             $site['signup_page'] = ($setting->signup_page == 1) ? true : false;
             $site['name_fields'] = ($setting->name_fields == 1) ? true : false;
             $site['skype_field'] = ($setting->skype_field == 1) ? true : false;
             $site['terms_checkbox'] = ($setting->terms_checkbox == 1) ? true : false;
+
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+        } elseif ($page->default_url == 'email-verify') {
+            $site['url'] = route('verification.resend');
+
+            $site['email_status'] = session('resent');
 
             $site['validation_error'] = 0;
             if (Session::has('errors')) {

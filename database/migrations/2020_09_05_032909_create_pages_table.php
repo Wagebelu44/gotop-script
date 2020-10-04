@@ -26,6 +26,8 @@ class CreatePagesTable extends Migration
             $table->text('meta_description')->nullable();
             $table->enum('is_public', ['Yes', 'No'])->default('Yes');
             $table->enum('is_editable', ['Yes', 'No'])->default('Yes');
+            $table->enum('page_in_menu', ['Yes', 'No'])->default('No');
+            $table->unsignedInteger('sorting')->default(0);
             $table->enum('status', ['Active', 'Deactivated'])->default('Active');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
