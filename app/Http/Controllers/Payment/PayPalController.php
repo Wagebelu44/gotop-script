@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Payment;
 
 use App\User;
 use GuzzleHttp\Client;

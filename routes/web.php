@@ -197,7 +197,11 @@ Route::group(['middleware' => 'checkPanel'], function () {
         });
     });
 
+
     Route::get('/newsfeed-api', 'Web\PageController@newsfeedApi')->name('newsfeedApi');
+    Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('referral.link');
+
+    //Authentication route...
     Route::post('/login', 'Auth\LoginController@login')->name('login');
     Route::post('/register', 'Auth\RegisterController@register')->name('register');
     Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
@@ -205,8 +209,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::get('email-verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
     Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 
-    Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('referral.link');
-
+    //Authenticated route...
     Route::group(['middleware' => ['auth', 'user.verified']], function () {
         Route::get('/get-category-services', 'Web\OrderController@getCateServices');
         Route::post('/mass-order-store', 'Web\OrderController@storeMassOrder')->name('massOrder.store');
@@ -214,7 +217,6 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
         Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
         
-        #User child panel
         Route::resource('child-panel', 'Web\ChildPanelController')->only('store');
         Route::get('request-payout', 'Web\AffiliateController@payout')->name('request-payout');
 
@@ -227,17 +229,22 @@ Route::group(['middleware' => 'checkPanel'], function () {
     });
 
 
-    /* payment gateways  */
-    Route::post('/payment/add-funds/paypal', 'User\PaypalController@store');
-    Route::get('/payment/add-funds/{paypal}/success', 'User\PaypalController@success');
-    Route::get('/payment/add-funds/paypal/cancel', 'User\PaypalController@cancel');
-    Route::post('/payment/add-funds/paypal/ipn', 'User\PaypalController@ipn');
+    //Payment gateways...
+    Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
+
+    });
+
+    Route::post('/payment/add-funds/paypal', 'Payment\PaypalController@store');
+    Route::get('/payment/add-funds/{paypal}/success', 'Payment\PaypalController@success');
+    Route::get('/payment/add-funds/paypal/cancel', 'Payment\PaypalController@cancel');
+    Route::post('/payment/add-funds/paypal/ipn', 'Payment\PaypalController@ipn');
+
     Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
 
-    Route::post('/payment/add-funds/bitcoin', 'User\CoinPaymentsController@store');
-    Route::get('/payment/add-funds/bitcoin/cancel', 'User\CoinPaymentsController@cancel');
-    Route::get('/payment/add-funds/bitcoin/success', 'User\CoinPaymentsController@success');
-    Route::post('/payment/add-funds/bitcoin/bit-ipn', 'User\CoinPaymentsController@ipn');
+    Route::post('/payment/add-funds/bitcoin', 'Payment\CoinPaymentsController@store');
+    Route::get('/payment/add-funds/bitcoin/cancel', 'Payment\CoinPaymentsController@cancel');
+    Route::get('/payment/add-funds/bitcoin/success', 'Payment\CoinPaymentsController@success');
+    Route::post('/payment/add-funds/bitcoin/bit-ipn', 'Payment\CoinPaymentsController@ipn');
 
     Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
 
