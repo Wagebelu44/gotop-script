@@ -432,7 +432,7 @@
                                                                                 v-model="services.form_fields.provider_service_id"
                                                                                 :reduce="services => services.id" label="display_name"></v-select>
                                                                     <input type="hidden" name="provider_service_id" v-model="services.form_fields.provider_service_id">
-                                                                  
+                                                                    <span class="text-danger" v-if="errorFilter('provider_service_id')!==''"> @{{ errorFilter('provider_service_id') }} </span>
                                                                 </div>
                                                                 <input type="hidden" name="service_type"  v-if="!services.visibility.service_type" v-model="service_type_selected">
                                                                 <input type="hidden" name="provider_selected_service_data" :value="JSON.stringify(provider_service_selected)">
@@ -880,7 +880,7 @@
                                     <div class="__cate_service_wrapper">
                                         <div class="__category_row">
                                             <div class="__catename_action">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="category-handle" viewBox="0 0 20 20"><title>Drag-Handle</title>
+                                                <svg xmlns="http://www.w3.org/2000/svg" style="cursor: pointer" class="category-handle" viewBox="0 0 20 20"><title>Drag-Handle</title>
                                                     <path
                                                         d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path>
                                                 </svg>
@@ -897,7 +897,7 @@
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                         <a class="dropdown-item type-dropdown-item"    @click="categoryEdit(cate_item.id)">Edit Category</a>
                                                         <a class="dropdown-item type-dropdown-item"  @click="updateCategoryStatus(cate_item.id)" > 
-                                                            <span v-if="cate_item.status=='active'">Disable</span> <span v-else> Enable</span>  Category</a>
+                                                            <span v-if="cate_item.status=='Active'">Disable</span> <span v-else> Enable</span>  Category</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -994,7 +994,7 @@
     </script>
     <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
-    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.4')}}"></script>
+    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.5')}}"></script>
     <script>
         $('#serviceAddModal').on('hidden.bs.modal', function () {
             ServiceApp.formReset();
