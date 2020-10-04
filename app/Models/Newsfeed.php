@@ -14,7 +14,7 @@ class Newsfeed extends Model
     protected $table = 'newsfeeds';
 
     protected $fillable = [
-        'panel_id', 'title', 'image', 'content', 'status', 'updated_by', 'created_by',
+        'panel_id', 'title', 'image', 'content', 'important_news', 'service_update', 'news_feed', 'status', 'updated_by', 'created_by',
     ];
 
     protected static $logAttributes = ['*'];
