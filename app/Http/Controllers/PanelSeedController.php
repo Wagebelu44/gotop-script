@@ -81,6 +81,8 @@ class PanelSeedController
                 'meta_description' => $page->meta_description,
                 'is_public' => $page->is_public,
                 'is_editable' => $page->is_editable,
+                'page_in_menu' => $page->page_in_menu,
+                'sorting' => $page->sorting,
                 'status' => $page->status,
             ];
         }
@@ -95,6 +97,8 @@ class PanelSeedController
                 'menu_name' => $page->name,
                 'menu_link_id' => $page->id,
                 'menu_link_type' => $page->is_public,
+                'page_in_menu' => $page->page_in_menu,
+                'sort' => $page->sorting,
             ];
         }
         DB::table('menus')->insert($menuData);

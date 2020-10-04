@@ -14,7 +14,7 @@ class Menu extends Model
     protected $table = 'menus';
 
     protected $fillable = [
-        'panel_id', 'menu_name', 'external_link', 'menu_link_id', 'menu_link_type', 'sort', 'status', 'updated_by', 'created_by',
+        'panel_id', 'menu_name', 'external_link', 'menu_link_id', 'menu_link_type', 'page_in_menu', 'sort', 'status', 'updated_by', 'created_by',
     ];
 
     public function page() 

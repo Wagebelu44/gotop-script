@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Service;
 use App\Models\UserPaymentMethod;
+use App\Notifications\UserEmailVerificationNotification;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\UserResetPasswordNotification;
 use Spatie\Activitylog\Contracts\Activity;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable, SoftDeletes, LogsActivity;
 
@@ -54,6 +55,12 @@ class User extends Authenticatable
     public function paymentMethods()
     {
         return $this->hasMany(UserPaymentMethod::class, 'user_id', 'id');
+    }
+
+    //Send email verify notification
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new UserEmailVerificationNotification());
     }
 
     //Send password reset notification

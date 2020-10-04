@@ -203,9 +203,13 @@ Route::group(['middleware' => 'checkPanel'], function () {
     Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
 
+    //Route::get('email-verify', 'Auth\VerificationController@show')->name('verification.notice');
+    Route::get('email/verify/{id}', 'Auth\VerificationController@verify')->name('verification.verify');
+    Route::get('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+
     Route::get('/ref/{code}', 'Auth\RegisterController@referralLink')->name('referral.link');
 
-    Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::group(['middleware' => ['auth', 'user.verified']], function () {
         Route::get('/get-category-services', 'Web\OrderController@getCateServices');
         Route::post('/mass-order-store', 'Web\OrderController@storeMassOrder')->name('massOrder.store');
         Route::post('/make_new_order', 'Web\OrderController@store')->name('make.single.order');
