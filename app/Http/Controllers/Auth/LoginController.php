@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -37,6 +38,26 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest:web')->except('logout');
+    }
+
+    public function login(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required',
+            'password' => 'required|min:8'
+        ]);
+
+        if(filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember);
+        } else {
+            Auth::guard('web')->attempt(['username' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember);
+        }
+
+        if ( Auth::check() ) {
+            return redirect('/new-order');
+        } else {
+            return redirect()->back()->with('Input', $request->only('email', 'remember'))->with('error', 'Invalid credencial!');
+        }
     }
 
     protected function guard()
