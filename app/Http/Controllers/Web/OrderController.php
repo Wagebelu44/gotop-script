@@ -9,6 +9,7 @@ use App\Mail\FailedOrders;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\DripFeedOrders;
+use App\Models\SettingGeneral;
 use App\Mail\ManualOrderPlaced;
 use App\Models\ProviderService;
 use App\Models\ServiceCategory;
@@ -61,6 +62,10 @@ class OrderController extends Controller
                     ->withInput();
             }
 
+            if (auth()->user()->balance < $data['charge']) {
+                return redirect()->back()->with('error', 'You do not have sufficient Balance');
+            }
+
             $service = Service::find($data['service_id']);
             if ($service != null) {
                 if ($data['quantity'] < $service->min_quantity ||  $data['quantity'] >  $service->max_quantity) {
@@ -81,6 +86,12 @@ class OrderController extends Controller
 
             if (isset($data['drip_feed']) && $data['drip_feed']=='on')
             {
+                    $gs = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
+                    if ($gs->drip_feed_interval!=null) {
+                        if ($data['interval'] < $gs->drip_feed_interval) {
+                            return redirect()->back()->with('error', 'Interval Time can not be less than '.$gs->drip_feed_interval); 
+                        }
+                    }
                     $drip_feed = DripFeedOrders::create([
                         'user_id' => auth()->user()->id,
                         'runs'  => $data['runs'],
@@ -139,12 +150,11 @@ class OrderController extends Controller
                             }
                             $drip_feed_data[]= $my_order;
                         }
-                        // dd($drip_feed_data);
                         $drip_feed_store =  DripFeedOrderLists::insert($drip_feed_data);
                         
                         if ($drip_feed_store) 
                         {
-                            User::where('id', auth()->user()->id)->update(['balance'=> auth()->user()->balance() - $data['charge'] ]);
+                            User::where('id', auth()->user()->id)->update(['balance'=> auth()->user()->balance - $data['charge'] ]);
                             $dripFeedOrdersArr = [
                                 'transaction_type' => 'withdraw',
                                 'amount' => $data['charge'],
@@ -214,8 +224,8 @@ class OrderController extends Controller
                 if (!(isset($data['drip_feed']) && $data['drip_feed']=='on'))
                 {
 
-                    //User::where('id', auth()->user()->id)->update(['balance'=> auth()->user()->balance() - $data['charge'] ]);
-                    User::where('id', auth()->user()->id)->update(['balance'=> 1021 ]);
+                    User::where('id', auth()->user()->id)->update(['balance'=> auth()->user()->balance - $data['charge'] ]);
+                    //User::where('id', auth()->user()->id)->update(['balance'=> 1021 ]);
                     $log = Transaction::create([
                         'transaction_type' => 'withdraw',
                         'amount' => $data['charge'],
@@ -472,7 +482,7 @@ class OrderController extends Controller
             {
 
                 \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
-                $update_balance = auth()->user()->balance() - $total_amount;
+                $update_balance = auth()->user()->balance - $total_amount;
                 User::where('id', auth()->user()->id)->update(['balance'=> $update_balance ]);
                 $log = Transaction::create([
                     'transaction_type' => 'withdraw',
