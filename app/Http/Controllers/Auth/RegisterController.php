@@ -61,7 +61,7 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            //'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -75,13 +75,17 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $first_name = isset($data['first_name']) ? $data['first_name'] : '';
+        $last_name = isset($data['last_name']) ? $data['last_name'] : '';
         $panelId = session('panel');
         $user =  User::create([
             'uuid' => Str::uuid(),
             'panel_id' => $panelId,
-            'name' => isset($data['name']) ? $data['name'] : null,
-            'username' => isset($data['name']) ? Str::slug($data['name']) : Str::random(8),
-            'skype_field' => isset($data['skype_field']) ? $data['skype_field'] : null,
+            'username' => $data['username'],
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'name' => $first_name.' '.$last_name,
+            'skype_name' => isset($data['skype_name']) ? $data['skype_name'] : null,
             'email' => $data['email'],
             'api_key' => Str::random(20),
             'referral_key' => substr(md5(microtime()), 0, 6),
