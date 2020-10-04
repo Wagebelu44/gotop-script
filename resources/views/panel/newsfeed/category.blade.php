@@ -32,7 +32,7 @@
                                 <th>Name</th>
                                 <th>Color</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>
