@@ -227,6 +227,7 @@ class ServiceController extends Controller
                 'min_quantity' => 'required|integer',
                 'max_quantity' => 'required|integer',
                 'provider_id' => 'required|integer',
+                'provider_service_id' => 'required|integer',
                 'category_id' => 'required|integer|exists:service_categories,id',
             ]);
         }

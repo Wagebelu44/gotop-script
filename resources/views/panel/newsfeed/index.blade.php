@@ -14,8 +14,17 @@
             <div class="col-md-8">
                 <div class="card panel-default">
                     <div class="card-body">
-                        <a class="btn btn-default m-b add-page" href="{{ route($resource.'create') }}">Add News feed</a>
-
+                        <div class="d-flex justify-content-between">
+                            <div class="left-side">
+                                <a class="btn btn-default m-b add-page" href="{{ route($resource.'create') }}">Add News feed</a>
+                            </div>
+                            <div class="right-side">
+                                <form class="d-flex">
+                                    <input type="search" name="search_text" class="form-control" placeholder="Search">
+                                    <button type="submit" class="custom-button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                                </form>
+                            </div>
+                        </div>
                         <table class="table">
                             <thead>
                             <tr>
@@ -23,7 +32,7 @@
                                 <th>Title</th>
                                 <th>Created</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>

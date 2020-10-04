@@ -462,6 +462,7 @@ const ServiceApp = new Vue({
             })
             .then(res => {
                 if (res.status === 200) {
+                    this.loader = false;
                     this.category = {...res.data};
                     this.updateCategoryLists(id, res.data);
                 }
@@ -597,10 +598,12 @@ const ServiceApp = new Vue({
             })
             .catch(err => 
             {
+              
                 setTimeout(() => {
                     this.loader = false;
                     let prepare = [];
                     err.then(erMesg => {
+                        console.log(erMesg, 'error');
                         if ('errors' in erMesg) {
                             let errMsgs = Object.entries(erMesg.errors);
                             for (let i = 0; i < errMsgs.length; i++) {

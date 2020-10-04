@@ -10,7 +10,18 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <a data-toggle="modal" data-target="#fileModal" class="btn btn-default m-b add-page">Add File</a>
+                        <div class="d-flex justify-content-between">
+                            <div class="left-side">
+                                <a data-toggle="modal" data-target="#fileModal" class="btn btn-default m-b add-page">Add File</a>
+                            </div>
+                            <div class="right-side">
+                                <form class="d-flex">
+
+                                    <input type="search" name="file_search" class="form-control" placeholder="Search">
+                                    <button type="submit" class="custom-button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                                </form>
+                            </div>
+                        </div>
 
                         <table class="table">
                             <thead>

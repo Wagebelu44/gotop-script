@@ -10,10 +10,22 @@ use Illuminate\Support\Facades\Auth;
 
 class FileController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $input = $request->all();
         if (Auth::user()->can('files')) {
-            $data = File::where('panel_id', Auth::user()->panel_id)->orderBy('id', 'DESC')->get();
+            
+            $file_data = File::where('panel_id', Auth::user()->panel_id);
+            if (isset($input['file_search']) && !empty($request['file_search'])) {
+                $file_data->where(function($q) use($input) {
+                    $q->where('name', 'LIKE', '%'.$input['file_search'].'%');
+                    $q->orWhere('mime_type', 'LIKE', '%'.$input['file_search'].'%');
+                    $q->orWhere('extension', 'LIKE', '%'.$input['file_search'].'%');
+                    $q->orWhere('url', 'LIKE', '%'.$input['file_search'].'%');
+                    $q->orWhere('size', 'LIKE', '%'.$input['file_search'].'%');
+                });
+            }
+            $data = $file_data->orderBy('id', 'DESC')->get();
             return view('panel.appearance.file', compact('data'));
         } else {
             return view('panel.permission');
