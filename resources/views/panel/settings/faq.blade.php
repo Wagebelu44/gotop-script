@@ -14,7 +14,7 @@
             <div class="card panel-default" style="margin-top: 10px;">
                 <div class="card-body">
                     <div class="col-md-12">
-                        <table class="setting-table">
+                        <table class="table setting-table">
                             <tbody id="tablecontents">
                             @if (!empty($data))
                                 @foreach($data as $key => $faq)

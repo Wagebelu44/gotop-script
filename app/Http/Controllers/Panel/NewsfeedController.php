@@ -16,16 +16,16 @@ class NewsfeedController extends Controller
     {
         $input = $request->all();
         if (Auth::user()->can('newsfeed')) {
-            $news_data = Newsfeed::where('panel_id', Auth::user()->panel_id);
+            $sql = Newsfeed::where('panel_id', Auth::user()->panel_id);
             if (isset($input['search_text']) && !empty($request['search_text'])) {
-                $news_data->where(function($q) use($input) {
+                $sql->where(function($q) use($input) {
                     $q->where('title', 'LIKE', '%'.$input['search_text'].'%');
                     $q->orWhere('image', 'LIKE', '%'.$input['search_text'].'%');
                     $q->orWhere('content', 'LIKE', '%'.$input['search_text'].'%');
                     $q->orWhere('status', 'LIKE', '%'.$input['search_text'].'%');
                 });
             }
-            $data  = $news_data->orderBy('id', 'asc')->get();
+            $data  = $sql->orderBy('id', 'asc')->get();
             $page = 'index';
             return view('panel.newsfeed.index', compact('data', 'page'));
         } else {

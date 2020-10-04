@@ -13,15 +13,15 @@ class NewsfeedCategoryController extends Controller
     {
         $input = $request->all();
         if (Auth::user()->can('newsfeed')) {
-            $sql_data = NewsfeedCategory::where('panel_id', Auth::user()->panel_id);
+            $sql = NewsfeedCategory::where('panel_id', Auth::user()->panel_id);
             if (isset($input['search_text']) && !empty($request['search_text'])) {
-                $sql_data->where(function($q) use($input) {
+                $sql->where(function($q) use($input) {
                     $q->where('name', 'LIKE', '%'.$input['search_text'].'%');
                     $q->orWhere('color', 'LIKE', '%'.$input['search_text'].'%');
                     $q->orWhere('status', 'LIKE', '%'.$input['search_text'].'%');
                 });
             }
-            $data= $sql_data->orderBy('id', 'asc')->get();
+            $data= $sql->orderBy('id', 'asc')->get();
             $page = 'index';
             return view('panel.newsfeed.category', compact('data', 'page'));
         } else {
