@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+
 use App\Models\Blog;
 use App\Models\Menu;
 use App\Models\Page;
@@ -15,21 +21,16 @@ use App\Models\BlogSlider;
 use App\Models\SettingFaq;
 use App\Models\Transaction;
 use App\Models\UserChildPanel;
-use Illuminate\Http\Request;
 use App\Models\AccountStatus;
 use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
 use App\Models\ServiceCategory;
 use App\Models\NewsfeedCategory;
-use App\Http\Controllers\Controller;
 use App\Models\G\GlobalCurrencies;
 use App\Models\UserReferral;
 use App\Models\UserReferralAmount;
 use App\Models\UserReferralPayout;
 use App\Models\UserReferralVisit;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class PageController extends Controller
 {
