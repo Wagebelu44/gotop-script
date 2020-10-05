@@ -294,9 +294,7 @@ class PageController extends Controller
                 $order->where('orders.status', $request->status);
             }
 
-            if (isset($request->query)) {
-                $order->where('orders.status', $request->query);
-            } elseif (isset($request->user_search_keyword)) {
+            if (isset($request->user_search_keyword)) {
                 $order->where(function($q) use($request) {
                     $q->where('orders.id', 'LIKE', '%' . $request->user_search_keyword . '%');
                     $q->orWhere('orders.link', 'LIKE', '%' . $request->user_search_keyword . '%');
