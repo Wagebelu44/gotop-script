@@ -181,6 +181,14 @@ const userModule = new Vue({
             });
         },
         updateUser() {
+            let formData = {};
+            formData.email = this.formUser.email;
+            formData.skype_name = this.formUser.skype_name;
+            formData.username = this.formUser.username;
+            formData.password = this.formUser.password;
+            formData.password_confirmation = this.formUser.password_confirmation;
+            formData.payment_methods = this.formUser.payment_methods;
+            formData.status = this.formUser.status;
             this.loader = true;
             fetch(base_url+'/admin/users/'+this.edit_user_id, {
                 headers: {
@@ -190,7 +198,7 @@ const userModule = new Vue({
                 },
                 credentials: "same-origin",
                 method: "PUT",
-                body: JSON.stringify(this.formUser)
+                body: JSON.stringify(formData)
             }).then(res => {
                 if (!res.ok) {
                     throw res;

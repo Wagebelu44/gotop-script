@@ -420,7 +420,7 @@
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/user-vue.js')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/user-vue.js?var=0.1')}}"></script>
 <script>
     $('#userModal').on('hidden.bs.modal', function () {
         userModule.edit_user_id = null;

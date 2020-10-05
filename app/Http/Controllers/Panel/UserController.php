@@ -130,7 +130,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $data = $request->except('email', 'password','password_confirmation', 'payment_methods', 'created_at', 'updated_at');
+            $data = $request->except('payment_methods');
             $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->update($data);
             if ($user){
                 UserPaymentMethod::where('user_id', $id)->delete();
