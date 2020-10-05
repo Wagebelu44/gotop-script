@@ -57,9 +57,9 @@ class PageController extends Controller
         }
 
         // If after authentication hit un authentic url...
-        if ($page->menu->menu_link_type == 'Yes' && Auth::check() == true) {
-            return redirect('new-order');
-        }
+        // if ($page->menu->menu_link_type == 'Yes' && Auth::check() == true) {
+        //     return redirect('new-order');
+        // }
 
         //Menu data fetch...
         $sql = Menu::with(['page' => function($q) use($panelId) {
