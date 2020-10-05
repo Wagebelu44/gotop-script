@@ -270,12 +270,12 @@ class PageController extends Controller
                 $order->where('orders.status', $request->status);
             }
             
-            if (isset($request->user_search_keyword)) {
+            if (isset($request->search)) {
                 $order->where(function($q) use($request) {
-                    $q->where('orders.id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.link', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.status', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->where('orders.id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.link', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.status', 'LIKE', '%' . $request->search . '%');
                 });
             }
             $orders = $order->orderBy('orders.id', 'DESC')->paginate(50);
@@ -294,12 +294,12 @@ class PageController extends Controller
                 $order->where('orders.status', $request->status);
             }
 
-            if (isset($request->user_search_keyword)) {
+            if (isset($request->search)) {
                 $order->where(function($q) use($request) {
-                    $q->where('orders.id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.link', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.status', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->where('orders.id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.link', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.status', 'LIKE', '%' . $request->search . '%');
                 });
             }
             $orders = $order->orderBy('orders.id', 'DESC')->paginate(50);
