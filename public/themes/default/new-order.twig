@@ -248,7 +248,11 @@
                 <div class="card bg-white latest-news-panel radious-control">
                     <div id="latest-news">
                         <div class="card-body">
-                            <p>
+                            {% for imnews in site['important_newses'] %}
+                                <h5> {{ imnews['title'] }} </h5>
+                                <p> {{ imnews['content'] }} </p>
+                            {% endfor %}
+                            <!-- <p>
                             </p><p><i class="green"><b>Join our Premium WhatsApp Group and Earn Money Every Weekend! </b>💰</i></p>
                             To provide further assistance to help you reach your social media marketing goals, we have a WhatsApp group where all our customers can join.
                             <br>
@@ -267,12 +271,27 @@
                             <p></p>
                             <p><b><i class="fas fa-arrow-alt-circle-right"style="color:#77b243;"></i></b><a target="_blank" rel="nofollow" href="https://chat.whatsapp.com/JiePvtsXX1k6BYBs9ni4pN"><b> bit.ly/Premium-WhatsApp </b><i class="fas fa-arrow-alt-circle-left"style="color:#77b243;"></i></a><b></b></p>
                             <p></p>
-                            <p><i class="green">-The Social Media Growth Team-</i></p>
+                            <p><i class="green">-The Social Media Growth Team-</i></p> -->
                         </div>
                     </div>
                     <div  id="general-news" class="card-body" style="display: none">
                         <div class="news-list-panel">
-                            <div class="news-list-item"><span class="badge badge-green date">17 April 2020</span>
+                            {% for su in site['service_updates'] %}
+                                 <div class="news-list-item">
+                                <span class="badge badge-green date">  {{ su['created_at'] }}</span>
+                                <div class="news-type-list">
+                                    <div class="news-type-list-item">
+
+                                    </div>
+                                    <div class="news-type-list-item">
+                                        <div class="title blue">Enabled</div>
+                                        {{ su['content'] | raw }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                           
+                            <!-- <div class="news-list-item"><span class="badge badge-green date">17 April 2020</span>
                                 <div class="news-type-list">
                                     <div class="news-type-list-item">
                                     </div>
@@ -1542,7 +1561,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <br>
 

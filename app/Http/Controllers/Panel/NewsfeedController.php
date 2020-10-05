@@ -65,6 +65,8 @@ class NewsfeedController extends Controller
                 'title'             => $request->title,
                 'content'           => $request->newsfeed_content,
                 'image'             => isset($image) ? $image['name']:'',
+                'important_news'    => isset($request->important_news)?'Yes':'No',
+                'service_update'    => isset($request->service_update)?'Yes':'No',
                 'status'            => $request->status,
                 'created_by'        => Auth::user()->id,
             ]);
@@ -131,7 +133,9 @@ class NewsfeedController extends Controller
                 'panel_id'          => Auth::user()->panel_id,
                 'title'             => $request->title,
                 'content'           => $request->newsfeed_content,
-                'image'             => isset($image) ? $image['name']:'',
+                'image'             => isset($image) ? $image['name']:'',    
+                'important_news'    => isset($request->important_news)?'Yes':'No',
+                'service_update'    => isset($request->service_update)?'Yes':'No',
                 'status'            => $request->status,
                 'updated_at'        => Auth::user()->id,
             ]);

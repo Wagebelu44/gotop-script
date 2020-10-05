@@ -108,7 +108,24 @@
                                         </span>
                                         @enderror
                                     </div>
-
+                                    <div class="form-group">
+                                        <label class="control-label" for="service_update">Service Update</label>
+                                        <div class="setting-switch setting-switch-table">
+                                            <label class="switch">
+                                                <input type="checkbox" class="toggle-page-visibility" name="service_update" id="service_update" @if($data->service_update =='Yes') checked @endif>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label" for="important_news">Important News</label>
+                                        <div class="setting-switch setting-switch-table">
+                                            <label class="switch">
+                                                <input type="checkbox" class="toggle-page-visibility" name="important_news" id="important_news" @if($data->important_news =='Yes') checked @endif>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </div>
                                     <div class="form-group">
                                         <label class="control-label" for="post_title">Title</label>
                                         <input type="text" id="post_title" class="form-control default-page-name page-name @error('title') is-invalid @enderror" name="title" value="{{ old('title', isset($data) ? $data->title : '') }}" onchange="string_to_slug(this.value)">
