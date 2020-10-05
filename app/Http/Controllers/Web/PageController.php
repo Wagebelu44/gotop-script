@@ -391,10 +391,10 @@ class PageController extends Controller
             $site['apiAddOrder'] = apiAddOrder();
         } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
-            $site['pay_pal_store'] = url('/payment/add-funds/paypal');
-            $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
-            $site['pay_op_store'] = route('payment.payOp');
-            $site['user_payment_route'] = route('make.user.payment');
+            $site['pay_pal_store'] = route('payment.paypal.store');
+            $site['bit_coin_store'] = route('payment.bitcoin.store');
+            $site['pay_op_store'] = route('payment.payop.store');
+            $site['user_payment_route'] = route('payment.make');
 
             $site['validation_error'] = 0;
             if (Session::has('errors')) {

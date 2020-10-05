@@ -13,12 +13,12 @@ class PerfectMoneyController extends Controller
 {
     private $action_link  = 'https://perfectmoney.is/api/step1.asp';
     private $payment_method_id = 4;
-    public function getPaymentProcsseded(Request $request)
+    
+    public function store(Request $request)
     {
         try {
             $settings =  PaymentMethod::where('panel_id', auth()->user()->panel_id)->where('global_payment_method_id', $this->payment_method_id)->first();
-            if ($settings) 
-            {
+            if ($settings) {
                 $details = json_decode($settings->details,  true);
                 $account_id = '';
                 $account_name = 'No Name set';
@@ -26,6 +26,7 @@ class PerfectMoneyController extends Controller
                     if ($detail['key'] == 'PAYEE_ACCOUNT') {
                         $account_id = $detail['value'];
                     }
+
                     if ($detail['key'] == 'PAYEE_NAME') {
                         $account_name = $detail['value'];
                     }
@@ -41,13 +42,10 @@ class PerfectMoneyController extends Controller
                 ]);
 
                 if ($validator->fails()) {
-                    return redirect()
-                        ->back()
-                        ->withErrors($validator)
-                        ->withInput();
+                    return redirect()->back()->withErrors($validator)->withInput();
                 }
 
-                $log = Transaction::create([
+                Transaction::create([
                     'transaction_type' => 'deposit',
                     'transaction_detail' => json_encode(['payment_secrete'=>  null, 'currency_code'=> 'USD']),
                     'amount' => $request->input('amount'),
@@ -61,36 +59,34 @@ class PerfectMoneyController extends Controller
                     'payment_gateway_response' => null,
                     'reseller_payment_methods_setting_id' => $this->payment_method_id,
                     'reseller_id' => 1,
-                    ]);
-                    $successURL  = url('perfectmoney/success');
-                    $failURL  = url('perfectmoney/failed');
-                    echo 'redirecting ..................';
-                    echo '<form action="'.$this->action_link.'" method="POST" id="perfectMoneyForm">'; 
-                    echo '<input type="hidden" name="PAYEE_ACCOUNT" value="'.$account_id.'">';
-                    echo '<input type="hidden" name="PAYEE_NAME" value="'.$account_name.'">';
-                    echo '<input type="hidden" name="PAYMENT_AMOUNT" value="'.$request->input('amount').'">';
-                    echo '<input type="hidden" name="PAYMENT_UNITS" value="USD">';
-                    echo '<input type="hidden" name="PAYMENT_URL" value="'.$successURL.'">';
-                    echo '<input type="hidden" name="NOPAYMENT_URL" value="'.$failURL.'">';
-                    echo '<input type="hidden" name="BAGGAGE_FIELDS" value="">';
-                    echo '</form>';
-                    echo '<script>
-                        document.getElementById("perfectMoneyForm").submit();
-                        </script>';
+                ]);
+                    
+                echo 'redirecting ..................';
+                echo '<form action="'.$this->action_link.'" method="POST" id="perfectMoneyForm">'; 
+                echo '<input type="hidden" name="PAYEE_ACCOUNT" value="'.$account_id.'">';
+                echo '<input type="hidden" name="PAYEE_NAME" value="'.$account_name.'">';
+                echo '<input type="hidden" name="PAYMENT_AMOUNT" value="'.$request->input('amount').'">';
+                echo '<input type="hidden" name="PAYMENT_UNITS" value="USD">';
+                echo '<input type="hidden" name="PAYMENT_URL" value="'.route('payment.perfectmoney.success').'">';
+                echo '<input type="hidden" name="NOPAYMENT_URL" value="'.route('payment.perfectmoney.cancel').'">';
+                echo '<input type="hidden" name="BAGGAGE_FIELDS" value="">';
+                echo '</form>';
+                echo '<script>
+                    document.getElementById("perfectMoneyForm").submit();
+                    </script>';
             }
-        } catch (\Exception $e) 
-        {
+        } catch (\Exception $e) {
             return redirect()->back()->withError($e->getMessage());
         }
     }
 
-    public function success(Request $request)
+    public function success()
     {
         Session::flash('success', 'Payment is succesfully added');
         return redirect('/add-funds');
     }
 
-    public function cancel(Request $request)
+    public function cancel()
     {
         Session::flash('error', 'Payment is cancelled');
         return redirect('/add-funds');
