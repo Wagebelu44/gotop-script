@@ -42,7 +42,7 @@
                     </thead>
 
                     <tbody>
-                        {% for order in site['orderList'] %}
+                        {% for order in site['subscriptions'] %}
                         <tr>
                             <td>{{ order['id'] }}</td>
                             <td class="link">{{ order['link'] }}</td>
@@ -80,7 +80,7 @@
         </div>
 
         <div class="col-md-12 d-flex justify-content-center">
-            {{ site['orderList'].links|raw }}
+            {{ site['subscriptions'].links|raw }}
         </div>
     </div>
 </div>

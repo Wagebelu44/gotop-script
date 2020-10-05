@@ -10,25 +10,25 @@
 
             <div class="card">
                 <div class="card card-body">
-                    <table class="table {% if site['rtl'] %} rtl-table {% endif %}">
+                    <table class="table">
                         <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Date</th>
-                            <th>Link</th>
-                            <th>Total charges</th>
-                            <th>Quantity</th>
-                            <th>Service</th>
-                            <th>Runs</th>
-                            <th>Interval</th>
-                            <th>Total quantity</th>
-                            <th>Status</th>
-                            <th></th>
-                        </tr>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Link</th>
+                                <th>Total charges</th>
+                                <th>Quantity</th>
+                                <th>Service</th>
+                                <th>Runs</th>
+                                <th>Interval</th>
+                                <th>Total quantity</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
                         </thead>
-                        <tbody>
 
-                        {% for dripFeed in site['dripFeedOrderList'] %}
+                        <tbody>
+                            {% for dripFeed in site['dripfeeds'] %}
                             <tr>
                                 <td>{{ dripFeed['id'] }}</td>
                                 <td>{{ dripFeed['created_at'] }}</td>
@@ -43,13 +43,12 @@
                                 <td>{{ dripFeed['total_quantity'] }}</td>
                                 <td>{{ dripFeed['status'] }}</td>
                             </tr>
-                        {% endfor %}
-
+                            {% endfor %}
                         </tbody>
                     </table>
 
                     <div class="col-md-12 d-flex justify-content-center">
-                        {{ site['dripFeedOrderList'].links|raw }}
+                        {{ site['dripfeeds'].links|raw }}
                     </div>
                 </div>
             </div>
