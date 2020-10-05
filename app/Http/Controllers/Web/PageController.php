@@ -379,6 +379,8 @@ class PageController extends Controller
             $redeemSpent = Redeem::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->sum('spent_amount');
             $site['redeem_point']  = round($totalSpent-$redeemSpent);
             $site['redeem_amount']  = numberFormat((($site['redeem_point']*$statusPosition['point'])/100));
+            $site['important_newses'] = Newsfeed::where('important_news', 'Yes')->where('status', 'Active')->where('panel_id', auth()->user()->panel_id)->orderBy('created_at', 'DESC')->get()->toArray();
+            $site['service_updates'] = Newsfeed::where('service_update', 'Yes')->where('status', 'Active')->where('panel_id', auth()->user()->panel_id)->orderBy('created_at', 'DESC')->get()->toArray();
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
