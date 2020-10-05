@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\ProviderService;
 use App\Models\SettingProvider;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
