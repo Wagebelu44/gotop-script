@@ -29,19 +29,20 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('password/reset', 'Panel\Auth\ResetPasswordController@reset')->name('panel.password.update');
         Route::get('password/reset/{token}', 'Panel\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
 
-        // hader file information
-        Route::get('/header-information', 'Panel\DashboardController@getHeaderCountData')->name('header.unread.count');
-        Route::get('make-order-unseen', 'Panel\OrderController@makeOrderUnseen')->name('make.order.lists.seen');
 
         Route::group(['middleware' => 'auth:panelAdmin', 'as' => 'admin.'], function () {
             Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
 
-            #Users...
+            // Hader file information
+            Route::get('/header-notification', 'Panel\DashboardController@getHeaderCountData')->name('notification-count');
+            Route::get('make-order-seen', 'Panel\OrderController@makeOrderUnseen')->name('order-seen');
+
+            //Users
             Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');
             Route::resource('users', 'Panel\UserController');
-            #Users...
+
             Route::get('export/users', 'Panel\UserController@export')->name('users.export');
             Route::post('exportedUser', 'Panel\UserController@exportUsers');
             Route::post('users/download/{exported_user}', 'Panel\UserController@downloadExportedUser')->name('users.exported_user.download');

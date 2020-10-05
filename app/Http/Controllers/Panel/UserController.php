@@ -51,7 +51,7 @@ class UserController extends Controller
     {
         $credentials = $request->only('username', 'email', 'skype_name', 'status', 'password', 'password_confirmation');
         $rules = [
-            'username'    => 'nullable|string|max:255|unique:users',
+            'username'    => 'required|string|max:255|unique:users|regex:/^\S*$/u',
             'email'       => 'required|string|email|max:255|unique:users',
             'skype_name'  => 'nullable|string|max:255|unique:users',
             'status'      => 'required|in:Pending,Active,Deactivated',
@@ -130,11 +130,39 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $data = $request->except('email', 'password','password_confirmation', 'payment_methods', 'created_at', 'updated_at');
-            $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->update($data);
-            if ($user){
+            $credentials = $request->only('username', 'email', 'skype_name', 'status', 'password', 'password_confirmation');
+            $rules = [
+                'username'    => 'required|string|max:255|unique:users,username,'.$id.',id|regex:/^\S*$/u',
+                'email'       => 'required|string|email|max:255|unique:users,email,'.$id.',id',
+                'skype_name'  => 'nullable|string|max:255',
+                'status'      => 'required|in:Pending,Active,Deactivated',
+            ];
+            
+            if ($request->password) {
+                $rules['password'] = 'required|string|min:8|confirmed';
+            }
+
+            $validator = Validator::make($credentials, $rules);
+            if ($validator->fails()) {
+                return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
+            }
+
+            $data = [
+                'email' => $request->email,
+                'skype_name' => $request->skype_name,
+                'status' => $request->status,
+                'username' => $request->username,
+            ];
+            
+            if ($request->password) {
+                $data['password'] = Hash::make($request->password);
+            }
+
+            $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+            $user->update($data);
+            if ($user) {
                 UserPaymentMethod::where('user_id', $id)->delete();
-                if ($request->has('payment_methods')){
+                if ($request->has('payment_methods')) {
                     $paymentIds = [];
                     foreach ($request->payment_methods as $key => $payment){
                         $paymentIds [] = [
@@ -146,7 +174,7 @@ class UserController extends Controller
                     UserPaymentMethod::insert($paymentIds);
                 }
             }
-            $returnData = $request->all();
+            $returnData = $user->toArray();
             $returnData['services_list'] = [];
             return response()->json(['status' => true, 'data'=> $returnData], 200);
         } catch (\Exception $e) {

@@ -209,7 +209,7 @@
         // update ticket info
         function getInfo()
         {
-            fetch('{{ route("header.unread.count") }}')
+            fetch('{{ route("admin.notification-count") }}')
             .then(res=>res.json())
             .then(res=>{
                 $('#unread_ticket_counter b').html(res.tickets);
