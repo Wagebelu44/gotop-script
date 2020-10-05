@@ -38,8 +38,7 @@ const userModule = new Vue({
         }
     },
     watch: {
-        checkAlluser(oldval, newval)
-        {
+        checkAlluser(oldval, newval) {
             if (oldval) {
                 this.selectedUsers = this.users.map(it=>it.id);
             }
@@ -54,8 +53,7 @@ const userModule = new Vue({
         this.formFunc =  this.edit_user_id===null? this.saveUserInfo:this.updateUser;
     },
     methods: {
-        getCategoryServices()
-        {
+        getCategoryServices() {
             this.loader = true;
             fetch(base_url+'/admin/category-services/')
             .then(res => res.json())
@@ -127,6 +125,7 @@ const userModule = new Vue({
                 }
             })
             .catch(res => {
+                this.loader = false;
                 res.text().then(err => {
                     let errMsgs = Object.entries(JSON.parse(err).errors);
                     for (let i = 0; i < errMsgs.length; i++) {
@@ -219,7 +218,8 @@ const userModule = new Vue({
                     this.isEdit = false;
                 }
             })
-            .catch(res => {
+            .catch(res => {                
+                this.loader = false;
                 res.text().then(err => {
                     let errMsgs = Object.entries(JSON.parse(err).errors);
                     for (let i = 0; i < errMsgs.length; i++) {
