@@ -57,9 +57,9 @@ class PageController extends Controller
         }
 
         // If after authentication hit un authentic url...
-        if ($page->menu->menu_link_type == 'Yes' && Auth::check() == true) {
-            return redirect('new-order');
-        }
+        // if ($page->menu->menu_link_type == 'Yes' && Auth::check() == true) {
+        //     return redirect('new-order');
+        // }
 
         //Menu data fetch...
         $sql = Menu::with(['page' => function($q) use($panelId) {
@@ -379,6 +379,8 @@ class PageController extends Controller
             $redeemSpent = Redeem::where('panel_id', $panelId)->where('user_id', Auth::user()->id)->sum('spent_amount');
             $site['redeem_point']  = round($totalSpent-$redeemSpent);
             $site['redeem_amount']  = numberFormat((($site['redeem_point']*$statusPosition['point'])/100));
+            $site['important_newses'] = Newsfeed::where('important_news', 'Yes')->where('status', 'Active')->where('panel_id', auth()->user()->panel_id)->orderBy('created_at', 'DESC')->get()->toArray();
+            $site['service_updates'] = Newsfeed::where('service_update', 'Yes')->where('status', 'Active')->where('panel_id', auth()->user()->panel_id)->orderBy('created_at', 'DESC')->get()->toArray();
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
@@ -389,10 +391,10 @@ class PageController extends Controller
             $site['apiAddOrder'] = apiAddOrder();
         } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
-            $site['pay_pal_store'] = url('/payment/add-funds/paypal');
-            $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
-            $site['pay_op_store'] = route('payment.payOp');
-            $site['user_payment_route'] = route('make.user.payment');
+            $site['pay_pal_store'] = route('payment.paypal.store');
+            $site['bit_coin_store'] = route('payment.bitcoin.store');
+            $site['pay_op_store'] = route('payment.payop.store');
+            $site['user_payment_route'] = route('payment.make');
 
             $site['validation_error'] = 0;
             if (Session::has('errors')) {
@@ -498,7 +500,11 @@ class PageController extends Controller
     {
         $panelId = session('panel');
         $categories = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('name', 'ASC')->get();
-        $sql = Newsfeed::with(['getCategories.category'])->where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'DESC');
+        $sql = Newsfeed::with(['getCategories.category'])->where('panel_id', $panelId)
+        ->where('status', 'Active')
+        ->where('important_news', 'No')
+        ->where('service_update', 'No')
+        ->orderBy('id', 'DESC');
         if ($request->category != null) {
             $sql->whereHas('getCategories', function ($q) use($request) {
                 $q->where('category_id', '=', $request->category);

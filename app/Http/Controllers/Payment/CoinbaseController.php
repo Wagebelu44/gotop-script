@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use CoinbaseCommerce\ApiClient;
 use CoinbaseCommerce\Resources\Charge;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CoinbaseController extends Controller
 {
-    public function install(Request $request)
+    public function store(Request $request)
     {
         ApiClient::init('b2c23a6a-4ab2-43a1-8fbb-458a26cc038f');
         $chargeData = [
@@ -20,8 +21,8 @@ class CoinbaseController extends Controller
                 'currency' => 'USD'
             ],
             'pricing_type' => 'fixed_price',
-            "redirect_url" => route('coinbase.success'),
-            "cancel_url" => route('coinbase.failed'),
+            "redirect_url" => route('payment.coinbase.success'),
+            "cancel_url" => route('payment.coinbase.cancel'),
         ];
         $charges = Charge::create($chargeData);
         $d =  $charges['addresses'];
@@ -33,12 +34,16 @@ class CoinbaseController extends Controller
             </script>';
         dd($d,$charges);
     }
-    public function success(Request $request)
+    
+    public function success()
     {
-        dd("dss",$request->all());
+        Session::flash('success', 'Payment is succesfully added');
+        return redirect('/add-funds');
     }
-    public function failed(Request $request)
+
+    public function cancel()
     {
-        dd("dff",$request->all());
+        Session::flash('error', 'Payment is cancelled');
+        return redirect('/add-funds');
     }
 }
