@@ -4,23 +4,24 @@ namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\Ticket;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         return redirect(route('admin.users.index'));
-        //return view('panel.dashboard');
     }
 
     public function getHeaderCountData(Request $request)
     {
-        $ticket = new \App\Http\Controllers\Panel\TicketController;
-        $order = new \App\Http\Controllers\Panel\OrderController;
+        $ticket = Ticket::where('seen_by_admin', 0)->where('panel_id', auth()->user()->panel_id)->count();
+        $order = Order::where('panel_id', auth()->user()->panel_id)->where('admin_seen', 'Unseen')->count();
         return response()->json(['status'=> true, 
-        'tickets'=> $ticket->getAdminUnreadCount(),
-        'orders'=> $order->getUnseenOrderCount(),
-    ], 200);
+            'tickets'=> $ticket,
+            'orders'=> $order,
+        ], 200);
     }
-
 }

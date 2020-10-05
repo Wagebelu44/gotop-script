@@ -393,10 +393,4 @@ class OrderController extends Controller
         ];
         return response()->json($data, 200);
     }
-
-    // seamless functions
-    public function getUnseenOrderCount()
-    {
-       return Order::where('panel_id', auth()->user()->panel_id)->where('admin_seen', 'Unseen')->count();
-    }
 }

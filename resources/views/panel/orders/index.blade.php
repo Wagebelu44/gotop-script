@@ -198,7 +198,7 @@
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
 <script>
-    let adminSeenRoute  = '{{ route("make.order.lists.seen") }}';
+    let adminSeenRoute  = '{{ route("admin.order-seen") }}';
 </script>
 <script src="{{asset('/panel-assets/vue-scripts/order-vue.js?var=0.1')}}"></script>
 <script>

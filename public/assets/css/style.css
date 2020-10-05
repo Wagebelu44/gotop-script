@@ -393,3 +393,8 @@ img {
 .custom-tab-pane{
     padding: 20px !important;
 }
+
+.filter-active {
+    background-color: blue;
+    color: #fff;
+}

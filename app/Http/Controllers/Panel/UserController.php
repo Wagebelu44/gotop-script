@@ -62,7 +62,7 @@ class UserController extends Controller
             if ($validator->fails()) {
                 return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
             }
-    
+
             try {
                 $data = $request->except('password_confirmation');
                 $user = User::create([
@@ -75,7 +75,7 @@ class UserController extends Controller
                     'phone'      => null,
                     'balance'    => 0,
                 ]);
-    
+
                 if ($request->has('payment_methods')){
                     if ($user){
                         $paymentIds = [];
@@ -86,13 +86,12 @@ class UserController extends Controller
                                 'payment_id' => $payment,
                             ];
                         }
-                        UserPaymentMethod::insert($paymentIds);
                     }
+                    $user->services_list = [];
+                    return response()->json(['status' => true, 'data'=> $user], 200);
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
                 }
-                $user->services_list = [];
-                return response()->json(['status' => true, 'data'=> $user], 200);
-            } catch (\Exception $e) {
-                return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
             }
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
@@ -150,12 +149,12 @@ class UserController extends Controller
                 if ($request->password) {
                     $rules['password'] = 'required|string|min:8|confirmed';
                 }
-    
+
                 $validator = Validator::make($credentials, $rules);
                 if ($validator->fails()) {
                     return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
                 }
-    
+
                 $data = [
                     'email' => $request->email,
                     'skype_name' => $request->skype_name,
@@ -166,7 +165,7 @@ class UserController extends Controller
                 if ($request->password) {
                     $data['password'] = Hash::make($request->password);
                 }
-    
+
                 $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
                 $user->update($data);
                 if ($user) {
@@ -180,8 +179,12 @@ class UserController extends Controller
                                 'payment_id' => $payment,
                             ];
                         }
-                        UserPaymentMethod::insert($paymentIds);
                     }
+                    $returnData = $user->toArray();
+                    $returnData['services_list'] = [];
+                    return response()->json(['status' => true, 'data'=> $returnData], 200);
+                } catch (\Exception $e) {
+                    return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
                 }
                 $returnData = $user->toArray();
                 $returnData['services_list'] = [];
@@ -191,8 +194,7 @@ class UserController extends Controller
             }
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
-        }
-        
+        }        
     }
 
     public function destroy($id)
@@ -228,16 +230,11 @@ class UserController extends Controller
 
     /* service custom price */
     public function getCategoryService()
-    {
-        return ServiceCategory::with(['services'=>function($q){
-            $q->where('status', 'Active');
-        }])->where('status', 'Active')->orderBy('id', 'ASC')->get();
     }
 
     public function getUserServices($user_id)
     {
         $user = User::find($user_id);
-        return $user->servicesList()->get();
     }
 
     public function serviceUpdate(Request $request)

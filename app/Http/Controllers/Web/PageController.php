@@ -57,9 +57,9 @@ class PageController extends Controller
         }
 
         // If after authentication hit un authentic url...
-        if ($page->menu->menu_link_type == 'Yes' && Auth::check() == true) {
-            return redirect('new-order');
-        }
+        // if ($page->menu->menu_link_type == 'Yes' && Auth::check() == true) {
+        //     return redirect('new-order');
+        // }
 
         //Menu data fetch...
         $sql = Menu::with(['page' => function($q) use($panelId) {
@@ -132,6 +132,10 @@ class PageController extends Controller
         ];
 
         if ($page->default_url == 'sign-in') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+
             $site['url'] = route('login');
             $site['sign_up'] = ($setting->signup_page == 1) ? true : false;
             $site['reset_password'] = ($setting->reset_password == 1) ? true : false;
@@ -145,6 +149,10 @@ class PageController extends Controller
                 $site['validation_error'] = $error->count();
             }
         } elseif ($page->default_url == 'sign-up') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+            
             $site['url'] = route('register');
             $site['sign_in_url'] = url('/sign-in');
             $site['reset_password_url'] = url('/password-reset');
@@ -173,6 +181,10 @@ class PageController extends Controller
                 $site['validation_error'] = $error->count();
             }
         } elseif ($page->default_url == 'password-reset') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+            
             $site['url'] = route('password.email');
             $site['sign_up'] = ($setting->signup_page == 1) ? true : false;
             $site['sign_up_url'] = url('/sign-up');
@@ -187,6 +199,10 @@ class PageController extends Controller
                 $site['validation_error'] = $error->count();
             }
         } elseif ($page->default_url == 'password-set') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+            
             $site['url'] = route('password.update');
             $site['token'] = $param;
             
@@ -245,39 +261,59 @@ class PageController extends Controller
                 $site['service_lists'] = $service->get()->toArray();
             }
         } elseif ($page->default_url == 'orders') {
-            $input = $request->all();
             $order = Order::select('orders.*', 'services.name as service_name')
             ->where('orders.user_id', auth()->user()->id)
             ->where('orders.refill_status', 0)
             ->join('services', 'services.id', '=', 'orders.service_id');
 
-            if (isset($input['status'])) {
-                $orders =  $order->where('orders.status', $input['status'])->orderBy('orders.id', 'DESC')->get()->toArray();
+            if (isset($request->status) && $request->status != 'all') {
+                $order->where('orders.status', $request->status);
             }
-            if (isset($input['query'])) {
-                $orders =  $order->where('orders.status', $input['query'])->orderBy('orders.id', 'DESC')->get()->toArray();
-            } elseif (isset($input['user_search_keyword'])) {
-                if ($input['status'] !='all') {
-                    $order->where('orders.status', $input['status']);
-                }
-                $qString = $input['user_search_keyword'];
-
-                $orders =  $order->where(function($q) use($qString) {
-                    $q->where('orders.id', 'LIKE', '%' . $qString . '%');
-                    $q->orWhere('orders.link', 'LIKE', '%' . $qString . '%');
-                    $q->orWhere('orders.service_id', 'LIKE', '%' . $qString . '%');
-                    $q->orWhere('orders.status', 'LIKE', '%' . $qString . '%');
-                })->orderBy('orders.id', 'DESC')->get()->toArray();
-            } else {
-                $orders = $order->orderBy('orders.id', 'DESC')->get()->toArray();
+            
+            if (isset($request->query)) {
+                $order->where('orders.status', $request->query);
+            } elseif (isset($request->user_search_keyword)) {
+                $order->where(function($q) use($request) {
+                    $q->where('orders.id', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->orWhere('orders.link', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->orWhere('orders.status', 'LIKE', '%' . $request->user_search_keyword . '%');
+                });
             }
+            $orders = $order->orderBy('orders.id', 'DESC')->paginate(50)->toArray();
 
-            $site['orderList'] = $orders;
+            $site['orders'] = $orders;
             $site['url'] = $url;
-            $site['status'] = $input['status'] ?? 'all';
+            $site['status'] = $request->status ?? 'all';
+        } elseif ($page->default_url == 'subscriptions') {
+            $order = Order::select('orders.*', 'services.name as service_name')
+            ->where('orders.user_id', auth()->user()->id)
+            ->where('orders.refill_status', 0)
+            ->join('services', 'services.id', '=', 'orders.service_id')
+            ->where('service_type', 'Subscriptions');
+
+            if (isset($request->status) && $request->status != 'all') {
+                $order->where('orders.status', $request->status);
+            }
+
+            if (isset($request->query)) {
+                $order->where('orders.status', $request->query);
+            } elseif (isset($request->user_search_keyword)) {
+                $order->where(function($q) use($request) {
+                    $q->where('orders.id', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->orWhere('orders.link', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->orWhere('orders.status', 'LIKE', '%' . $request->user_search_keyword . '%');
+                });
+            }
+            $orders = $order->orderBy('orders.id', 'DESC')->paginate(50)->toArray();
+
+            $site['subscriptions'] = $orders;
+            $site['url'] = $url;
+            $site['status'] = $request->status ?? 'all';
         } elseif ($page->default_url == 'drip-feed') {
             $date = (new \DateTime())->format('Y-m-d H:i:s');
-            $d_feeds = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
+            $sql = DripFeedOrders::select('drip_feed_orders.*','users.username as user_name', 'A.service_name', 'A.orders_link','A.service_quantity as service_quantity',  'B.runOrders as runOrders')
             ->join('users','users.id','=','drip_feed_orders.user_id')
             ->join(\DB::raw('(SELECT COUNT(orders.drip_feed_id) AS totalOrders, orders.drip_feed_id, GROUP_CONCAT(DISTINCT(orders.link)) AS orders_link,
             GROUP_CONCAT(DISTINCT(services.name)) AS service_name, GROUP_CONCAT(DISTINCT(orders.quantity)) AS service_quantity FROM orders INNER JOIN services
@@ -285,14 +321,12 @@ class PageController extends Controller
             ->leftJoin(\DB::raw("(SELECT drip_feed_id, COUNT(drip_feed_id) AS runOrders FROM orders
             WHERE order_viewable_time <='".$date."' GROUP BY drip_feed_id) AS B"), 'drip_feed_orders.id', '=', 'B.drip_feed_id');
 
-            if (isset($request->status)) {
-                if ($request->status != 'all') {
-                    $d_feeds->where('drip_feed_orders.status', $request->status);
-                }
+            if (isset($request->status) && $request->status != 'all') {
+                $sql->where('drip_feed_orders.status', $request->status);
             }
 
-            $drip_feeds = $d_feeds->OrderBy('id', 'DESC')->get()->toArray();
-            $site['dripFeedOrderList'] = $drip_feeds;
+            $drip_feeds = $sql->orderBy('id', 'DESC')->paginate(50)->toArray();
+            $site['dripfeeds'] = $drip_feeds;
             $site['url'] = $url;
             $site['status'] = $input['status']??'all';
         } elseif ($page->default_url == 'tickets') {
@@ -391,10 +425,10 @@ class PageController extends Controller
             $site['apiAddOrder'] = apiAddOrder();
         } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
-            $site['pay_pal_store'] = url('/payment/add-funds/paypal');
-            $site['bit_coin_store'] = url('/payment/add-funds/bitcoin');
-            $site['pay_op_store'] = route('payment.payOp');
-            $site['user_payment_route'] = route('make.user.payment');
+            $site['pay_pal_store'] = route('payment.paypal.store');
+            $site['bit_coin_store'] = route('payment.bitcoin.store');
+            $site['pay_op_store'] = route('payment.payop.store');
+            $site['user_payment_route'] = route('payment.make');
 
             $site['validation_error'] = 0;
             if (Session::has('errors')) {

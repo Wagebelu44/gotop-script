@@ -129,7 +129,7 @@
                                                <div class="col-md-12">
                                                    <div class="form-group">
                                                        <div class="controls">
-                                                           <label for="name"> <strong>Service Name <span class="badge badge-pill badge-dark"> English </span> </strong>  </label>
+                                                           <label for="name"> <strong>Service Name<span class="badge badge-pill badge-dark"> English </span> </strong>  </label>
                                                            <input type="text" name="name" class="form-control"
                                                                    placeholder="Service Name" v-model="services.form_fields.name">
                                                                    <span class="text-danger" v-if="errorFilter('name')!==''"> @{{ errorFilter('name') }} </span>
@@ -206,11 +206,11 @@
                                                <div class="col-11 d-flex" v-if="services.visibility.auto_per_rate">
                                                    <div class="form-group">
                                                        <label for=""> Fixed 1.0</label>
-                                                       <input type="text" v-model="auto_price_plus" class="form-control" placeholder="0" aria-describedby="helpId">
+                                                       <input type="number" step="any" v-model="auto_price_plus" class="form-control" placeholder="0" aria-describedby="helpId">
                                                    </div>
                                                    <div class="form-group">
                                                        <label for=""> Percent, %</label>
-                                                       <input type="text"  v-model="auto_price_percent" class="form-control" placeholder="0" aria-describedby="helpId">
+                                                       <input type="number" step="any"  v-model="auto_price_percent" class="form-control" placeholder="0" aria-describedby="helpId">
                                                    </div>
                                                    <div class="form-group">
                                                        <div class="price_box">
@@ -224,7 +224,7 @@
                                               
                                                <div class="col-11" v-else>
                                                    <div class="form-group">
-                                                       <input type="text" class="form-control" name="price" v-model="services.form_fields.price">
+                                                       <input type="number" step="any" class="form-control" name="price" v-model="services.form_fields.price">
                                                        <label for="">@{{services.form_fields.price_original}} USD</label>
                                                    </div>
                                                </div>
@@ -240,7 +240,7 @@
                                            <div class="row" v-else>
                                                <div class="col-12">
                                                    <div class="form-group">
-                                                       <input type="text" name="price" class="form-control"
+                                                       <input type="number" step="any" name="price" class="form-control"
                                                                v-model="services.form_fields.price" placeholder="Price">
                                                                <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                    </div>
@@ -256,7 +256,7 @@
                                                    <div class="row order_limit" v-if="service_mode == 'Auto'  && services.form_fields.provider_service_id != null">
                                                        <div class="col-5">
                                                            <div class="form-group">
-                                                               <input type="text" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
+                                                               <input type="number" step="any" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
                                                                <label for="">@{{services.form_fields.auto_min_quantity}} USD</label>
                                                                <span class="text-danger" v-if="errorFilter('min_quantity')!==''"> @{{ errorFilter('min_quantity') }} </span>
                                                            </div>
@@ -274,7 +274,7 @@
                                                    <div  v-else >
                                                        <div class="form-group">
                                                            <div class="controls">
-                                                               <input type="text" name="min_quantity"
+                                                               <input type="number" step="any" name="min_quantity"
                                                                        class="form-control"
                                                                        placeholder="Min quantity"
                                                                        v-model="services.form_fields.min_quantity"
@@ -295,7 +295,7 @@
                                                    <div class="row order_limit" v-if="service_mode == 'Auto'  && services.form_fields.provider_service_id != null">
                                                        <div class="col-5">
                                                            <div class="form-group">
-                                                               <input type="text" class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
+                                                               <input type="number"  class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
                                                                <label for="">@{{services.form_fields.auto_max_quantity}} USD</label>
                                                                <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                            </div>
@@ -314,7 +314,7 @@
                                                        <div class="form-group">
                                                            <div class="controls">
                
-                                                               <input type="text" name="max_quantity"
+                                                               <input type="number"  name="max_quantity"
                                                                        class="form-control"
                                                                        placeholder="Max quantity"
                                                                        v-model="services.form_fields.max_quantity"
@@ -344,7 +344,7 @@
                                                <div class="col-12">
                                                    <div class="form-group">
                                                        <label for=""> <strong>Overflow</strong>  </label>
-                                                       <input type="text"
+                                                       <input type="number" step="any"
                                                                v-model="services.form_fields.auto_overflow"
                                                                class="form-control" name="auto_overflow">
                                                    </div>
@@ -469,11 +469,11 @@
                                                     <div class="col-11 d-flex"   v-if="services.visibility.auto_per_rate">
                                                         <div class="form-group">
                                                             <label for=""> Fixed 1.0</label>
-                                                            <input type="text" v-model="auto_price_plus" class="form-control" placeholder="0" aria-describedby="helpId">
+                                                            <input type="number" step="any" v-model="auto_price_plus" class="form-control" placeholder="0" aria-describedby="helpId">
                                                         </div>
                                                         <div class="form-group">
                                                             <label for=""> Percent, %</label>
-                                                            <input type="text"  v-model="auto_price_percent" class="form-control" placeholder="0" aria-describedby="helpId">
+                                                            <input type="number" step="any"  v-model="auto_price_percent" class="form-control" placeholder="0" aria-describedby="helpId">
                                                         </div>
                                                         <div class="form-group">
                                                             <div class="price_box">
@@ -503,7 +503,7 @@
                                                 <div class="row test-class-row" v-else>
                                                     <div class="col-12">
                                                         <div class="form-group">
-                                                            <input type="text" name="price" class="form-control"
+                                                            <input type="number" name="price" step="any" class="form-control"
                                                                     v-model="services.form_fields.price" placeholder="Price">
                                                             <span class="text-danger" v-if="errorFilter('price')!==''"> @{{ errorFilter('price') }} </span>
                                                         </div>
@@ -516,7 +516,7 @@
                                                         <div  v-if="service_mode == 'Auto'  && services.form_fields.provider_service_id != null" class="row order_limit">
                                                             <div class="col-5">
                                                                 <div class="form-group">
-                                                                    <input type="text" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
+                                                                    <input type="number" step="any" class="form-control" name="min_quantity" v-model='services.form_fields.min_quantity'>
                                                                     <label for="">@{{services.form_fields.auto_min_quantity}} USD</label>
                                                                     <span class="text-danger" v-if="errorFilter('min_quantity')!==''"> @{{ errorFilter('min_quantity') }} </span>
                                                                 </div>
@@ -534,7 +534,7 @@
                                                         <div  v-else>
                                                             <div class="form-group">
                                                                 <div class="controls">
-                                                                    <input type="text" name="min_quantity"
+                                                                    <input type="number" step="any" name="min_quantity"
                                                                             class="form-control"
                                                                             placeholder="Min quantity"
                                                                             v-model="services.form_fields.min_quantity"
@@ -555,7 +555,7 @@
                                                         <div class="row order_limit" v-if="service_mode == 'Auto'  && services.form_fields.provider_service_id != null">
                                                             <div class="col-5">
                                                                 <div class="form-group">
-                                                                    <input type="text" class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
+                                                                    <input type="number" step="any" class="form-control" v-model='services.form_fields.max_quantity' name="max_quantity">
                                                                     <label for="">@{{services.form_fields.auto_max_quantity}} USD</label>
                                                                     <span class="text-danger" v-if="errorFilter('max_quantity')!==''"> @{{ errorFilter('max_quantity') }} </span>
                                                                 </div>
@@ -573,7 +573,7 @@
                                                         <div v-else>
                                                             <div class="form-group">
                                                                 <div class="controls">
-                                                                    <input type="text" name="max_quantity"
+                                                                    <input type="number" step="any" name="max_quantity"
                                                                             class="form-control"
                                                                             placeholder="Max quantity"
                                                                             v-model="services.form_fields.max_quantity"
@@ -616,8 +616,9 @@
                                                         <div class="form-group">
                                                             <label > <strong>Increment</strong>    <span class="fa fa-exclamation-circle" data-toggle="tooltip" data-placement="top" title="Restricted to accept quantity. Multiple of setted value"></span></label>
                                                             {{-- <label for=""> Increment <i class="fas fa-info-circle"></i> </label> --}}
-                                                            <input type="text" class="form-control" name="increment"
+                                                            <input type="number" step="any" class="form-control" name="increment"
                                                                     v-model="services.form_fields.increment">
+                                                            <span class="text-danger" v-if="errorFilter('increment')!==''"> @{{ errorFilter('increment') }} </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -625,9 +626,10 @@
                                                     <div class="col-12">
                                                         <div class="form-group">
                                                             <label for=""> <strong>Overflow</strong>  </label>
-                                                            <input type="text"
+                                                            <input type="number" step="any"
                                                                     v-model="services.form_fields.auto_overflow"
                                                                     class="form-control" name="auto_overflow">
+                                                                    <span class="text-danger" v-if="errorFilter('auto_overflow')!==''"> @{{ errorFilter('auto_overflow') }} </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -809,7 +811,7 @@
                                         <button class="btn btn-outline-secondary"  type="button" data-toggle="modal" data-target="#serviceAddModal">Add Service</button>
                                     @endcan
                                     @can('add service subscription')
-                                        <button class="btn btn-outline-secondary" type="button" @click="openSubscriptionModal()">Add Subscription</button>
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#subscriptionModal">Add Subscription</button>
                                     @endcan
                                     @can('add category')
                                         <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModalCenter">Create Category</button>
@@ -1022,8 +1024,11 @@
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
     <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.5')}}"></script>
     <script>
-        $('#serviceAddModal').on('hidden.bs.modal', function () {
+        $('#serviceAddModal, #subscriptionModal, #exampleModalCenter').on('hidden.bs.modal', function () {
             ServiceApp.formReset();
+            ServiceApp.errors.services = [];
+            ServiceApp.errors.common =  null;
+            ServiceApp.errors.category =  [];
         });
     </script>
 @endsection

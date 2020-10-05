@@ -29,19 +29,20 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('password/reset', 'Panel\Auth\ResetPasswordController@reset')->name('panel.password.update');
         Route::get('password/reset/{token}', 'Panel\Auth\ResetPasswordController@showResetForm')->name('panel.password.reset');
 
-        // hader file information
-        Route::get('/header-information', 'Panel\DashboardController@getHeaderCountData')->name('header.unread.count');
-        Route::get('make-order-unseen', 'Panel\OrderController@makeOrderUnseen')->name('make.order.lists.seen');
 
         Route::group(['middleware' => 'auth:panelAdmin', 'as' => 'admin.'], function () {
             Route::get('dashboard', 'Panel\DashboardController@index')->name('panel.dashboard');
 
-            #Users...
+            // Hader file information
+            Route::get('/header-notification', 'Panel\DashboardController@getHeaderCountData')->name('notification-count');
+            Route::get('make-order-seen', 'Panel\OrderController@makeOrderUnseen')->name('order-seen');
+
+            //Users
             Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');
             Route::resource('users', 'Panel\UserController');
-            #Users...
+
             Route::get('export/users', 'Panel\UserController@export')->name('users.export');
             Route::post('exportedUser', 'Panel\UserController@exportUsers');
             Route::post('users/download/{exported_user}', 'Panel\UserController@downloadExportedUser')->name('users.exported_user.download');
@@ -231,36 +232,42 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     //Payment gateways...
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
+        Route::post('payment/make', 'User\PaymentController@index')->name('make');
 
-    });
+        Route::group(['prefix' => 'paypal', 'as' => 'paypal.'], function () {
+            Route::post('/', 'Payment\PaypalController@store')->name('store');
+            Route::get('/success', 'Payment\PaypalController@success')->name('success');
+            Route::get('/cancel', 'Payment\PaypalController@cancel')->name('cancel');
+            Route::post('/ipn', 'Payment\PaypalController@ipn')->name('ipn');
+        });
 
-    Route::post('/payment/add-funds/paypal', 'Payment\PaypalController@store');
-    Route::get('/payment/add-funds/{paypal}/success', 'Payment\PaypalController@success');
-    Route::get('/payment/add-funds/paypal/cancel', 'Payment\PaypalController@cancel');
-    Route::post('/payment/add-funds/paypal/ipn', 'Payment\PaypalController@ipn');
+        Route::group(['prefix' => 'bitcoin', 'as' => 'bitcoin.'], function () {
+            Route::post('/', 'Payment\CoinPaymentsController@store')->name('store');
+            Route::get('/success', 'Payment\CoinPaymentsController@success')->name('success');
+            Route::get('/cancel', 'Payment\CoinPaymentsController@cancel')->name('cancel');
+            Route::post('/ipn', 'Payment\CoinPaymentsController@ipn')->name('ipn');
+        });
 
-    Route::post('make-payment', 'User\PaymentController@makePayment')->name('make.user.payment');
-
-    Route::post('/payment/add-funds/bitcoin', 'Payment\CoinPaymentsController@store');
-    Route::get('/payment/add-funds/bitcoin/cancel', 'Payment\CoinPaymentsController@cancel');
-    Route::get('/payment/add-funds/bitcoin/success', 'Payment\CoinPaymentsController@success');
-    Route::post('/payment/add-funds/bitcoin/bit-ipn', 'Payment\CoinPaymentsController@ipn');
-
-    Route::post('/payment/add-funds/payOp', 'User\PayOpController@store')->name('payment.payOp');
-
-    Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
-        Route::post('pay', 'Payment\CoinbaseController@install')->name('install');
-        Route::get('success', 'Payment\CoinbaseController@success')->name('success');
-        Route::get('failed', 'Payment\CoinbaseController@failed')->name('failed');
-    });
-
-    Route::group(['prefix' => 'perfectmoney', 'as' => 'perfectmoney.'], function () {
-        Route::post('success', 'Payment\PerfectMoneyController@success')->name('success');
-        Route::post('failed', 'Payment\PerfectMoneyController@cancel')->name('failed');
-    });
+        Route::group(['prefix' => 'payop', 'as' => 'payop.'], function () {
+            Route::post('/payment/add-funds/payOp', 'Payment\PayOpController@store')->name('store');
+        });
+        
+        Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
+            Route::post('/', 'Payment\CoinbaseController@store')->name('store');
+            Route::get('/success', 'Payment\CoinbaseController@success')->name('success');
+            Route::get('/cancel', 'Payment\CoinbaseController@cancel')->name('cancel');
+        });
+        
+        Route::group(['prefix' => 'perfectmoney', 'as' => 'perfectmoney.'], function () {
+            Route::post('/', 'Payment\PerfectMoneyController@store')->name('store');
+            Route::post('/success', 'Payment\PerfectMoneyController@success')->name('success');
+            Route::post('/cancel', 'Payment\PerfectMoneyController@cancel')->name('cancel');
+        });
     
-    Route::group(['prefix' => 'webmoney', 'as' => 'webmoney.'], function () {
-        Route::post('success', 'Payment\WebmoneyController@success')->name('success');
-        Route::post('failed', 'Payment\WebmoneyController@cancel')->name('failed');
+        Route::group(['prefix' => 'webmoney', 'as' => 'webmoney.'], function () {
+            Route::post('/', 'Payment\WebmoneyController@store')->name('store');
+            Route::post('success', 'Payment\WebmoneyController@success')->name('success');
+            Route::post('cancel', 'Payment\WebmoneyController@cancel')->name('cancel');
+        });
     });
 });
