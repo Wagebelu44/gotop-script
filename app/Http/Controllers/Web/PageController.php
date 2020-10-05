@@ -267,9 +267,9 @@ class PageController extends Controller
                     $q->orWhere('orders.link', 'LIKE', '%' . $qString . '%');
                     $q->orWhere('orders.service_id', 'LIKE', '%' . $qString . '%');
                     $q->orWhere('orders.status', 'LIKE', '%' . $qString . '%');
-                })->orderBy('orders.id', 'DESC')->get()->toArray();
+                })->orderBy('orders.id', 'DESC')->paginate(50)->toArray();
             } else {
-                $orders = $order->orderBy('orders.id', 'DESC')->get()->toArray();
+                $orders = $order->orderBy('orders.id', 'DESC')->paginate(50)->toArray();
             }
 
             $site['orderList'] = $orders;
