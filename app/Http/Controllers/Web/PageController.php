@@ -132,6 +132,10 @@ class PageController extends Controller
         ];
 
         if ($page->default_url == 'sign-in') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+
             $site['url'] = route('login');
             $site['sign_up'] = ($setting->signup_page == 1) ? true : false;
             $site['reset_password'] = ($setting->reset_password == 1) ? true : false;
@@ -145,6 +149,10 @@ class PageController extends Controller
                 $site['validation_error'] = $error->count();
             }
         } elseif ($page->default_url == 'sign-up') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+            
             $site['url'] = route('register');
             $site['sign_in_url'] = url('/sign-in');
             $site['reset_password_url'] = url('/password-reset');
@@ -173,6 +181,10 @@ class PageController extends Controller
                 $site['validation_error'] = $error->count();
             }
         } elseif ($page->default_url == 'password-reset') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+            
             $site['url'] = route('password.email');
             $site['sign_up'] = ($setting->signup_page == 1) ? true : false;
             $site['sign_up_url'] = url('/sign-up');
@@ -187,6 +199,10 @@ class PageController extends Controller
                 $site['validation_error'] = $error->count();
             }
         } elseif ($page->default_url == 'password-set') {
+            if (Auth::check()) {
+                return redirect('new-order');
+            }
+            
             $site['url'] = route('password.update');
             $site['token'] = $param;
             
