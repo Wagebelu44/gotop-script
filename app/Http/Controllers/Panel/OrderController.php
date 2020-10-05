@@ -16,7 +16,11 @@ class OrderController extends Controller
 
     public function index()
     {
-        return view('panel.orders.index');
+        if (Auth::user()->can('view order')) {
+            return view('panel.orders.index');
+        } else {
+            return view('panel.permission');
+        }
     }
     public function makeOrderUnseen(Request $request)
     {
