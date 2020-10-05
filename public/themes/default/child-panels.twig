@@ -56,10 +56,9 @@
                             <td nowrap>{{ panel['created_at'] }}</td>
                             <td nowrap>{{ panel['expiry'] }}</td>
                             <td nowrap>
-                                {#{% if panel['admin'] %}
-                                    <a href="{{ panel['admin_url'] }}" class="btn btn-xs btn-default"
-                                       target="_blank">Admin</a>
-                                {% endif %}#}
+                                {% if panel['status'] == 'Active' %}
+                                    <a href="{{ panel['domain'] }}/admin" class="btn btn-xs btn-default" target="_blank">Admin</a>
+                                {% endif %}                                
                             </td>
                         </tr>
                     {% endfor %}

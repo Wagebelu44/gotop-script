@@ -82,54 +82,11 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="col-md-12 d-flex justify-content-center">
+                    {{ site['orderList'].links|raw }}
+                </div>
             </div>
-
-            {% if pagination['count'] > 100 %}
-                {% if searchList %}
-                    {% set params = {} %}
-                    {% for search in searchList %}
-                        {% set params = params | merge([search['name'] ~ '=' ~ search['value']]) %}
-                    {% endfor %}
-                    {% set params = '?' ~ params|join('&') %}
-                {% endif %}
-                <ul class="pagination {% if site['rtl'] %} rtl-pagination {% endif %}">
-                    {% if pagination['current'] != 1 %}<li>
-                        <a href="{{ page['url'] }}/{{ status }}/{{ pagination['last'] }}{{ params }}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                        </li>
-                    {% endif %}
-
-                    {% set r, l = 3, 3 %}
-
-                    {% if pagination['current'] == 1 %}
-                        {% set r = 6 %}
-                    {% endif %}
-
-                    {% if pagination['current'] == 2 %}
-                        {% set r = 5 %}
-                    {% endif %}
-
-                    {% if pagination['current'] >= pagination['pages'] %}
-                        {% set l = 5 %}
-                    {% endif %}
-
-                    {# {% for i in 1..ceil(pagination['pages']) %}
-            {% if i >= (pagination['current']-l) and i <= (pagination['current']+r) %}
-              <li{% if i == pagination['current'] %} class="active"{%endif%}><a href="{{ page['url'] }}/{{ status }}/{{i}}{{ params }}">{{i}}</a></li>
-            {%endif%}
-           {% endfor %} #}
-
-                    {% if pagination['current'] < pagination['pages'] %}
-                        <li>
-                            <a href="{{ page['url'] }}/{{ status }}/{{ pagination['next'] }}{{ params }}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            {% endif %}
-
         </div>
     </div>
 </div>
