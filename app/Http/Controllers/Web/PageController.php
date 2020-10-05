@@ -500,7 +500,11 @@ class PageController extends Controller
     {
         $panelId = session('panel');
         $categories = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('name', 'ASC')->get();
-        $sql = Newsfeed::with(['getCategories.category'])->where('panel_id', $panelId)->where('status', 'Active')->orderBy('id', 'DESC');
+        $sql = Newsfeed::with(['getCategories.category'])->where('panel_id', $panelId)
+        ->where('status', 'Active')
+        ->where('important_news', 'No')
+        ->where('service_update', 'No')
+        ->orderBy('id', 'DESC');
         if ($request->category != null) {
             $sql->whereHas('getCategories', function ($q) use($request) {
                 $q->where('category_id', '=', $request->category);
