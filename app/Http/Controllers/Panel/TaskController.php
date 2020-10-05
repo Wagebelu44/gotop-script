@@ -13,7 +13,11 @@ class TaskController extends Controller
 
     public function index()
     {
-        return view('panel.tasks.index');
+        if (Auth::user()->can('view task')) {
+            return view('panel.tasks.index');
+        } else {
+            return view('panel.permission');
+        }
     }
 
     public function refillChnageStatus(Request $r)
