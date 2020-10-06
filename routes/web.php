@@ -219,6 +219,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('ticket/store', 'Web\TicketController@store')->name('ticket.store');
         Route::post('supportTickets/comments/store', 'Web\TicketController@makeComment')->name('ticket.comment.store');
         
+        Route::post('refill-status-Changes', 'Web\OrderController@refillStatusChange')->name('order.changeRefillStatus');
+
         Route::resource('child-panel', 'Web\ChildPanelController')->only('store');
         Route::get('request-payout', 'Web\AffiliateController@payout')->name('request-payout');
 

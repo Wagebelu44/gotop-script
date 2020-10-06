@@ -261,7 +261,7 @@ class PageController extends Controller
                 $site['service_lists'] = $service->get()->toArray();
             }
         } elseif ($page->default_url == 'orders') {
-            $order = Order::select('orders.*', 'services.name as service_name')
+            $order = Order::select('orders.*', 'services.name as service_name', 'services.refill_status')
             ->where('orders.user_id', auth()->user()->id)
             ->where('orders.refill_status', 0)
             ->join('services', 'services.id', '=', 'orders.service_id');
@@ -282,6 +282,14 @@ class PageController extends Controller
 
             $site['orders'] = $orders;
             $site['url'] = $url;
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+            }
+
+            if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+            }
+            $site['refill_url'] = route('order.changeRefillStatus');
             $site['status'] = $request->status ?? 'all';
         } elseif ($page->default_url == 'subscriptions') {
             $order = Order::select('orders.*', 'services.name as service_name')
