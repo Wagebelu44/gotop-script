@@ -413,20 +413,21 @@
                                 <button type="button" data-toggle="modal" data-target="#sendtestMail" class="btn btn-default">
                                     Send test
                                 </button>
-                                <a href="#" id="btn-reset" class="btn btn-default disabled">
+                            <button type="button" onclick="emailReset()" id="btn-reset" class="btn btn-default @if($data->update_at == null || $data->update_by == null) disabled @endif">
                                     Reset
-                                </a>
+                            </button>
                             </div>
-
                         </div>
-
                         <hr>
                         <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
                         <a class="btn btn-default" href="{{ route($resource.'index') }}">Cancel</a>
                     </form>
+                    <form action="{{ route('admin.setting.reset.mail') }}" method="POST" id="mail_reset_form">
+                        @csrf
+                        <input type="hidden" name="mail_type" value="{{ $data->id }}">
+                    </form>
                 </div>
                 @endif
-
             </div>
         </div>
     </div>
@@ -464,6 +465,14 @@
             </div>
             </div>
         </div>
+        <script>
+             function emailReset()
+            {
+                if (confirm('Are you sure?')) {
+                    document.getElementById('mail_reset_form').submit();
+                }
+            }
+        </script>
 @endsection
 
 @section('scripts')
