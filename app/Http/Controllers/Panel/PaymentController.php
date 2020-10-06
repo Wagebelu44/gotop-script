@@ -171,8 +171,12 @@ class PaymentController extends Controller
                     if ($log) {
                         //update user balance
                         $ub = User::find($payment_data['user_id']);
+                        //dd($log->amount, $ub->balance, $payment_data['amount']);
                         if ($ub) {
-                            $ub->balance = ($ub->balance + $payment_data['amount']) - $log->amount;
+                            $total_balance = $ub->balance;
+                            $total_balance -= $log->amount;
+                            $total_balance += $payment_data['amount'];
+                            $ub->balance = $total_balance; //($ub->balance + $payment_data['amount']) - $log->amount;
                             $ub->save();
                             $log->update($payment_data);
                         }
