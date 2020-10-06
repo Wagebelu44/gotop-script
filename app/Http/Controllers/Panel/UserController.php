@@ -89,9 +89,9 @@ class UserController extends Controller
                     }
                     $user->services_list = [];
                     return response()->json(['status' => true, 'data'=> $user], 200);
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
                 }
+            } catch (\Exception $e) {
+                return response()->json(['status' => false, 'errors'=> $e->getMessage()], 422);
             }
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
@@ -179,12 +179,11 @@ class UserController extends Controller
                                 'payment_id' => $payment,
                             ];
                         }
+                        UserPaymentMethod::insert($paymentIds);
                     }
                     $returnData = $user->toArray();
                     $returnData['services_list'] = [];
                     return response()->json(['status' => true, 'data'=> $returnData], 200);
-                } catch (\Exception $e) {
-                    return response()->json(['status' => false, 'errors'=> $e->getMessage()], 200);
                 }
                 $returnData = $user->toArray();
                 $returnData['services_list'] = [];
@@ -230,11 +229,16 @@ class UserController extends Controller
 
     /* service custom price */
     public function getCategoryService()
+    {
+        return ServiceCategory::with(['services'=>function($q){
+            $q->where('status', 'Active');
+        }])->where('status', 'Active')->orderBy('id', 'ASC')->get();
     }
 
     public function getUserServices($user_id)
     {
         $user = User::find($user_id);
+        return $user->servicesList()->get();
     }
 
     public function serviceUpdate(Request $request)

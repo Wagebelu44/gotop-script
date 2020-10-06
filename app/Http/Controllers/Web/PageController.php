@@ -395,14 +395,14 @@ class PageController extends Controller
                 'point' => 0,
             ];
             foreach ($accountStatusData as $accStatus){
-                $accountStatuses [] = [
+                $accountStatuses[] = [
                     'name' => $accStatus['name'],
                     'minimum_spent_amount' => $accStatus['minimum_spent_amount'],
                     'point' => $accStatus['point'],
                     'statusKeys' => json_decode($accStatus['status_keys'], true),
                     'pointKeys' => json_decode($accStatus['point_keys'], true),
                 ];
-                if (($accStatus['minimum_spent_amount'] <= $totalSpent) && ($accStatus['minimum_spent_amount'] > $statusPosition['spent_amount'])) {
+                if (($accStatus['minimum_spent_amount'] >= $totalSpent)) {
                     $statusPosition = [
                         'name' => $accStatus['name'],
                         'point' => $accStatus['point'],
@@ -410,6 +410,7 @@ class PageController extends Controller
                     ];
                 }
             }
+            
             $site['accountStatuses'] = $accountStatuses;
             $site['accountStatusKeys'] = accountStatusKeys();
             $site['accountPointKeys'] = accountPointKeys();
