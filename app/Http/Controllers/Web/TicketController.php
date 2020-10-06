@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Notification;
 
 class TicketController extends Controller
 {
-    public function store(Request $r)
+    public function store(Request $request)
     {
         try {
             // important to uncomment. but for now 
@@ -36,7 +36,7 @@ class TicketController extends Controller
             //     return redirect()->back()->withError('You can\'t submit ticket. Please contact admin.');
             // }
 
-            $data = $r->all();
+            $data = $request->all();
             $validator = Validator::make($data, [
                 'subject' => 'required'
             ]);
