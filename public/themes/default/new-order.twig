@@ -251,7 +251,7 @@
                         <div class="card-body">
                             {% for imnews in site['important_newses'] %}
                                 <h5> {{ imnews['title'] }} </h5>
-                                <p> {{ imnews['content'] }} </p>
+                                {{ imnews['content'] | raw }}
                             {% endfor %}
                         </div>
                     </div>
@@ -299,7 +299,6 @@
                         <p class="price-content">**** = You will get a FREE SMM Panel like ours with a FREE domain aswell!</p>
                         <hr>
                         <div class="row">
-                            <!-- Free Tier -->
                             {% if site['accountStatuses'] %}
                                 {% for accountStatus in site['accountStatuses'] %}
                                 <div class="col-lg-4" style="margin-bottom: 15px;">
@@ -324,7 +323,6 @@
                                 </div>
                                 {% endfor %}
                             {% endif %}
-
                         </div>
                     </div>
                 </section>
@@ -352,7 +350,6 @@
                         <p class="price-content">To prevent spam, it will take a minimum of 3 days to convert your points into funds, and up to 7 days!</p>
                         <hr>
                         <div class="row">
-                            <!-- Free Tier -->
                             {% if site['accountStatuses'] %}
                                 {% for accountStatus in site['accountStatuses'] %}
                                     <div class="col-lg-4" style="margin-bottom: 15px;">
@@ -377,7 +374,6 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
-
                         </div>
                     </div>
                 </section>

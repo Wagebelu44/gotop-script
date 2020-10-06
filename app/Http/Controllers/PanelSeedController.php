@@ -6,6 +6,7 @@ use App\Models\SettingProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\PanelAdmin;
+use Illuminate\Support\Facades\File;
 
 class PanelSeedController
 {
@@ -185,5 +186,37 @@ class PanelSeedController
             ];
         }
         DB::table('setting_notifications')->insert($notificationData);
+
+        //Newsfeed add to panel...
+        $newsFeedId = DB::table('newsfeed_categories')->insertGetId([
+            'panel_id'      => $user->panel_id,
+            'name'          => 'Default Category',
+            'status'        => 'Active',
+            'color'         => '#000000',
+            'created_by'    => $user->id,
+        ]);
+
+        DB::table('newsfeeds')->insert([
+            [
+                'panel_id'          => $user->panel_id,
+                'title'             => 'Important News',
+                'content'           => File::get(public_path('panel-assets/important-news.txt')),
+                'image'             => '',
+                'important_news'    => 'Yes',
+                'service_update'    => 'No',
+                'status'            => 'Active',
+                'created_by'        => $user->id,
+            ],
+            [
+                'panel_id'          => $user->panel_id,
+                'title'             => 'Service Updates',
+                'content'           => File::get(public_path('panel-assets/service-updates.txt')),
+                'image'             => '',
+                'important_news'    => 'No',
+                'service_update'    => 'Yes',
+                'status'            => 'Active',
+                'created_by'        => $user->id,
+            ],
+        ]);
     }
 }
