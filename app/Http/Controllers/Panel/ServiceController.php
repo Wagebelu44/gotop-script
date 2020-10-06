@@ -15,20 +15,19 @@ use Illuminate\Support\Facades\Validator;
 
 class ServiceController extends Controller
 {
-
     public function index()
     {
         $gs = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
         return view('panel.services.index', compact('gs'));
     }
+
     public function sortData(Request $request)
     {
         try {
             $categories  = $request->services_ids;
             $cas = Service::get();
             $category_count = count($categories);
-            foreach($cas as $ca)
-            {
+            foreach($cas as $ca) {
                 $pos = null;
                 foreach ($categories as $key => $id) {
                     if ($ca->id == $id) {
@@ -36,8 +35,7 @@ class ServiceController extends Controller
                         break;
                     }
                 }
-                if ($pos !=null)
-                {
+                if ($pos !=null) {
                     $ca->sort  = $pos;
                     $ca->save();
                     $category_count--;
@@ -51,34 +49,33 @@ class ServiceController extends Controller
             ]);
         }
     }
+
     public function cateogrySortData(Request $request)
     {
         try {
-             $categories  = $request->category_ids;
-             $cas = ServiceCategory::get();
-             $category_count = count($categories);
-             foreach($cas as $ca)
-             {
-                 $pos = null;
-                 foreach ($categories as $key => $id) {
-                        if ($ca->id == $id) {
-                            $pos  = $key == 0? 1: $key + 1;
-                            break;
-                        }
-                 }
-                 if ($pos !=null)
-                 {
-                     $ca->sort  = $pos;
-                     $ca->save();
-                     $category_count--;
-                 }
+            $categories  = $request->category_ids;
+            $cas = ServiceCategory::get();
+            $category_count = count($categories);
+            foreach($cas as $ca) {
+                $pos = null;
+                foreach ($categories as $key => $id) {
+                    if ($ca->id == $id) {
+                        $pos  = $key == 0? 1: $key + 1;
+                        break;
+                    }
+                }
 
-             }
+                if ($pos !=null) {
+                    $ca->sort  = $pos;
+                    $ca->save();
+                    $category_count--;
+                }
+            }
         } catch (\Exception $e) {
-             return response()->json([
-                    'status' => false, 
-                    'data'   => $e->getMessage(),
-             ]);
+            return response()->json([
+                'status' => false, 
+                'data'   => $e->getMessage(),
+            ]);
         }
     }
 
@@ -89,11 +86,13 @@ class ServiceController extends Controller
             if ( isset($query_data['service_type'])) {
                 $q->where('service_type', $query_data['service_type']);
             }
+
             if ( isset($query_data['status'])) {
                 $status = '';
                 if ($query_data['status']!='All' && $query_data['status']=='Enabled') {
                     $status = 'Active';
                 }
+
                 if ($query_data['status']!='All' && $query_data['status']=='Disabled') {
                     $status = 'Deactivated';
                 }
@@ -102,6 +101,7 @@ class ServiceController extends Controller
         }, 'services.provider'])
         ->where('panel_id', auth()->user()->panel_id)
         ->orderBy('sort', 'ASC')->get();
+
         $service_type_counts =  [
             'All' => 0,
             'Default' => 0,
@@ -127,21 +127,24 @@ class ServiceController extends Controller
             'All' => 0,
             'Enabled' => 0,
             'Disabled' => 0,
-        ]; 
-        foreach ($all_service as $cs)
-        {   $service_type_counts['All'] ++;
+        ];
+        
+        foreach ($all_service as $cs) {
+            $service_type_counts['All'] ++;
             $autoManualCount['All'] ++;
-            if ($cs->service_type !=null)
+            if ($cs->service_type !=null) {
                 $service_type_counts[$cs->service_type]++;
-            if ( strtolower($cs->status) == 'active') 
-            {
+            }
+
+            if ( strtolower($cs->status) == 'active') {
                 $autoManualCount['Enabled']++;
             }
-            if ( strtolower($cs->status) == 'deactivated') 
-            {
+
+            if ( strtolower($cs->status) == 'deactivated') {
                 $autoManualCount['Disabled']++;
             }
         }
+
         return [
             'data'=>$cate_services,
             'service_type_count'=>$service_type_counts,
@@ -153,11 +156,11 @@ class ServiceController extends Controller
     {
         return SettingProvider::where('panel_id', auth()->user()->panel_id)->get();
     }
+
     public function getProviderServices(Request $r)
     {
         try {
             if (isset($r->provider_id)) {
-
                 $provider  = SettingProvider::find($r->provider_id);
                 if ($provider != null) {
                     $ch = curl_init();
@@ -178,30 +181,25 @@ class ServiceController extends Controller
                     $result  =  json_decode($server_output, true);
                     return response()->json([
                         'status' => true,
-                        'data'    => $result,
+                        'data'   => $result,
                     ]);
-                }
-                else
-                {
+                } else {
                     return response()->json([
                         'status' => false,
-                        'data'    => "No provider found",
+                        'data'   => "No provider found",
                     ]);
                 }
-
-            }
-            else
-            {
+            } else {
                 return response()->json([
                     'status' => false,
-                    'data'    => "Invalid parameters",
+                    'data'   => "Invalid parameters",
                 ]);
             }
 
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'data'    => $e->getMessage(),
+                'data'   => $e->getMessage(),
             ]);
         }
     }
@@ -215,65 +213,51 @@ class ServiceController extends Controller
                     'price' => 'required|numeric',
                     'category_id' => 'required|integer|exists:service_categories,id',
                 ]);
-            }
-            elseif(isset($request->mode) &&  strtolower($request->mode)=='auto')
-            {
+            } elseif(isset($request->mode) &&  strtolower($request->mode)=='auto') {
                 $request->validate([
                     'name' => ['required', 'string', 'max:255'],
-                    'price' => 'required|numeric',
-                    'min_quantity' => 'required|integer',
-                    'max_quantity' => 'required|integer',
+                    'price' => 'required|numeric|min:0',
+                    'min_quantity' => 'required|integer|min:0',
+                    'max_quantity' => 'required|integer|gt:min_quantity',
                     'provider_id' => 'required|integer',
                     'provider_service_id' => 'required|integer',
                     'category_id' => 'required|integer|exists:service_categories,id',
                 ]);
-            }
-            else
-            {
+            } else {
                 $request->validate([
                     'name' => ['required', 'string', 'max:255'],
-                    'price' => 'required|numeric',
-                    'min_quantity' => 'required|integer',
-                    'max_quantity' => 'required|integer',
+                    'price' => 'required|numeric|min:0',
+                    'min_quantity' => 'required|integer|min:0',
+                    'max_quantity' => 'required|integer|gt:min_quantity',
                     'category_id' => 'required|integer|exists:service_categories,id',
                 ]);
             }
 
-
             try {
-
-                if ($request->has('edit_id'))
-                {
+                if ($request->has('edit_id')) {
                     $data = $request->except('_token', 'score', 'users','edit_id','edit_mode', 'provider_selected_service_data');
-                }
-                else
-                {
+                } else {
                     $data = $request->except('_token', 'score', 'users', 'provider_selected_service_data');
                 }
+
                 $data['panel_id'] = auth()->user()->panel_id;
                 $data['provider_sync_status'] = $request->provider_sync_status == 'on'? true: false;
-                if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package')
-                {
+                if ($request->service_type == 'Custom Comments Package' || $request->service_type == 'Package') {
                     $data['min_quantity'] = 1;
                     $data['max_quantity'] = 1;
                 }
 
-                if (!$request->has('edit_id'))
-                {
+                if (!$request->has('edit_id')) {
                     $data['status'] = 'Active';
                 }
 
-                if ($request->has('edit_id') && $request->has('edit_mode'))
-                {
-                    
+                if ($request->has('edit_id') && $request->has('edit_mode')) {
                     $service = Service::find($request->edit_id);
                     $service->update($data);
                     if ($data['mode'] == 'Auto') {
                         $json_data = $request->provider_selected_service_data!=null?json_decode($request->provider_selected_service_data, true):null;
                         if ($json_data!=null) {
-                            ProviderService::updateOrCreate(
-                                ['service_id'=> $service->id],
-                                [
+                            ProviderService::updateOrCreate(['service_id'=> $service->id], [
                                 'provider_id' => $data['provider_id'],
                                 'provider_service_id' => $json_data['service'],
                                 'name' => $json_data['name'],
@@ -286,9 +270,7 @@ class ServiceController extends Controller
                             ]);
                         }
                     }
-                }
-                else
-                {
+                } else {
                     $service = Service::create($data);
                     if ($data['mode'] == 'Auto') {
                         $json_data = json_decode($request->provider_selected_service_data, true);
@@ -306,6 +288,7 @@ class ServiceController extends Controller
                         ]);
                     }
                 }
+
                 return response()->json(['status'=>200,'data'=> $service, 'message'=>'Service created successfully.']);
             } catch (\Exception $e) {
                 return response()->json(['status'=>401, 'data'=>$e->getMessage()], 422);
@@ -319,18 +302,16 @@ class ServiceController extends Controller
         if (Auth::user()->can('change service status')) {
             $servcie = Service::find($id);
             $servcie->status = ($servcie->status =='Active') ? 'Deactivated':'Active';
-            if ($servcie->save())
-            {
+            if ($servcie->save()) {
                 return response()->json(['status' => 200, 'message' => 'Service updated successfully.', 'data' => $servcie]);
-            }
-            else
-            {
+            } else {
                 return response()->json(['status' => 401, 'message' => 'Unable to update data', 'data' => null]);
             }
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function deleteService($id)
     {
         if (Auth::user()->can('delete service')) {
@@ -350,6 +331,7 @@ class ServiceController extends Controller
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function duplicateService($service_id)
     {
         if (Auth::user()->can('duplicate service')) {
@@ -357,39 +339,33 @@ class ServiceController extends Controller
                 $service_clients = Service::find($service_id)->replicate();
                 if ($service_clients->save()) {
                     return response()->json(['status' => 200, 'message' => 'Service duplicate successfully.', 'data' => $service_clients]);
-                    //return redirect()->back()->withSuccess('Service duplicate successfully.');
-                }
-                else
-                {
+                } else {
                     return response()->json(['status' => 401, 'message' => 'Unable to duplicate service.']);
-                    //return redirect()->back()->withErrors(['error' => 'Unable to duplicate service']);
                 }
             } catch (\Exception $e) {
                 return response()->json(['status' => 401, 'message' => $e->getMessage()]);
-                //return redirect()->back()->withErrors(['error' => $e->getMessage()]);
             }
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function updateService(Request $request, $id)
     {
         if (Auth::user()->can('edit service') || Auth::user()->can('edit service description')) {
             $data = $request->all();
             $servcie = Service::find($id);
             $udpated = $servcie->update($data);
-            if ($udpated)
-            {
+            if ($udpated) {
                 return response()->json(['status'=>200, 'data'=>$servcie, 'message'=>"Description updated successfully"]);
-            }
-            else
-            {
+            } else {
                 return response()->json(['status'=>401,  'data'=> null,  'message'=>"Error occured"]);
             }
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function bulkEnable(Request $request)
     {
         if (Auth::user()->can('change service status')) {
@@ -401,6 +377,7 @@ class ServiceController extends Controller
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function bulkDisable(Request $request)
     {
         if (Auth::user()->can('change service status')) {
@@ -412,6 +389,7 @@ class ServiceController extends Controller
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function bulkCategory(Request $request)
     {
         Service::whereIn('id',explode(',',$request->service_ids))->update([
@@ -419,6 +397,7 @@ class ServiceController extends Controller
         ]);
         return response()->json(['status'=>200,'message'=>'successfully disabled all']);
     }
+
     public function bulkDelete(Request $request)
     {
         if (Auth::user()->can('delete service')) {
@@ -428,6 +407,7 @@ class ServiceController extends Controller
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function show($id)
     {
         return Service::find($id);
@@ -468,12 +448,10 @@ class ServiceController extends Controller
                         'updated_at' => now(),
                     );
 
-                    ProviderService::updateOrCreate(
-                        [
+                    ProviderService::updateOrCreate([
                             'service_id'=> $service->service,
                             'provider_id'=> $request->provider_id,
-                        ],
-                        [
+                        ], [
                         'provider_id' => $request->provider_id,
                         'provider_service_id' => $service->service,
                         'name' => $service->name,
@@ -486,6 +464,7 @@ class ServiceController extends Controller
                     ]);
                 }
                 Service::insert($data);
+
                 return redirect()->back()->withSuccess('Services imported successfully.');
             } catch (\Exception $e) {
                 return redirect()->back()->withError($e->getMessage());
@@ -501,19 +480,22 @@ class ServiceController extends Controller
     {
         return ServiceCategory::find($id);
     }
+
     public function enablingCategory(Request $request, $id)
     {
         if (Auth::user()->can('change category status')) {
             $category = ServiceCategory::find($id);
             $category->status = $category->status == 'Active'?'Deactivated':'Active';
-            if ($category->save())
+            if ($category->save()) {
                 return response()->json(['status'=>200,'data'=> $category, 'message'=>'Category Updated successfully.']);
-            else
+            } else {
                 return response()->json(['status'=>401,'data'=> null, 'message'=>'error occured.']);
+            }
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
+
     public function categoryStore(Request $request)
     {
         if (Auth::user()->can('add category') || Auth::user()->can('edit category')) {
@@ -527,29 +509,20 @@ class ServiceController extends Controller
                 return response()->json(['success' => false, 'errors'=> $validator->messages()], 422);
             }
 
-
-            if ($request->has('edit_id'))
-            {
+            if ($request->has('edit_id')) {
+                $request->validate([
+                    'name' => ['required', 'string', 'max:255']
+                ]);
+            } else {
                 $request->validate([
                     'name' => ['required', 'string', 'max:255']
                 ]);
             }
-            else
-            {
-                $request->validate([
-                    'name' => ['required', 'string', 'max:255']
-                ]);
-
-            }
-
 
             try {
-                if ($request->has('edit_id'))
-                {
+                if ($request->has('edit_id')) {
                     $data = $request->except('_token', 'score','edit_id','edit_mode');
-                }
-                else
-                {
+                } else {
                     $data = $request->except('_token', 'score');
                 }
 
@@ -557,17 +530,16 @@ class ServiceController extends Controller
                 if ($request->hasFile('icon')) {
                     $data['icon'] = $request->file('icon')->store('icons', ['disk' => 'public']);
                 }
-                if ($request->has('edit_id') && $request->has('edit_mode'))
-                {
+
+                if ($request->has('edit_id') && $request->has('edit_mode')) {
                     $payload = ServiceCategory::find($request->edit_id);
                     $payload->name = $data['name'] !=''?$data['name']:$payload->name;
                     $payload->panel_id = $data['panel_id'] !=''?$data['panel_id']:$payload->panel_id;
                     $payload->save();
-                }
-                else
-                {
+                } else {
                     $payload = ServiceCategory::create($data);
                 }
+
                 return response()->json(['status'=>200,'data'=> $payload, 'message'=>'Category created successfully.']);
             } catch (\Exception $e) {
                 return response()->json(['status'=>401, 'data'=>$e->getMessage()]);
@@ -576,7 +548,6 @@ class ServiceController extends Controller
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
         }
     }
-    
     /* category end */
 
 }
