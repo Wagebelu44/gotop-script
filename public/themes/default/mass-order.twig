@@ -1,15 +1,6 @@
 
 <div class="container">
-    <form method="post" action="{{ site['url'] }}" id="mass_order" class="has-validation-callback">
-   	{{ site['csrf_field'] | raw }}
-    <div class="form-group">
-        <label for="links">One order per line in format</label>
-        <textarea class="form-control" name="content" rows="15" id="content" placeholder="service_id|quantity|link"></textarea>
-    </div>
-    <div class="form-group">
-        <button class="btn btn-block btn-primary" type="submit">Submit</button>
-    </div>
-    {% if site['error']  %}
+   {% if site['error']  %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <strong>Error!</strong> {{site['error']}}.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -25,6 +16,15 @@
             </button>
         </div>
     {% endif %}
+    <form method="post" action="{{ site['mass_order_url'] }}" id="mass_order" class="has-validation-callback">
+   	{{ site['csrf_field'] | raw }}
+    <div class="form-group">
+        <label for="links">One order per line in format</label>
+        <textarea class="form-control" name="content" rows="15" id="content" placeholder="service_id|quantity|link"></textarea>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-block btn-primary" type="submit">Submit</button>
+    </div>
     </form>
 
 </div>
