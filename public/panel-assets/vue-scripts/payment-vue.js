@@ -221,8 +221,8 @@ const paymentModule = new Vue({
                 this.payment_edit_id = payment_id;
                 this.payment_obj = {...re};
                 $('#paymentAddModal').modal('show');
+                $('#select2-payment-user').val(this.payment_obj.user_id).trigger('change');
             });
-         
         },
         updatePaymentLists(payment) {
             this.payments = this.payments.map(item => {

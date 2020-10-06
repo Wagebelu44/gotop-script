@@ -116,12 +116,12 @@
                                     <form  id="payment-form" @submit.prevent="savePayment" method="post" action="" enctype="multipart/form-data" novalidate>
                                         @csrf
                                         <div class="modal-header">
-                                            <h4 class="modal-title" id="myLargeModalLabel">Add payment</h4>
+                                            <h4 class="modal-title" id="myLargeModalLabel"> <span v-if='!payment_edit'>Add</span><span v-else>Edit</span>  payment</h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="form-group">
-                                                <label for=""><strong>User @{{ payment_obj.user_id }}</strong></label>
+                                                <label for=""><strong>User</strong></label>
                                                 <select name="user_id" class="form-control custom-form-control" id="select2-payment-user" required>
                                                     <option disabled selected>Choose user</option>
                                                     <option :value="u.id" v-for="(u, i) in users">@{{ u.username }} </option>

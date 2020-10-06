@@ -35,6 +35,7 @@ class NotificationController extends Controller
         Mail::to($request->test_email)->send(new TestSend($data));
         return redirect()->back()->with('success', 'Mail Send successfully');
     }
+
     public function resetMail(Request $request)
     {
         $this->validate($request, [
@@ -47,7 +48,8 @@ class NotificationController extends Controller
         return redirect()->back()->with('success', 'Mail reset successfully');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         if (Auth::user()->can('notification setting')) {
             $page = 'edit';
             $data = SettingNotification::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first(); 
@@ -61,7 +63,8 @@ class NotificationController extends Controller
         }
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         if (Auth::user()->can('notification setting')) {
             $this->validate($request, [
                 'subject' => 'required|max:191',
@@ -81,6 +84,4 @@ class NotificationController extends Controller
             return view('panel.permission');
         }
     }
-
-
 }
