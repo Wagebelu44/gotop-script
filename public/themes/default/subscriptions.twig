@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-sm-10">
             <nav class="nav">
                 <a class="nav-link {% if 'all' == site['status'] %} filter-active {% endif %}" href="{{ site['url'] }}">All</a>
                 <a class="nav-link {% if 'active' == site['status'] %} filter-active {% endif %}" href="{{ site['url'] }}?status=active">Active</a>
@@ -11,7 +11,7 @@
             </nav>
         </div>
 
-        <div class="col-lg-6 text-right search">
+        <div class="col-sm-2 text-right search">
             <form action="{{ page['url'] }}" method="get" id="history-search">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search" value="{{search}}">

@@ -270,17 +270,15 @@ class PageController extends Controller
                 $order->where('orders.status', $request->status);
             }
             
-            if (isset($request->query)) {
-                $order->where('orders.status', $request->query);
-            } elseif (isset($request->user_search_keyword)) {
+            if (isset($request->search)) {
                 $order->where(function($q) use($request) {
-                    $q->where('orders.id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.link', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.status', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->where('orders.id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.link', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.status', 'LIKE', '%' . $request->search . '%');
                 });
             }
-            $orders = $order->orderBy('orders.id', 'DESC')->paginate(50)->toArray();
+            $orders = $order->orderBy('orders.id', 'DESC')->paginate(50);
 
             $site['orders'] = $orders;
             $site['url'] = $url;
@@ -296,17 +294,15 @@ class PageController extends Controller
                 $order->where('orders.status', $request->status);
             }
 
-            if (isset($request->query)) {
-                $order->where('orders.status', $request->query);
-            } elseif (isset($request->user_search_keyword)) {
+            if (isset($request->search)) {
                 $order->where(function($q) use($request) {
-                    $q->where('orders.id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.link', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->user_search_keyword . '%');
-                    $q->orWhere('orders.status', 'LIKE', '%' . $request->user_search_keyword . '%');
+                    $q->where('orders.id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.link', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.service_id', 'LIKE', '%' . $request->search . '%');
+                    $q->orWhere('orders.status', 'LIKE', '%' . $request->search . '%');
                 });
             }
-            $orders = $order->orderBy('orders.id', 'DESC')->paginate(50)->toArray();
+            $orders = $order->orderBy('orders.id', 'DESC')->paginate(50);
 
             $site['subscriptions'] = $orders;
             $site['url'] = $url;
@@ -328,7 +324,7 @@ class PageController extends Controller
             $drip_feeds = $sql->orderBy('id', 'DESC')->paginate(50)->toArray();
             $site['dripfeeds'] = $drip_feeds;
             $site['url'] = $url;
-            $site['status'] = $input['status']??'all';
+            $site['status'] = $request->status ?? 'all';
         } elseif ($page->default_url == 'tickets') {
             $site['url'] = route('ticket.store');
             $site['base_url'] = url('/tickets');
