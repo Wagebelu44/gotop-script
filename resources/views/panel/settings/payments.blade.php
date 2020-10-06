@@ -7,6 +7,10 @@
 @endsection
 
 @section('content')
+    @php
+        $resource = 'admin.setting.payment.';
+    @endphp
+
     <div class="row all-mt-30">
         @include('panel.settings.navbar')
 
@@ -27,10 +31,10 @@
                                 <th>Action</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tablecontents">
                             @if (!empty($paymentMethodList))
                                 @foreach($paymentMethodList as $key => $value)
-                                <tr class="{{ $value->visibility == 'enabled' ? '':'row-disable' }}">
+                                <tr class="row1 {{ $value->visibility == 'enabled' ? '':'row-disable' }}" data-id="{{ $value->id }}">
                                     <td>
                                         <div class="settings-menu-drag">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Drag-Handle</title><path d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path></svg>
@@ -40,8 +44,8 @@
                                     <td>{{ $value->method_name }}</td>
                                     <td>{{ $value->minimum }}</td>
                                     <td>{{ $value->maximum }}</td>
-                                    <td>{{ $value->new_user_status == 'active' ? 'Allowed' : 'Not Allowed' }}</td>
-                                    <td class="text-center">
+                                    <td>{{ $value->new_user_status == 'Active' ? 'Allowed' : 'Not Allowed' }}</td>
+                                    <td>
                                         <div class="setting-switch setting-switch-table">
                                             <label class="switch">
                                                 <input type="checkbox" value="{{ $value->visibility }}" class="toggle-page-visibility" {{ $value->visibility == 'enabled' ? 'checked' : '' }}  name="page_status" onclick="isActiveInactive({{ $key }},{{ $value->id }})" id="page_status_{{ $key }}">
@@ -162,7 +166,48 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script>
+            $(function () {
+            $( "#tablecontents" ).sortable({
+                items: "tr",
+                cursor: 'move',
+                opacity: 0.6,
+                update: function() {
+                    sendOrderToServer();
+                }
+            });
+
+            function sendOrderToServer() {
+                var order = [];
+
+                $('tr.row1').each(function(index,element) {
+                    order.push({
+                        id: $(this).attr('data-id'),
+                        position: index+1,
+                    });
+                });
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ route($resource.'sortable') }}",
+                    data: {
+                        order:order,
+                        _token: '{{csrf_token()}}'
+                    },
+                    success: function(response) {
+                        if (response.status === 'success'){
+                            toastr["success"](response.message);
+                        } else {
+                            toastr["error"](response.message);
+                        }
+
+                    }
+                });
+
+            }
+        });
+        
         function isActiveInactive(sl, id) {
             var status_value = '';
             let status = $('#page_status_'+sl).val();

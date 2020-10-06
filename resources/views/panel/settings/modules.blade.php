@@ -11,62 +11,54 @@
                         <div class="settings-emails-block-title">
                             Active
                         </div>
-                        <div class="settings-emails-block-body">
-                            <table class="module-table">
-                                <thead>
-                                <tr>
-                                    <th class="settings-emails-th-name"></th>
-                                    <th class="settings-emails-th-actions"></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="settings-emails-row">
-                                    <td>
-                                        <div class="settings-emails-row-name">Affiliate system</div>
-                                        <div class="settings-emails-row-description">
-                                            <span>
-                                                Existing users (affiliates) invite new users (referrals) and get commissions from all their payments. Affiliates may request payouts when they save the minimum payout.
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="settings-emails-td-actions">
-                                        <a href="javascript:void(0)" class="btn btn-xs btn-default edit-module pull-right" onclick="getModuleData('affiliate')" data-title="Affiliate system" data-module="1">
-                                            Edit
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="settings-emails-row">
-                                    <td>
-                                        <div class="settings-emails-row-name">Child panels selling</div>
-                                        <div class="settings-emails-row-description">
-                                            <span>
-                                                A panel with limited features that can have only your panel as a service provider. Users can order child panels on your panel.
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="settings-emails-td-actions">
-                                        <a href="javascript:void(0)" class="btn btn-xs btn-default edit-module pull-right" onclick="getModuleData('child_panels')" data-title="Affiliate system" data-module="1">
-                                            Edit
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="settings-emails-row">
-                                    <td>
-                                        <div class="settings-emails-row-name">Free balance</div>
-                                        <div class="settings-emails-row-description">
-                                            <span>
-                                                Set up a one-time free balance amount for new panel users after signing up.
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="settings-emails-td-actions">
-                                        <a href="javascript:void(0)" class="btn btn-xs btn-default edit-module pull-right" onclick="getModuleData('free_balance')" data-title="Affiliate system" data-module="1">
-                                            Edit
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                        <table class="table module-table">
+                            <tbody>
+                            <tr class="settings-emails-row">
+                                <td>
+                                    <div class="settings-emails-row-name">Affiliate system</div>
+                                    <div class="settings-emails-row-description">
+                                        <span>
+                                            Existing users (affiliates) invite new users (referrals) and get commissions from all their payments. Affiliates may request payouts when they save the minimum payout.
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="settings-emails-td-actions">
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-default edit-module pull-right" onclick="getModuleData('affiliate')" data-title="Affiliate system" data-module="1">
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr class="settings-emails-row">
+                                <td>
+                                    <div class="settings-emails-row-name">Child panels selling</div>
+                                    <div class="settings-emails-row-description">
+                                        <span>
+                                            A panel with limited features that can have only your panel as a service provider. Users can order child panels on your panel.
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="settings-emails-td-actions">
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-default edit-module pull-right" onclick="getModuleData('child_panels')" data-title="Affiliate system" data-module="1">
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr class="settings-emails-row">
+                                <td>
+                                    <div class="settings-emails-row-name">Free balance</div>
+                                    <div class="settings-emails-row-description">
+                                        <span>
+                                            Set up a one-time free balance amount for new panel users after signing up.
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="settings-emails-td-actions">
+                                    <a href="javascript:void(0)" class="btn btn-xs btn-default edit-module pull-right" onclick="getModuleData('free_balance')" data-title="Affiliate system" data-module="1">
+                                        Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>

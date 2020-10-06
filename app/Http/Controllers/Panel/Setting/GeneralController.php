@@ -25,7 +25,8 @@ class GeneralController extends Controller
         if (Auth::user()->can('general setting')) {
             $this->validate($request, [
                 'logo'    => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000',
-                'favicon' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000'
+                'favicon' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2000',
+                'drip_feed_interval' => 'integer|min:0',
             ]);
 
             $checkLogoFavicon = SettingGeneral::select('logo', 'favicon')->where('panel_id', Auth::user()->panel_id)->first();

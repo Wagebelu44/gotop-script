@@ -181,6 +181,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
                 Route::post('payment/update-status', 'Panel\Setting\PaymentController@updateStatus')->name('payment.updateStatus');
                 Route::post('payment/edit', 'Panel\Setting\PaymentController@paymentEdit')->name('payment.paymentEdit');
                 Route::post('payment/update', 'Panel\Setting\PaymentController@paymentUpdate')->name('payment.paymentUpdate');
+                Route::post('payment/sortable', 'Panel\Setting\PaymentController@sortable')->name('payment.sortable');
 
                 Route::get('module', 'Panel\Setting\ModuleController@index')->name('module');
                 Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('module.update');

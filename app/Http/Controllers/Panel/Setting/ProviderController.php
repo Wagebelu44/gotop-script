@@ -28,6 +28,7 @@ class ProviderController extends Controller
         if (Auth::user()->can('provider setting')) {
             $this->validate($request, [
                 'domain' => 'required',
+                'status' => 'required',
             ]);
 
             $setting = SettingGeneral::select('panel_type')->where('panel_id', Auth::user()->panel_id)->first();
@@ -70,6 +71,7 @@ class ProviderController extends Controller
                     'domain'        => $request->domain,
                     'api_url'       => $request->url,
                     'api_key'       => $request->api_key,
+                    'status'       => $request->status,
                     'created_by'    => Auth::user()->id
                 ]);
                 return redirect()->back()->with('success', 'Provider added successfully!');
@@ -100,6 +102,7 @@ class ProviderController extends Controller
         if (Auth::user()->can('provider setting')) {
             $this->validate($request, [
                 'domain' => 'required',
+                'status' => 'required',
             ]);
 
             $setting = SettingGeneral::select('panel_type', 'main_panel_domain')->where('panel_id', Auth::user()->panel_id)->first();
@@ -112,6 +115,7 @@ class ProviderController extends Controller
                 'domain'        => $request->domain,
                 'api_url'       => $request->url,
                 'api_key'       => $request->api_key,
+                'status'       => $request->status,
                 'updated_by'    => Auth::user()->panel_id
             ]);
 
