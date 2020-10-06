@@ -566,7 +566,7 @@ const ServiceApp = new Vue({
                         this.loader = false;
                         toastr["success"](res.message);
                         document.getElementById('service_form').reset();
-                        if (this.subscription_modal) {
+                        if (res.data.service_type =='Subscriptions') {
                             $('#subscriptionModal').modal('hide');
                         }
                         else
@@ -574,6 +574,7 @@ const ServiceApp = new Vue({
                             this.service_modal = false;
                             $('#serviceAddModal').modal('hide');
                         }
+                        
                         if (isEdit) 
                         {
                             var row = res.data;
