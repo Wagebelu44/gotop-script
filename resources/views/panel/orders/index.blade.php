@@ -64,7 +64,9 @@
                             <div class="col-md-6">
                                 <div class="d-flex pull-right">
                                     <div>
+                                     @can('export order')
                                         <a href="{{ route('admin.exported_orders.index') }}" class="btn btn-link">Export</a>
+                                    @endcan
                                     </div>
                                     <div class="form-group mb-2 mr-0">
                                         <input type="search" name="search" v-model="filter.filter_type.data" class="form-control" placeholder="Search..." value="">
@@ -76,7 +78,9 @@
                                             <option value="link">Link</option>
                                             <option value="username">Username</option>
                                             <option value="service_id">Service ID</option>
-                                            <option value="null">External ID</option>
+                                            @can('see order external id')
+                                                <option value="null">External ID</option>
+                                            @endcan
                                             <option value="null">Provider</option>
                                         </select>
                                     </div>

@@ -43,12 +43,16 @@
                             Actions
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            @can('change drip-feed status')
                             <li class="dropdown-submenu"><a class="dropdown-item type-dropdown-item dropdown-toggle" href="#">Change status</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('completed', dp.id)">Completed</a></li>
                                 </ul>
                             </li>
-                            <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('canceled', dp.id)">Cancel and refund</a></li>
+                            @endcan
+                            @can('cancel and refund drip-feed')
+                                <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('canceled', dp.id)">Cancel and refund</a></li>
+                            @endcan
                         </ul>
                     </div>
                 </td>

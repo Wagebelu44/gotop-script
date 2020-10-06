@@ -13,11 +13,17 @@
                     <div class="card-body">
                         <div class="__control_panel">
                             <div class="__left_control_panel">
-                                <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#userModal" >Add User</button>
+                                @can('add user')
+                                    <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#userModal" >Add User</button>
+                                @endcan
                             </div>
                             <div class="__right_control_panel">
                                 <form class="d-flex pull-right" id="search-form"  @submit.prevent="searchFilter">
-                                <div><a class="btn btn-link" href="{{ route('admin.users.export') }}">Export @{{ filter.status }}</a></div>
+                                <div>
+                                    @can('export user')
+                                     <a class="btn btn-link" href="{{ route('admin.users.export') }}">Export @{{ filter.status }}</a>
+                                    @endcan
+                                </div>
                                     <div class="form-group mb-2 mr-0">
                                         <input type="text" name="keyword" class="form-control" v-model="filter.search" placeholder="Search User" value="">
                                     </div>
@@ -48,7 +54,9 @@
                                                         @csrf
                                                         @method('put')
                                                     </form>
-                                                    <a class="dropdown-item type-dropdown-item" @click="suspendAlluser" href="javascript:void(0)">Suspend all</a>
+                                                    @can('change user status')
+                                                        <a class="dropdown-item type-dropdown-item" @click="suspendAlluser" href="javascript:void(0)">Suspend all</a>
+                                                    @endcan
                                                     <a class="dropdown-item type-dropdown-item" @click="activeAlluser" href="javascript:void(0)">Activate all</a>
                                                     <a class="dropdown-item type-dropdown-item" @click="resetAlluserRate" href="javascript:void(0)">Reset custom rates</a>
                                                     {{-- <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates from user</a> --}}
@@ -96,20 +104,26 @@
                                         <td>@{{user.status}}</td>
                                         <td>@{{user.created_at}}</td>
                                         <td>@{{user.last_login_at}}</td>
-                                        <td>
-                                            <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate(user.id)"
-                                        title="Services custom rates">custom rates (<span v-if="user.services_list.length>0">@{{user.services_list.length}}</span> <span v-else>0</span>)</a>
-                                        </td>
+                                        @can('edit user custom rates')
+                                            <td>
+                                                <a href="javascript:void(0)" class="btn custom-dropdown-button" @click="customeRate(user.id)"
+                                            title="Services custom rates">custom rates (<span v-if="user.services_list.length>0">@{{user.services_list.length}}</span> <span v-else>0</span>)</a>
+                                            </td>
+                                        @endcan
                                         <td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn dropdown-toggle custom-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     Action
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editUser(user.id)">Edit user</a>
+                                                    @can('edit user')
+                                                        <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editUser(user.id)">Edit user</a>
+                                                    @endcan
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="resetPassword(user.id)">Set password</a>
                                                   {{--   <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Copy rates</a> --}}
+                                                  @can('change user status')  
                                                     <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="suspendUser(user.id)">Suspend User</a>
+                                                  @endcan
                                                 </div>
                                             </div>
                                         </td>

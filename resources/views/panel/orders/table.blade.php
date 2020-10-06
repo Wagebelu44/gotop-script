@@ -11,7 +11,9 @@
              Actions
              </a>
              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li><a class="dropdown-item" @click="bulkStatusChange('failed_resend')">Resend Orders</a></li>
+                @can('resend order')
+                  <li><a class="dropdown-item" @click="bulkStatusChange('failed_resend')">Resend Orders</a></li>
+                @endcan
                 <li><a class="dropdown-item" @click="bulkStatusChange('cancel_refund')">Cancal and refund</a></li>
                 <li><a class="dropdown-item" @click="bulkStatusChange('pending')">Pending</a></li>
                 <li><a class="dropdown-item" @click="bulkStatusChange('inprogress')">In Progress</a></li>
@@ -26,25 +28,29 @@
           <tr>
              <th> <input type="checkbox" v-model="checkAllOrders" /></th>
              <th scope="col">ID</th>
-             <th>
-                <div class="dropdown __dropdown_buttons">
-                   <button class="btn btn-default dropdown-toggle" type="button"
-                      id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="false">
-                   Users
-                   </button>
-                   <div class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuButton">
-                      <div class="custom-searchBar">
-                         <input type="text" id="search-by-user" class="form-control">
-                         <i class="fa fa-search search-icon-users" aria-hidden="true"></i>
-                      </div>
-                      <div id="user_filter_type">
-                         <a class="dropdown-item type-dropdown-item" @click="statusUser(u.id)" v-for="(u, i) in users"> @{{ u.username }} </a>
-                      </div>
-                   </div>
-                </div>
-             </th>
-             <th scope="col">Charge</th>
+             @can('see order user')
+               <th>
+                  <div class="dropdown __dropdown_buttons">
+                     <button class="btn btn-default dropdown-toggle" type="button"
+                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                     Users
+                     </button>
+                     <div class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuButton">
+                        <div class="custom-searchBar">
+                           <input type="text" id="search-by-user" class="form-control">
+                           <i class="fa fa-search search-icon-users" aria-hidden="true"></i>
+                        </div>
+                        <div id="user_filter_type">
+                           <a class="dropdown-item type-dropdown-item" @click="statusUser(u.id)" v-for="(u, i) in users"> @{{ u.username }} </a>
+                        </div>
+                     </div>
+                  </div>
+               </th>
+             @endcan
+             @can('see order charge')
+               <th scope="col">Charge</th>
+             @endcan
              <th scope="col">Link</th>
              <th scope="col" width="150">Start count</th>
              <th scope="col" width="150">Quantity</th>
@@ -93,12 +99,16 @@
                 <input type="checkbox" name="order_checkbox" class="order_checkbox" v-model="order_checkbox" :value="o.id" />
              </td>
              <td>@{{ o.id }}</td>
-             <td>
-                @{{ o.username }}
-                <div class="badge badge-secondary" v-if="o.drip_feed_id !== null">Drip Feed</div>
-                <div class="badge badge-secondary" v-if="o.source ==='API'">API</div>
-             </td>
-             <td>@{{ o.charges }}</td>
+             @can('see order user')
+               <td>
+                  @{{ o.username }}
+                  <div class="badge badge-secondary" v-if="o.drip_feed_id !== null">Drip Feed</div>
+                  <div class="badge badge-secondary" v-if="o.source ==='API'">API</div>
+               </td>
+             @endcan
+             @can('see order charge')
+               <td>@{{ o.charges }}</td>
+             @endcan
              <td>
                 @{{ o.link }}
                 <span v-if="o.service_type ==='SEO'">
@@ -146,52 +156,74 @@
                    </a>
                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                       <div v-if='o.mode!=="auto" && o.status !=="cancelled"'>
-                         <li><a class="dropdown-item type-dropdown-item" @click="popModal('link', o.link, o.id)">Edit Link</a></li>
-                         <li><a class="dropdown-item type-dropdown-item" @click="popModal('start_count',o.start_counter, o.id)">Set Start Count</a></li>
-                         <li><a class="dropdown-item type-dropdown-item" @click="popModal('remain', o.remains, o.id)">Set Remain</a></li>
+                         @can('edit order link')
+                           <li><a class="dropdown-item type-dropdown-item" @click="popModal('link', o.link, o.id)">Edit Link</a></li>
+                         @endcan
+                         @can('set start count order')
+                           <li><a class="dropdown-item type-dropdown-item" @click="popModal('start_count',o.start_counter, o.id)">Set Start Count</a></li>
+                         @endcan
+                         @can('set remains order')
+                           <li><a class="dropdown-item type-dropdown-item" @click="popModal('remain', o.remains, o.id)">Set Remain</a></li>
+                         @endcan
                          <li><a class="dropdown-item type-dropdown-item" @click="popModal('partial', o.remains, o.id)">Set Partial</a></li>
-                         <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
-                            <ul class="dropdown-menu">
-                               <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('inprogress',o.id)">In Progress</a></li>
-                               <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('processing',o.id)">Processing</a></li>
-                               <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('completed',o.id)">Completed</a></li>
-                            </ul>
-                         </li>
-                         <li><a class="dropdown-item type-dropdown-item"  @click="changeStatus('cancel_refund',o.id)">Cancel and refund</a></li>
-                      </div>
+                         @can('change order status')
+                           <li class="dropdown-submenu">
+                              <a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
+                              <ul class="dropdown-menu">
+                                 <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('inprogress',o.id)">In Progress</a></li>
+                                 <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('processing',o.id)">Processing</a></li>
+                                 <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('completed',o.id)">Completed</a></li>
+                              </ul>
+                           </li>
+                         @endcan
+                         @can('cancel and refund order')
+                           <li><a class="dropdown-item type-dropdown-item"  @click="changeStatus('cancel_refund',o.id)">Cancel and refund</a></li>
+                         @endcan
+                        </div>
                       <div v-else>
                          <div v-if="actionConditionalB(o)">
                             <div v-if="o.status == 'failed'">
                                <li><a class="dropdown-item type-dropdown-item" onclick="#">Fail Detail</a></li>
-                               <li><a class="dropdown-item type-dropdown-item" href="#">Resend Order</a></li>
-                               <li><a class="dropdown-item type-dropdown-item" onclick="#">Edit Link</a></li>
+                               @can('resend order')
+                                 <li><a class="dropdown-item type-dropdown-item" href="#">Resend Order</a></li>
+                               @endcan
+                               @can('edit order link')
+                                 <li><a class="dropdown-item type-dropdown-item" onclick="#">Edit Link</a></li>
+                               @endcan
                             </div>
                             <div v-else>
                                <li><a class="dropdown-item type-dropdown-item" href="#">Order Detail</a></li>
                             </div>
-                            <div v-if="o.drip_feed_id == null">
-                               <li><a class="dropdown-item type-dropdown-item" @click="popModal('start_count', o.start_counter, o.id)">Set Start Count</a></li>
-                            </div>
-                            <div v-if="o.status !=='partial' && o.status !=='cancelled'">
-                               <li><a class="dropdown-item type-dropdown-item" @click="popModal('partial', o.remains, o.id)">Set Partial</a></li>
-                            </div>
-                            <div v-if="actionConditionalC(o)">
-                               <li class="dropdown-submenu">
-                                  <a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
-                                  <ul class="dropdown-menu">
-                                     <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('inprogress',o.id)">In Progress</a></li>
-                                     <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('processing',o.id)">Processing</a></li>
-                                     <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('completed',o.id)">Completed</a></li>
-                                     <div v-if='o.status == "cancelled"'>
-                                        <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('pending',o.id)">Pending</a></li>
-                                     </div>
-                                  </ul>
-                               </li>
-                            </div>
-                            <div v-if="o.status !== 'cancelled'">
-                               <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('cancel_refund',o.id)">Cancel and refund</a></li>
-                            </div>
+                            @can('set start count order')
+                              <div v-if="o.drip_feed_id == null">
+                                 <li><a class="dropdown-item type-dropdown-item" @click="popModal('start_count', o.start_counter, o.id)">Set Start Count</a></li>
+                              </div>
+                            @endcan
+                            @can('set partial order')
+                              <div v-if="o.status !=='partial' && o.status !=='cancelled'">
+                                 <li><a class="dropdown-item type-dropdown-item" @click="popModal('partial', o.remains, o.id)">Set Partial</a></li>
+                              </div>
+                            @endcan
+                            @can('change order status')
+                              <div v-if="actionConditionalC(o)">
+                                 <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
+                                    <ul class="dropdown-menu">
+                                       <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('inprogress',o.id)">In Progress</a></li>
+                                       <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('processing',o.id)">Processing</a></li>
+                                       <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('completed',o.id)">Completed</a></li>
+                                       <div v-if='o.status == "cancelled"'>
+                                          <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('pending',o.id)">Pending</a></li>
+                                       </div>
+                                    </ul>
+                                 </li>
+                              </div>
+                            @endcan
+                            @can('cancel and refund order')
+                              <div v-if="o.status !== 'cancelled'">
+                                 <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('cancel_refund',o.id)">Cancel and refund</a></li>
+                              </div>
+                            @endcan
                          </div>
                       </div>
                    </ul>

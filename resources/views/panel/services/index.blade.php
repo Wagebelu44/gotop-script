@@ -807,9 +807,15 @@
                             </div>
                             <div class="__control_panel">
                                 <div class="__left_control_panel">
-                                    <button class="btn btn-outline-secondary"  type="button" data-toggle="modal" data-target="#serviceAddModal">Add Service</button>
-                                    <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#subscriptionModal">Add Subscription</button>
-                                    <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModalCenter">Create Category</button>
+                                    @can('add service')
+                                        <button class="btn btn-outline-secondary"  type="button" data-toggle="modal" data-target="#serviceAddModal">Add Service</button>
+                                    @endcan
+                                    @can('add service subscription')
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#subscriptionModal">Add Subscription</button>
+                                    @endcan
+                                    @can('add category')
+                                        <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#exampleModalCenter">Create Category</button>
+                                    @endcan
                                     <div v-if="service_checkbox.length >0" class="d-inline service-checkbox-action">
                                         <span>service selected @{{ service_checkbox.length }}</span>
                                         <div class="dropdown __dropdown_buttons service_action">
@@ -829,7 +835,9 @@
                                     </div>
                                 </div>
                                 <div class="__right_control_panel">
-                                    <button class="btn btn-link" data-target="#import" data-toggle="modal">Import</button>
+                                    @can('import service')
+                                        <button class="btn btn-link" data-target="#import" data-toggle="modal">Import</button>
+                                    @endcan
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
@@ -899,9 +907,13 @@
                                                     Action
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                        <a class="dropdown-item type-dropdown-item"    @click="categoryEdit(cate_item.id)">Edit Category</a>
+                                                        @can('edit category')
+                                                            <a class="dropdown-item type-dropdown-item"    @click="categoryEdit(cate_item.id)">Edit Category</a>
+                                                        @endcan
+                                                        @can('change category status')
                                                         <a class="dropdown-item type-dropdown-item"  @click="updateCategoryStatus(cate_item.id)" > 
                                                             <span v-if="cate_item.status=='Active'">Disable</span> <span v-else> Enable</span>  Category</a>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </div>
@@ -967,14 +979,26 @@
                                                             Action
                                                         </button>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <a class="dropdown-item type-dropdown-item" @click="serviceEdit(service.id)">Edit service</a>
-                                                            <a class="dropdown-item type-dropdown-item" @click="serviceDescription(service.id)">Edit description</a>
+                                                            @can('edit service')
+                                                                <a class="dropdown-item type-dropdown-item" @click="serviceEdit(service.id)">Edit service</a>
+                                                            @endcan
+                                                            @can('edit service description')
+                                                                <a class="dropdown-item type-dropdown-item" @click="serviceDescription(service.id)">Edit description</a>
+                                                            @endcan
+                                                            @can('change service status')
                                                             <a class="dropdown-item type-dropdown-item"  @click="serviceEnableDisable(service.id)">
                                                                 <span v-if="service.status=='active'">Active</span> <span v-else> Inactive</span> service
                                                             </a>
+                                                            @endcan
+                                                            @can('reset service custom rates')
                                                             {{-- <a class="dropdown-item type-dropdown-item" >Reset custom rates</a> --}}
-                                                            <a class="dropdown-item type-dropdown-item" @click="serviceDelete(service.id)">Delete service</a>
-                                                            <a class="dropdown-item type-dropdown-item" @click="serviceDuplicate(service.id)">Duplicate</a>
+                                                            @endcan
+                                                            @can('delete service')
+                                                                <a class="dropdown-item type-dropdown-item" @click="serviceDelete(service.id)">Delete service</a>
+                                                            @endcan
+                                                            @can('duplicate service')
+                                                                <a class="dropdown-item type-dropdown-item" @click="serviceDuplicate(service.id)">Duplicate</a>
+                                                            @endcan
                                                         </div>
                                                     </div>
                                                 </div>
