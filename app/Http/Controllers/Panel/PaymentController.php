@@ -163,18 +163,33 @@ class PaymentController extends Controller
                     'reseller_payment_methods_setting_id' => $request->reseller_payment_methods_setting_id,
                     'panel_id' => auth()->user()->panel_id,
                 ];
+
+                $user = User::find($request->user_id);
+
                 if (isset($request->edit_mode) && $request->edit_mode == true) {
-                    $log =  Transaction::find($request->edit_id);
-                    $log->update($payment_data);
+                    if ($payment_data['amount'] < 0) {
+                        return response()->json(['status'=>500,'data'=> 'Negative amount not accepted', 'message'=>'Somethig went wrong.'], 200);
+                    }
+                    $transaction =  Transaction::find($request->edit_id);
+                    if ($transaction) {
+
+                        $user->balance = (($user->balance-$transaction->amount)+$request->amount);
+                        $user->save();
+                        
+                        $transaction->update($payment_data);
+                    }
                 } else {
-                    $log =  Transaction::create($payment_data);
+                    $transaction =  Transaction::create($payment_data);
+
+                    $user->balance += $request->amount;
+                    $user->save();
                 }
-                if ($log) {
+                if ($transaction) {
                     \DB::statement('UPDATE transactions t
                             CROSS JOIN (SELECT MAX(sequence_number) + 1 as new_sequence_number
                             FROM transactions) s
                             SET t.sequence_number = s.new_sequence_number
-                            WHERE t.id='.$log->id);
+                            WHERE t.id='.$transaction->id);
                 }
 
                 if (!isset($request->edit_mode)) {
@@ -188,7 +203,7 @@ class PaymentController extends Controller
                                 'payment_secrete'=>  '',
                                 'currency_code'=> 'USD',
                                 'actual_amount'=> floatval($request->amount),
-                                'actual_payment_id'=>$log->id]),
+                                'actual_payment_id'=>$transaction->id]),
                                 'amount' =>  $bonus,
                                 'transaction_flag' => 'bonus_deposit',
                                 'user_id' =>  $request->user_id,
@@ -212,11 +227,6 @@ class PaymentController extends Controller
                     }
                 }
 
-
-                $user = User::find($request->user_id);
-                $user->balance += $request->amount;
-                $user->save();
-
                 // $notification = notification('Payment received', 2);
 
                 // temporary put off , but needed must
@@ -225,14 +235,14 @@ class PaymentController extends Controller
                 // }
                 $gp = GlobalPaymentMethod::find($request->reseller_payment_methods_setting_id);
 
-                $log->username = $user->username ?? 'Not Found';
-                $log->payment_method_name = $gp ? $gp->name:'Not Found';
-                return response()->json(['status'=>200,'data'=> $log, 'message'=>'Payment created successfully.']);
+                $transaction->username = $user->username ?? 'Not Found';
+                $transaction->payment_method_name = $gp ? $gp->name:'Not Found';
+                return response()->json(['status'=>200,'data'=> $transaction, 'message'=>'Payment created successfully.']);
             } catch (\Exception $e) {
                 return response()->json(['status'=>500,'data'=> $e->getMessage(), 'message'=>'Somethig went wrong.']);
             }
         } else {
-            return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
+            return response()->json(['status' => false, 'data'=> 'permission denied!'], 200);
         }
     }
 

@@ -145,6 +145,13 @@
                                                 <label for=""><strong>Memo (optional)</strong></label>
                                                 <input type="text" v-model='payment_obj.memo' name="memo" class="form-control custom-form-control" placeholder="Memo"  required >
                                             </div>
+                                            <div class="alert alert-danger alert-dismissible fade show" v-if="errors.common" role="alert">
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                    <span class="sr-only">Close</span>
+                                                </button>
+                                                <strong>Warning!</strong> @{{ errors.common }}.
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <div class="form-actions">
@@ -198,8 +205,8 @@
 
 @section('scripts')
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/payment-vue.js?var=0.3')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js?var=0.3')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/payment-vue.js?var=0.5')}}"></script>
 <script>
     setTimeout(function () {
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
@@ -227,6 +234,8 @@
     $('#paymentAddModal').on('hidden.bs.modal', function () {
         paymentModule.payment_edit_id = null;
         paymentModule.payment_edit = false;
+        paymentModule.errors.payment = [];
+        paymentModule.errors.common  = null;
         document.getElementById('payment-form').reset();
     });
 </script>
