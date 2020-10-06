@@ -187,6 +187,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
                 Route::post('module-update', 'Panel\Setting\ModuleController@update')->name('module.update');
                 Route::post('module-edit', 'Panel\Setting\ModuleController@getModuleData')->name('module.edit');
 
+                Route::post('notification/reset', 'Panel\Setting\NotificationController@resetMail')->name('reset.mail');
+                Route::post('notification/send-test-mail', 'Panel\Setting\NotificationController@sendTestMail')->name('sendTestmail');
                 Route::resource('notification', 'Panel\Setting\NotificationController');
                 Route::resource('staff-email', 'Panel\Setting\StaffEmailController');
 
