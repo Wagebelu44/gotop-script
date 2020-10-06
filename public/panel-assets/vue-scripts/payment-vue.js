@@ -119,7 +119,7 @@ const paymentModule = new Vue({
                 
         },
         savePayment(evt) {
-            this.loader.payment = true;
+            this.loader = true;
             let payment_form = null;
             payment_form = new FormData(document.getElementById('payment-form'));
             var userId = document.getElementById('select2-payment-user').value;
@@ -150,7 +150,7 @@ const paymentModule = new Vue({
                     this.payment_edit = false;
                     this.payment_edit_id = null;
                     setTimeout(() => {
-                        this.loader.payment = false;
+                        this.loader = false;
                         toastr["success"](res.message);
                         $('#paymentAddModal').modal('hide');
                         if (isEdit) 
@@ -166,16 +166,19 @@ const paymentModule = new Vue({
 
 
                     }, 2000);
-                } else if (res.status === 401) {
-                    this.loader.payment = false;
-                    this.errors.services = res.data;
+                } else if (res.status === 401 || res.status === 500) {
+                    this.loader = false;
+                    this.errors.common = res.data;
                 }
 
             }).
             catch( err => {
+                console.log(err, 'asdfasd');
                 this.loader = false;
                 let prepare = [];
                 err.then(erMesg => {
+                    
+                console.log(erMesg, 'asdfasd');
                     if ('errors' in erMesg) {
                         let errMsgs = Object.entries(erMesg.errors);
                         for (let i = 0; i < errMsgs.length; i++) {

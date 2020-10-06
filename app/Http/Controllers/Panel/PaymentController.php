@@ -164,8 +164,19 @@ class PaymentController extends Controller
                     'panel_id' => auth()->user()->panel_id,
                 ];
                 if (isset($request->edit_mode) && $request->edit_mode == true) {
+                    if ($payment_data['amount'] < 0) {
+                        return response()->json(['status'=>500,'data'=> 'Negative amount not accepted', 'message'=>'Somethig went wrong.'], 200);
+                    }
                     $log =  Transaction::find($request->edit_id);
-                    $log->update($payment_data);
+                    if ($log) {
+                        //update user balance
+                        $ub = User::find($payment_data['user_id']);
+                        if ($ub) {
+                            $ub->balance = ($ub->balance + $payment_data['amount']) - $log->amount;
+                            $ub->save();
+                            $log->update($payment_data);
+                        }
+                    }
                 } else {
                     $log =  Transaction::create($payment_data);
                 }
@@ -232,7 +243,7 @@ class PaymentController extends Controller
                 return response()->json(['status'=>500,'data'=> $e->getMessage(), 'message'=>'Somethig went wrong.']);
             }
         } else {
-            return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
+            return response()->json(['status' => false, 'data'=> 'permission denied!'], 200);
         }
     }
 
