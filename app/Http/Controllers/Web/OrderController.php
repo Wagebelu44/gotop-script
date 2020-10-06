@@ -475,9 +475,9 @@ class OrderController extends Controller
                     'mode' =>  $ser->mode,
                 ];
             }
-            // if (auth()->user()->user_balance < $total_amount) {
-            //     return redirect()->back()->with('error', 'You do not have sufficient Balance');
-            // }
+            if (auth()->user()->balance < $total_amount) {
+                return redirect()->back()->with('error', 'You do not have sufficient Balance');
+            }
             if (Order::insert($orders))
             {
 
