@@ -13,7 +13,9 @@
                     <div class="card-body">
                         <div class="row pb-3 pt-3">
                             <div class="col-md-6">
-                                <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#paymentAddModal">Add Payment</button>
+                                @can('add payment')
+                                    <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#paymentAddModal">Add Payment</button>
+                                @endcan
                                 @if(isset($setting) && $setting->redeem === 'Yes')
                                 <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#redeemPointModal">Redeem Point</button>
                                 @endif
@@ -21,7 +23,9 @@
                             <div class="col-md-6">
                                 <form class="d-flex pull-right" method="get" @submit.prevent="filterType">
                                     <div>
-                                        <a href="{{ route('admin.payments.export') }}" class="btn btn-link">Export</a>
+                                        @can('export payment')
+                                            <a href="{{ route('admin.payments.export') }}" class="btn btn-link">Export</a>
+                                        @endcan
                                     </div>
                                     <div class="form-group mb-2 mr-0">
                                         <input type="search" name="search" v-model="filter.filter_type.data" class="form-control" placeholder="search...">
@@ -97,7 +101,9 @@
                                             </button>
                                             <div class="dropdown-menu">
                                                 {{-- <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Details</a> --}}
-                                                <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editPayment(p.id)" >Edit</a>
+                                                @can('edit payment')
+                                                    <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="editPayment(p.id)" >Edit</a>
+                                                @endcan
                                             </div>
                                         </div>
                                     </td>
