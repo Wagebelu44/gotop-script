@@ -265,8 +265,6 @@
                         </div>
                     </div>
                 </div>
-
-
                 <!--Start:Edit Modal-->
                 <div class="modal fade in" id="cmsStaffEmailEditPopUp" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-md">
@@ -424,9 +422,9 @@
                             </div>
 
                             <div class="btn-group" role="group">
-                                <a href="#" id="btn-test" class="btn btn-default">
+                                <button type="button" data-toggle="modal" data-target="#sendtestMail" class="btn btn-default">
                                     Send test
-                                </a>
+                                </button>
                                 <a href="#" id="btn-reset" class="btn btn-default disabled">
                                     Reset
                                 </a>
@@ -444,6 +442,40 @@
             </div>
         </div>
     </div>
+
+        <!--Start send test modal-->
+        <!-- Modal -->
+        <div class="modal fade" id="sendtestMail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('admin.setting.sendTestmail') }}" method="POST">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Send Test</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <input type="hidden" name="mail_type" value="{{ isset($data->id)?$data->id:null }}">
+                        <div class="form-group">
+                            <label for="">Send To</label>
+                            <select class="form-control" name="test_email" id="test_email">
+                                <option value="">Select a mail</option>
+                                @foreach ($staffEmails as $smail)
+                                    <option value="{{ $smail->email }}"> {{ $smail->email }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="justify-content: flex-start">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                        <button type="cancel" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
 @endsection
 
 @section('scripts')
