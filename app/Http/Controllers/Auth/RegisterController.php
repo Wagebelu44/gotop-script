@@ -94,6 +94,7 @@ class RegisterController extends Controller
             'api_key' => Str::random(20),
             'referral_key' => substr(md5(microtime()), 0, 6),
             'email_confirmation_status' => $setting->email_confirmation,
+            'status' => 'Active',
             'password' => Hash::make($data['password']),
         ]);
 
