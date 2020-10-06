@@ -16,7 +16,7 @@ class PaymentController extends Controller
             $paymentMethodList = PaymentMethod::where('panel_id', Auth::user()->panel_id)
                 ->select('payment_methods.*', 'global_payment_methods.name')
                 ->join('global_payment_methods', 'global_payment_methods.id', '=', 'payment_methods.global_payment_method_id')
-                ->orderBy('visibility','desc')->orderBy('sort')->get();
+                ->orderBy('visibility','desc')->orderBy('sort', 'ASC')->get();
 
             $globalPaymentList = GlobalPaymentMethod::select('global_payment_methods.*')
                 ->whereNotIn('id', function ($query) {
@@ -119,8 +119,8 @@ class PaymentController extends Controller
                 'payment_id' => 'required|integer',
                 'global_methods_id' => 'required|integer',
                 'method_name' => 'required|max:255',
-                'minimum' => 'required',
-                'maximum' => 'required',
+                'minimum' => 'required|numeric|min:1',
+                'maximum' => 'required|numeric|gt:minimum',
                 'new_users' => 'required',
             ]);
             PaymentMethod::find($request->payment_id)->update([
@@ -138,5 +138,25 @@ class PaymentController extends Controller
         }
     }
 
-
+    public function sortable(Request $request)
+    {
+        if (Auth::user()->can('payment setting')) {
+            $data = PaymentMethod::where('panel_id', Auth::user()->panel_id)->get();
+            foreach ($data as $pay) {
+                $pay->timestamps = false; // To disable update_at field updation
+                $id = $pay->id;
+                foreach ($request->order as $order) {
+                    if ($order['id'] == $id) {
+                        $pay->update(['sort' => $order['position']]);
+                    }
+                }
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Update successfully',
+            ], 200);
+        } else {
+            return view('panel.permission');
+        }
+    }
 }

@@ -63,9 +63,9 @@
                             <label class="control-label" for="domain">Domain </label>
                             <input type="text" class="form-control" name="domain" id="domain" required>
                             @error('domain')
-                                <span role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
+                            <span role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
                             @enderror
                         </div>
                         <div class="form-group form-group__languages">
@@ -73,8 +73,8 @@
                             <input type="text" class="form-control" name="url" id="url">
                             @error('url')
                             <span role="alert">
-                                    <strong></strong>
-                                </span>
+                                <strong></strong>
+                            </span>
                             @enderror
                         </div>
                         <div class="form-group form-group__languages">
@@ -82,6 +82,19 @@
                             <input type="text" class="form-control" name="api_key" id="api_key">
                             @error('api_key')
                             <span role="alert">
+                                <strong></strong>
+                            </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="status">Status</label>
+                            <select class="form-control" name="status" id="status">
+                                <option value="Active">Active</option>
+                                <option value="Deactivated">Deactivated</option>
+                            </select>
+                            @error('status')
+                                <span role="alert">
                                     <strong></strong>
                                 </span>
                             @enderror
@@ -113,17 +126,25 @@
                     @csrf
                     <div class="modal-body" id="modalBody">
 
-                        <div class="form-group form-group__languages">
+                        <div class="form-group">
                             <label class="control-label" for="edit_domain">Domain </label>
                             <input type="text" class="form-control" name="domain" id="edit_domain">
                         </div>
-                        <div class="form-group form-group__languages">
+                        <div class="form-group">
                             <label class="control-label" for="edit_url">URL </label>
                             <input type="text" class="form-control" name="url" id="edit_url">
                         </div>
-                        <div class="form-group form-group__languages">
+                        <div class="form-group">
                             <label class="control-label" for="edit_api_key">API Key </label>
                             <input type="text" class="form-control" name="api_key" id="edit_api_key">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="edit_status">Status</label>
+                            <select class="form-control" name="status" id="edit_status">
+                                <option value="Active">Active</option>
+                                <option value="Deactivated">Deactivated</option>
+                            </select>
                         </div>
                     </div>
                 </form>
@@ -165,6 +186,7 @@
                     $("#edit_domain").val(response.data.domain);
                     $("#edit_url").val(response.data.api_url);
                     $("#edit_api_key").val(response.data.api_key);
+                    $("#edit_status").val(response.data.status);
                     let updateUrl = "{{ url('admin/setting/provider') }}/"+id;
                     $('#editFormPro').attr('action', updateUrl);
                     $('#deleteFormPro').attr('action', updateUrl);

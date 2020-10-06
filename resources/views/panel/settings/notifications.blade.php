@@ -18,16 +18,10 @@
                         <div class="settings-emails-block-title">
                             Users notifications
                         </div>
-                        <div class="settings-emails-block-body">
-                            <table class="module-table">
-                                <thead>
-                                <tr>
-                                    <th class="settings-emails-th-name"></th>
-                                    <th class="settings-emails-th-actions"></th>
-                                </tr>
-                                </thead>
+                        <div>
+                            <table class="table module-table">
                                 <tbody>
-                                @foreach($data as $userNotification)
+                                    @foreach($data as $userNotification)
                                     @if ($userNotification->type == 1)
                                     <tr class="settings-emails-row">
                                         <td>
@@ -44,7 +38,7 @@
                                         </td>
                                     </tr>
                                     @endif
-                                @endforeach
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -53,14 +47,8 @@
                         <div class="settings-emails-block-title">
                             Staff notifications
                         </div>
-                        <div class="settings-emails-block-body">
-                            <table class="module-table">
-                                <thead>
-                                <tr>
-                                    <th class="settings-emails-th-name"></th>
-                                    <th class="settings-emails-th-actions"></th>
-                                </tr>
-                                </thead>
+                        <div>
+                            <table class="table module-table">
                                 <tbody>
                                 @foreach($data as $staffNotification)
                                     @if ($staffNotification->type == 2)
