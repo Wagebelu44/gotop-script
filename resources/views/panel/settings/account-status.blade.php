@@ -20,7 +20,7 @@
                                 <tr>
                                     <th>SL</th>
                                     <th>Name</th>
-                                    <th>Minimum spent amount</th>
+                                    <th>Maximum spent amount</th>
                                     <th>Point</th>
                                     <th width="5%"></th>
                                 </tr>
@@ -70,7 +70,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="control-label" for="minimum_spent_amount">Minimum spent amount</label>
+                                <label class="control-label" for="minimum_spent_amount">Maximum spent amount</label>
                                 <input type="number" step="0.01" min="0" class="form-control @error('minimum_spent_amount') is-invalid @enderror" value="{{ old('minimum_spent_amount', isset($data) && $data->minimum_spent_amount ? $data->minimum_spent_amount:'' ) }}" name="minimum_spent_amount">
                                 @error('minimum_spent_amount')
                                 <span class="invalid-feedback" role="alert">
