@@ -19,10 +19,10 @@ class TicketController extends Controller
     {
         try {
             // important to uncomment. but for now 
-            $gs = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
+            $setting = SettingGeneral::where('panel_id', auth()->user()->panel_id)->first();
             $userTicketcount = Ticket::where('panel_id', auth()->user()->panel_id)->where('status', 'pending')->count();
-            if ($gs->tickets_per_user !='Unlimited') {
-                $limit_number = explode(' ',$gs->tickets_per_user);
+            if ($setting->tickets_per_user !='Unlimited') {
+                $limit_number = explode(' ',$setting->tickets_per_user);
                 if (current($limit_number) <= $userTicketcount) {
                     return redirect()->back()->withError('You can\'t submit ticket. Please contact admin.');
                 }

@@ -174,6 +174,7 @@ class PayPalController extends Controller
         fwrite($myfile,json_encode($sports_data));
         fclose($myfile);
     }
+    
     public function ipn(Request $request)
     {
 

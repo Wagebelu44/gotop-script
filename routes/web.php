@@ -237,7 +237,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     //Payment gateways...
     Route::group(['prefix' => 'payment', 'as' => 'payment.'], function () {
-        Route::post('payment/make', 'User\PaymentController@index')->name('make');
+        Route::post('payment/make', 'Web\PaymentController@index')->name('make');
 
         Route::group(['prefix' => 'paypal', 'as' => 'paypal.'], function () {
             Route::post('/', 'Payment\PaypalController@store')->name('store');

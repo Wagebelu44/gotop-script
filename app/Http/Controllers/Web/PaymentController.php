@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -24,5 +24,17 @@ class PaymentController extends Controller
         }
 
         return redirect()->back()->withError('No Payment method found to requested one');
+    }
+    
+    public function transactionStore($paymentMethodId)
+    {
+        $transaction = null;
+        return $transaction;
+    }
+    
+    public function transactionPay($paymentMethodId, $tnxId)
+    {
+        $pay = null;
+        return $pay;
     }
 }
