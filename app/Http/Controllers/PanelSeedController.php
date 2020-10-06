@@ -182,7 +182,7 @@ class PanelSeedController
                 'status' => 'Deactivated',
                 'created_by' => $user->id,
                 'created_at' => now(),
-                'updated_at' => now(),
+                'updated_at' => null,
             ];
         }
         DB::table('setting_notifications')->insert($notificationData);
