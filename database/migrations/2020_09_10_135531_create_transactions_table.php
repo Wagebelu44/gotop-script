@@ -15,20 +15,20 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('panel_id');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->unsignedBigInteger('reseller_payment_methods_setting_id')->nullable();
+            $table->string('tnx_id', 255)->nullable();
             $table->enum('transaction_type', ['withdraw', 'deposit']);
-            $table->double('amount', 10, 2)->nullable();
             $table->string('transaction_flag', 200)->comment('payment_gateway, refund, admin_panel, order_place, free_balance, bonus_deposit, drip_feed_cancel, redeem, child_panel, affiliate, other');
-            $table->integer('user_id')->unsigned();
-            $table->integer('admin_id')->unsigned()->nullable();
-            $table->enum('status', ['hold', 'done']);
+            $table->double('amount', 10, 2)->nullable();
             $table->string('memo', 250)->nullable();
             $table->string('fraud_risk', 250)->nullable();
-            $table->longText('payment_gateway_response')->nullable();
             $table->longText('transaction_detail')->nullable();
-            $table->string('tnx_id', 255)->nullable();
-            $table->longText('reseller_payment_methods_setting_id')->nullable();
-            $table->unsignedBigInteger('panel_id')->nullable();
-            $table->integer('sequence_number')->unsigned()->nullable();
+            $table->longText('payment_gateway_response')->nullable();
+            $table->unsignedInteger('sequence_number')->nullable();
+            $table->enum('status', ['hold', 'done']);
             $table->timestamps();
             $table->softDeletes();
         });

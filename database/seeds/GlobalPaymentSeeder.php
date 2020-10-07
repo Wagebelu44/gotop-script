@@ -17,28 +17,28 @@ class GlobalPaymentSeeder extends Seeder
                 'uuid' => Str::uuid(),
 				'name' => 'PayPal',
 				'fields' => '{"PAYPAL_EMAIL":"PayPal Email Address"}',
-				'status' => '1',
+				'status' => 1,
 				'created_at' => now(),
 			],
 			[
                 'uuid' => Str::uuid(),
 				'name' => 'PayOP',
 				'fields' => '{"PAYOP_SECRET_KEY":"Secret Key", "PAYOP_PUBLIC_KEY":"Public Key", "PAYOP_JWT_TOKEN": "JWT token"}',
-				'status' => '1',
+				'status' => 1,
 				'created_at' => now(),
 			],
 			[
                 'uuid' => Str::uuid(),
 				'name' => 'Coinbase',
 				'fields' => '{"MERCHANT_ID":"Merchant ID", "COINBASE_SECRET_KEY":"Secret Key"}',
-				'status' => '1',
+				'status' => 1,
 				'created_at' => now(),
 			],
 			[
                 'uuid' => Str::uuid(),
 				'name' => 'PerfectMoney',
 				'fields' => '{"PAYEE_ACCOUNT":"  i.e:  U25983854", "PAYEE_NAME":" I.e : shop name (optional)"}',
-				'status' => '1',
+				'status' => 1,
 				'created_at' => now(),
 			],
 			[
@@ -49,8 +49,8 @@ class GlobalPaymentSeeder extends Seeder
 					"LMI_PAYMENT_DESC":" I.e : shop name (optional)", 
 					"SUCCESS_URL":"www.yourdomain.com/webmoney/success (set his URL to your marchent config)", 
 					"FAIL_URL":"www.yourdomain.com/webmoney/failed (set his URL to your marchent config)"
-				    }',
-				'status' => '1',
+				}',
+				'status' => 1,
 				'created_at' => now(),
 			],
 		]);

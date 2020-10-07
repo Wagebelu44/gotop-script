@@ -13,7 +13,7 @@ class Transaction extends Model
     use SoftDeletes, LogsActivity;
 
     protected $table = 'transactions';
-    protected $fillable = ['id', 'transaction_type', 'amount', 'transaction_flag', 'user_id', 'admin_id', 'status', 'memo', 'fraud_risk', 'payment_gateway_response', 'transaction_detail', 'tnx_id', 'reseller_payment_methods_setting_id', 'panel_id', 'sequence_number', 'created_at', 'updated_at', 'deleted_at'];
+    protected $fillable = ['id', 'panel_id', 'user_id', 'admin_id', 'reseller_payment_methods_setting_id', 'tnx_id', 'transaction_type', 'transaction_flag', 'amount', 'memo', 'fraud_risk', 'transaction_detail', 'payment_gateway_response', 'sequence_number', 'status', 'created_at', 'updated_at', 'deleted_at'];
 
 
     protected static $logAttributes = ['*'];
