@@ -29,7 +29,7 @@ class GlobalPaymentSeeder extends Seeder
 			],
 			[
                 'uuid' => Str::uuid(),
-				'name' => 'Coinbase',
+				'name' => 'CoinPayments',
 				'fields' => '{"MERCHANT_ID":"Merchant ID", "COINBASE_SECRET_KEY":"Secret Key"}',
 				'status' => 1,
 				'created_at' => now(),
@@ -50,6 +50,13 @@ class GlobalPaymentSeeder extends Seeder
 					"SUCCESS_URL":"www.yourdomain.com/webmoney/success (set his URL to your marchent config)", 
 					"FAIL_URL":"www.yourdomain.com/webmoney/failed (set his URL to your marchent config)"
 				}',
+				'status' => 1,
+				'created_at' => now(),
+			],
+			[
+                'uuid' => Str::uuid(),
+				'name' => 'Coinbase',
+				'fields' => '{"SECRET_KEY":"Secret Key"}',
 				'status' => 1,
 				'created_at' => now(),
 			],

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\PaymentController;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -46,7 +47,7 @@ class PayPalController extends Controller
                     $this->paypal_email = $details['value'];
 
                     $secret = bcrypt(Auth::user()->email . 'PayPal' . time() . rand(1, 90000));
-                    $transaction = (new PaymentController())->transactionStore($request->amount, $this->globalMethodId, [], $secret);
+                    $transaction = (new PaymentController())->transactionStore($request->amount, $this->globalMethodId, $secret);
 
                     if ($transaction) {                    
                         $params = [
@@ -87,21 +88,12 @@ class PayPalController extends Controller
     
     public function ipn(Request $request)
     {
-        $all = $request->all();
-        foreach($all as $key){
-            $rawPostedData = $key;
-        }
-        
-        $rawPostedDataArray = $all;
-        $this->store_Log('response::: '.json_encode($rawPostedData).':: '.json_encode($request->all()));
-        // Decode all url parameters and store in $myPost
-        $myPost =  $rawPostedDataArray;
-        if (substr_count($rawPostedDataArray['payment_date'], '+') === 1) {
-            $myPost['payment_date'] = str_replace('+', '%2B', $rawPostedDataArray['payment_date']);
+        $myPost = $request->all();
+        if (substr_count($myPost['payment_date'], '+') === 1) {
+            $myPost['payment_date'] = str_replace('+', '%2B', $myPost['payment_date']);
         }
         
         $client = new Client();
-
         try {
             $params = ['cmd' => '_notify-validate'];
 
@@ -122,18 +114,6 @@ class PayPalController extends Controller
             if ($res->getStatusCode() === 200) {
                 $resp = $res->getBody()->getContents();
                 if ($resp == 'VERIFIED') {
-
-                    // Get paymentLog where details = $custom
-                    if (!empty($myPost['custom'])) {
-                        $custom = $myPost['custom'];
-                        $paymentLog = Transaction::where(['tnx_id' => $custom])->get();
-                        
-                        if (count($paymentLog) == 0) {
-                            Log::error('Payment not found. details: '.json_encode($myPost));
-                            return false;
-                        }
-                    }
-
                     // Check payment status, if not sandbox then it should be 'complete' for processing.
                     if (strtolower($this->paypal_mode) != 'sandbox') {
                         if (strtolower($myPost['payment_status']) != 'completed') {
@@ -147,7 +127,7 @@ class PayPalController extends Controller
                         'detail' => json_encode($myPost),
                         'status' => 'done',
                     ];
-                    $transaction = (new PaymentController())->transactionPay($this->globalMethodId, $custom, $PaidData);
+                    $transaction = (new PaymentController())->transactionPay($this->globalMethodId, $myPost['custom'], $PaidData);
                 } else {
                     Log::error("IPN Unverified, responses status code:".json_encode($res));
                     return false;
@@ -156,7 +136,7 @@ class PayPalController extends Controller
                 Log::error("Invalid response from paypal. response code:".json_encode($res));
                 return false;
             }
-        } catch (\ClientException $e) {
+        } catch (ClientException $e) {
             Log::error("Issue in sending data back to paypal.".$e->getMessage());
             return false;
         }

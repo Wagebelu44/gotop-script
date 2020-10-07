@@ -246,21 +246,18 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('/ipn', 'Payment\PaypalController@ipn')->name('ipn');
         });
 
-        Route::group(['prefix' => 'bitcoin', 'as' => 'bitcoin.'], function () {
+        Route::group(['prefix' => 'payop', 'as' => 'payop.'], function () {
+            Route::post('/', 'Payment\PayOpController@store')->name('store');
+            Route::post('/success', 'Payment\PayOpController@success')->name('success');
+            Route::post('/cancel', 'Payment\PayOpController@cancel')->name('cancel');
+            Route::post('/ipn', 'Payment\PayOpController@ipn')->name('ipn');
+        });
+
+        Route::group(['prefix' => 'coinpayments', 'as' => 'bitcoin.'], function () {
             Route::post('/', 'Payment\CoinPaymentsController@store')->name('store');
             Route::get('/success', 'Payment\CoinPaymentsController@success')->name('success');
             Route::get('/cancel', 'Payment\CoinPaymentsController@cancel')->name('cancel');
             Route::post('/ipn', 'Payment\CoinPaymentsController@ipn')->name('ipn');
-        });
-
-        Route::group(['prefix' => 'payop', 'as' => 'payop.'], function () {
-            Route::post('/payment/add-funds/payOp', 'Payment\PayOpController@store')->name('store');
-        });
-        
-        Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
-            Route::post('/', 'Payment\CoinbaseController@store')->name('store');
-            Route::get('/success', 'Payment\CoinbaseController@success')->name('success');
-            Route::get('/cancel', 'Payment\CoinbaseController@cancel')->name('cancel');
         });
         
         Route::group(['prefix' => 'perfectmoney', 'as' => 'perfectmoney.'], function () {
@@ -273,6 +270,12 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('/', 'Payment\WebmoneyController@store')->name('store');
             Route::post('success', 'Payment\WebmoneyController@success')->name('success');
             Route::post('cancel', 'Payment\WebmoneyController@cancel')->name('cancel');
+        });
+        
+        Route::group(['prefix' => 'coinbase', 'as' => 'coinbase.'], function () {
+            Route::post('/', 'Payment\CoinbaseController@store')->name('store');
+            Route::get('/success', 'Payment\CoinbaseController@success')->name('success');
+            Route::get('/cancel', 'Payment\CoinbaseController@cancel')->name('cancel');
         });
     });
 });

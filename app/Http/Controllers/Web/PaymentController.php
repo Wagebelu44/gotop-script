@@ -31,7 +31,7 @@ class PaymentController extends Controller
         return redirect()->back()->withError('No Payment method found to requested one');
     }
     
-    public function transactionStore($amount, $paymentMethodId, $data = [], $secret = null)
+    public function transactionStore($amount, $paymentMethodId, $secret = null, $data = [])
     {
         $transaction = Transaction::create([
             'panel_id' => Auth::user()->panel_id,
