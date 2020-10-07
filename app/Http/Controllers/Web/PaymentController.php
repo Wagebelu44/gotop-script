@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Payment\PayPalController;
 use App\Http\Controllers\Payment\WebmoneyController;
 use App\Http\Controllers\Payment\PerfectMoneyController;
+use Illuminate\Support\Facades\Mail;
 use App\Mail\ManualOrderPlaced;
 use App\Models\SettingBonuse;
 use App\Models\Transaction;
 use App\User;
-use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
