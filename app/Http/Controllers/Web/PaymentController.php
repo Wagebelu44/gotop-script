@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ManualOrderPlaced;
 use App\Models\SettingBonuse;
 use App\Models\Transaction;
+use App\Models\UserReferral;
+use App\Models\UserReferralAmount;
 use App\User;
 
 class PaymentController extends Controller
@@ -118,6 +120,20 @@ class PaymentController extends Controller
                 } else {
                     Log::warning("Bonus not set. for this payment: ID: ".$transaction->id);
                 }
+            }
+        }
+
+        $referral = UserReferral::where('user_id', $transaction->user_id)->where('panel_id', $transaction->panel_id)->first();
+        if (!empty($referral)) {
+            if ($referral->minimum_payout <= $transaction->amount) {
+                $commission = (($transaction->amount*$referral->commission_rate)/100);
+                UserReferralAmount::create([
+                    'panel_id' => $transaction->panel_id,
+                    'referral_id' => $referral->referral_id,
+                    'user_id' => $referral->user_id,
+                    'fund_amount' => $transaction->amount,
+                    'amount' => $commission,
+                ]);
             }
         }
 
