@@ -89,7 +89,7 @@ class PaymentController extends Controller
         DB::statement('UPDATE transactions t CROSS JOIN (SELECT MAX(sequence_number) + 1 as new_sequence_number FROM transactions) s SET t.sequence_number = s.new_sequence_number WHERE t.id='.$transaction->id);
 
         $bonusAmount = 0;
-        $bonus = SettingBonuse::where('global_payment_method_id', $paymentMethodId)->where('panel_id', Auth::user()->panel_id)->first();
+        $bonus = SettingBonuse::where('global_payment_method_id', $paymentMethodId)->where('panel_id', $transaction->panel_id)->first();
         if (!empty($bonus)) {
             if ( floatval($transaction->amount) >= floatval($bonus->deposit_from)) {
                 $bonusAmount = ($bonus->bonus_amount / 100) * floatval($transaction->amount);
