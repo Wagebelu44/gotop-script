@@ -78,7 +78,7 @@ class DripFeedController extends Controller
                             ]
                         ),
                         'payment_gateway_response' => null,
-                        'reseller_payment_methods_setting_id' =>  null,
+                        'global_payment_method_id' =>  null,
                         'reseller_id' => 1,
                         ]);
                 }

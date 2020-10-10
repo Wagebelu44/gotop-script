@@ -37,7 +37,7 @@ class PaymentController extends Controller
             'panel_id' => Auth::user()->panel_id,
             'user_id' =>  Auth::user()->id,
             'admin_id' => null,
-            'reseller_payment_methods_setting_id' => $paymentMethodId ?? 0,
+            'global_payment_method_id' => $paymentMethodId ?? 0,
             'tnx_id' => $secret,
             'transaction_type' => 'deposit',
             'transaction_flag' => 'payment_gateway',
@@ -71,7 +71,7 @@ class PaymentController extends Controller
     
     public function transactionPay($paymentMethodId, $tnxId, $data = [])
     {
-        $transaction = Transaction::where('reseller_payment_methods_setting_id', $paymentMethodId)->where('tnx_id', $tnxId)->first();
+        $transaction = Transaction::where('global_payment_method_id', $paymentMethodId)->where('tnx_id', $tnxId)->first();
         if (empty($transaction)) {
             Log::critical("Payment not found. details: TNX ID: ".$tnxId.", DATA: ".json_encode($data));
             return false;
@@ -97,7 +97,7 @@ class PaymentController extends Controller
                     'panel_id' => $transaction->panel_id,
                     'user_id' =>  $transaction->user_id,
                     'admin_id' => null,
-                    'reseller_payment_methods_setting_id' =>  $transaction->reseller_payment_methods_setting_id,
+                    'global_payment_method_id' =>  $transaction->global_payment_method_id,
                     'tnx_id' => $transaction->tnx_id,
                     'transaction_type' => 'deposit',
                     'transaction_flag' => 'bonus_deposit',

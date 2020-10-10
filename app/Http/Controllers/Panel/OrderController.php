@@ -88,7 +88,7 @@ class OrderController extends Controller
                             'fraud_risk' => null,
                             'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
                             'payment_gateway_response' => null,
-                            'reseller_payment_methods_setting_id' =>  null,
+                            'global_payment_method_id' =>  null,
                             'reseller_id' => 1,
                             ]);
                             $order->status = 'cancelled';
@@ -114,7 +114,7 @@ class OrderController extends Controller
                         'fraud_risk' => null,
                         'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
                         'payment_gateway_response' => null,
-                        'reseller_payment_methods_setting_id' =>  null,
+                        'global_payment_method_id' =>  null,
                         'reseller_id' => 1,
                     ]);
                     $order->update([
@@ -163,7 +163,7 @@ class OrderController extends Controller
                         'fraud_risk' => null,
                         'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
                         'payment_gateway_response' => null,
-                        'reseller_payment_methods_setting_id' =>  null,
+                        'global_payment_method_id' =>  null,
                         'reseller_id' => 1,
                     ]);
 

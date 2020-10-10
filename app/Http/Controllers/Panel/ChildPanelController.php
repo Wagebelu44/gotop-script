@@ -85,7 +85,7 @@ class ChildPanelController extends Controller
                         'memo' => 'Child panel cancel refund',
                         'fraud_risk' => null,
                         'payment_gateway_response' => null,
-                        'reseller_payment_methods_setting_id' => 0,
+                        'global_payment_method_id' => 0,
                     ]);
                     if ($transaction) {
                         $user = User::find($child->user_id);

@@ -143,7 +143,7 @@ class RegisterController extends Controller
                     'memo' => 'Get Free balance on registration',
                     'fraud_risk' => null,
                     'payment_gateway_response' => null,
-                    'reseller_payment_methods_setting_id' => 0,
+                    'global_payment_method_id' => 0,
                 ]);
 
                 if ($transaction) {

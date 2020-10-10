@@ -165,7 +165,7 @@ class OrderController extends Controller
                                 'memo' => null,
                                 'fraud_risk' => null,
                                 'payment_gateway_response' => null,
-                                'reseller_payment_methods_setting_id' =>  null,
+                                'global_payment_method_id' =>  null,
                                 'panel_id'=> auth()->user()->panel_id,
                             ];
                             $log = Transaction::create($dripFeedOrdersArr);
@@ -236,7 +236,7 @@ class OrderController extends Controller
                         'memo' => null,
                         'fraud_risk' => null,
                         'payment_gateway_response' => null,
-                        'reseller_payment_methods_setting_id' =>  null,
+                        'global_payment_method_id' =>  null,
                         'panel_id'=> auth()->user()->panel_id,
                         ]);
                 }
@@ -494,7 +494,7 @@ class OrderController extends Controller
                     'memo' => null,
                     'fraud_risk' => null,
                     'payment_gateway_response' => null,
-                    'reseller_payment_methods_setting_id' =>  null,
+                    'global_payment_method_id' =>  null,
                     'reseller_id' => 1,
                     ]);
                 return redirect()->back()->with('success', 'Successfully saved');

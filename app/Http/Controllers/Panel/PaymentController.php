@@ -60,7 +60,7 @@ class PaymentController extends Controller
 
                     if (isset($input['payment_method']) && $input['payment_method']!='')
                     {
-                        $q->where('transactions.reseller_payment_methods_setting_id', $input['payment_method']);
+                        $q->where('transactions.global_payment_method_id', $input['payment_method']);
                     }
 
                     if (isset($input['txn_flag']) && ( $input['txn_flag']!='' || $input['txn_flag']!='all' ) )
@@ -98,13 +98,13 @@ class PaymentController extends Controller
                     $query->orWhere('transactions.transaction_flag', 'bonus_deposit');
                 })
                 ->join('users', 'users.id', '=', 'transactions.user_id')
-                ->join('global_payment_methods', 'global_payment_methods.id', '=', 'transactions.reseller_payment_methods_setting_id')
+                ->join('global_payment_methods', 'global_payment_methods.id', '=', 'transactions.global_payment_method_id')
                 ->orderBy($sort_by, $order_by);
                 $payments = $local_payments->paginate($show_page);
                 $total_payments = $local_payments->count();
                 $globalMethods = PaymentMethod::select('payment_methods.*','totalPayment')
                 ->where('payment_methods.panel_id', auth()->user()->panel_id)
-                ->leftJoin(\DB::raw('(SELECT reseller_payment_methods_setting_id, count(id) as totalPayment FROM transactions GROUP BY reseller_payment_methods_setting_id) as A'), 'A.reseller_payment_methods_setting_id', '=', 'payment_methods.id')
+                ->leftJoin(\DB::raw('(SELECT global_payment_method_id, count(id) as totalPayment FROM transactions GROUP BY global_payment_method_id) as A'), 'A.global_payment_method_id', '=', 'payment_methods.id')
                 ->where('payment_methods.visibility', 'enabled')
                 ->get();
                 $users = User::where('panel_id', auth()->user()->panel_id)->orderBy('id', 'DESC')->get();
@@ -136,13 +136,13 @@ class PaymentController extends Controller
             if (isset($request->edit_mode) && $request->edit_mode == true) {
                 $request->validate([
                     'user_id' => 'required|integer|exists:users,id',
-                    'reseller_payment_methods_setting_id' => 'required|integer',
+                    'global_payment_method_id' => 'required|integer',
                     'amount' => 'required|numeric',
                 ]);
             } else {
                 $request->validate([
                     'user_id' => 'required|integer|exists:users,id',
-                    'reseller_payment_methods_setting_id' => 'required|integer',
+                    'global_payment_method_id' => 'required|integer',
                     'amount' => 'required|numeric',
                 ]);
             }
@@ -160,7 +160,7 @@ class PaymentController extends Controller
                     'memo' => $request->memo?? '',
                     'fraud_risk' => null,
                     'payment_gateway_response' => null,
-                    'reseller_payment_methods_setting_id' => $request->reseller_payment_methods_setting_id,
+                    'global_payment_method_id' => $request->global_payment_method_id,
                     'panel_id' => auth()->user()->panel_id,
                 ];
 
@@ -193,7 +193,7 @@ class PaymentController extends Controller
                 }
 
                 if (!isset($request->edit_mode)) {
-                    $bonus = SettingBonuse::where('global_payment_method_id', $request->reseller_payment_methods_setting_id)->get()->last();
+                    $bonus = SettingBonuse::where('global_payment_method_id', $request->global_payment_method_id)->get()->last();
                     if ($bonus !=null) {
                         if ( floatval($request->input('amount')) >= floatval($bonus->deposit_from)) {
                             $bonus = ($bonus->bonus_amount / 100) * floatval($request->amount);
@@ -212,7 +212,7 @@ class PaymentController extends Controller
                                 'memo' => null,
                                 'fraud_risk' => null,
                                 'payment_gateway_response' => null,
-                                'reseller_payment_methods_setting_id' => $request->reseller_payment_methods_setting_id,
+                                'global_payment_method_id' => $request->global_payment_method_id,
                                 'reseller_id' => auth()->user()->panel_id,
                             ]);
 
@@ -233,7 +233,7 @@ class PaymentController extends Controller
                 // if ($notification && $notification->status) {
                 //     Mail::to(staffEmails('payment_received'))->send(new PaymentReceived($log, $notification));
                 // }
-                $gp = GlobalPaymentMethod::find($request->reseller_payment_methods_setting_id);
+                $gp = GlobalPaymentMethod::find($request->global_payment_method_id);
 
                 $transaction->username = $user->username ?? 'Not Found';
                 $transaction->payment_method_name = $gp ? $gp->name:'Not Found';
@@ -320,7 +320,7 @@ class PaymentController extends Controller
                 }
 
                 $payments = Transaction::join('users', 'users.id', '=', 'payments.user_id')
-                    ->join('reseller_payment_methods_settings', 'reseller_payment_methods_settings.id', '=', 'payments.reseller_payment_methods_setting_id')
+                    ->join('reseller_payment_methods_settings', 'reseller_payment_methods_settings.id', '=', 'payments.global_payment_method_id')
                     ->select($include_columns)
                     ->whereBetween('payments.created_at', [$exportedPayment->from, $exportedPayment->to])
                     ->where(function ($q) use ($exportedPayment) {

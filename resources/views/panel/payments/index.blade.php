@@ -135,11 +135,11 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Payment Method</strong></label>
-                                                <select name="reseller_payment_methods_setting_id" v-model='payment_obj.reseller_payment_methods_setting_id' id="reseller_payment_methods_setting_id" class="form-control custom-form-control" required >
+                                                <select name="global_payment_method_id" v-model='payment_obj.global_payment_method_id' id="global_payment_method_id" class="form-control custom-form-control" required >
                                                     <option disabled selected>Choose payment method</option>
                                                 <option :value="gp.id" v-for="(gp, i) in global_payments">@{{gp.method_name}}</option>
                                                 </select>
-                                                <span class="text-danger" v-if="errorFilter('reseller_payment_methods_setting_id')!==''"> @{{ errorFilter('reseller_payment_methods_setting_id') }} </span>
+                                                <span class="text-danger" v-if="errorFilter('global_payment_method_id')!==''"> @{{ errorFilter('global_payment_method_id') }} </span>
                                             </div>
                                             <div class="form-group">
                                                 <label for=""><strong>Memo (optional)</strong></label>

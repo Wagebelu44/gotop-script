@@ -98,7 +98,7 @@ class CointBaseController extends Controller
                 'memo' => null,
                 'fraud_risk' => null,
                 'payment_gateway_response' => null,
-                'reseller_payment_methods_setting_id' => $this->payment_method_id,
+                'global_payment_method_id' => $this->payment_method_id,
                 'reseller_id' => 1,
         ]);
 
@@ -122,7 +122,7 @@ class CointBaseController extends Controller
                     'memo' => null,
                     'fraud_risk' => null,
                     'payment_gateway_response' => null,
-                    'reseller_payment_methods_setting_id' =>  $this->payment_method_id,
+                    'global_payment_method_id' =>  $this->payment_method_id,
                     'reseller_id' => 1,
                     ]);
             }

@@ -47,7 +47,7 @@ class RedeemController extends Controller
                     'memo' => '',
                     'fraud_risk' => null,
                     'payment_gateway_response' => null,
-                    'reseller_payment_methods_setting_id' => 0,
+                    'global_payment_method_id' => 0,
                     'panel_id' => auth()->user()->panel_id,
                 ]);
 

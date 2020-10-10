@@ -18,7 +18,7 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('panel_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('admin_id')->nullable();
-            $table->unsignedBigInteger('reseller_payment_methods_setting_id')->nullable();
+            $table->unsignedBigInteger('global_payment_method_id')->nullable();
             $table->string('tnx_id', 255)->nullable();
             $table->enum('transaction_type', ['withdraw', 'deposit']);
             $table->string('transaction_flag', 200)->comment('payment_gateway, refund, admin_panel, order_place, free_balance, bonus_deposit, drip_feed_cancel, redeem, child_panel, affiliate, other');

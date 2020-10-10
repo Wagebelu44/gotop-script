@@ -31,7 +31,7 @@ const paymentModule = new Vue({
         payment_obj: {
             user_id: null,
             amount: null,
-            reseller_payment_methods_setting_id: null,
+            global_payment_method_id: null,
             memo: null,
         },
         api_payment_obj: null,
