@@ -52,7 +52,7 @@ class CashmaalController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
             }
 
-            $secret = bcrypt(Auth::user()->email . 'WM' . time() . rand(1, 90000));
+            $secret = bcrypt(Auth::user()->email . 'CM' . time() . rand(1, 90000));
             $transaction = (new PaymentController())->transactionStore($request->amount, $this->globalMethodId, $secret);
             if ($transaction) {
                 $successURL  = route('payment.cashmaal.success');
