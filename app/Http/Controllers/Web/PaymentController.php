@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Web;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Payment\PayPalController;
-use App\Http\Controllers\Payment\WebmoneyController;
-use App\Http\Controllers\Payment\PerfectMoneyController;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\ManualOrderPlaced;
-use App\Models\SettingBonuse;
+use App\User;
 use App\Models\Transaction;
 use App\Models\UserReferral;
+use Illuminate\Http\Request;
+use App\Models\SettingBonuse;
+use App\Mail\ManualOrderPlaced;
 use App\Models\UserReferralAmount;
-use App\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Payment\PayPalController;
+use App\Http\Controllers\Payment\CashmaalController;
+use App\Http\Controllers\Payment\WebmoneyController;
+use App\Http\Controllers\Payment\PerfectMoneyController;
 
 class PaymentController extends Controller
 {
@@ -28,6 +29,8 @@ class PaymentController extends Controller
             return (new PerfectMoneyController())->store($request);
         } elseif ($request->payment_method == 5) {
             return (new WebmoneyController())->store($request);
+        }elseif ($request->payment_method == 7) {
+            return (new CashmaalController())->store($request);
         }
 
         return redirect()->back()->withError('No Payment method found to requested one');

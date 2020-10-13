@@ -60,6 +60,13 @@ class GlobalPaymentSeeder extends Seeder
 				'status' => 1,
 				'created_at' => now(),
 			],
+			[
+                'uuid' => Str::uuid(),
+				'name' => 'Cashmaal',
+				'fields' => '{"email":"Email: (example@mail.com)", "web_id": "web_id(3692)"}',
+				'status' => 1,
+				'created_at' => now(),
+			],
 		]);
     }
 }
