@@ -170,7 +170,7 @@
                                     <label class="control-label" for="field-orderform-fields-quantity">Quantity: 🔢 
                                     <span v-if="increment"> Multiple of ${increment} </span>
                                     </label>
-                                    <input class="form-control" :class="{ 'input-disabled' : inputDisable}" name="quantity" v-model="quantity" type="number">
+                                    <input class="form-control" :class="{ 'input-disabled' : inputDisable}" name="quantity" v-model="quantity" type="number" step="1" min="0">
                                 </div>
                                 <span v-if="!quantity_visibility">
                         <input  name="quantity" v-model="quantity" type="hidden">
