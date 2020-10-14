@@ -394,6 +394,7 @@ class OrderController extends Controller
             $each_line = preg_split("/\r\n|\n|\r/", $data['content']);
             $orders = [];
             $total_amount = 0;
+            $issue=[];
             foreach ($each_line as $line) {
                 $input_line = explode('|', $line);
                 if (count($input_line) != 3) return redirect()->back()->with('error', 'Please follow the instruction for filling up the form')->withInput();
@@ -454,6 +455,20 @@ class OrderController extends Controller
                 if ($service_for_price !=null) {
                     $s_price = $service_for_price->pivot->price;
                 }
+
+                if ($ser->link_duplicates == 'disallow') {
+                    $or =  Order::where('service_id', $ser->id)->where('link', $input_line[2])
+                    ->where(function($q){
+                         $q->where('status', 'pending');
+                         $q->orWhere('status', 'In progress');
+                         $q->orWhere('status', 'Processing');
+                     })->first();
+                     if ($or) {
+                        $issue[] = 'Link duplication disallowed! you can not place this '.$input_line[2].' again';
+                        continue;
+                     }
+                }
+
                 $total_amount += ($s_price / 1000) * $input_line[1];
                 $orders[] = [
                     'order_id' => rand(0, round(microtime(true))),
@@ -478,7 +493,7 @@ class OrderController extends Controller
             if (auth()->user()->balance < $total_amount) {
                 return redirect()->back()->with('error', 'You do not have sufficient Balance');
             }
-            if (Order::insert($orders))
+            if (count($orders) >0 && Order::insert($orders))
             {
 
                 \DB::statement('UPDATE `orders` SET order_id=id where refill_status=0');
@@ -497,9 +512,16 @@ class OrderController extends Controller
                     'global_payment_method_id' =>  null,
                     'panel_id' => auth()->user()->panel_id,
                     ]);
-                return redirect()->back()->with('success', 'Successfully saved');
+                if (count($issue)>0) {
+                    return redirect()->back()->with('success', 'Successfully saved')
+                    ->withErrors($issue);
+                } else {
+                    return redirect()->back()->with('success', 'Successfully saved');
+                }
             }
-            else return redirect()->back()->with('error', 'Please make sure you are following correct format.');
+            else return redirect()->back()
+            ->with('error', 'Please make sure you are following correct format.')
+            ->withErrors($issue);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
