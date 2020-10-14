@@ -404,4 +404,46 @@ if (! function_exists('staffEmails')) {
     }
 }
 
+if (! function_exists('currencyFormat')) {
+    function currencyFormat($setting, $amount)
+    {
+        if ($setting == '1000.00') {
+            return number_format($amount, 2, '.', '');
+        } elseif ($setting == '1000,00') {
+            return number_format($amount, 2, ',', '');
+        } elseif ($setting == '1,000.12') {
+            return number_format($amount, 2, '.', ',');
+        } elseif ($setting == '1,000') {
+            return number_format($amount, 0);
+        }
+        return $amount;
+    }
+}
+
+if (! function_exists('timezone')) {
+    function timezone($setting, $date)
+    {
+        if ($setting != '') {
+            return date('Y-m-d H:i:s', (strtotime($date)+$setting));
+        }
+        return date('Y-m-d H:i:s', strtotime($date));
+    }
+}
+
+if (! function_exists('ratesRounding')) {
+    function ratesRounding($setting, $rate)
+    {
+        if ($setting == 'Ones (1)') {
+            return round($rate);
+        } elseif ($setting == 'Hundredth (1.11)') {
+            return number_format($rate, 2);
+        } elseif ($setting == 'Thousandth (1.111)') {
+            return number_format($rate, 3);
+        }
+        return $rate;
+    }
+}
+
+
+
 
