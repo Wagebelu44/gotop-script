@@ -101,7 +101,8 @@ class PaymentController extends Controller
         }
     }
 
-    public function paymentEdit(Request $request){
+    public function paymentEdit(Request $request)
+    {
         if (Auth::user()->can('payment setting')) {
             $payment_method = PaymentMethod::where(['panel_id' => Auth::user()->panel_id, 'created_by' => Auth::user()->panel_id, 'id' => $request->id])->first();
             return response()->json([
@@ -113,7 +114,8 @@ class PaymentController extends Controller
         }
     }
 
-    public function paymentUpdate(Request $request){
+    public function paymentUpdate(Request $request)
+    {
         if (Auth::user()->can('payment setting')) {
             $this->validate($request, [
                 'payment_id' => 'required|integer',
