@@ -14,6 +14,7 @@ const NewOrder = new Vue({
         drip_feed_available: false,
         drip_feed: false,
         drip_feed_content: false,
+        increment: null,
         runs: null,
         interval: null,
         total_quantity: 0,
@@ -93,6 +94,7 @@ const NewOrder = new Vue({
                 this.max = serviceObj.max_quantity ?? 0;
                 this.price = serviceObj.price ?? 0;
                 this.service_mode = serviceObj.mode ?? 0;
+                this.increment = serviceObj.increment;
                 if (serviceObj.drip_feed_status === 'allow')
                 {
                     this.drip_feed_available  = true;
@@ -213,15 +215,37 @@ const NewOrder = new Vue({
                 this.total_quantity =  (this.quantity * this.runs);
             }
 
-           if (newval < this.min || newval > this.max) {
-              this.quantity_validation = true;
-              this.quantity_validation_msg = "Quantity Limit exceeds , Min = "+this.min+" max = "+this.max;
-           }
-           else
-           {
-              this.quantity_validation = false;
-              this.quantity_validation_msg = " ";
-           }
+            if (this.increment!==null) {
+                if (newval >= this.min && newval <= this.max) {
+                    if (Number(newval) % Number(this.increment) === 0) {
+                        this.quantity_validation = false;
+                        this.quantity_validation_msg = " ";
+                    }
+                    else
+                    {
+                        this.quantity_validation = true;
+                        this.quantity_validation_msg = "Multiple of "+this.increment+" should be "+( Number(this.min)+Number(this.increment));
+                    }
+                    
+                 }
+                 else
+                 {
+                    this.quantity_validation = true;
+                    this.quantity_validation_msg = "Quantity Limit exceeds , Min = "+this.min+" max = "+this.max;
+                 }
+                
+            } else {
+
+                if (newval < this.min || newval > this.max) {
+                   this.quantity_validation = true;
+                   this.quantity_validation_msg = "Quantity Limit exceeds , Min = "+this.min+" max = "+this.max;
+                }
+                else
+                {
+                   this.quantity_validation = false;
+                   this.quantity_validation_msg = " ";
+                }
+            }
         },
         runs(newval, oldval)
         {
