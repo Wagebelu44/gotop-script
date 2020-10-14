@@ -128,16 +128,25 @@
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="payment_method">Method name</label>
                             <input type="text" name="method_name" id="method_name" class="form-control" value="" required/>
+                            @error('method_name')
+                               <strong class="text-danger">{{ $message }}</strong>
+                            @enderror
                         </div>
 
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="minimum">Minimal payment</label>
                             <input type="number" name="minimum" id="minimum" class="form-control" value="" min="0" max="1000" step="0.01" required/>
+                            @error('minimum')
+                               <strong class="text-danger">{{ $message }}</strong>
+                            @enderror
                         </div>
 
                         <div class="form-group form-group__languages">
                             <label class="control-label" for="maximum">Maximal payment</label>
                             <input type="number" name="maximum" id="maximum" class="form-control" value="" min="0" max="1000" step="0.01" required/>
+                            @error('maximum')
+                               <strong class="text-danger">{{ $message }}</strong>
+                            @enderror
                         </div>
 
                         <div class="form-group form-group__languages">
