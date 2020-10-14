@@ -225,14 +225,15 @@ class PageController extends Controller
             $site['postSliders']  = BlogSlider::where('panel_id', $panelId)->orderBy('id', 'desc')->get();
         } elseif ($page->default_url == 'services') {
             $service = ServiceCategory::with(['services'=> function($q) use($panelId) {
+                $q->select('services.*', 'A.avg_time');
                 $q->where('panel_id', $panelId);
                 $q->where('status', 'active');
                 $q->orderBy('id', 'ASC');
+                $q->leftJoin(\DB::raw('(SELECT service_id, AVG(duration) as avg_time FROM orders GROUP BY service_id) AS A'), 'A.service_id', '=', 'services.id');
             }])
             ->where('status', 'active')
             ->where('panel_id', $panelId)
             ->orderBy('id', 'ASC');
-
            if (auth()->check()) {
              $user_service_prices = auth()->user()->servicesList()->get();
              $categories = $service->get();
@@ -253,10 +254,15 @@ class PageController extends Controller
                     }
                     $categories = json_decode(json_encode($cate));
                 }
+                else
+                {
+                    $categories = $categories->toArray();
+                }
 
-                $site['service_count'] = count($cate);
-                $site['service_lists'] = $cate;
+                $site['service_count'] = count($categories);
+                $site['service_lists'] = $categories;
             } else {
+              
                 $site['service_count'] = $service->count();
                 $site['service_lists'] = $service->get()->toArray();
             }
@@ -421,6 +427,9 @@ class PageController extends Controller
             $site['redeem_amount']  = numberFormat((($site['redeem_point']*$statusPosition['point'])/100));
             $site['important_newses'] = Newsfeed::where('important_news', 'Yes')->where('status', 'Active')->where('panel_id', auth()->user()->panel_id)->orderBy('created_at', 'DESC')->get()->toArray();
             $site['service_updates'] = Newsfeed::where('service_update', 'Yes')->where('status', 'Active')->where('panel_id', auth()->user()->panel_id)->orderBy('created_at', 'DESC')->get()->toArray();
+            if (isset($request->order_id) && !empty($request->order_id)) {
+                $site['submitted_order'] = Order::with('service')->where('id', $request->order_id)->first()->toArray();
+            }
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;

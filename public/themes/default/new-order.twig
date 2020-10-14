@@ -55,13 +55,36 @@
                             </button>
                         </div>
                     {% endif %}
-                    {% if site['success']  %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <strong>Success!</strong> {{site['success']}}.
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
+                    {% if site['success'] or site['submitted_order'] %}
+                        {% if site['submitted_order']  %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>We Recieved your order!</strong>
+                                <p style="color: #000;">
+                                    ID: {{ site['submitted_order']['id'] }} <br>
+                                    Service: {{ site['submitted_order']['service']['name'] }} <br>
+                                    Link: {{site['submitted_order']['link']}} <br>
+                                  
+                                    {# @if (isset($order->dripfeed))
+                                    Total Quantity / Runs:   {{$order->dripfeed->total_quantity}} / {{$order->dripfeed->runs}} <br>
+                                    Total Charge: ${{$order->dripfeed->total_charges}} <br>
+                                    @else #}
+                                    Quantity:   {{ site['submitted_order']['quantity']}} <br>
+                                    Charge: {{ site['submitted_order']['charges'] }} <br>
+
+                                    Balance: ${{ site['auth']['balance'] }} <br>
+                                </p>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Success!</strong> {{site['success']}}.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
                     {% endif %}
                     {% if site['validation_error'] > 0 %}
                         {% for error in site['errors'] %}

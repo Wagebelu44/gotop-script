@@ -495,7 +495,7 @@ class OrderController extends Controller
                     'fraud_risk' => null,
                     'payment_gateway_response' => null,
                     'global_payment_method_id' =>  null,
-                    'reseller_id' => 1,
+                    'panel_id' => auth()->user()->panel_id,
                     ]);
                 return redirect()->back()->with('success', 'Successfully saved');
             }

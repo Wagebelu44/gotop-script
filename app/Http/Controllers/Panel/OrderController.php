@@ -123,6 +123,17 @@ class OrderController extends Controller
                         'charges'  => $now_b,
                     ]);
                 } else {
+
+                    if ($data['status'] == 'completed') {
+                        $duration = null;
+                        $completed_at = date('Y-m-d H:i:s');
+                        $date_a = new \DateTime($order->created_at);
+                        $date_b = new \DateTime($completed_at);
+                        $interval = date_diff($date_a,$date_b);
+                        $duration =  $interval->format('%h:%i:%s');
+                        $data['completed_at'] = $completed_at;
+                        $data['duration'] = $duration;
+                    }
                     $order->update($data);
                 }
 
@@ -182,9 +193,31 @@ class OrderController extends Controller
                     $this->resendMultipleOrders($order->order_id);
                 }
             } else {
-                Order::whereIn('id',explode(',',$request->service_ids))->update([
-                    'status' => $request->status
-                ]);
+                
+                if ($request->status == 'completed') {
+                    $orders = Order::whereIn('id',explode(',',$request->service_ids))->get(); 
+                    foreach ($orders as $order) {
+                        $duration = null;
+                        $completed_at = date('Y-m-d H:i:s');
+                        $date_a = new \DateTime($order->created_at);
+                        $date_b = new \DateTime($completed_at);
+                        $interval = date_diff($date_a,$date_b);
+                        $duration =  $interval->format('%h:%i:%s');
+                        $order->update([
+                            'status' => $request->status,
+                            'completed_at' => $completed_at,
+                            'duration' => $duration,
+                        ]);
+                    }
+                    
+                }
+                else
+                {
+                    Order::whereIn('id',explode(',',$request->service_ids))->update([
+                        'status' => $request->status
+                    ]);
+                }
+                
             }
 
             return response()->json(['status' => 200, 'data' => 'null', 'message' => 'successfully status changed']);
