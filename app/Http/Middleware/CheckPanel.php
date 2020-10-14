@@ -19,7 +19,8 @@ class CheckPanel
     {
         //Check valid script...
         if (env('PROJECT') == 'live') {
-            $domain = request()->getHost();
+            $domain = request()->getHost();            
+            $domain = str_replace('www.', '', $domain);
 
             if (session('domain') != $domain) {
                 try {
