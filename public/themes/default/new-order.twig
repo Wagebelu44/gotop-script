@@ -167,7 +167,9 @@
                                     <input class="form-control" name="additional_inputs" value="" type="text" id="answer_number">
                                 </div>
                                 <div class="form-group  fields" id="order_quantity" v-if="quantity_visibility">
-                                    <label class="control-label" for="field-orderform-fields-quantity">Quantity: 🔢</label>
+                                    <label class="control-label" for="field-orderform-fields-quantity">Quantity: 🔢 
+                                    <span v-if="increment"> Multiple of ${increment} </span>
+                                    </label>
                                     <input class="form-control" :class="{ 'input-disabled' : inputDisable}" name="quantity" v-model="quantity" type="number">
                                 </div>
                                 <span v-if="!quantity_visibility">

@@ -364,7 +364,7 @@ class PageController extends Controller
             $site['single_order_url'] = route('make.single.order');
             $site['mass_order_url'] = route('massOrder.store');
 
-            $site['scripts'][] = ['src' => asset('user-assets/vue-scripts/single-order.js')];
+            $site['scripts'][] = ['src' => asset('user-assets/vue-scripts/single-order.js?var=1.0')];
 
             if (Session::has('error')) {
                 $site['error'] = Session::get('error');

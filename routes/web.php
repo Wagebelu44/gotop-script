@@ -277,5 +277,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('/success', 'Payment\CoinbaseController@success')->name('success');
             Route::get('/cancel', 'Payment\CoinbaseController@cancel')->name('cancel');
         });
+        Route::group(['prefix' => 'cashmaal', 'as' => 'cashmaal.'], function () {
+            Route::post('/', 'Payment\CashmaalController@store')->name('store');
+            Route::get('/success', 'Payment\CashmaalController@success')->name('success');
+            Route::get('/cancel', 'Payment\CashmaalController@cancel')->name('cancel');
+        });
     });
 });

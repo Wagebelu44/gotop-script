@@ -117,24 +117,29 @@ class PaymentController extends Controller
     public function paymentUpdate(Request $request)
     {
         if (Auth::user()->can('payment setting')) {
-            $this->validate($request, [
-                'payment_id' => 'required|integer',
-                'global_methods_id' => 'required|integer',
-                'method_name' => 'required|max:255',
-                'minimum' => 'required|numeric|min:1',
-                'maximum' => 'required|numeric|gt:minimum',
-                'new_users' => 'required',
-            ]);
-            PaymentMethod::find($request->payment_id)->update([
-                'minimum'         => $request->minimum,
-                'maximum'         => $request->maximum,
-                'new_user_status' => $request->new_users,
-                'details'         => isset($request->payment_details) ? json_encode($request->payment_details['payment']):null,
-                'updated_at'      => date('Y-m-d h:i:s'),
-                'updated_by'      => Auth::user()->id,
-            ]);
-
-            return redirect()->back()->with('success', 'Payment method update successfully !!');
+            try {
+                $this->validate($request, [
+                    'payment_id' => 'required|integer',
+                    'global_methods_id' => 'required|integer',
+                    'method_name' => 'required|max:255',
+                    'minimum' => 'required|numeric|min:1',
+                    'maximum' => 'required|numeric|gt:minimum',
+                    'new_users' => 'required',
+                ]);
+                PaymentMethod::find($request->payment_id)->update([
+                    'minimum'         => $request->minimum,
+                    'maximum'         => $request->maximum,
+                    'new_user_status' => $request->new_users,
+                    'details'         => isset($request->payment_details) ? json_encode($request->payment_details['payment']):null,
+                    'updated_at'      => date('Y-m-d h:i:s'),
+                    'updated_by'      => Auth::user()->id,
+                ]);
+    
+                return redirect()->back()->with('success', 'Payment method update successfully !!');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', $e->getMessage());
+            }
+           
         } else {
             return view('panel.permission');
         }
