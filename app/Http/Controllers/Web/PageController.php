@@ -567,6 +567,7 @@ class PageController extends Controller
 
         $loader = new \Twig\Loader\ChainLoader([$loader1, $loader2]);
         $twig = new \Twig\Environment($loader);
+        $twig->addExtension(new \App\Twig\AppExtension());
 
         return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site, 'menus' => $menus->toArray()]);
     }
