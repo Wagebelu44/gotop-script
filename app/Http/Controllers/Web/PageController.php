@@ -334,6 +334,7 @@ class PageController extends Controller
             $site['url'] = $url;
             $site['status'] = $request->status ?? 'all';
         } elseif ($page->default_url == 'tickets') {
+            $site['ticket_page'] = ($setting->ticket_system == 1) ? true : false;
             $site['url'] = route('ticket.store');
             $site['base_url'] = url('/tickets');
             $site['single-ticket'] = null;
