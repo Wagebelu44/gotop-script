@@ -143,10 +143,16 @@ class PageController extends Controller
             $site['reset_password_url'] = url('/password-reset');
 
             $site['validation_error'] = 0;
+            if (Session::has('error')) {
+                $error = Session::get('error');
+                $site['errors'][0] = $error;
+                $site['validation_error'] = 1;
+            }
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
+
             }
         } elseif ($page->default_url == 'sign-up') {
             if (Auth::check()) {
@@ -164,6 +170,11 @@ class PageController extends Controller
             $site['terms_checkbox'] = ($setting->terms_checkbox == 1) ? true : false;
 
             $site['validation_error'] = 0;
+            if (Session::has('error')) {
+                $error = Session::get('error');
+                $site['errors'][0] = $error;
+                $site['validation_error'] = 1;
+            }
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
@@ -175,6 +186,11 @@ class PageController extends Controller
             $site['email_status'] = session('resent');
 
             $site['validation_error'] = 0;
+            if (Session::has('error')) {
+                $error = Session::get('error');
+                $site['errors'][0] = $error;
+                $site['validation_error'] = 1;
+            }
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
@@ -193,6 +209,11 @@ class PageController extends Controller
             $site['reset_status'] = session('status');
 
             $site['validation_error'] = 0;
+            if (Session::has('error')) {
+                $error = Session::get('error');
+                $site['errors'][0] = $error;
+                $site['validation_error'] = 1;
+            }
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
@@ -209,6 +230,11 @@ class PageController extends Controller
             $site['reset_status'] = session('status');
 
             $site['validation_error'] = 0;
+            if (Session::has('error')) {
+                $error = Session::get('error');
+                $site['errors'][0] = $error;
+                $site['validation_error'] = 1;
+            }
             if (Session::has('errors')) {
                 $error = Session::get('errors');
                 $site['errors'] = $error->all();
