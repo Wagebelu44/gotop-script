@@ -51,7 +51,6 @@ class CheckPanel
                 }
             }
         } elseif (env('PROJECT') == 'sandbox') {
-            return abort(10000);
             session(['panel' => env('PROJECT_SANDBOX_PANEL')]);
         }
 
