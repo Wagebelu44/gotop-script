@@ -100,7 +100,7 @@
                                         <td>@{{user.email}}</td>
                                         <td>@{{user.skype_name}}</td>
                                         <td>$@{{user.balance}}</td>
-                                        <td>$14</td>
+                                        <td>$@{{ user.spent??0 }}</td>
                                         <td>@{{user.status}}</td>
                                         <td>@{{user.created_at}}</td>
                                         <td>@{{user.last_login_at}}</td>

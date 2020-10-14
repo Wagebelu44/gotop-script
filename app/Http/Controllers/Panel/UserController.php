@@ -25,7 +25,7 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        $users = User::with('servicesList')->where('panel_id', Auth::user()->panel_id)
+        $users = User::select('users.*', 'A.spent')->with('servicesList')->where('panel_id', Auth::user()->panel_id)
                 ->where(function($q) use($request) {
                     if (isset($request->status) && $request->status != '') {
                         $q->where('status', $request->status);
@@ -35,7 +35,9 @@ class UserController extends Controller
                         $q->where('username', 'LIKE', "%$request->username%");
                         $q->orWhere('email', 'LIKE', "%$request->username%");
                     }
-        })->orderBy('id', 'DESC')->paginate(10);
+        })
+        ->leftJoin(\DB::raw('(SELECT user_id, SUM(charges) as spent FROM orders GROUP BY user_id) AS A'), 'A.user_id', '=', 'users.id')
+        ->orderBy('id', 'DESC')->paginate(10);
         $globalMethods = PaymentMethod::where('panel_id', auth()->user()->panel_id)
         ->where('visibility', 'enabled')
         ->get();
