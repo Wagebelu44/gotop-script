@@ -175,7 +175,7 @@
                             </div>
 
                             <div class="col-6">
-                                <label class="control-label" for="newsfeed_align">Average Time</label>
+                                <label class="control-label" for="newsfeed_align">News Feed Position</label>
                                 <select class="form-control" name="newsfeed_align" id="newsfeed_align">
                                     <option value="Left" {{ isset($general) && $general->newsfeed_align == 'Left' ? 'selected':'' }}>Left</option>
                                     <option value="Right" {{ isset($general) && $general->newsfeed_align == 'Right' ? 'selected':'' }}>Right</option>
