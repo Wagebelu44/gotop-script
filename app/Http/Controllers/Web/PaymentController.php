@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Payment\PayeerController;
 use App\Http\Controllers\Payment\PayPalController;
 use App\Http\Controllers\Payment\CashmaalController;
 use App\Http\Controllers\Payment\WebmoneyController;
@@ -31,6 +32,8 @@ class PaymentController extends Controller
             return (new WebmoneyController())->store($request);
         }elseif ($request->payment_method == 7) {
             return (new CashmaalController())->store($request);
+        }elseif ($request->payment_method == 8) {
+            return (new PayeerController())->store($request);
         }
 
         return redirect()->back()->withError('No Payment method found to requested one');
