@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Panel\Setting;
 
-use App\Http\Controllers\Controller;
-use App\Models\G\GlobalPaymentMethod;
-use App\Models\PaymentMethod;
+use App\User;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
+use App\Models\UserPaymentMethod;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\G\GlobalPaymentMethod;
 
 class PaymentController extends Controller
 {
@@ -126,6 +128,7 @@ class PaymentController extends Controller
                     'maximum' => 'required|numeric|gt:minimum',
                     'new_users' => 'required',
                 ]);
+
                 PaymentMethod::find($request->payment_id)->update([
                     'minimum'         => $request->minimum,
                     'maximum'         => $request->maximum,
@@ -134,9 +137,17 @@ class PaymentController extends Controller
                     'updated_at'      => date('Y-m-d h:i:s'),
                     'updated_by'      => Auth::user()->id,
                 ]);
-    
+
+                $users = User::where('panel_id', auth()->user()->panel_id)->get();
+                foreach ($users as $user) {
+                    $user_methods = UserPaymentMethod::select('payment_id')->where('panel_id', auth()->user()->panel_id)->where('user_id', $user->id)->get()->toArray();
+                    if (!in_array($request->payment_id, $user_methods)) { 
+                        UserPaymentMethod::create(['panel_id'=> auth()->user()->panel_id, 'user_id'=>$user->id, 'payment_id' => $request->payment_id]);
+                    }
+                }
                 return redirect()->back()->with('success', 'Payment method update successfully !!');
             } catch (\Exception $e) {
+                dd($e->getMessage());
                 return redirect()->back()->with('error', $e->getMessage());
             }
            

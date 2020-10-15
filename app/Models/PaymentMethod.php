@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PaymentMethod extends Model
 {
@@ -31,5 +32,10 @@ class PaymentMethod extends Model
     {
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_payment_methods', 'user_id', 'payment_id');
     }
 }
