@@ -282,5 +282,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('/success', 'Payment\CashmaalController@success')->name('success');
             Route::get('/cancel', 'Payment\CashmaalController@cancel')->name('cancel');
         });
+        Route::group(['prefix' => 'payeer', 'as' => 'payeer.'], function () {
+            Route::post('/', 'Payment\PayeerController@store')->name('store');
+            Route::get('/success', 'Payment\PayeerController@success')->name('success');
+            Route::get('/cancel', 'Payment\PayeerController@cancel')->name('cancel');
+        });
     });
 });

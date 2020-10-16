@@ -67,6 +67,13 @@ class GlobalPaymentSeeder extends Seeder
 				'status' => 1,
 				'created_at' => now(),
 			],
+			[
+                'uuid' => Str::uuid(),
+				'name' => 'Payeer',
+				'fields' => '{"MARCHENT_ID":"Marchent ID: (124578)", "SECRET_KEY": "Secret Key i.e: FD23FB5E....."}',
+				'status' => 1,
+				'created_at' => now(),
+			],
 		]);
     }
 }
