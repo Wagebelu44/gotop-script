@@ -58,7 +58,7 @@ const orderModule = new Vue({
             .then(res=>{
                 if (res.status) {
                     getInfo();    
-                    this.getOrders();    
+                    this.getOrders(1, false);    
                 }
             });
         }, 15000)
@@ -78,8 +78,10 @@ const orderModule = new Vue({
    
     methods: {
         //
-        getOrders(page=1) {
-            this.loader = true;
+        getOrders(page=1, needLoding = true) {
+            if (needLoding) {
+                this.loader = true;
+            }
             let page_number = this.pagination.current_page;
             let page_id = '?&page=' +page_number;
             if (page_number > 1) {

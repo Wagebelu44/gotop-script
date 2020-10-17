@@ -200,7 +200,7 @@
 <script>
     let adminSeenRoute  = '{{ route("admin.order-seen") }}';
 </script>
-<script src="{{asset('/panel-assets/vue-scripts/order-vue.js?var=0.1')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/order-vue.js?var=0.20')}}"></script>
 <script>
     setTimeout(function () {
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {

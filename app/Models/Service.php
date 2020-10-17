@@ -21,6 +21,15 @@ class Service extends Model
     {
         return $this->hasOne(ProviderService::class, 'service_id', 'id');
     }
+
+    public function getPriceAttribute($value)
+    {
+        return currencyFormat(request()->session()->get('currency_format'), $value); 
+    }
+    // public function getCreatedAtAttribute($value)
+    // {
+    //     return  timezone(request()->session()->get('timezone'), $value); 
+    // }
     
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;

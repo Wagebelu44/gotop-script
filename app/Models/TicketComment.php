@@ -34,6 +34,16 @@ class TicketComment extends Model
         $activity->panel_id = auth()->user()->panel_id;
     }
 
+    public function getCreatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
     public function commentable()
     {
         return $this->morphTo();

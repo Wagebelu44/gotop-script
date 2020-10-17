@@ -57,12 +57,17 @@ class LoginController extends Controller
 
         //attempt to log the admin in
         if (Auth::guard('panelAdmin')->attempt(['email' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember)) {
+            $panelId = session('panel');
+            $setting = SettingGeneral::where('panel_id', $panelId)->first();
+            $request->session()->put('currency_format', $setting->currency_format);
+            $request->session()->put('timezone', $setting->timezone);
+            $request->session()->put('rates_rounding', $setting->rates_rounding);
             return redirect()->intended(route('admin.panel.dashboard'));
         } else {
             return redirect()->back()->with('Input', $request->only('email', 'remember'))->with('error', 'Admin Login invalid !!');
         }
     }
-
+    
     protected function guard()
     {
         return Auth::guard('panelAdmin');
