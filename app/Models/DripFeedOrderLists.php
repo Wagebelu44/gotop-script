@@ -11,7 +11,7 @@ class DripFeedOrderLists extends Model
 {
     use SoftDeletes, LogsActivity;
     protected $table = 'drip_feed_order_lists';
-    protected $fillable = ['id','order_id','status charges','original_charges','unit_price','original_unit_price','link','start_counter','remains','quantity','user_id','service_id','category_id','provider_id','provider_order_id','custom_comments','mode','source','drip_feed_id','order_viewable_time','text_area_1','text_area_2','additional_inputs','refill_status','refill_order_status','order_posted','order_table_id','panel_id','created_at','updated_at','deleted_at'];
+    protected $fillable = ['id','order_id','status', 'charges','original_charges','unit_price','original_unit_price','link','start_counter','remains','quantity','user_id','service_id','category_id','provider_id','provider_order_id','custom_comments','mode','source','drip_feed_id','order_viewable_time','text_area_1','text_area_2','additional_inputs','refill_status','refill_order_status','order_posted','order_table_id','panel_id','created_at','updated_at','deleted_at'];
 
     protected static $logAttributes = ['*'];
     protected static $logOnlyDirty = true;
@@ -27,5 +27,20 @@ class DripFeedOrderLists extends Model
     {
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
+    }
+
+    public function getChargesAttribute($value)
+    {
+        return  (float)currencyFormat(request()->session()->get('currency_format'), $value);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
     }
 }

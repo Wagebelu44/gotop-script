@@ -99,7 +99,7 @@
                                         <td>@{{user.username}}</td>
                                         <td>@{{user.email}}</td>
                                         <td>@{{user.skype_name}}</td>
-                                        <td>$@{{user.balance}}</td>
+                                        <td>$@{{user.show_balance}}</td>
                                         <td>$@{{ user.spent??0 }}</td>
                                         <td>@{{user.status}}</td>
                                         <td>@{{user.created_at}}</td>

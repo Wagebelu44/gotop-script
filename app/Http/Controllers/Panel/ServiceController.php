@@ -457,7 +457,7 @@ class ServiceController extends Controller
                         'name' => $service->name,
                         'type' => $service->type,
                         'category' =>   $category,
-                        'rate'=>  $service->rate,
+                        'rate'=>  ratesRounding(request()->session()->get('rates_rounding'), $service->rate),
                         'min'=>   $service->min,
                         'max'=>   $service->max,
                         'panel_id' => auth()->user()->panel_id,

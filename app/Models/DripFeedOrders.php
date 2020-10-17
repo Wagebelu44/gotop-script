@@ -24,6 +24,21 @@ class DripFeedOrders extends Model
         return self::$logName. " {$eventName}";
     }
 
+    public function getTotalChargesAttribute($value)
+    {
+        return currencyFormat(request()->session()->get('currency_format'), $value); 
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
     public function tapActivity(Activity $activity)
     {
         $activity->ip = \request()->ip();
