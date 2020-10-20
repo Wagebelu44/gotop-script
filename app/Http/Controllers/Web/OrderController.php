@@ -145,8 +145,10 @@ class OrderController extends Controller
                             $my_order['order_posted'] = 0;
                             if ($i==0) 
                             {
+                                $my_order['order_type'] = 'drip_feed';
                                 $make_order = Order::create($my_order);
                                 $my_order['order_posted'] = 1;
+                                unset( $my_order['order_type']);
                             }
                             $drip_feed_data[]= $my_order;
                         }
@@ -193,6 +195,7 @@ class OrderController extends Controller
                     'unit_price' =>  $s_price,
                     'original_unit_price' => $service->price,
                     'status' => 'pending',
+                    'order_type' => 'single',
                     'original_charges' => $custom_original_charges,
                     'link' => $data['link'],
                     'quantity' => $data['quantity'],
@@ -477,6 +480,7 @@ class OrderController extends Controller
                     'unit_price' => $s_price,
                     'original_charges' => ($ser->price / 1000) * $input_line[1],
                     'original_unit_price' => $ser->price,
+                    'order_type' => 'mass',
                     'provider_order_id' => $provider_id,
                     'link' => $input_line[2],
                     'quantity' => $input_line[1],

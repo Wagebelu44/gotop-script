@@ -16,7 +16,7 @@ class Order extends Model
     protected $table = 'orders';
 
     protected $fillable = [
-        'panel_id', 'user_id',  'order_id',  'service_id',  'drip_feed_id',  'category_id',  'provider_id',  'provider_order_id',  'provider_order_id',
+        'panel_id', 'user_id', 'order_type', 'order_id',  'service_id',  'drip_feed_id',  'category_id',  'provider_id',  'provider_order_id',  'provider_order_id',
         'charges',  'original_charges',  'unit_price',  'original_unit_price',  'link',  'start_counter',  'remains',  'quantity',  'auto_order_response',
         'custom_comments',  'mode',  'source',  'order_viewable_time',  'text_area_1',  'text_area_2',  'additional_inputs',  'refill_status',  'refill_order_status',
         'admin_seen', 'status', 'created_by', 'updated_by', 'completed_at', 'duration'
