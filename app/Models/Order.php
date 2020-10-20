@@ -65,4 +65,29 @@ class Order extends Model
     {
         return $this->belongsTo(SettingProvider::class, 'provider_id');
     }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getCompletedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getOrderViewableTimeAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getChargesAttribute($value)
+    {
+        return  (float)currencyFormat(request()->session()->get('currency_format'), $value);
+    }
 }

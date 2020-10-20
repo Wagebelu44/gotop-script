@@ -32,4 +32,14 @@ class SettingFaq extends Model
         $activity->ip = \request()->ip();
         $activity->panel_id = auth()->user()->panel_id;
     }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return  timezone(request()->session()->get('timezone'), $value); 
+    }
 }
