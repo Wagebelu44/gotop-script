@@ -27,6 +27,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('original_charges', 15, 5)->default('0.00000');
             $table->decimal('unit_price', 15, 5)->default('0.00000');
             $table->decimal('original_unit_price', 15, 5)->default('0.00000');
+            $table->string('order_type')->nullable();
             $table->text('link')->nullable();
             $table->unsignedInteger('start_counter')->nullable();
             $table->unsignedInteger('remains')->nullable();

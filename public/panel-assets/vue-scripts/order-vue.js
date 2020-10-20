@@ -7,6 +7,7 @@ const orderModule = new Vue({
         users: [],
         loader: false,
         services: [],
+        orders_counts: null,
         order_mode_count: null,
         order_checkbox: [],
         checkAllOrders: false,
@@ -75,7 +76,25 @@ const orderModule = new Vue({
     mounted () {
         this.getOrders();
     },
-   
+    computed: {
+        all_orders_count() {
+            return this.orders_counts.auto_order_count + this.orders_counts.manual_order_count
+        },
+        none_order_count() {
+        },
+        api_order_count() {
+            return this.orders_counts.api_order_count
+        },
+        mass_order_count() {
+            return this.orders_counts.mass_order_count
+        },
+        subscription_order_count() {
+            return this.orders_counts.subscription_order_count
+        },
+        drip_feed_order_count() {
+            return this.orders_counts.drip_feed_count
+        },
+    },
     methods: {
         //
         getOrders(page=1, needLoding = true) {
@@ -135,6 +154,7 @@ const orderModule = new Vue({
                     this.orders = res.orders.data;
                     this.users = res.users;
                     this.services = res.services;
+                    this.orders_counts = res.row_counts;
                     this.order_mode_count = res.order_mode_count;
                     this.pagination = res.orders;
                 });
