@@ -37,12 +37,19 @@
                      Users
                      </button>
                      <div class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuButton">
-                        <div class="custom-searchBar">
+                        {{-- <div class="custom-searchBar">
                            <input type="text" id="search-by-user" class="form-control">
                            <i class="fa fa-search search-icon-users" aria-hidden="true"></i>
-                        </div>
+                        </div> --}}
                         <div id="user_filter_type">
-                           <a class="dropdown-item type-dropdown-item" @click="statusUser(u.id)" v-for="(u, i) in users"> @{{ u.username }} </a>
+                           {{-- <a class="dropdown-item type-dropdown-item" @click="statusUser(u.id)" v-for="(u, i) in users"> @{{ u.username }} </a> --}}
+                           <a class="dropdown-item type-dropdown-item"> All (@{{ all_orders_count ?? 0 }} )</a>
+                           <a class="dropdown-item type-dropdown-item"> None (@{{ none_order_count ?? 0 }} ) </a>
+                           <a class="dropdown-item type-dropdown-item"> API (@{{ api_order_count ?? 0 }} )</a>
+                           <a class="dropdown-item type-dropdown-item"> Mass (@{{ mass_order_count ?? 0 }} )</a>
+                           <a class="dropdown-item type-dropdown-item"> Subscription (@{{ subscription_order_count ?? 0 }} )</a>
+                           <a class="dropdown-item type-dropdown-item"> Drip-feed (@{{ drip_feed_order_count ?? 0 }} )</a>
+                           <a class="dropdown-item type-dropdown-item"> Refiller (@{{ none_order_count ?? 0 }} )</a>
                         </div>
                      </div>
                   </div>

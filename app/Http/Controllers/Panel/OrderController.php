@@ -453,10 +453,20 @@ class OrderController extends Controller
                     $order_mode['manual']++;
                 }
             }
+            // all orders type
+
+            $counts = \DB::select("SELECT
+            (SELECT COUNT(id) FROM orders WHERE order_type = 'drip_feed') AS drip_feed_count,
+            (SELECT COUNT(id) FROM orders WHERE mode = 'auto') AS auto_order_count,
+            (SELECT COUNT(id) FROM orders WHERE mode = 'manual') AS manual_order_count,
+            (SELECT COUNT(id) FROM orders WHERE source = 'api') AS api_order_count,
+            (SELECT COUNT(orders.id) FROM orders JOIN services on orders.service_id = services.id  WHERE services.service_type = 'api') AS subscription_order_count,
+            (SELECT COUNT(id) FROM orders WHERE order_type = 'mass') AS mass_order_count");
             $data = [
                 'orders' => $orders,
                 'users' => $users,
                 'services' => $services,
+                'row_counts' => $counts[0],
                 'order_mode_count' => $order_mode,
             ];
             return response()->json($data, 200);
