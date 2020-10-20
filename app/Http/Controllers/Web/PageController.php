@@ -575,6 +575,7 @@ class PageController extends Controller
     public function newsfeedApi(Request $request)
     {
         $panelId = session('panel');
+        $setting = SettingGeneral::where('panel_id', $panelId)->first();
         $categories = NewsfeedCategory::where('panel_id', $panelId)->where('status', 'Active')->orderBy('name', 'ASC')->get();
         $sql = Newsfeed::with(['getCategories.category'])->where('panel_id', $panelId)
         ->where('status', 'Active')
@@ -588,6 +589,6 @@ class PageController extends Controller
         }
 
         $news = $sql->paginate(3);
-        return view('web.newsfeed', compact('categories', 'news'));
+        return view('web.newsfeed', compact('setting', 'categories', 'news'));
     }
 }

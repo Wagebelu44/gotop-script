@@ -99,7 +99,7 @@
 
 #fbmsg .wp-sheet-content {
     position: absolute !important;
-    top: 48px !important;
+    top: 0px !important;
     right: 0 !important;
     bottom: 0 !important;
     width: 100% !important;

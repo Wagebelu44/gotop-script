@@ -32,7 +32,7 @@
                                     <td>{{ service['min_quantity'] }}</td>
                                     <td>{{ service['max_quantity'] }}</td>
                                     <td class="nowrap">{{ service['avg_time'] }}</td>
-                                    <td>{{ service['description'] }}</td>
+                                    <td>{{ service['description'] | raw }}</td>
                                     </tr>
                                 {% endfor %}
                             {% endfor %}

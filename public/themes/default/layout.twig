@@ -134,11 +134,7 @@
             <img style="cursor:pointer; width: 80px; z-index: 9999;" src="{{ site['notifigIcon'] }}" alt="messanger">
         </div>
     </div>
-    <div class="wp-sheet" {% if site['newsfeed_align'] == 'Left' %} style="left: 0!important; display:none" {% else %} style="right: 0!important; display:none" {% endif %}>
-        <div class="wp-sheet-head">
-            <div class="wp-sheet-head-inner">{{ site['panel_name'] }}</div>
-            <a href="#" class="wp-sheet-head-close">×</a>
-        </div>
+    <div class="wp-sheet" style="right: 0!important; display:none;">
         <div class="wp-sheet-body"></div>
         <div class="wp-sheet-content">
             <div class="wp-sheet-content-inner">
