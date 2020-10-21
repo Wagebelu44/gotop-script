@@ -32,9 +32,7 @@ a:focus {
     SIDEBAR STYLE
 ----------------------------------------------------- */
 .wrapper {
-    display: flex;
     width: 100%;
-    align-items: stretch;
     min-height: calc(100vh - 60px);
 }
 
@@ -125,7 +123,6 @@ a.article:hover {
 
 #content {
     width: 100%;
-    min-height: 10vh;
     transition: all 0.3s;
 }
 
