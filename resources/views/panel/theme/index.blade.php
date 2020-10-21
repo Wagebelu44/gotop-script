@@ -12,7 +12,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="el-card-item">
-                            <div class="el-card-avatar el-overlay-1"> <img src="{{ asset($theme->snapshot) }}" alt="user">
+                            <div class="el-card-avatar el-overlay-1"> <img src="{{ asset('storage/themes/'.Auth::user()->panel_id.'/'.$theme->snapshot) }}" alt="user">
                                 @if ($theme->status != 'Active')
                                 <div class="el-overlay">
                                     <ul class="list-style-none el-info">

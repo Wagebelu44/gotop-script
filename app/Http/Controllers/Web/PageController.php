@@ -574,8 +574,12 @@ class PageController extends Controller
             $site['affiliates']['payouts'] = UserReferralPayout::where('panel_id', $panelId)->where('referral_id', Auth::user()->id)->paginate(10);
         }
 
-        $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->first();
-        $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->first();
+        $layout = ThemePage::where('panel_id', $panelId)->where('name', 'layout.twig')->whereHas('theme', function ($q) {
+                $q->where('status', '=', 'Active');
+            })->first();
+        $themePage = ThemePage::where('panel_id', $panelId)->where('page_id', $page->id)->whereHas('theme', function ($q) {
+                $q->where('status', '=', 'Active');
+            })->first();
 
         $loader1 = new \Twig\Loader\ArrayLoader([
             'base.html' => str_replace('{{ content }}', '{% block content %}{% endblock %}', $layout->content),

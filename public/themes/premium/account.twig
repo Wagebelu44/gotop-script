@@ -1,0 +1,73 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+             {% if site['validation_error'] > 0 %}
+                {% for error in site['errors'] %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> {{error}}.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if site['error']  %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> {{site['error']}}.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+
+            {% if site['success']  %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> {{site['success']}}.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %} 
+
+            <div class="well">
+                <div class="form-group">
+                    <label for="email" class="control-label">Email</label>
+                    <input type="text" class="form-control" id="email" value="{{ site['user']['email'] }}" readonly>
+                </div>
+            </div>
+
+            <div class="well mb-3">
+                <form method="POST" action="{{ site['password_url'] }}">
+                    {{ site['csrf_field'] | raw }}
+                    <div class="form-group">
+                        <label for="current_password" class="control-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label">New Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirmation" class="control-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update password</button>
+                </form>
+            </div>
+            
+            <div class="well mb-3">
+                <form method="POST" action="{{ site['apikey_url'] }}">
+                    {{ site['csrf_field'] | raw }}
+                    <div class="form-group">
+                        <label for="key" class="control-label">Api key</label>
+                        <input type="text" class="form-control" id="api_key" value="{{ site['user']['api_key'] }}" readonly>
+                    </div>
+
+                    <input type="hidden" name="_csrf" value="{{csrftoken}}">
+                    <button type="submit" class="btn btn-primary">Generate key</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

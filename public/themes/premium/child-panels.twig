@@ -1,0 +1,141 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="row">
+				<div class="col-sm-10">
+					You can now buy a child panel for ${{ site['child_selling_amount'].amount }} per month! (deducted from your balance). A child panel is your own website to sell services. You will simply connect it to us and sell directly to your clients!
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-info mb-3" data-toggle="modal" data-target="#exampleModalLong">Add Panel</button>
+				</div>
+			</div>
+
+            <div class="well well-float">
+                {% if site['error']  %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> {{site['error']}}.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+                {% if site['success']  %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Success!</strong> {{site['success']}}.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endif %}
+                {% if site['validation_error'] > 0 %}
+                    {% for error in site['errors'] %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> {{error}}.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Email</th>
+                        <th>Created</th>
+                        <th>Expiry</th>
+                        <th class="col-md-1"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for panel in site['panelsList'] %}
+                        <tr>
+                            <td>{{ panel['domain'] }}</td>
+                            <td>{{ panel['email'] }}</td>
+                            <td nowrap>{{ panel['created_at'] }}</td>
+                            <td nowrap>{{ panel['expiry'] }}</td>
+                            <td nowrap>
+                                {% if panel['status'] == 'Active' %}
+                                    <a href="{{ panel['domain'] }}/admin" class="btn btn-xs btn-default" target="_blank">Admin</a>
+                                {% endif %}                                
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">New Panel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="userChildForm" action="{{ site['panel_store'] }}" onsubmit="return userChildPanelValidation()" method="post">
+                    {{ site['token'] | raw }}
+                    <div class="modal-body">
+                        <div class="first">
+                            <div class="form-group">
+                                <label for="domain" class="control-label">Domain</label>
+                                <input type="text" class="form-control" id="domain" name="domain" value="">
+                                <small id="domainMsg" class="text-danger"></small>
+                            </div>
+                            <div class="alert alert-info">
+                                <ol style="padding: 10px;">
+                                    <li>Login to your domain provider's portal.</li>
+                                    <li>Go to 'DNS Management' section of the domain where you want to run this panel.</li>
+                                    <li>
+                                        Search for 'A' record where the host is 'YOURDOMAIN' or '@'<br>
+                                        <ol type="a" style="padding: 10px;">
+                                            <li>If the record found, change the 'IP address' to '165.22.209.67' and 'TTL' value to 30 (or Allowed minimum value).</li>
+                                            <li>If the record not found, add new 'A' record with host=YOURDOMAIN or host=@, IP=165.22.209.67 and TTL=30 (or Allowed minimum value)</li>
+                                        </ol>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="createorderform-currency">Currency</label>
+                            <select id="createorderform-currency" class="form-control" name="currency" aria-required="true">
+                                {% for cur in site['currencies'] %}
+                                    <option value="{{ cur['code'] }}">{{ cur['name'] }} ({{ cur['code'] }})</option>
+                                {% endfor %}
+                            </select>
+                            <small id="currencyMsg" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="createorderform-email">Email</label>
+                            <input type="text" id="createorderform-email" class="form-control" name="email" aria-required="true" value="">
+                            <small id="emailMsg" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="createorderform-password">Password</label>
+                            <input type="password" id="createorderform-password" class="form-control" name="password" aria-required="true">
+                            <small id="passwordMsg" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="createorderform-password_confirm">Confirm password</label>
+                            <input type="password" id="createorderform-password_confirm" class="form-control" name="password_confirmation" aria-required="true">
+                            <small id="cpMsg" class="text-danger"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="price" class="control-label">Price per month</label>
+                            <input type="text" class="form-control" id="price" value="{{ site['child_selling_amount'].amount }}" readonly="">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Panel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

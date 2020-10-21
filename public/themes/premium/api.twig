@@ -1,0 +1,263 @@
+<div class="inner-page-common api-common">
+    <section id="" class="m-0 mb-5">
+        <div class="row d-flex justify-content-center api-panel m-0">
+            <div class="col-lg-7">
+                <div class="card accordion">
+                    <div class="card-header">
+                        <button class="btn top-title" type="button" data-toggle="collapse" data-target="#apiDoc" aria-expanded="true" aria-controls="collapseOne">
+                            API Docs <i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i>
+                        </button>
+                    </div>
+                    <div id="apiDoc" class="collapse show" style="">
+                        <table class="table table-bordered border-none">
+                            <tbody>
+                            <tr>
+                                <td class="width-40">HTTP Method</td>
+                                <td>POST</td>
+                            </tr>
+                            <tr>
+                                <td>API URL</td>
+                                <td>{{site['url']}}/api/v2</td>
+                            </tr>
+                            <tr>
+                                <td>API Key</td>
+                                <td>{{site['api_key']}}</td>
+                            </tr>
+                            <tr>
+                                <td>Response format</td>
+                                <td>JSON</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card accordion">
+                    <div class="card-header">
+                        <button class="btn title" type="button" data-toggle="collapse" data-target="#service_services" aria-expanded="true">
+                            Service list <i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i>
+                        </button>
+                    </div>
+                    <div id="service_services" class="card-body collapse show" style="">
+                        <table class="table table-bordered">
+                            <thead class="bg-green border border-success">
+                            <tr>
+                                <th class="width-40">Parameters</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>key</td>
+                                <td>Your API key</td>
+                            </tr>
+                            <tr>
+                                <td>action</td>
+                                <td>services</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="sub-title">Example response</div>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <button class="float-right link" data-toggle="tooltip" data-placement="bottom" title="" onclick="CopyToClipboard('copyServiceListCode_services')" data-original-title="Copy code">
+                                    <i class="fa fa-copy"></i> Copy
+                                </button>
+                                <pre id="json">
+                                    <code id="copyServiceListCode_services" class="language-json jsonData">
+                                        {{ site['serviceApi'] | json_encode }}
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card accordion">
+                    <div class="card-header">
+                        <button class="btn title" type="button" data-toggle="collapse" data-target="#service_add" aria-expanded="true">
+                            Add order <i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i>
+                        </button>
+                    </div>
+                    <div id="service_add" class="card-body collapse show" style="">
+                        <form class="has-validation-callback">
+                            <div class="form-group">
+                                <select class="form-control input-sm" id="service_type">
+                                    {% for key, ordName in site['apiAddOrder']['name'] %}
+                                        <option value="{{ key }}">{{ ordName }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
+
+                        {% for key, ordData in site['apiAddOrder']['data'] %}
+                        <table class="table table-sm api-data" id="api_{{ key }}" style="display: none;">
+                            <thead class="bg-green border border-success">
+                            <tr>
+                                <th class="width-40">Parameters</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody class="border border-top-0">
+                            {% for data in ordData %}
+                            <tr>
+                                <td>{{ data['parameters'] }}</td>
+                                <td>{{ data['description'] }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endfor %}
+                        <div class="sub-title">Example response</div>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <button class="float-right link" data-toggle="tooltip" data-placement="bottom" title="" onclick="CopyToClipboard('copyServiceListCode_add')" data-original-title="Copy code">
+                                    <i class="fa fa-copy"></i> Copy
+                                </button>
+                                <pre>
+                                    <code id="copyServiceListCode_add" class="language-json jsonData">
+                                        {
+                                        <span class="token property">"order":</span> <span class="number">23501</span>
+                                        }
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card accordion">
+                    <div class="card-header">
+                        <button class="btn title" type="button" data-toggle="collapse" data-target="#service_status" aria-expanded="true">
+                            Order status <i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i>
+                        </button>
+                    </div>
+                    <div id="service_status" class="card-body collapse show">
+                        <table class="table table-sm">
+                            <thead class="bg-green border border-success">
+                            <tr>
+                                <th class="width-40">Parameters</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>key</td>
+                                <td>Your API key</td>
+                            </tr>
+                            <tr>
+                                <td>action</td>
+                                <td>status</td>
+                            </tr>
+                            <tr>
+                                <td>order</td>
+                                <td>Order ID</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="sub-title">Example response</div>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <button class="float-right link" data-toggle="tooltip" data-placement="bottom" title="" onclick="CopyToClipboard('copyServiceListCode_status')" data-original-title="Copy code">
+                                    <i class="fa fa-copy"></i> Copy
+                                </button>
+                                <pre>
+                                    <code id="copyServiceListCode_status" class="language-json jsonData">
+                                        {{ site['orderResponse'] | json_encode }}
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card accordion">
+                    <div class="card-header">
+                        <button class="btn title" type="button" data-toggle="collapse" data-target="#service_multi_status" aria-expanded="true">
+                            Multiple orders status <i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i>
+                        </button>
+                    </div>
+                    <div id="service_multi_status" class="card-body collapse show">
+                        <table class="table table-sm">
+                            <thead class="bg-green border border-success">
+                            <tr>
+                                <th class="width-40">Parameters</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>key</td>
+                                <td>Your API key</td>
+                            </tr>
+                            <tr>
+                                <td>action</td>
+                                <td>status</td>
+                            </tr>
+                            <tr>
+                                <td>orders</td>
+                                <td>Order IDs separated by comma</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="sub-title">Example response</div>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <button class="float-right link" data-toggle="tooltip" data-placement="bottom" title="" onclick="CopyToClipboard('copyServiceListCode_multi_status')" data-original-title="Copy code">
+                                    <i class="fa fa-copy"></i> Copy
+                                </button>
+                                <pre>
+                                    <code id="copyServiceListCode_multi_status" class="language-json jsonData">
+                                        {{ site['multiOrderResponse'] | json_encode }}
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card accordion">
+                    <div class="card-header">
+                        <button class="btn title" type="button" data-toggle="collapse" data-target="#service_balance" aria-expanded="true">
+                            User balance <i class="arrow fa fa-angle-up"></i> <i class="arrow fa fa-angle-down"></i>
+                        </button>
+                    </div>
+                    <div id="service_balance" class="card-body collapse show">
+                        <table class="table table-sm">
+                            <thead class="bg-green border border-success">
+                            <tr>
+                                <th class="width-40">Parameters</th>
+                                <th>Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>key</td>
+                                <td>Your API key</td>
+                            </tr>
+                            <tr>
+                                <td>action</td>
+                                <td>balance</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="sub-title">Example response</div>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <button class="float-right link" data-toggle="tooltip" data-placement="bottom" title="" onclick="CopyToClipboard('copyServiceListCode_balance')" data-original-title="Copy code">
+                                    <i class="fa fa-copy"></i> Copy
+                                </button>
+                                <pre>
+                                    <code id="copyServiceListCode_balance" class="language-json jsonData">
+                                        {{ site['userBalance'] | json_encode }}
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
