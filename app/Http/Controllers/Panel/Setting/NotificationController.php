@@ -68,7 +68,7 @@ class NotificationController extends Controller
         if (Auth::user()->can('notification setting')) {
             $this->validate($request, [
                 'subject' => 'required|max:191',
-                'body' => 'required',
+                'body' => 'required|max:191',
                 'status' => 'required'
             ]);
 

@@ -94,6 +94,9 @@
                                 <div class="form-group form-group__languages">
                                     <label class="control-label" for="menu_name">Name</label>
                                     <input type="text" id="menu_name" class="form-control translations default-menu-name" name="menu_name" data-lang="en" value="{{ old('menu_name') }}" required>
+                                    @error('menu_name')
+                                        <span class="text-danger"> {{ $message }}</span>
+                                    @enderror
                                 </div>
 
                                 <div class="form-group">

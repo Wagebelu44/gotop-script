@@ -145,9 +145,7 @@
                                                         <label for=""> <strong>Subject</strong></label>
                                                         <input type="text" name="subject" class="form-control custom-form-control">
                                                         @error('subject')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong></strong>
-                                                        </span>
+                                                            <strong>{{ $message }}</strong>
                                                         @enderror
                                                     </div>
                                                 </div>
