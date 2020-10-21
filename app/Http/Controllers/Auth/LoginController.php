@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
+use App\Models\SettingGeneral;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -48,6 +49,11 @@ class LoginController extends Controller
         ]);
 
         if(filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+            $panelId = session('panel');
+            $setting = SettingGeneral::where('panel_id', $panelId)->first();
+            $request->session()->put('currency_format', $setting->currency_format);
+            $request->session()->put('timezone', $setting->timezone);
+            $request->session()->put('rates_rounding', $setting->rates_rounding);
             Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember);
         } else {
             Auth::guard('web')->attempt(['username' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember);
