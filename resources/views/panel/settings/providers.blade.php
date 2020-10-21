@@ -21,6 +21,7 @@
                                 <th class="p-l">Domain</th>
                                 <th>Api Key</th>
                                 <th>Api Url</th>
+                                <th>Balance</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -32,6 +33,13 @@
                                 <td class="p-l">{{ $provider->domain }}</td>
                                 <td>{{ $provider->api_key }}</td>
                                 <td>{{ $provider->api_url }}</td>
+                                <td>
+                                    @if ($provider->balance !=null)
+                                        @if (isset($provider->balance['balance']))
+                                            {{$provider->balance['balance']}}
+                                        @endif
+                                    @endif
+                                </td>
                                 <td>{{ $provider->status }}</td>
                                 <td class="p-r text-center">
                                     <button data-url="{{ route($resource.'edit', $provider->id) }}" data-id="{!! $provider->id !!}" class="edit btn btn-default m-t-20">
