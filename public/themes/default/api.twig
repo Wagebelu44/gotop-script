@@ -64,9 +64,7 @@
                                     <i class="fa fa-copy"></i> Copy
                                 </button>
                                 <pre id="json">
-                                    <code id="copyServiceListCode_services" class="language-json jsonData">
-                                        {{ site['serviceApi'] | json_encode }}
-                                    </code>
+                                    <code id="copyServiceListCode_services" class="language-json jsonData">{{ site['serviceApi'] }}</code>
                                 </pre>
                             </div>
                         </div>
@@ -115,11 +113,7 @@
                                     <i class="fa fa-copy"></i> Copy
                                 </button>
                                 <pre>
-                                    <code id="copyServiceListCode_add" class="language-json jsonData">
-                                        {
-                                        <span class="token property">"order":</span> <span class="number">23501</span>
-                                        }
-                                    </code>
+                                    <code id="copyServiceListCode_add" class="language-json jsonData">{{ site['orderAmount'] }}</code>
                                 </pre>
                             </div>
                         </div>
@@ -162,9 +156,7 @@
                                     <i class="fa fa-copy"></i> Copy
                                 </button>
                                 <pre>
-                                    <code id="copyServiceListCode_status" class="language-json jsonData">
-                                        {{ site['orderResponse'] | json_encode }}
-                                    </code>
+                                    <code id="copyServiceListCode_status" class="language-json jsonData">{{ site['orderResponse'] }}</code>
                                 </pre>
                             </div>
                         </div>
@@ -207,9 +199,7 @@
                                     <i class="fa fa-copy"></i> Copy
                                 </button>
                                 <pre>
-                                    <code id="copyServiceListCode_multi_status" class="language-json jsonData">
-                                        {{ site['multiOrderResponse'] | json_encode }}
-                                    </code>
+                                    <code id="copyServiceListCode_multi_status" class="language-json jsonData">{{ site['multiOrderResponse'] }}</code>
                                 </pre>
                             </div>
                         </div>
@@ -248,9 +238,7 @@
                                     <i class="fa fa-copy"></i> Copy
                                 </button>
                                 <pre>
-                                    <code id="copyServiceListCode_balance" class="language-json jsonData">
-                                        {{ site['userBalance'] | json_encode }}
-                                    </code>
+                                    <code id="copyServiceListCode_balance" class="language-json jsonData">{{ site['userBalance'] }}</code>
                                 </pre>
                             </div>
                         </div>

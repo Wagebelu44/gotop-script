@@ -479,11 +479,12 @@ class PageController extends Controller
         } elseif ($page->default_url == 'api') {
             $site['url'] = url('/');
             $site['api_key'] = auth()->user()->api_key;
-            $site['serviceApi'] = apiServiceJson();
-            $site['orderResponse'] = apiOrderResponse();
-            $site['multiOrderResponse'] = apiMultiOrderResponse();
-            $site['userBalance'] = apiUserBalance();
+            $site['serviceApi'] = json_encode(apiServiceJson(), JSON_PRETTY_PRINT);
+            $site['orderResponse'] = json_encode(apiOrderResponse(), JSON_PRETTY_PRINT);
+            $site['multiOrderResponse'] = json_encode(apiMultiOrderResponse(), JSON_PRETTY_PRINT);
+            $site['userBalance'] = json_encode(apiUserBalance(), JSON_PRETTY_PRINT);
             $site['apiAddOrder'] = apiAddOrder();
+            $site['orderAmount'] = json_encode(["order" => 23501], JSON_PRETTY_PRINT);
         } elseif ($page->default_url == 'add-funds') {
             $site['url'] = url('/');
             $site['pay_pal_store'] = route('payment.paypal.store');
