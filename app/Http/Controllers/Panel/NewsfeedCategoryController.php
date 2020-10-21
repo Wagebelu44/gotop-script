@@ -45,7 +45,7 @@ class NewsfeedCategoryController extends Controller
     {
         if (Auth::user()->can('create newsfeed category')) {
             $this->validate($request, [
-                'name'     => 'required',
+                'name'     => 'required|max:191',
                 'color'    => 'required',
                 'status'   => 'required'
             ]);

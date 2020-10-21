@@ -70,6 +70,9 @@
                             <div class="form-group">
                                 <label class="form-control-label">Category name</label>
                                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', isset($data) && $data->name ? $data->name:'' ) }}" placeholder="Category name">
+                                @error('name')
+                                    <span>{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="form-group">

@@ -53,9 +53,12 @@
                         </div>
                         <hr>
 
-                        <div class="form-group">
+                        <div class="form-group @error('panel_name') is-invalid @enderror">
                             <label class="control-label" for="panel_name">Panel Name</label>
                             <input type="text" class="form-control" value="{{ old('panel_name', isset($general) && $general->panel_name ? $general->panel_name:'') }}" name="panel_name">
+                            @error ('panel_name')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <div class="form-group">

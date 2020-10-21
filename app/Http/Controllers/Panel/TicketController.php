@@ -49,7 +49,7 @@ class TicketController extends Controller
     {
         if (Auth::user()->can('create ticket')) {
             $this->validate($request, [
-                'subject' => 'required',
+                'subject' => 'required|max:191',
                 'user_id' => 'required',
             ]);
 

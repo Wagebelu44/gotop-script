@@ -71,7 +71,7 @@
                             <label class="control-label" for="domain">Domain </label>
                             <input type="text" class="form-control" name="domain" id="domain" required>
                             @error('domain')
-                            <span role="alert">
+                            <span role="alert" class="text-danger">
                                 <strong>{{ $message }}</strong>
                             </span>
                             @enderror
@@ -80,8 +80,8 @@
                             <label class="control-label" for="url">URL </label>
                             <input type="text" class="form-control" name="url" id="url">
                             @error('url')
-                            <span role="alert">
-                                <strong></strong>
+                            <span role="alert" class="text-danger">
+                                <strong>{{ $message }}</strong>
                             </span>
                             @enderror
                         </div>

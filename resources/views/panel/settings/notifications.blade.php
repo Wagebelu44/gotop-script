@@ -407,6 +407,11 @@
                             <div class="form-group">
                                 <label class="control-label" for="body">Body</label>
                                 <textarea id="body" class="form-control" name="body" rows="5" required>{{ old('body', isset($data) ? $data->body : '') }}</textarea>
+                                @error('body')
+                                    <span role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
 
                             <div class="btn-group" role="group">
