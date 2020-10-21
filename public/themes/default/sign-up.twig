@@ -102,7 +102,7 @@
                                             <a href="{{ site['sign_in_url'] }}">Signin</a>
                                         {% endif %}
 
-                                        {% if site['reset_password_url'] %}
+                                        {% if site['reset_password']  and site['reset_password_url'] %}
                                             <a href="{{ site['reset_password_url'] }}" class="float-right">Forgot password?</a>
                                         {% endif %}
                                     </div>
