@@ -233,7 +233,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
     });
     Route::group(['middleware' => ['user.verified']], function () {
         Route::get('/', 'Web\PageController@index')->name('home');
-        Route::get('/sign-in', 'Web\PageController@page')->name('signIn');
+        Route::get('/sign-in', 'Web\PageController@index')->name('signIn');
         Route::get('/{url}', 'Web\PageController@page')->name('route');
         Route::get('/{url}/{token}', 'Web\PageController@page');
     });
