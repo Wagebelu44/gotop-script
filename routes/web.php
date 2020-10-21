@@ -215,6 +215,9 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     //Authenticated route...
     Route::group(['middleware' => ['auth', 'user.verified']], function () {
+        Route::post('/change-apikey', 'Web\PageController@changeApikey')->name('change.apikey');
+        Route::post('/change-password', 'Web\PageController@changePassword')->name('change.password');
+
         Route::get('/get-category-services', 'Web\OrderController@getCateServices');
         Route::post('/mass-order-store', 'Web\OrderController@storeMassOrder')->name('massOrder.store');
         Route::post('/make_new_order', 'Web\OrderController@store')->name('make.single.order');

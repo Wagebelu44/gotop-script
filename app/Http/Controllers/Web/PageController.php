@@ -2,34 +2,38 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
+use App\User;
 use App\Models\Blog;
 use App\Models\Menu;
 use App\Models\Page;
 use App\Models\Order;
 use App\Models\Redeem;
-use App\Models\SettingModule;
 use App\Models\Ticket;
 use App\Models\Newsfeed;
 use App\Models\ThemePage;
 use App\Models\BlogSlider;
 use App\Models\SettingFaq;
 use App\Models\Transaction;
-use App\Models\UserChildPanel;
+use Illuminate\Support\Str;
+use App\Models\UserReferral;
+use Illuminate\Http\Request;
 use App\Models\AccountStatus;
+use App\Models\SettingModule;
 use App\Models\DripFeedOrders;
 use App\Models\SettingGeneral;
+use App\Models\UserChildPanel;
 use App\Models\ServiceCategory;
 use App\Models\NewsfeedCategory;
+use App\Models\UserReferralVisit;
 use App\Models\G\GlobalCurrencies;
-use App\Models\UserReferral;
 use App\Models\UserReferralAmount;
 use App\Models\UserReferralPayout;
-use App\Models\UserReferralVisit;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class PageController extends Controller
 {
@@ -240,6 +244,23 @@ class PageController extends Controller
                 $site['errors'] = $error->all();
                 $site['validation_error'] = $error->count();
             }
+        } elseif ($page->default_url == 'account') {
+            $site['validation_error'] = 0;
+            if (Session::has('errors')) {
+                $error = Session::get('errors');
+                $site['errors'] = $error->all();
+                $site['validation_error'] = $error->count();
+            }
+            if (Session::has('success')) {
+                $site['success'] = Session::get('success');
+            }
+            if (Session::has('error')) {
+                $site['error'] = Session::get('error');
+            }
+
+            $site['password_url'] = url('/change-password');
+            $site['apikey_url'] = url('/change-apikey');
+            $site['user'] = Auth::user();
         } elseif ($page->default_url == 'blog') {
             $site['url'] = url('/blog');
             $site['postsImgUrl'] = asset('./storage/images/blog/');
@@ -569,6 +590,43 @@ class PageController extends Controller
         $twig->addExtension(new \App\Twig\AppExtension());
 
         return $twig->render('index.html', ['content' => $page->content, 'page' => $page->toArray(), 'site' => $site, 'menus' => $menus->toArray()]);
+    }
+
+    public function changeApikey()
+    {
+        $panelId = session('panel');
+        $user = User::where('panel_id', $panelId)->where('id', Auth::user()->id)->first();
+        if(empty($user)) {
+            return redirect()->back()->with('error', "User not found!");
+        }
+        $user->update(['api_key' => Str::random(20)]);
+
+        return redirect()->back()->with('success', 'New API key generated!');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $data = $request->all();
+        $validate = Validator::make($data, [
+            'current_password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate)->withInput();
+        }
+
+        $panelId = session('panel');
+        $user = User::where('panel_id', $panelId)->where('id', Auth::user()->id)->first();
+        if(empty($user)) {
+            return redirect()->back()->with('error', "User not found!");
+        }
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['password' => 'Current password does not match!']);
+        }
+        $user->update(['password' => Hash::make($request->password)]);
+
+        return redirect()->back()->with('success', 'Password Updated!');
     }
 
     public function newsfeedApi(Request $request)
