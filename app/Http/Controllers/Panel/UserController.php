@@ -7,6 +7,7 @@ use App\Exports\UsersExport;
 use App\Models\ExportedUser;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
+use Illuminate\Support\Str;
 use App\Models\ServiceCategory;
 use App\Models\UserPaymentMethod;
 use App\Http\Controllers\Controller;
@@ -69,6 +70,7 @@ class UserController extends Controller
                 $data = $request->except('password_confirmation');
                 $user = User::create([
                     'panel_id'   => Auth::user()->panel_id,
+                    'uuid' => Str::uuid(),
                     'email'      => $data['email'],
                     'username'   => $data['username'],
                     'skype_name' => $data['skype_name'],

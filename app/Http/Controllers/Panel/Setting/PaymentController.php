@@ -138,13 +138,22 @@ class PaymentController extends Controller
                     'updated_by'      => Auth::user()->id,
                 ]);
 
-                $users = User::where('panel_id', auth()->user()->panel_id)->get();
+                $users = User::select('users.*')->where('users.panel_id', auth()->user()->panel_id)
+                ->leftJoin('user_payment_methods', function($q) use($request) {
+                    $q->on('user_payment_methods.user_id', '=', 'users.id');
+                    $q->where('payment_id', $request->payment_id);
+                })
+                ->whereNull('user_payment_methods.id')
+                ->get();
+                $user_payment_methods = [];
                 foreach ($users as $user) {
-                    $user_methods = UserPaymentMethod::select('payment_id')->where('panel_id', auth()->user()->panel_id)->where('user_id', $user->id)->get()->toArray();
-                    if (!in_array($request->payment_id, $user_methods)) { 
-                        UserPaymentMethod::create(['panel_id'=> auth()->user()->panel_id, 'user_id'=>$user->id, 'payment_id' => $request->payment_id]);
-                    }
+                    $user_payment_methods [] = [
+                        'panel_id'=> auth()->user()->panel_id, 
+                        'user_id'=>$user['id'], 
+                        'payment_id' => $request->payment_id
+                    ];
                 }
+                UserPaymentMethod::insert($user_payment_methods);
                 return redirect()->back()->with('success', 'Payment method update successfully !!');
             } catch (\Exception $e) {
                 return redirect()->back()->with('error', $e->getMessage());
