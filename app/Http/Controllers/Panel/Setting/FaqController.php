@@ -35,7 +35,7 @@ class FaqController extends Controller
     {
         if (Auth::user()->can('faq setting')) {
             $this->validate($request, [
-                'question' => 'required',
+                'question' => 'required|max:191',
                 'answer'   => 'required',
                 'status'   => 'required'
             ]);
@@ -73,7 +73,7 @@ class FaqController extends Controller
     {
         if (Auth::user()->can('faq setting')) {
             $this->validate($request, [
-                'question' => 'required',
+                'question' => 'required|max:191',
                 'answer'   => 'required',
                 'status'   => 'required'
             ]);

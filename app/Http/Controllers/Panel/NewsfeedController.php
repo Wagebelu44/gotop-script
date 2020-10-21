@@ -50,7 +50,7 @@ class NewsfeedController extends Controller
         if (Auth::user()->can('create newsfeed')) {
             $this->validate($request, [
                 'image'             => 'required|image',
-                'title'             => 'required',
+                'title'             => 'required|max:191',
                 'newsfeed_content'  => 'required',
                 'status'            => 'required',
                 'categories'        => 'required|array',
@@ -114,7 +114,7 @@ class NewsfeedController extends Controller
         if (Auth::user()->can('edit newsfeed')) {
             $this->validate($request, [
                 'image'             => 'sometimes|image',
-                'title'             => 'required',
+                'title'             => 'required|max:191',
                 'newsfeed_content'  => 'required',
                 'status'            => 'required',
                 'categories'        => 'required|array',

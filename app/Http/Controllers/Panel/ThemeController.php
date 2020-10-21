@@ -83,15 +83,27 @@ class ThemeController extends Controller
     public function reset($id)
     {
         if (Auth::user()->can('themes')) {
-            $page = ThemePage::with('page.globalPage')->where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+            // $page = ThemePage::with('page.globalPage')->where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+            // if (!empty($page)) {
+            //     $content = $page->page->globalPage->content;
+            //     if (empty($content)) {
+            //         $content = defaultThemePageContent();
+            //     }
+            //     $page->update(['content' => $content]);
+            //     return redirect()->back()->with('success', 'Theme active successfully!');
+            // }
+
+            $page = ThemePage::with(['theme', 'page'])->where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
             if (!empty($page)) {
-                $content = $page->page->globalPage->content;
-                if (empty($content)) {
+                if (file_exists(public_path($page->theme->location.'/'.$page->page->default_url.'.twig'))) {
+                    $content = file_get_contents(public_path($page->theme->location.'/'.$page->page->default_url.'.twig'));
+                } else {
                     $content = defaultThemePageContent();
                 }
                 $page->update(['content' => $content]);
                 return redirect()->back()->with('success', 'Theme active successfully!');
             }
+
             return redirect()->back()->with('error', 'Theme not found!');
         } else {
             return view('panel.permission');

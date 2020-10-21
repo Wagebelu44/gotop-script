@@ -41,6 +41,8 @@ class Authenticate extends Middleware
             if (count($this->guards)) {
                 if ($this->guards[0] === 'panelAdmin') {
                     return route('panel.login');
+                } elseif ($this->guards[0] === 'web') {
+                    return route('signIn');
                 }
             }
 
