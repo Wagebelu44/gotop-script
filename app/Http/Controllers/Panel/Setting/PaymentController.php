@@ -124,8 +124,8 @@ class PaymentController extends Controller
                     'payment_id' => 'required|integer',
                     'global_methods_id' => 'required|integer',
                     'method_name' => 'required|max:255',
-                    'minimum' => 'required|numeric|min:1',
-                    'maximum' => 'required|numeric|gt:minimum',
+                    'minimum' => 'required|numeric|min:0',
+                    'maximum' => 'required|numeric|gte:minimum',
                     'new_users' => 'required',
                 ]);
 
@@ -147,7 +147,6 @@ class PaymentController extends Controller
                 }
                 return redirect()->back()->with('success', 'Payment method update successfully !!');
             } catch (\Exception $e) {
-                dd($e->getMessage());
                 return redirect()->back()->with('error', $e->getMessage());
             }
            
