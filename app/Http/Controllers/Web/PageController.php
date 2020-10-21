@@ -167,7 +167,7 @@ class PageController extends Controller
             $site['sign_in_url'] = url('/sign-in');
             $site['reset_password_url'] = url('/password-reset');
             $site['terms_url'] = url('/terms');
-            
+            $site['reset_password'] = ($setting->reset_password == 1) ? true : false;
             $site['signup_page'] = ($setting->signup_page == 1) ? true : false;
             $site['name_fields'] = ($setting->name_fields == 1) ? true : false;
             $site['skype_field'] = ($setting->skype_field == 1) ? true : false;
