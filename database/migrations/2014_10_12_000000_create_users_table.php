@@ -33,6 +33,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->enum('affiliate_status', ['Active', 'Deactivated'])->default('Active');
             $table->enum('status', ['Pending', 'Active', 'Deactivated'])->default('Pending');
+            $table->string('timezone', 200)->nullable();
             $table->timestamp('last_login_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
