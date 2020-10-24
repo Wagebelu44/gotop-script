@@ -80,7 +80,7 @@ class RegisterController extends Controller
         $first_name = isset($data['first_name']) ? $data['first_name'] : '';
         $last_name = isset($data['last_name']) ? $data['last_name'] : '';
 
-        $setting = SettingGeneral::select('email_confirmation')->where('panel_id', $panelId)->first();
+        $setting = SettingGeneral::select('email_confirmation', 'timezone')->where('panel_id', $panelId)->first();
 
         $user =  User::create([
             'uuid' => Str::uuid(),
@@ -94,7 +94,9 @@ class RegisterController extends Controller
             'api_key' => Str::random(20),
             'referral_key' => substr(md5(microtime()), 0, 6),
             'email_confirmation_status' => $setting->email_confirmation,
+            'last_login_at' => date('Y-m-d H:i:s'),
             'status' => 'Active',
+            'timezone' => $setting->timezone,
             'password' => Hash::make($data['password']),
         ]);
 

@@ -68,22 +68,38 @@ class Order extends Model
 
     public function getCreatedAtAttribute($value)
     {
-        return  timezone(request()->session()->get('timezone'), $value); 
+        $setting = request()->session()->get('timezone');
+        if (!\Request::is('admin/*') && auth()->user()->timezone != null) {
+            $setting = auth()->user()->timezone;
+        }
+        return  timezone($setting, $value); 
     }
 
     public function getCompletedAtAttribute($value)
     {
-        return  timezone(request()->session()->get('timezone'), $value); 
+        $setting = request()->session()->get('timezone');
+        if (!\Request::is('admin/*') && auth()->user()->timezone != null) {
+            $setting = auth()->user()->timezone;
+        }
+        return  timezone($setting, $value); 
     }
 
     public function getOrderViewableTimeAttribute($value)
     {
-        return  timezone(request()->session()->get('timezone'), $value); 
+        $setting = request()->session()->get('timezone');
+        if (!\Request::is('admin/*') && auth()->user()->timezone != null) {
+            $setting = auth()->user()->timezone;
+        }
+        return  timezone($setting, $value); 
     }
 
     public function getUpdatedAtAttribute($value)
     {
-        return  timezone(request()->session()->get('timezone'), $value); 
+        $setting = request()->session()->get('timezone');
+        if (!\Request::is('admin/*') && auth()->user()->timezone != null) {
+            $setting = auth()->user()->timezone;
+        }
+        return  timezone($setting, $value); 
     }
 
     public function getChargesAttribute($value)

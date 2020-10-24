@@ -21,7 +21,7 @@ class User extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
-        'uuid', 'panel_id', 'first_name', 'created_at', 'last_name', 'last_login_at', 'skype_name', 'phone', 'balance', 'email', 'username', 'api_key', 'referral_key', 'email_verified_at', 'email_confirmation_status', 'password', 'affiliate_status', 'status',
+        'uuid', 'panel_id', 'timezone', 'first_name', 'created_at', 'last_name', 'last_login_at', 'skype_name', 'phone', 'balance', 'email', 'username', 'api_key', 'referral_key', 'email_verified_at', 'email_confirmation_status', 'password', 'affiliate_status', 'status',
     ];
 
     protected $hidden = [
@@ -40,12 +40,20 @@ class User extends Authenticatable
 
     public function getLastLoginAtAttribute($value)
     {
-        return  timezone(request()->session()->get('timezone'), $value); 
+        $setting = request()->session()->get('timezone');
+        if (!\Request::is('admin/*') &&  $this->timezone != null) {
+            $setting = $this->timezone;
+        }
+        return  timezone($setting, $value); 
     }
 
     public function getCreatedAtAttribute($value)
     {
-        return  timezone(request()->session()->get('timezone'), $value); 
+        $setting = request()->session()->get('timezone');
+        if (!\Request::is('admin/*') &&  $this->timezone != null) {
+            $setting = $this->timezone;
+        }
+        return  timezone($setting, $value); 
     }
 
     public function servicesList()

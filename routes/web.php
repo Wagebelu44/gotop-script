@@ -215,6 +215,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
 
     //Authenticated route...
     Route::group(['middleware' => ['auth', 'user.verified']], function () {
+        Route::post('/change-timezone', 'Web\PageController@changeTimezone')->name('change.timezone');
         Route::post('/change-apikey', 'Web\PageController@changeApikey')->name('change.apikey');
         Route::post('/change-password', 'Web\PageController@changePassword')->name('change.password');
 

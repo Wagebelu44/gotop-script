@@ -260,6 +260,8 @@ class PageController extends Controller
 
             $site['password_url'] = url('/change-password');
             $site['apikey_url'] = url('/change-apikey');
+            $site['timezone_url'] = url('/change-timezone');
+            $site['timezones'] = getTimezone();
             $site['user'] = Auth::user();
         } elseif ($page->default_url == 'blog') {
             $site['url'] = url('/blog');
@@ -607,6 +609,16 @@ class PageController extends Controller
         $user->update(['api_key' => Str::random(20)]);
 
         return redirect()->back()->with('success', 'New API key generated!');
+    }
+    public function changeTimezone(Request $request)
+    {
+        $panelId = session('panel');
+        $user = User::where('panel_id', $panelId)->where('id', Auth::user()->id)->first();
+        if(empty($user)) {
+            return redirect()->back()->with('error', "User not found!");
+        }
+        $dd = $user->update(['timezone' => $request->timezone]);
+        return redirect()->back()->with('success', 'Timezone has been changed!');
     }
 
     public function changePassword(Request $request)
