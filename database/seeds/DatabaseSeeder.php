@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
 
         //For sandbox Use...
-        $this->call(PanelAdminSeeder::class);
-        $this->call(UserSeeder::class);
-        $this->call(ProviderSeeder::class);
+        //$this->call(PanelAdminSeeder::class);
+        //$this->call(UserSeeder::class);
+        //$this->call(ProviderSeeder::class);
     }
 }
