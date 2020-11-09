@@ -9,7 +9,7 @@
                     <table class="table table-bordered">
                         <tr>
                             <th width="15%">Client name</th>
-                            <td>{{ $ticket->user->name }}</td>
+                            <td>{{ $ticket->user->username }}</td>
                         </tr>
                         <tr>
                             <th width="15%">Subject</th>
