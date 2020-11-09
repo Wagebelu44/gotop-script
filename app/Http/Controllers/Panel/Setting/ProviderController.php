@@ -27,7 +27,7 @@ class ProviderController extends Controller
     {
         if (Auth::user()->can('provider setting')) {
             $this->validate($request, [
-                'domain' => 'required|max:191|url',
+                'domain' => 'required|max:191|regex:/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/i',
                 'url' => 'nullable|max:191|url',
                 'status' => 'required',
             ]);
