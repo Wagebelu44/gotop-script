@@ -85,7 +85,7 @@
 
                             <hr>
                             <button type="submit" class="btn btn-primary" name="save-button">Save changes</button>
-                            <a class="btn btn-default" href="">Cancel</a>
+                            <a class="btn btn-default" href="{{ route($resource.'index')}}">Cancel</a>
                             @if ($page == 'edit')
                                 <a href="javascript: void(0)" onclick="document.getElementById('deleteFaq').submit();" class="btn btn-default waves-effect pull-right" ><i>Delete</i></a>
                             @endif
