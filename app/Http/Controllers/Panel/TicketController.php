@@ -108,7 +108,7 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
         if (Auth::user()->can('view ticket')) {
-            if (Auth::user()->id != $ticket->user->panel_id) {
+            if (Auth::user()->panel_id != $ticket->user->panel_id) {
                 abort(403, 'You do not own this ticket.');
             }
             $ticket->update(['seen_by_admin' => true]);
