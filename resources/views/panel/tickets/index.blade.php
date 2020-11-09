@@ -59,12 +59,12 @@
                                     </div>
                                 </th>
 
-                                <th>ID</th>
-                                <th>Subject</th>
-                                <th>Request</th>
-                                <th style="width: 30%">Description</th>
-                                <th width="15%">Client name</th>
-                                <th width="15%">
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Subject</th>
+                                <th class="text-center">Request</th>
+                                <th class="text-center" style="width: 30%">Description</th>
+                                <th class="text-center" width="15%">Client name</th>
+                                <th class="text-center" width="15%">
                                     <div class="input-group">
                                         <div class="input-group-append">
                                             <button class="btn custom-dropdown-button dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status</button>
@@ -79,32 +79,32 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th>Created at</th>
-                                <th>Last update</th>
-                                <th>Actions</th>
+                                <th class="text-center">Created at</th>
+                                <th class="text-center">Last update</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($tickets as $key => $ticket)
                                 <tr>
-                                    <td><input type="checkbox" name="tickets[]" value="{{ $ticket->id }}" class="ticket_check" onchange="checkTicket()" {{ $ticket->status == 2 ? 'disabled' : '' }}></td>
-                                    <td>{{ $ticket->id }}</td>
-                                    <td>{{ ucfirst($ticket->subject) }}</td>
-                                    <td>{{ ucfirst($ticket->payment_type) }}</td>
-                                    <td style="width: 30%">
-                                        {!! substr(strip_tags($ticket->description), $limit = 200) !!}
+                                    <td class="text-center"><input type="checkbox" name="tickets[]" value="{{ $ticket->id }}" class="ticket_check" onchange="checkTicket()" {{ $ticket->status == 2 ? 'disabled' : '' }}></td>
+                                    <td class="text-center">{{ $ticket->id }}</td>
+                                    <td class="text-center">{{ ucfirst($ticket->subject) }}</td>
+                                    <td class="text-center">{{ ucfirst($ticket->payment_type) }}</td>
+                                    <td class="text-center">
+                                        {!! substr(strip_tags($ticket->description), 0, 200) !!}
                                         @if (strlen(strip_tags($ticket->description)) > 200)
                                             <a href="{{ route('admin.tickets.show', $ticket->id) }}"
                                                 class="btn btn-link">Read More</a>
                                         @endif
                                     </td>
-                                    <td>{{ $ticket->user->username }}</td>
-                                    <td style="width: 10%">
+                                    <td class="text-center">{{ $ticket->user->username }}</td>
+                                    <td class="text-center">
                                         <p style="background-color: {{isset($colors[$ticket->status])?$colors[$ticket->status]['bg']:"#fff"}}; color:#fff; padding: 0px 5px; text-align:center;"> {{ucfirst($ticket->status)}} </p>
                                     </td>
-                                    <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->created_at)) }}</td>
-                                    <td width="20%">{{ date('M d, Y h:iA', strtotime($ticket->updated_at)) }}</td>
-                                    <td>
+                                    <td class="text-center">{{ date('M d, Y h:iA', strtotime($ticket->created_at)) }}</td>
+                                    <td class="text-center">{{ date('M d, Y h:iA', strtotime($ticket->updated_at)) }}</td>
+                                    <td class="text-center">
                                         <div class="d-flex">
                                             <div class="dropdown show goTopDropdown">
                                                 <a class="btn btn-default dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
