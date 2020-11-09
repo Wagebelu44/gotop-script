@@ -22,8 +22,8 @@ class TicketController extends Controller
         if (Auth::user()->can('ticket')) {
             $inputSearch = request()->all();
             $inputSearch['keyword'] = isset($inputSearch['keyword']) ? $inputSearch['keyword'] : '';
-            $users = User::where('panel_id', Auth::user()->id)->get();
-            $tickets = Ticket::with('user')->where('panel_id', Auth::user()->id)
+            $users = User::where('panel_id', Auth::user()->panel_id)->get();
+            $tickets = Ticket::with('user')->where('panel_id', Auth::user()->panel_id)
                 ->where(function ($q) use ($inputSearch) {
                     if (isset($inputSearch['columns']) && is_array($inputSearch['columns'])) {
                         foreach ($inputSearch['columns'] as $index => $value) {
