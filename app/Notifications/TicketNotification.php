@@ -3,9 +3,10 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\HtmlString;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 class TicketNotification extends Notification
 {
@@ -17,9 +18,12 @@ class TicketNotification extends Notification
      *
      * @return void
      */
-    public function __construct()
+    public $noti;
+    public $ticket;
+    public function __construct($noti, $ticket)
     {
-        
+        $this->noti = $noti;
+        $this->ticket = $ticket;
     }
 
     /**
@@ -41,9 +45,13 @@ class TicketNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $body = str_replace("\n", '<br>', $this->noti->body);
+        $body = str_replace('{{ ticket.url }}', '<a href="'.url('tickets?id='.$this->ticket->id).'">'.url('tickets?id='.$this->ticket->id).'</a>', $body);
         return (new MailMessage)
-            ->line('We have received your Ticket.')
-            ->line('Our Support will get back to you within 6/7 hours');
+            ->subject($this->noti->subject)
+            ->markdown(
+                'emails.support_ticket.reply', ['body' => $body]
+            );
     }
 
     /**

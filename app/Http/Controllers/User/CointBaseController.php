@@ -275,9 +275,10 @@ class CointBaseController extends Controller
                 transaction($transaction, $user);
 
                 $notification = notification('Payment received', 2);
-
-                if ($notification && $notification->status) {
-                    Mail::to(staffEmails('payment_received'))->send(new PaymentReceived($paymentLog, $notification));
+                if ($notification) {
+                    if ($notification->status =='Active') {
+                        Mail::to(staffEmails('payment_received'))->send(new PaymentReceived($paymentLog, $notification));
+                    }
                 }
 
                 activity('coinpayments')

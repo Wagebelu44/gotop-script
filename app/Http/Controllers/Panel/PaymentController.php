@@ -227,11 +227,12 @@ class PaymentController extends Controller
                     }
                 }
 
-                // $notification = notification('Payment received', 2);
-
                 // temporary put off , but needed must
-                // if ($notification && $notification->status) {
-                //     Mail::to(staffEmails('payment_received'))->send(new PaymentReceived($log, $notification));
+                // $notification = notification('Payment received', 2);
+                // if ($notification) {
+                    // if ($notification->status =='Active') {
+                //          Mail::to(staffEmails('payment_received'))->send(new PaymentReceived($log, $notification));
+                    // }
                 // }
                 $gp = GlobalPaymentMethod::find($request->global_payment_method_id);
 
