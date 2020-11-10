@@ -2,19 +2,28 @@
 
 namespace App\Http\Controllers\Panel;
 
+use App\User;
 use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Models\PaymentMethod;
 use App\Models\SettingGeneral;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
     public function index(Request $request)
     {
         $payments = $this->payments($request);
-        return view('panel.reports.index', compact('payments'));
+        $users = User::where('panel_id', Auth::user()->panel_id)->get();
+        $globalMethods = PaymentMethod::with('global')
+            ->where('panel_id', auth()->user()->panel_id)
+            ->where('visibility', 'enabled')
+            ->get();
+
+        return view('panel.reports.index', compact('payments', 'users', 'globalMethods'));
     }
 
     public function payments(Request $request)
@@ -24,7 +33,7 @@ class ReportController extends Controller
             ->whereYear('created_at', $year)
             ->where('panel_id',  auth()->user()->panel_id)
             ->where('status', 'done')
-            ->where(function($q){
+            ->where(function($q) {
                 $q->where('transaction_flag', 'admin_panel');
                 $q->orWhere('transaction_flag', 'payment_gateway');
             })
@@ -33,7 +42,10 @@ class ReportController extends Controller
                 $sql->where('status', $request->status);
             }
             if ($request->user_ids  && !in_array('all', $request->user_ids)) {
-                $q->whereIn('user_id', $request->user_ids);
+                $sql->whereIn('user_id', $request->user_ids);
+            }
+            if ($request->payment_method_ids  && !in_array('all', $request->payment_method_ids)) {
+                $sql->whereIn('global_payment_method_id', $request->payment_method_ids);
             }
             $data = $sql->get();
 
@@ -133,34 +145,5 @@ class ReportController extends Controller
             $profits[intVal($dd[1])][intVal($dd[2])] = $qr->total;
         }
         return view('panel.reports.profit', compact('profits'));
-    }
-    public function create()
-    {
-        //
-    }
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-    public function show($id)
-    {
-        //
-    }
-
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    public function destroy($id)
-    {
-        //
     }
 }

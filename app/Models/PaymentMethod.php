@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\G\GlobalPaymentMethod;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Contracts\Activity;
@@ -37,5 +38,10 @@ class PaymentMethod extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_payment_methods', 'user_id', 'payment_id');
+    }
+
+    public function global()
+    {
+        return $this->belongsTo(GlobalPaymentMethod::class, 'global_payment_method_id', 'id');
     }
 }

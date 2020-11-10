@@ -16,15 +16,15 @@
                             </div>
                             <div class="col-md-5">
                                 <form id="search-form" method="get" novalidate>
-
                                     <input type="hidden" name="show" value="">
-
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
                                                 <div class="controls">
-                                                    <select name="year" class="form-control" required data-validation-required-message="This field is required">
-                                                        <option value="all">Year</option>
+                                                    <select name="year" class="form-control" required>
+                                                        @for($x = date('Y'); $x >= 2020; $x--)
+                                                            <option>{{ $x }}</option>
+                                                        @endfor
                                                     </select>
                                                 </div>
                                             </div>
@@ -32,8 +32,11 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <div class="controls">
-                                                    <select name="user_ids[]" id="user_ids" class="form-control" required data-validation-required-message="This field is required">
+                                                    <select name="user_ids[]" class="form-control select2" multiple>
                                                         <option value="all">All users</option>
+                                                        @foreach($users as $u)
+                                                            <option value="{{ $u->id }}">{{ $u->username }}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
@@ -41,8 +44,11 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <div class="controls">
-                                                    <select name="payment_method_id[]" id="payment_method_id" class="form-control" required data-validation-required-message="This field is required">
+                                                    <select name="payment_method_ids[]" class="form-control select2" multiple>
                                                         <option value="all">All method</option>
+                                                        @foreach($globalMethods as $m)
+                                                            <option value="{{ $m->id }}">{{ $m->global->name }}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
