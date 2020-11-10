@@ -128,7 +128,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="control-label" for="post_title">Title</label>
-                                        <input type="text" id="post_title" class="form-control default-page-name page-name @error('title') is-invalid @enderror" name="title" value="{{ old('title', isset($data) ? $data->title : '') }}" onchange="string_to_slug(this.value)">
+                                        <input type="text" id="post_title" class="form-control default-page-name page-name @error('title') is-invalid @enderror" name="title" value="{{ old('title', isset($data) ? $data->title : '') }}" onchange="string_to_slug(this.value)" required>
                                         @error('title')
                                         <span role="alert">
                                             <strong>{{ $message }}</strong>

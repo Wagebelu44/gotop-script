@@ -49,7 +49,6 @@ class NewsfeedController extends Controller
     {
         if (Auth::user()->can('create newsfeed')) {
             $this->validate($request, [
-                'image'             => 'required|image',
                 'title'             => 'required|max:191',
                 'newsfeed_content'  => 'required',
                 'status'            => 'required',
@@ -71,7 +70,7 @@ class NewsfeedController extends Controller
                 'created_by'        => Auth::user()->id,
             ]);
 
-            if ($newsfeed){
+            if ($newsfeed) {
                 if (!empty($request->categories)) {
                     $categoryData = [];
                     foreach ($request->categories as $k => $categoryId) {
@@ -113,7 +112,6 @@ class NewsfeedController extends Controller
     {
         if (Auth::user()->can('edit newsfeed')) {
             $this->validate($request, [
-                'image'             => 'sometimes|image',
                 'title'             => 'required|max:191',
                 'newsfeed_content'  => 'required',
                 'status'            => 'required',
@@ -129,7 +127,7 @@ class NewsfeedController extends Controller
                 $image = (new MediaController())->imageUpload($file, 'images/newsfeed', 1, null, [400, 400]);
             }
 
-           $newsfeed = Newsfeed::find($id)->update([
+            $newsfeed = Newsfeed::find($id)->update([
                 'panel_id'          => Auth::user()->panel_id,
                 'title'             => $request->title,
                 'content'           => $request->newsfeed_content,
