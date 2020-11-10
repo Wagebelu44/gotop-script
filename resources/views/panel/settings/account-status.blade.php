@@ -80,7 +80,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="control-label" for="point">Point</label>
+                                <label class="control-label" for="point">Point (Per 100 Point = Amount)</label>
                                 <input type="number" step="0.01" min="0" class="form-control @error('point') is-invalid @enderror" value="{{ old('point', isset($data) && $data->point ? $data->point:'' ) }}" name="point">
                                 @error('point')
                                 <span class="invalid-feedback" role="alert">
