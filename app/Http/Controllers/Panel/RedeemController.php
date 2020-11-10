@@ -17,11 +17,11 @@ class RedeemController extends Controller
     public function store(Request $request)
     {
         $totalSpent = Order::where('panel_id', Auth::user()->panel_id)->where('user_id', $request->user_id)->sum('charges');
-        $accountStatusData = AccountStatus::where('panel_id', Auth::user()->panel_id)->where('minimum_spent_amount', '<=', $totalSpent)->orderBy('minimum_spent_amount', 'DESC')->first();
+        $accountStatusData = AccountStatus::where('panel_id', Auth::user()->panel_id)->where('minimum_spent_amount', '>=', $totalSpent)->orderBy('minimum_spent_amount', 'ASC')->first();
         if (!empty($accountStatusData)){
             $redeemSpent = Redeem::where('panel_id', Auth::user()->panel_id)->where('user_id', $request->user_id)->sum('spent_amount');
             $redeemAmount = ((($totalSpent-$redeemSpent)*$accountStatusData->point)/100);
-        }else{
+        } else {
             return redirect()->back()->with('error', "Sorry insufficient your balance !!");
         }
 
