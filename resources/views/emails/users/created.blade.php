@@ -2,7 +2,7 @@
 # {{ $notification->subject }}
 
 @php $body = str_replace(array('{{ user.username }}', '{{ panel.url }}'), array($user->username, '<a href="' . route('login') . '">' . route('login') . '</a>'), $notification->body); @endphp
-{!! $body !!}
+{!! nl2br($body) !!}
 
 @component('mail::button', ['url' => '#'])
 Sign in

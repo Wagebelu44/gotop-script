@@ -164,7 +164,7 @@ class TicketController extends Controller
             $notification = notification('New message', 1, auth()->user()->panel_id);
             if ($notification) {
                 if ($notification->status =='Active') {
-                    Notification::send($ticket->user, new TicketNotification($noti, $ticket));
+                    Notification::send($ticket->user, new TicketNotification($notification, $ticket));
                 }
             }
             return redirect()->back()->with('success', 'Reply has been sent successfully');

@@ -44,10 +44,23 @@ class UserResetPasswordNotification extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password', url('password-set', $this->token))
-            ->line('If you did not request a password reset, no further action is required.');
+        $notification = notification('Forgot password', 1, session('panel'));
+        if ($notification) {
+            if ($notification->status =='Active') {
+                $body = str_replace("\n", '<br>', $notification->body);
+                $body = str_replace('{{ resetpassword.url }}', '<a href="'.url('password-set', $this->token).'">'.url('password-set', $this->token).'</a>', $body);
+                return (new MailMessage)
+                    ->subject($notification->subject)
+                    ->markdown(
+                        'emails.notification', ['body' => $body]
+                    );
+            }
+        } else {
+            return (new MailMessage)
+                ->line('You are receiving this email because we received a password reset request for your account.')
+                ->action('Reset Password', url('password-set', $this->token))
+                ->line('If you did not request a password reset, no further action is required.');
+        }
     }
 
     /**
