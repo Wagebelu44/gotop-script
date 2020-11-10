@@ -30,7 +30,7 @@
                                                 {{ $userNotification->description }}
                                             </div>
                                         </td>
-                                        <td>{{ $userNotification->status == 'active' ? 'Enabled' : 'Disabled' }}</td>
+                                        <td>{{ $userNotification->status == 'Active' ? 'Enabled' : 'Disabled' }}</td>
                                         <td class="settings-emails-td-actions">
                                             <a href="{{ route($resource.'edit', $userNotification->id) }}"  class="btn btn-xs btn-default edit-module">
                                                 Edit
@@ -59,7 +59,7 @@
                                                     {{ $staffNotification->description }}
                                                 </div>
                                             </td>
-                                            <td>{{ $staffNotification->status == 'active' ? 'Enabled' : 'Disabled' }}</td>
+                                            <td>{{ $staffNotification->status == 'Active' ? 'Enabled' : 'Disabled' }}</td>
                                             <td class="settings-emails-td-actions">
                                                 <a href="{{ route($resource.'edit', $staffNotification->id) }}"  class="btn btn-xs btn-default edit-module">
                                                     Edit
