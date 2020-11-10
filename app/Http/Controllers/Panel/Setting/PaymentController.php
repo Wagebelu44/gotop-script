@@ -106,7 +106,7 @@ class PaymentController extends Controller
     public function paymentEdit(Request $request)
     {
         if (Auth::user()->can('payment setting')) {
-            $payment_method = PaymentMethod::where(['panel_id' => Auth::user()->panel_id, 'created_by' => Auth::user()->panel_id, 'id' => $request->id])->first();
+            $payment_method = PaymentMethod::where(['panel_id' => Auth::user()->panel_id, 'id' => $request->id])->first();
             return response()->json([
                 'payment_method'  => $payment_method,
                 'payment_details' => !empty($payment_method->details) ? json_decode($payment_method->details, true):'',
