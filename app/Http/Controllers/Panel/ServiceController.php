@@ -434,19 +434,25 @@ class ServiceController extends Controller
                         $category = $request->categories[$index];
                     }
 
-                    $data[] = array(
+                    Service::updateOrCreate([
+                        'provider_service_id'=> $service->service,
+                        'provider_id'=> $request->provider_id,
+                        'category_id' => $category,
+                    ], array(
                         'name' => $service->name,
                         'service_type' => $service->type,
-                        'price' => $service->rate,
+                        'price' => $service->custome_rate,
                         'min_quantity' => $service->min,
                         'max_quantity' => $service->max,
+                        "provider_id" =>  $request->provider_id,
+                        'provider_service_id' => $service->service,
                         'drip_feed_status' => $service->dripfeed ? 'allow' : 'disallow',
                         'category_id' => $category,
                         'panel_id' => auth()->user()->panel_id,
                         'created_at' => now(),
                         'mode' => 'auto',
                         'updated_at' => now(),
-                    );
+                    ));
 
                     ProviderService::updateOrCreate([
                             'service_id'=> $service->service,
@@ -464,7 +470,6 @@ class ServiceController extends Controller
                     ]);
                 }
                 Service::insert($data);
-
                 return redirect()->back()->withSuccess('Services imported successfully.');
             } catch (\Exception $e) {
                 return redirect()->back()->withError($e->getMessage());

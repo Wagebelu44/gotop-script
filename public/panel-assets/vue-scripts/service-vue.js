@@ -377,12 +377,13 @@ const ServiceApp = new Vue({
                 });
             }
         },
-        calculateRaise() {
+        calculateRaise(evt) {
             if (this.selected_services.length>0) {
-                this.selected_services.forEach(item => {
+                this.selected_services = this.selected_services.map(item => {
                     if (item.custome_rate_visible) {
                         item.custome_rate = (Number(item.rate) + Number(this.fixedRaisei)) + (( (Number(item.rate) + Number(this.fixedRaisei)) * this.percentRaisei ) / 100);
                     }
+                    return item;
                 });
             }
         },
@@ -394,6 +395,8 @@ const ServiceApp = new Vue({
                     return item;
                 });
             }
+            this.fixedRaisei = 0;
+            this.percentRaisei = 0;
         },
         getParameterByName(name, url) {
             if (!url) url = window.location.href;
@@ -425,7 +428,7 @@ const ServiceApp = new Vue({
         getCategoryServices()
         {
             this.loader = true;
-            let url = base_url+"/admin/get-category-services?";
+            let url = base_url+"/admin/get-category-services";
             let top_Url = base_url+'/admin/services?';
             if (this.service_filter.service_type!=='') {
                 url +='&service_type='+this.service_filter.service_type;

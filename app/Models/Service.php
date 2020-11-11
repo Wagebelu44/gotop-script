@@ -19,7 +19,7 @@ class Service extends Model
 
     public function provider()
     {
-        return $this->hasOne(ProviderService::class, 'service_id', 'id');
+        return $this->hasOne(ProviderService::class, 'service_id', 'provider_service_id');
     }
 
     public function getPriceAttribute($value)

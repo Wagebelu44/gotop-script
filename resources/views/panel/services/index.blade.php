@@ -752,10 +752,9 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <div class="form-group"  v-if="!is_nextLevel">
+                                                        <div class="form-group"  v-show="!is_nextLevel">
                                                             <label for=""><strong>Provider</strong></label>
                                                             <v-select :options="providers_lists"
                                                                 v-model="provider_id"
@@ -766,17 +765,17 @@
                                                             </v-select>
                                                             <input type="hidden" name="provider_id" v-model='provider_id'>
                                                         </div>
-                                                        <div v-else>
+                                                        <div v-show="is_nextLevel">
                                                             <div class="row">
                                                                 <div class="col-6 d-flex">
                                                                     <div class="form-element-group">
                                                                         <div> Fixed (1.00) </div>
-                                                                        <input type="number" @keyup="calculateRaise()"  @change="calculateRaise()" v-model='fixedRaisei' class="form-control"> 
+                                                                        <input type="number" step="any" @keyup="calculateRaise()"  @change="calculateRaise()" v-model.number='fixedRaisei' class="form-control"> 
                                                                     </div>
                                                                      <span>+</span>
                                                                      <div class="form-element-group">
                                                                         <div> Percent (%)</div>
-                                                                        <input type="number"  @keyup="calculateRaise()" @change="calculateRaise()" v-model="percentRaisei"  class="form-control">
+                                                                        <input type="number" step="any"  @keyup="calculateRaise()"  @change="calculateRaise()" v-model.number="percentRaisei"  class="form-control">
                                                                      </div>
                                                                 </div>
                                                                 <div class="col-6" style="text-align: right" >
@@ -825,13 +824,11 @@
                                                                                 <tr v-for="service in category.services">
                                                                                     <td>
                                                                                         <label>
-                                                                                            <input type="checkbox" name="categories[]" class="d-none" :class="'catControl' + index" value="create">
-                                                                                            <input @change="checkSibling($event)" type="checkbox" name="services[]" :value="JSON.stringify(service)" :class="'category' + index"> @{{ service.name }}
+                                                                                            <input type="checkbox"  class="d-none" name="categories[]" :class="'catControl' + index" value="create">
+                                                                                            <input @change="checkSibling($event)" type="checkbox" :value="JSON.stringify(service)" :class="'category' + index"> @{{ service.name }}
                                                                                         </label>
                                                                                     </td>
-                                                                                    <td class="text-right">
-                                                                                        @{{ service.rate }}
-                                                                                    </td>
+                                                                                    <td class="text-right">@{{ service.rate }}</td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -849,18 +846,19 @@
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
-                                                                                <tr v-for="service in category.services">
+                                                                                <tr v-for="ser in category.services">
                                                                                     <td>
-                                                                                       <span>@{{ service.service }} -@{{ service.name }}</span> 
+                                                                                       <span>@{{ ser.service }} -@{{ ser.name }}</span> 
                                                                                     </td>
                                                                                     <td class="text-right">
                                                                                         <div class="d-flex justify-content-between">
                                                                                             <div class="d-flex">
-                                                                                                <input type="number" :value="service.custome_rate" >
-                                                                                                <span @click="lockSeviceRate(service)" v-if="service.custome_rate_visible"><i class="fas fa-lock-open"></i></span>
-                                                                                                <span @click="lockSeviceRate(service)" v-if="!service.custome_rate_visible"><i class="fas fa-lock"></i></span>
+                                                                                                <input type="number" step="any" :value="ser.custome_rate" >
+                                                                                                <input type="hidden" name="services[]" :value="JSON.stringify(ser)">
+                                                                                                <span @click="lockSeviceRate(ser)" v-if="ser.custome_rate_visible"><i class="fas fa-lock-open"></i></span>
+                                                                                                <span @click="lockSeviceRate(ser)" v-if="!ser.custome_rate_visible"><i class="fas fa-lock"></i></span>
                                                                                             </div>
-                                                                                            <span>@{{ service.rate }}</span>
+                                                                                            <span>@{{ ser.rate }}</span>
                                                                                         </div>
                                                                                     </td>
                                                                                 </tr>
@@ -1030,7 +1028,7 @@
                                                     @{{service.mode}} 
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sPrice">
-                                                    <span class="d-block">$@{{service.price}}</span>
+                                                    <span class="d-block">$@{{Number(service.price)}}</span>
                                                     <span class="d-block sub-price"> 
                                                         <span v-if="service.provider!==null">
                                                             $@{{service.provider?service.provider.rate:null}} 
