@@ -53,6 +53,31 @@
         font-size: 14px;
         color: rgba(0, 0, 0, 0.31);
     }
+    .form-element-group{
+         border: 1px solid #d3d3d3;
+         position: relative;
+    }
+    .form-element-group div:first-child{
+        font-size: 10px;
+        position: absolute;
+        left: 6px;
+        top: 2px;
+        color: #989898
+    }
+    .form-element-group div:last-child{
+        font-size: 10px;
+        position: absolute;
+        right: 6px;
+        top: 2px;
+        color: #989898
+    }
+    .form-element-group input{
+        width: 100px;
+        border: none !important;
+        border-radius: 4px;
+        outline: none !important;
+        padding: 12px 5px 2px;
+    }
 </style>
 @endsection
 @section('content')
@@ -714,7 +739,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal fade" id="import" tabindex="-1" role="dialog"
+                            <div class="modal fade" id="import" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
                                  aria-labelledby="serviceModalTitle" aria-hidden="true">
                                 <div class="modal-dialog __modal_dialog_custom" role="document">
                                     <div class="modal-content">
@@ -730,7 +755,7 @@
                                                 
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <div class="form-group">
+                                                        <div class="form-group"  v-if="!is_nextLevel">
                                                             <label for=""><strong>Provider</strong></label>
                                                             <v-select :options="providers_lists"
                                                                 v-model="provider_id"
@@ -741,56 +766,107 @@
                                                             </v-select>
                                                             <input type="hidden" name="provider_id" v-model='provider_id'>
                                                         </div>
+                                                        <div v-else>
+                                                            <div class="row">
+                                                                <div class="col-6 d-flex">
+                                                                    <div class="form-element-group">
+                                                                        <div> Fixed (1.00) </div>
+                                                                        <input type="number" @keyup="calculateRaise()"  @change="calculateRaise()" v-model='fixedRaisei' class="form-control"> 
+                                                                    </div>
+                                                                     <span>+</span>
+                                                                     <div class="form-element-group">
+                                                                        <div> Percent (%)</div>
+                                                                        <input type="number"  @keyup="calculateRaise()" @change="calculateRaise()" v-model="percentRaisei"  class="form-control">
+                                                                     </div>
+                                                                </div>
+                                                                <div class="col-6" style="text-align: right" >
+                                                                    <button type="button" @click="resetRaise()" class="btn btn-default">Reset Rate</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="form-group">
                                                             <label for=""><strong>Services </strong></label>
                                                             <div class="card" style="height: 400px; overflow-y: scroll; overflow-x: hidden">
-                                                                <div class="material-card card" v-for="(category, index) in categories">
-                                                                    <table class="table table-hover">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th colspan="2">
-                                                                                <div class="row">
-                                                                                    <div class="col">
-                                                                                        @{{ category.category }}
-                                                                                    </div>
-                                                                                    <div class="col">
-                                                                                        <div class="dropdown show goTopDropdown">
-                                                                                            <a class="btn btn-secondary dropdown-toggle" :class="'cat' + index" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                Create category
-                                                                                            </a>
-                                                                                            <ul class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuLink">
-                                                                                                <li v-for="(cs) in  category_services"><a class="dropdown-item" @click="selectDropDown(index, cs.name, cs.id)" > @{{ cs.name }} </a></li>
-                                                                                            </ul>
+                                                                <div v-show="!is_nextLevel" >
+                                                                    <div class="material-card card" v-for="(category, index) in categories">
+                                                                        <table  class="table table-hover">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th colspan="2">
+                                                                                    <div class="row">
+                                                                                        <div class="col">
+                                                                                            @{{ category.category }}
+                                                                                        </div>
+                                                                                        <div class="col">
+                                                                                            <div class="dropdown show goTopDropdown">
+                                                                                                <a class="btn btn-secondary dropdown-toggle" :class="'cat' + index" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                                    Create category
+                                                                                                </a>
+                                                                                                <ul class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuLink">
+                                                                                                    <li v-for="(cs) in  category_services"><a class="dropdown-item" @click="selectDropDown(index, cs.name, cs.id)" > @{{ cs.name }} </a></li>
+                                                                                                </ul>
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                </div>
-                                                                            </th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td>
-                                                                                    <label>
-                                                                                        <input type="checkbox" @click="checkUncheckAll(index, $event)"> Select all
-                                                                                    </label>
-                                                                                </td>
-                                                                                <td class="text-right">
-                                                                                    Rate, USD
-                                                                                </td>
+                                                                                </th>
                                                                             </tr>
-                                                                            <tr v-for="service in category.services">
-                                                                                <td>
-                                                                                    <label>
-                                                                                        <input type="checkbox" name="categories[]" class="d-none" :class="'catControl' + index" value="create">
-                                                                                        <input @change="checkSibling($event)" type="checkbox" name="services[]" :value="JSON.stringify(service)" :class="'category' + index"> @{{ service.name }}
-                                                                                    </label>
-                                                                                </td>
-                                                                                <td class="text-right">
-                                                                                    @{{ service.rate }}
-                                                                                </td>
-                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <label>
+                                                                                            <input type="checkbox" @click="checkUncheckAll(index, $event)"> Select all
+                                                                                        </label>
+                                                                                    </td>
+                                                                                    <td class="text-right">
+                                                                                        Rate, USD
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr v-for="service in category.services">
+                                                                                    <td>
+                                                                                        <label>
+                                                                                            <input type="checkbox" name="categories[]" class="d-none" :class="'catControl' + index" value="create">
+                                                                                            <input @change="checkSibling($event)" type="checkbox" name="services[]" :value="JSON.stringify(service)" :class="'category' + index"> @{{ service.name }}
+                                                                                        </label>
+                                                                                    </td>
+                                                                                    <td class="text-right">
+                                                                                        @{{ service.rate }}
+                                                                                    </td>
+                                                                                </tr>
                                                                             </tbody>
-                                                                    </table>
+                                                                        </table>
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                                <div v-show="is_nextLevel">
+                                                                    <div class="material-card card"  v-for="(category, index) in selectedCategories">
+                                                                        <table class="table table-hover">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th colspan="2">
+                                                                                        @{{ category.category }}
+                                                                                    </th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr v-for="service in category.services">
+                                                                                    <td>
+                                                                                       <span>@{{ service.service }} -@{{ service.name }}</span> 
+                                                                                    </td>
+                                                                                    <td class="text-right">
+                                                                                        <div class="d-flex justify-content-between">
+                                                                                            <div class="d-flex">
+                                                                                                <input type="number" :value="service.custome_rate" >
+                                                                                                <span @click="lockSeviceRate(service)" v-if="service.custome_rate_visible"><i class="fas fa-lock-open"></i></span>
+                                                                                                <span @click="lockSeviceRate(service)" v-if="!service.custome_rate_visible"><i class="fas fa-lock"></i></span>
+                                                                                            </div>
+                                                                                            <span>@{{ service.rate }}</span>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -798,8 +874,10 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary custom-button"><i class="fa fa-check"></i> Save</button>
-                                                <button type="button" class="btn btn-danger custom-button" data-dismiss="modal">Close</button>
+                                                <button type="button" v-if="!is_nextLevel" @click="is_nextLevel = true"   :disabled="selected_services.length === 0?true: false " class="btn btn-primary custom-button"><i class="fa fa-check"></i> Continue </button>
+                                                <button type="submit" v-if="is_nextLevel"  class="btn btn-primary custom-button"><i class="fa fa-check"></i> Import Services </button>
+                                           
+                                                <button type="button" v-if="is_nextLevel"  @click="is_nextLevel = false" class="btn btn-warning">Go back</button>
                                             </div>
                                         </form>
                                     </div>
@@ -1022,7 +1100,7 @@
     </script>
     <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
-    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.10')}}"></script>
+    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.11')}}"></script>
     <script>
         $('#serviceAddModal, #subscriptionModal, #exampleModalCenter').on('hidden.bs.modal', function () {
             ServiceApp.formReset();

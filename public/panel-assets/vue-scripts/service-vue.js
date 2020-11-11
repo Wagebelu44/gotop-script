@@ -7,6 +7,10 @@ const ServiceApp = new Vue({
     el: '#serviceApp',
     data: {
         options: [ {country: 'atik', code: 1}, {country: 'sudip', code: 2},],
+        selected_services: [],
+        is_nextLevel: false,
+        fixedRaisei: 0,
+        percentRaisei: 0,
         providers_lists: [],
         service_filter: {
             service_type: '',
@@ -131,6 +135,54 @@ const ServiceApp = new Vue({
             let p_categories = [];
             if (this.provider_services.length>0) {
                 this.provider_services.forEach((item, index)=>{
+                    let flag  = false;
+                    p_categories.forEach((it, ind) => {
+                        if (it.category) {
+                            if (item.category == it.category) {
+                                flag = true;
+                            }
+                        }
+                    });
+
+                    if (p_categories.length==0) {
+                        let cobj = {};
+                        cobj.category = item.category;
+                        cobj.services = [];
+                        cobj.cate_id = index;
+                        cobj.services.push(item);
+                        p_categories.push(cobj); 
+                    }
+                    else
+                    {
+                        if (flag) {
+                            p_categories.forEach((it, ind) => {
+                                if (it.category) {
+                                    if (item.category == it.category) {
+                                        it.services.push(item);
+                                    }
+                                }
+                            }); 
+                        }
+                        else
+                        {
+                            let cobj = {};
+                            cobj.category = item.category;
+                            cobj.services = [];
+                            cobj.cate_id = index;
+                            cobj.services.push(item);
+                            p_categories.push(cobj); 
+                        }
+                    }
+
+                });
+            }
+            return p_categories;
+        },
+        selectedCategories()
+        {
+            let p_categories = [];
+            if (this.selected_services.length>0) {
+                this.selected_services.forEach((item, index)=>{
                     let flag  = false;
                     p_categories.forEach((it, ind) => {
                         if (it.category) {
@@ -315,6 +367,34 @@ const ServiceApp = new Vue({
         this.loadProviders();
     },
     methods: {
+        lockSeviceRate(service) {
+            if (this.selected_services.length>0) {
+                this.selected_services = this.selected_services.map(item => {
+                    if (item.service == service.service) {
+                        item.custome_rate_visible = !item.custome_rate_visible;
+                    }
+                    return item;
+                });
+            }
+        },
+        calculateRaise() {
+            if (this.selected_services.length>0) {
+                this.selected_services.forEach(item => {
+                    if (item.custome_rate_visible) {
+                        item.custome_rate = (Number(item.rate) + Number(this.fixedRaisei)) + (( (Number(item.rate) + Number(this.fixedRaisei)) * this.percentRaisei ) / 100);
+                    }
+                });
+            }
+        },
+        resetRaise() {
+            if (this.selected_services.length>0) {
+                this.selected_services = this.selected_services.map(item => {
+                    item.custome_rate = item.rate;
+                    item.custome_rate_visible = true;
+                    return item;
+                });
+            }
+        },
         getParameterByName(name, url) {
             if (!url) url = window.location.href;
             name = name.replace(/[\[\]]/g, '\\$&');
@@ -1041,9 +1121,34 @@ const ServiceApp = new Vue({
             if (event.target.checked) {
                 $('.category' + index).prop('checked', true);
                 $('.catControl' + index).prop('checked', true);
+                if (this.categories.length>0) {
+                    this.categories.forEach((item, ind) => {
+                        if (ind == index) {
+                            if (item.services.length>0) {
+                                item.services.forEach(it => {
+                                    let custom_service = {...it};
+                                    custom_service.custome_rate = it.rate;
+                                    custom_service.custome_rate_visible = true;
+                                    this.selected_services.push(custom_service);
+                                });
+                            }
+                        }
+                    });
+                }
             } else {
                 $('.category' + index).prop('checked', false);
                 $('.catControl' + index).prop('checked', false);
+                if (this.categories.length>0) {
+                    this.categories.forEach((item, ind) => {
+                        if (ind == index) {
+                            if (item.services.length>0) {
+                                item.services.forEach(it => {
+                                    this.selected_services.splice(this.selected_services.indexOf(it), 1);
+                                });
+                            }
+                        }
+                    });
+                }
             }
         },
         selectDropDown(index, value, id) {
@@ -1057,6 +1162,15 @@ const ServiceApp = new Vue({
         },
         checkSibling(e) {
             $(e.target).siblings().prop('checked', e.target.checked);
+            let service = JSON.parse(e.target.value);
+            if (e.target.checked) {
+                let custom_service = {...service};
+                custom_service.custome_rate = service.rate;
+                custom_service.custome_rate_visible = true;
+                this.selected_services.push(custom_service);
+            } else {
+                this.selected_services.splice(this.selected_services.indexOf(service), 1);
+            }
         },
         openSubscriptionModal() {
             if (!this.subscription_modal) {
