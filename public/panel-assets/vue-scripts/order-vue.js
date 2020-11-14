@@ -118,6 +118,35 @@ const orderModule = new Vue({
             this.single_order = order;
             $("#order_service_type_detail").modal('show')
         },
+        resendOrder(order) {
+            this.loader = true;
+            let formD = new FormData();
+            formD.append('order_id', order.id);
+            fetch(resendOrderRoute, {
+                method: 'post',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF_TOKEN
+                },
+                body:formD
+            })
+            .then(res=>{
+                if (!res.ok)
+                    throw res.json();
+
+                return res.json()
+            })
+            .then(res=>{
+                if (res.status===200)
+                {
+                    this.loader = false;
+                    $("#mi-modal").modal('hide');
+                    $('#loader-page').hide();
+                    this.updateOrderLists(res.data);
+                }
+            }).catch(err=>{
+                console.log(err);
+            });
+        },
         getOrders(page=1, needLoding = true) {
             if (needLoding) {
                 this.loader = true;

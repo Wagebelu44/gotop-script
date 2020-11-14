@@ -54,7 +54,7 @@
                                         <button type="button" @click="filterStatus('PROCESSING')" class="btn btn-link">Processing</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <button type="button" @click="filterStatus('FAILED')" class="btn btn-link">Failed <span class="badge badge-danger"></span> </button>
+                                        <button type="button" @click="filterStatus('FAILED')" class="btn btn-link d-flex"> <span>Failed </span> <span class="badge badge-danger">{{ $failOrdercount }}</span> </button>
                                     </li>
                                     <li class="list-group-item ">
                                         <button type="button" @click="filterStatus('ERROR')" class="btn btn-link">Error</button>
@@ -200,6 +200,7 @@
 <script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
 <script>
     let adminSeenRoute  = '{{ route("admin.order-seen") }}';
+    let resendOrderRoute  = '{{ route("admin.resend.order") }}';
 </script>
 <script src="{{asset('/panel-assets/vue-scripts/order-vue.js?var=0.40')}}"></script>
 <script>

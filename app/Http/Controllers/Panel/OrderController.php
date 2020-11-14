@@ -18,7 +18,8 @@ class OrderController extends Controller
     public function index()
     {
         if (Auth::user()->can('view order')) {
-            return view('panel.orders.index');
+            $failOrdercount = Order::where('status', 'failed')->where('panel_id', auth()->user()->panel_id)->count();
+            return view('panel.orders.index', compact('failOrdercount'));
         } else {
             return view('panel.permission');
         }
@@ -226,120 +227,135 @@ class OrderController extends Controller
         }
     }
 
-    public function resendMultipleOrders($orderId)
-    {
+    public function resendOrder(Request $request) {
         if (Auth::user()->can('resend order')) {
-            $make_order = Order::where('order_id', $orderId)->where('refill_status', 0)->first();
-            if ($make_order) {
-                $ps = ProviderService::where('service_id', $make_order->service_id)->first();
-                $provider_info = null;
-                if ($ps != null) {
-                    $provider_info = SettingProvider::find($ps->provider_id);
-                } else {
-                    $make_order->status =  "cancelled";
-                    $make_order->auto_order_response  =  json_encode(['error'=> 'service ID has some issue, not found, ID'.$make_order->service_id]);
-                    $make_order->save();
-                    return true;
-                }
-        
-                if ($provider_info == null) {
-                    $make_order->status =  "cancelled";
-                    $make_order->auto_order_response  =  json_encode(['error'=> 'provider not found']);
-                    $make_order->save();
-                    return true;
-                }
-        
-                $make_order->original_charges = ($ps->rate/1000) * $make_order->quantity;
-                $make_order->original_unit_price = $ps->rate;
-                $dataArray = array();
-                if ($ps->type == 'Default') {
-                        $dataArray = array(
-                        'key' =>$provider_info->api_key,
-                        'action' => 'add',
-                        'service' => $ps->provider_service_id,
-                        'link' => $make_order->link,
-                        'quantity' => $make_order->quantity,
-                        );
-                } elseif ($ps->type == 'Package') {
-                    $dataArray = array(
-                        'key' =>$provider_info->api_key,
-                        'action' => 'add',
-                        'service' => $ps->provider_service_id,
-                        'link' => $make_order->link,
-                        );
-                } elseif ($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package') {
-                    $dataArray = array(
-                        'key' =>$provider_info->api_key,
-                        'action' => 'add',
-                        'service' => $ps->provider_service_id,
-                        'link' => $make_order->link,
-                        'comments' => $make_order->text_area_1,
-                        );
-                } elseif ($ps->type ==  'Mentions Custom List') {
-                    $dataArray = array(
-                        'key' =>$provider_info->api_key,
-                        'action' => 'add',
-                        'service' => $ps->provider_service_id,
-                        'link' => $make_order->link,
-                        'usernames' => $make_order->text_area_1,
-                        );
-                } elseif ($ps->type == 'Mentions Hashtag') {
-                    $dataArray = array(
-                        'key' =>$provider_info->api_key,
-                        'action' => 'add',
-                        'service' => $ps->provider_service_id,
-                        'link' => $make_order->link,
-                        'quantity' => $make_order->quantity,
-                        'hashtag' => $make_order->additional_inputs,
-                        );
-                } elseif ($ps->type == 'Comment Likes') {
-                    $dataArray = array(
-                        'key' =>$provider_info->api_key,
-                        'action' => 'add',
-                        'service' => $ps->provider_service_id,
-                        'link' => $make_order->link,
-                        'quantity' => $make_order->quantity,
-                        'username' => $make_order->additional_inputs,
-                        );
-                } elseif ($ps->type == 'Poll') {
-                    $dataArray = array(
-                        'key' =>$provider_info->api_key,
-                        'action' => 'add',
-                        'service' => $ps->provider_service_id,
-                        'link' => $make_order->link,
-                        'quantity' => $make_order->quantity,
-                        'answer_number' => $make_order->additional_inputs,
-                        );
-                } elseif ($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers') {
-                    $make_order->status =  "cancelled";
-                    $make_order->auto_order_response  =  json_encode(['error'=> 'subscription is not implemented yet']);
-                    $make_order->save();
-                    return true;
-                }
-        
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $provider_info->api_url);
-                curl_setopt($ch, CURLOPT_POST, 1);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataArray));
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $server_output = curl_exec($ch);
-                curl_close ($ch);
-                $result  =  json_decode($server_output, true);
-                $make_order->auto_order_response  =  json_encode($result);
-                if (isset($result['order'])) {
-                    $make_order->status =  "pending";
-                    $make_order->provider_order_id = $result['order'];
-                } else {
-                    $make_order->status =  "failed";
-                }
+            $this->resendMultipleOrders($request->order_id);
+            $order = Order::select('orders.*', 'users.username as username','services.name as service_name', 'services.service_type as service_type')
+            ->where('orders.id', $request->order_id)
+            ->leftJoin('drip_feed_orders', function($q) {
+                $q->on('drip_feed_orders.id', '=', 'orders.drip_feed_id');
+            })
+            ->join('users','users.id','=','orders.user_id')
+            ->join('services','orders.service_id','=','services.id')
+            ->where('orders.refill_status', 0)
+            ->where('orders.panel_id', auth()->user()->panel_id)->first();
 
-                if ( $make_order->save() ) {
-                    return true;
-                }
-                return false;
-            }
+            return response()->json(['status'=>200, 'data'=>$order,  'success'=>'successfully resend']);
         } else {
             return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
+        }
+    }
+    public function resendMultipleOrders($orderId)
+    {
+        $make_order = Order::where('order_id', $orderId)->where('refill_status', 0)->first();
+        $service = Service::find($make_order->service_id);
+        if ($make_order) {
+            $ps = ProviderService::where('service_id', $service->provider_service_id)->first();
+            $provider_info = null;
+            if ($ps != null) {
+                $provider_info = SettingProvider::find($ps->provider_id);
+            } else {
+                $make_order->status =  "cancelled";
+                $make_order->auto_order_response  =  json_encode(['error'=> 'service ID has some issue, not found, ID'.$make_order->service_id]);
+                $make_order->save();
+                return true;
+            }
+    
+            if ($provider_info == null) {
+                $make_order->status =  "cancelled";
+                $make_order->auto_order_response  =  json_encode(['error'=> 'provider not found']);
+                $make_order->save();
+                return true;
+            }
+    
+            $make_order->original_charges = ($ps->rate/1000) * $make_order->quantity;
+            $make_order->original_unit_price = $ps->rate;
+            $dataArray = array();
+            if ($ps->type == 'Default') {
+                    $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    );
+            } elseif ($ps->type == 'Package') {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    );
+            } elseif ($ps->type == 'Custom Comments' || $ps->type == 'Custom Comments Package') {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'comments' => $make_order->text_area_1,
+                    );
+            } elseif ($ps->type ==  'Mentions Custom List') {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'usernames' => $make_order->text_area_1,
+                    );
+            } elseif ($ps->type == 'Mentions Hashtag') {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    'hashtag' => $make_order->additional_inputs,
+                    );
+            } elseif ($ps->type == 'Comment Likes') {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    'username' => $make_order->additional_inputs,
+                    );
+            } elseif ($ps->type == 'Poll') {
+                $dataArray = array(
+                    'key' =>$provider_info->api_key,
+                    'action' => 'add',
+                    'service' => $ps->provider_service_id,
+                    'link' => $make_order->link,
+                    'quantity' => $make_order->quantity,
+                    'answer_number' => $make_order->additional_inputs,
+                    );
+            } elseif ($ps->type == 'Subscriptions' || $ps->type == 'Mentions User Followers') {
+                $make_order->status =  "cancelled";
+                $make_order->auto_order_response  =  json_encode(['error'=> 'subscription is not implemented yet']);
+                $make_order->save();
+                return true;
+            }
+    
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $provider_info->api_url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataArray));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $server_output = curl_exec($ch);
+            curl_close ($ch);
+            $result  =  json_decode($server_output, true);
+            $make_order->auto_order_response  =  json_encode($result);
+            if (isset($result['order'])) {
+                $make_order->status =  "pending";
+                $make_order->provider_order_id = $result['order'];
+            } else {
+                $make_order->status =  "failed";
+            }
+
+            if ( $make_order->save() ) {
+                return true;
+            }
+            return false;
         }
     }
 

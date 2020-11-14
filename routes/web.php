@@ -59,6 +59,7 @@ Route::group(['middleware' => 'checkPanel'], function () {
             #Orders...
             Route::post('orders/update/status', 'Panel\OrderController@bulkStatusChange');
             Route::get('get-orders', 'Panel\OrderController@getOrderLists');
+            Route::post('resend-order', 'Panel\OrderController@resendOrder')->name('resend.order');
             Route::post('orders/update/{id}', 'Panel\OrderController@updateOrder');
             Route::get('orders/subscription/lists', 'Panel\OrderController@getSubsciptionLists')->name('subscription.lists');
             Route::get('orders/subscription', 'Panel\OrderController@getSubscription')->name('subscriptions');
@@ -233,10 +234,10 @@ Route::group(['middleware' => 'checkPanel'], function () {
         Route::post('logout', 'Auth\LoginController@logout')->name('logout');
     });
     Route::group(['middleware' => ['user.verified']], function () {
-        //Route::get('/', 'Web\PageController@index')->name('home');
+        Route::get('/', 'Web\PageController@index')->name('home');
         Route::get('/sign-in', 'Web\PageController@index')->name('signIn');
-        //Route::get('/{url}', 'Web\PageController@page')->name('route');
-        //Route::get('/{url}/{token}', 'Web\PageController@page');
+        Route::get('/{url}', 'Web\PageController@page')->name('route');
+        Route::get('/{url}/{token}', 'Web\PageController@page');
     });
 
 

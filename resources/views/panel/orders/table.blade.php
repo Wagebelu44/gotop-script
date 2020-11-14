@@ -73,7 +73,6 @@
                       </a>
                    </div>
                 </div>
-                Service
              </th>
              <th scope="col" width="120">Status</th>
              <th>Remains</th>
@@ -184,10 +183,10 @@
                         </div>
                       <div v-else>
                          <div v-if="actionConditionalB(o)">
-                            <div v-if="o.status == 'failed'">
-                               <li><a class="dropdown-item type-dropdown-item" @click="orderDetailModal(o)">Fail Detail</a></li>
+                            <div v-if="o.status == 'failed' || o.status == 'cancelled'">
+                               <li><a class="dropdown-item type-dropdown-item" @click="orderDetailModal(o)">Order Detail</a></li>
                                @can('resend order')
-                                 <li><a class="dropdown-item type-dropdown-item" href="#">Resend Order</a></li>
+                                 <li><a class="dropdown-item type-dropdown-item" @click="resendOrder(o)">Resend Order</a></li>
                                @endcan
                                @can('edit order link')
                                  <li><a class="dropdown-item type-dropdown-item" onclick="#">Edit Link</a></li>
