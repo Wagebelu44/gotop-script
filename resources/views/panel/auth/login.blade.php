@@ -5,7 +5,7 @@
     <span class="db">
         @if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo))
             <img src="{{ asset('storage/images/setting/'.$setting->logo) }}" alt="logo" />
-        @elseif($setting->panel_name)
+        @elseif(isset($setting->panel_name))
             <h2>{{ $setting->panel_name }}</h2>
         @else
             <img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" />
@@ -80,7 +80,7 @@
     <span class="db">
         @if(isset($setting->logo) && file_exists('storage/images/setting/'.$setting->logo))
             <img src="{{ asset('storage/images/setting/'.$setting->logo) }}" alt="logo" />
-        @elseif($setting->panel_name)
+        @elseif(isset($setting->panel_name))
             <h2>{{ $setting->panel_name }}</h2>
         @else
             <img src="{{ asset('panel-assets/images/logo.png') }}" alt="logo" />

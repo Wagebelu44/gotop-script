@@ -78,6 +78,31 @@
         outline: none !important;
         padding: 12px 5px 2px;
     }
+    .custom-rate-class{
+        color: #000;
+        font-size: 10px;
+        border: 1px solid #d4d4d4;
+        background: #fff;
+        padding: 0px 10px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; 
+        flex-basis: 50%;
+        height: 20px;
+    }
+    .custom-rate-class input{
+        outline: none !important;
+        border: none !important;
+        background: transparent !important;
+        flex-basis: 90%;
+        padding: 0 !important;
+    }
+    .custom-rate-class span{
+        flex-basis: 10%;
+    }
+    .custom-rate-class input.overlay-class, .custom-rate-class.overlay-class{
+        background: #d3d3d3 !important;
+        height: 100%;
+        width: 100%;
+    }
 </style>
 @endsection
 @section('content')
@@ -852,8 +877,8 @@
                                                                                     </td>
                                                                                     <td class="text-right">
                                                                                         <div class="d-flex justify-content-between">
-                                                                                            <div class="d-flex">
-                                                                                                <input type="number" step="any" :value="ser.custome_rate" >
+                                                                                            <div class="d-flex custom-rate-class align-items-center justify-content-center" :class="{'overlay-class':!ser.custome_rate_visible}">
+                                                                                                <input type="text" step="any" :class="{'overlay-class':!ser.custome_rate_visible}" :readonly="!ser.custome_rate_visible?true:false" class="form-control" :value="ser.custome_rate" >
                                                                                                 <input type="hidden" name="services[]" :value="JSON.stringify(ser)">
                                                                                                 <span @click="lockSeviceRate(ser)" v-if="ser.custome_rate_visible"><i class="fas fa-lock-open"></i></span>
                                                                                                 <span @click="lockSeviceRate(ser)" v-if="!ser.custome_rate_visible"><i class="fas fa-lock"></i></span>
@@ -875,7 +900,7 @@
                                                 <button type="button" v-if="!is_nextLevel" @click="is_nextLevel = true"   :disabled="selected_services.length === 0?true: false " class="btn btn-primary custom-button"><i class="fa fa-check"></i> Continue </button>
                                                 <button type="submit" v-if="is_nextLevel"  class="btn btn-primary custom-button"><i class="fa fa-check"></i> Import Services </button>
                                            
-                                                <button type="button" v-if="is_nextLevel"  @click="is_nextLevel = false" class="btn btn-warning">Go back</button>
+                                                <button type="button" v-if="is_nextLevel"  @click="is_nextLevel = false" class="btn btn-default">Go back</button>
                                             </div>
                                         </form>
                                     </div>
@@ -1025,7 +1050,12 @@
                                                         
                                                 </div>
                                                 <div class="__service_td __service_td_span_mode" id="sMode">
-                                                    @{{service.mode}} 
+                                                    <span v-if="service.mode == 'auto'">
+                                                        <span v-if="service.provider_info!==null">
+                                                            @{{service.provider_info?service.provider_info.domain:null}} 
+                                                        </span>
+                                                    </span>
+                                                    <span v-else>@{{service.mode}}</span>
                                                 </div>
                                                 <div class="__service_td __service_td_span" id="sPrice">
                                                     <span class="d-block">$@{{Number(service.price)}}</span>
@@ -1063,7 +1093,8 @@
                                                             @endcan
                                                             @can('change service status')
                                                             <a class="dropdown-item type-dropdown-item"  @click="serviceEnableDisable(service.id)">
-                                                                <span v-if="service.status=='active'">Active</span> <span v-else> Inactive</span> service
+                                                                <span v-show="service.status=='Active'">Inactive</span> 
+                                                                <span v-show="service.status=='Deactivated'"> Active</span> service
                                                             </a>
                                                             @endcan
                                                             @can('reset service custom rates')

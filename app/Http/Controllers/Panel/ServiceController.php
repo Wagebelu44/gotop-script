@@ -98,7 +98,9 @@ class ServiceController extends Controller
                 }
                 $q->where('status', $status);
             }
-        }, 'services.provider'])
+        }, 'services.provider', 'services.providerInfo'=>function($q){
+            $q->select('id', 'domain');
+        }])
         ->where('panel_id', auth()->user()->panel_id)
         ->orderBy('sort', 'ASC')->get();
 

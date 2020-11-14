@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\ProviderService;
+use App\Models\SettingProvider;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Contracts\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -20,6 +21,10 @@ class Service extends Model
     public function provider()
     {
         return $this->hasOne(ProviderService::class, 'service_id', 'provider_service_id');
+    }
+     
+    public function providerInfo() {
+        return $this->hasOne(SettingProvider::class, 'id', 'provider_id');
     }
 
     public function getPriceAttribute($value)
