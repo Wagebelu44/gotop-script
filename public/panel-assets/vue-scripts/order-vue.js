@@ -9,6 +9,7 @@ const orderModule = new Vue({
         services: [],
         orders_counts: null,
         order_mode_count: null,
+        single_order: null,
         order_checkbox: [],
         checkAllOrders: false,
         filter: {
@@ -78,25 +79,45 @@ const orderModule = new Vue({
     },
     computed: {
         all_orders_count() {
-            return this.orders_counts.auto_order_count + this.orders_counts.manual_order_count
+            if (this.orders_counts !== null) {
+                
+                return this.orders_counts.auto_order_count + this.orders_counts.manual_order_count
+            }
+            return 0;
         },
         none_order_count() {
         },
         api_order_count() {
-            return this.orders_counts.api_order_count
+            if (this.orders_counts !== null) {
+                return this.orders_counts.api_order_count
+            }
+            return 0;
         },
         mass_order_count() {
-            return this.orders_counts.mass_order_count
+            if (this.orders_counts !== null) {
+                return this.orders_counts.mass_order_count
+            }
+            return 0;
         },
         subscription_order_count() {
-            return this.orders_counts.subscription_order_count
+            if (this.orders_counts !== null) {
+                return this.orders_counts.subscription_order_count
+            }
+            return 0;
         },
         drip_feed_order_count() {
-            return this.orders_counts.drip_feed_count
+            if (this.orders_counts !== null) {
+                return this.orders_counts.drip_feed_count
+            }
+            return 0;
         },
     },
     methods: {
         //
+        orderDetailModal(order) {
+            this.single_order = order;
+            $("#order_service_type_detail").modal('show')
+        },
         getOrders(page=1, needLoding = true) {
             if (needLoding) {
                 this.loader = true;
@@ -284,7 +305,7 @@ const orderModule = new Vue({
         },
         yes()
         {
-            $('#loader-page').show();
+            this.loader = true;
             let statusForm = new FormData;
             statusForm.append('status', this.orderStatus);
             fetch(base_url+'/admin/orders/update/'+this.order_id, {
@@ -303,6 +324,7 @@ const orderModule = new Vue({
             .then(res=>{
                 if (res.status===200)
                 {
+                    this.loader = false;
                     $("#mi-modal").modal('hide');
                     $('#loader-page').hide();
                     this.updateOrderLists(res.data);

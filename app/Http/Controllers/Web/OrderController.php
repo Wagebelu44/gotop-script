@@ -244,7 +244,7 @@ class OrderController extends Controller
                         ]);
                 }
                 if (gettype($make_order) == 'object' && $make_order->mode == 'auto') {
-                    $ps = ProviderService::where('service_id', $make_order->service_id)->first();
+                    $ps = ProviderService::where('service_id', $service->provider_service_id)->first();
                     $provider_info = null;
                     if ($ps != null) {
                         $provider_info = SettingProvider::find($ps->provider_id);

@@ -37,12 +37,7 @@
                      Users
                      </button>
                      <div class="dropdown-menu service-dropdown" aria-labelledby="dropdownMenuButton">
-                        {{-- <div class="custom-searchBar">
-                           <input type="text" id="search-by-user" class="form-control">
-                           <i class="fa fa-search search-icon-users" aria-hidden="true"></i>
-                        </div> --}}
                         <div id="user_filter_type">
-                           {{-- <a class="dropdown-item type-dropdown-item" @click="statusUser(u.id)" v-for="(u, i) in users"> @{{ u.username }} </a> --}}
                            <a class="dropdown-item type-dropdown-item"> All (@{{ all_orders_count ?? 0 }} )</a>
                            <a class="dropdown-item type-dropdown-item"> None (@{{ none_order_count ?? 0 }} ) </a>
                            <a class="dropdown-item type-dropdown-item"> API (@{{ api_order_count ?? 0 }} )</a>
@@ -190,7 +185,7 @@
                       <div v-else>
                          <div v-if="actionConditionalB(o)">
                             <div v-if="o.status == 'failed'">
-                               <li><a class="dropdown-item type-dropdown-item" onclick="#">Fail Detail</a></li>
+                               <li><a class="dropdown-item type-dropdown-item" @click="orderDetailModal(o)">Fail Detail</a></li>
                                @can('resend order')
                                  <li><a class="dropdown-item type-dropdown-item" href="#">Resend Order</a></li>
                                @endcan
@@ -199,7 +194,7 @@
                                @endcan
                             </div>
                             <div v-else>
-                               <li><a class="dropdown-item type-dropdown-item" href="#">Order Detail</a></li>
+                               <li><a class="dropdown-item type-dropdown-item"  @click="orderDetailModal(o)">Order Detail</a></li>
                             </div>
                             @can('set start count order')
                               <div v-if="o.drip_feed_id == null">
@@ -227,9 +222,7 @@
                               </div>
                             @endcan
                             @can('cancel and refund order')
-                              <div v-if="o.status !== 'cancelled'">
                                  <li><a class="dropdown-item type-dropdown-item" @click="changeStatus('cancel_refund',o.id)">Cancel and refund</a></li>
-                              </div>
                             @endcan
                          </div>
                       </div>

@@ -89,7 +89,7 @@ class OrderController extends Controller
                             'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
                             'payment_gateway_response' => null,
                             'global_payment_method_id' =>  null,
-                            'reseller_id' => 1,
+                            'panel_id' => auth()->user()->panel_id,
                             ]);
                             $order->status = 'cancelled';
                             $order->save();
