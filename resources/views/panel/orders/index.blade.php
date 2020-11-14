@@ -183,7 +183,6 @@
                     <div class="modal-body">
                         <p id="order-modal-detail" v-if="single_order" style="white-space: break-spaces;">
                             <span v-html="single_order.auto_order_response"></span>
-                          
                         </p>
                     </div>
                     <div class="modal-footer">

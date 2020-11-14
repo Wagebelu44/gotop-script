@@ -897,10 +897,22 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" v-if="!is_nextLevel" @click="is_nextLevel = true"   :disabled="selected_services.length === 0?true: false " class="btn btn-primary custom-button"><i class="fa fa-check"></i> Continue </button>
-                                                <button type="submit" v-if="is_nextLevel"  class="btn btn-primary custom-button"><i class="fa fa-check"></i> Import Services </button>
-                                           
-                                                <button type="button" v-if="is_nextLevel"  @click="is_nextLevel = false" class="btn btn-default">Go back</button>
+                                                <div class="d-flex justify-content-between w-100">
+                                                    <div>
+                                                        <div class="switch-custom switch-custom__table">
+                                                            <label class="switch">
+                                                                <input type="checkbox" name="copy_description" class="toggle-page-visibility">
+                                                                <span class="slider round"></span>
+                                                            </label>
+                                                            <span style="font-size: 12px; color:rgba(0, 0, 0, 0.79)">Copy Description</span>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <button type="button" v-if="!is_nextLevel" @click="is_nextLevel = true"   :disabled="selected_services.length === 0?true: false " class="btn btn-primary custom-button"><i class="fa fa-check"></i> Continue </button>
+                                                        <button type="submit" v-if="is_nextLevel"  class="btn btn-primary custom-button"><i class="fa fa-check"></i> Import Services </button>
+                                                        <button type="button" v-if="is_nextLevel"  @click="is_nextLevel = false" class="btn btn-default">Go back</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>

@@ -435,6 +435,10 @@ class ServiceController extends Controller
                     } else {
                         $category = $request->categories[$index];
                     }
+                    $copy_description = null;
+                    if (isset($request->copy_description) && $request->copy_description=='on') {
+                        $copy_description = isset($service->description)?$service->description: null;
+                    }
 
                     Service::updateOrCreate([
                         'provider_service_id'=> $service->service,
@@ -446,6 +450,7 @@ class ServiceController extends Controller
                         'price' => $service->custome_rate,
                         'min_quantity' => $service->min,
                         'max_quantity' => $service->max,
+                        'description' =>  $copy_description,
                         "provider_id" =>  $request->provider_id,
                         'provider_service_id' => $service->service,
                         'drip_feed_status' => $service->dripfeed ? 'allow' : 'disallow',

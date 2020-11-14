@@ -25,7 +25,7 @@ class ApiController extends Controller
             if ($request->action == 'services') 
             {
                 $services = Service::join('service_categories', 'service_categories.id', '=', 'services.category_id')
-                ->select([DB::raw('services.id as service'), 'services.name', DB::raw('services.service_type as type'), DB::raw('service_categories.name as category'), DB::raw('services.price as rate'), DB::raw('services.min_quantity as min'), DB::raw('services.max_quantity as max')])
+                ->select([DB::raw('services.id as service'), DB::raw('services.description as description'), 'services.name', DB::raw('services.service_type as type'), DB::raw('service_categories.name as category'), DB::raw('services.price as rate'), DB::raw('services.min_quantity as min'), DB::raw('services.max_quantity as max')])
                 ->where('services.panel_id', $panel_id)
                 ->get();
                 return response()->json($services);
