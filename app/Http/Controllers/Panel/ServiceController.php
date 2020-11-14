@@ -10,6 +10,7 @@ use App\Models\ServiceCategory;
 use App\Models\SettingProvider;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -156,7 +157,26 @@ class ServiceController extends Controller
 
     public function getProviders()
     {
-        return SettingProvider::where('panel_id', auth()->user()->panel_id)->get();
+        $providers = SettingProvider::where('panel_id', auth()->user()->panel_id)->get()
+        ->map(function($item) {
+            $item->is_our = false;
+            if (env('PROJECT') == 'live') {
+                $response = Http::post(env('PROJECT_LIVE_URL').'/api/check-domain', [
+                    'domain' => $item->domain,
+                    'token' => env('PANLE_REQUEST_TOKEN'),
+                ]);
+                if ($response->ok()) {
+                    if ($response->successful()) {
+                        $data = json_decode($response->body());
+                        if ($data->success) {
+                            $item->is_our = true;
+                        } 
+                    } 
+                } 
+            }
+            return $item;
+        });
+        return $providers;
     }
 
     public function getProviderServices(Request $r)

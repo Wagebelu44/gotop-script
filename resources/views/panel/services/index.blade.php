@@ -899,7 +899,7 @@
                                             <div class="modal-footer">
                                                 <div class="d-flex justify-content-between w-100">
                                                     <div>
-                                                        <div class="switch-custom switch-custom__table">
+                                                        <div class="switch-custom switch-custom__table" v-if="selected_provider !== null && selected_provider.is_our===true">
                                                             <label class="switch">
                                                                 <input type="checkbox" name="copy_description" class="toggle-page-visibility">
                                                                 <span class="slider round"></span>
@@ -1141,7 +1141,7 @@
     </script>
     <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
-    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.11')}}"></script>
+    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.12')}}"></script>
     <script>
         $('#serviceAddModal, #subscriptionModal, #exampleModalCenter').on('hidden.bs.modal', function () {
             ServiceApp.formReset();

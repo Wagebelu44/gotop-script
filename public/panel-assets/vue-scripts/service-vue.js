@@ -106,6 +106,7 @@ const ServiceApp = new Vue({
         provider_id: null,
         subscription_modal: false,
         service_modal: false,
+        selected_provider: null,
     },
     computed: {
         provider_services_computed()
@@ -285,6 +286,7 @@ const ServiceApp = new Vue({
                 if (oldval!==null) {
                     
                     this.getProviderServices(oldval);
+
                 }
             },
             deep: true,
@@ -1058,6 +1060,12 @@ const ServiceApp = new Vue({
                 }
                 forD.append('provider_id', this.provider_id);
             }
+
+            this.providers_lists.forEach(item => {
+                if (item.id == this.provider_id) {
+                    this.selected_provider = item;
+                }
+            });
 
             fetch(base_url+'/admin/provider/get/services', {
                 headers: {
