@@ -36,6 +36,9 @@
                                         <button type="button" @click="filterStatus('all')"  class="btn btn-link">All</button>
                                     </li>
                                     <li class="list-group-item">
+                                        <button type="button" @click="filterStatus('AWAITING')" class="btn btn-link d-flex"> <span>Awaiting </span> <span class="badge badge-danger ml-1">0</span></button>
+                                    </li>
+                                    <li class="list-group-item">
                                         <button type="button" @click="filterStatus('PENDING')" class="btn btn-link">Pending</button>
                                     </li>
                                     <li class="list-group-item">
@@ -54,7 +57,7 @@
                                         <button type="button" @click="filterStatus('PROCESSING')" class="btn btn-link">Processing</button>
                                     </li>
                                     <li class="list-group-item">
-                                        <button type="button" @click="filterStatus('FAILED')" class="btn btn-link d-flex"> <span>Failed </span> <span class="badge badge-danger">{{ $failOrdercount }}</span> </button>
+                                        <button type="button" @click="filterStatus('FAILED')" class="btn btn-link d-flex"> <span>Failed </span> <span class="badge badge-danger ml-1">{{ $failOrdercount }}</span> </button>
                                     </li>
                                     <li class="list-group-item ">
                                         <button type="button" @click="filterStatus('ERROR')" class="btn btn-link">Error</button>
