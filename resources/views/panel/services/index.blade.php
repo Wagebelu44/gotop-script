@@ -1153,5 +1153,16 @@
         $("#subscriptionModal").on('shown.bs.modal', function() {
             ServiceApp.subscription_modal = true;
         });
+        $("#selectAllService").on('change', function(evt){
+            console.log(evt.target.checked, evt.target);
+            if (evt.target.checked) {
+                $(".service_checkbox").each((i,v) => {
+                    ServiceApp.service_checkbox.push($(v).val());
+                })
+            } else {
+                ServiceApp.service_checkbox = [];
+            }
+        })
+        
     </script>
 @endsection

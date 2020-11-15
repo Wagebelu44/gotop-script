@@ -92,12 +92,14 @@ class ServiceController extends Controller
                 $status = '';
                 if ($query_data['status']!='All' && $query_data['status']=='Enabled') {
                     $status = 'Active';
+                    $q->where('status', $status);
                 }
 
                 if ($query_data['status']!='All' && $query_data['status']=='Disabled') {
                     $status = 'Deactivated';
+                    $q->where('status', $status);
                 }
-                $q->where('status', $status);
+                
             }
         }, 'services.provider', 'services.providerInfo'=>function($q){
             $q->select('id', 'domain');
