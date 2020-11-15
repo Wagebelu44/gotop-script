@@ -430,7 +430,7 @@ const ServiceApp = new Vue({
         getCategoryServices()
         {
             this.loader = true;
-            let url = base_url+"/admin/get-category-services";
+            let url = base_url+"/admin/get-category-services?";
             let top_Url = base_url+'/admin/services?';
             if (this.service_filter.service_type!=='') {
                 url +='&service_type='+this.service_filter.service_type;
@@ -738,9 +738,13 @@ const ServiceApp = new Vue({
                     this.loader = false;
                     this.service_edit = true;
                     this.services.form_fields = {...res};
-                    $('#serviceAddModal').modal('show');
                     this.service_mode = this.services.form_fields.mode;
                     this.service_type_selected = this.services.form_fields.service_type;
+                    if (this.service_type_selected === 'Subscriptions') {
+                        $('#subscriptionModal').modal('show');
+                    } else {
+                        $('#serviceAddModal').modal('show');
+                    }
                     this.manipulateInputs();
                     this.editHelper();
                     this.loader = false;

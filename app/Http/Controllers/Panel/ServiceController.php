@@ -84,7 +84,7 @@ class ServiceController extends Controller
     {
         $query_data = $request->all();
         $cate_services = ServiceCategory::with(['services' => function($q) use($query_data) {
-            if ( isset($query_data['service_type'])) {
+            if ( isset($query_data['service_type']) && $query_data['service_type']!= 'All') {
                 $q->where('service_type', $query_data['service_type']);
             }
 

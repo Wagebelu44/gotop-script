@@ -36,6 +36,14 @@ class ProviderSeeder extends Seeder
                 'status' => 'Active',
                 'created_at' => now(),
             ],
+            [
+                'panel_id' => '1',
+                'domain' => 'go2toppanel.com',
+                'api_url' => 'https://go2toppanel.com/api/v2',
+                'api_key' => '1d6fa0f316cad2ea11477885a6c95d40',
+                'status' => 'Active',
+                'created_at' => now(),
+            ],
         ];
         
         DB::table('setting_providers')->insert($themes);

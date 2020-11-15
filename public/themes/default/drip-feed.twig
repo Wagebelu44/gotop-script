@@ -41,7 +41,7 @@
                         </thead>
 
                         <tbody>
-                            {% for dripFeed in site['dripfeeds'] %}
+                            {% for dripFeed in site['dripfeeds']['data'] %}
                             <tr>
                                 <td>{{ dripFeed['id'] }}</td>
                                 <td>{{ dripFeed['created_at'] }}</td>

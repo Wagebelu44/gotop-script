@@ -106,11 +106,11 @@
 </style>
 @endsection
 @section('content')
-    <div class="container-fluid all-mt-30">
+    <div class="container-fluid p-0 ml-0  mr-0 all-mt-30">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body pt-0 pl-1 pr-1">
                         <form  id="service_type_filter_form" action=""  method="get" >
                             <input type="hidden" name="serviceTypefilter">
                         </form>
@@ -202,15 +202,15 @@
                                                <div class="col-md-12">
                                                    <div class="form-group">
                                                        <label> <strong>Subscription</strong> </label>
-                                                       <select  v-model="services.form_fields.subscription_type" class="form-control" name="subscription_type">
-                                                           <option>Instagram Auto Likes</option>
-                                                           <option>Instagram Auto Views</option>
-                                                           <option>Instagram Auto Comments</option>
-                                                           <option>Twitter Auto Likes</option>
-                                                           <option>Twitter Auto Retweets</option>
-                                                           <option>Twitter Auto Views</option>
-                                                           <option>Youtube Auto Views</option>
-                                                           <option>Facebook Auto Likes (for pages only)</option>
+                                                       <select name="subscription_type"  id="subscription_type" class="form-control" >
+                                                           <option value="Instagram Auto Likes">Instagram Auto Likes</option>
+                                                           <option value="Instagram Auto Views">Instagram Auto Views</option>
+                                                           <option value="Instagram Auto Comments">Instagram Auto Comments</option>
+                                                           <option value="Twitter Auto Likes">Twitter Auto Likes</option>
+                                                           <option value="Twitter Auto Retweets">Twitter Auto Retweets</option>
+                                                           <option value="Twitter Auto Views">Twitter Auto Views</option>
+                                                           <option value="Youtube Auto Views">Youtube Auto Views</option>
+                                                           <option value="Facebook Auto Likes (for pages only)">Facebook Auto Likes (for pages only)</option>
                                                        </select>
                                                    </div>
                                                </div>
@@ -960,7 +960,7 @@
                                 </div>
                             </div>
                             <div class="__table_header __table_header_dropdown">
-                                <div class="__th no-drop-down"><input type="checkbox" id="selectAllService"></div>
+                                <div class="__th no-drop-down" style=" grid-column: span 2"><input type="checkbox" id="selectAllService"></div>
                                 <div class="__th no-drop-down">ID</div>
                                 <div class="__th __service_th no-drop-down">Service</div>
                                 <div class="__th __service_th_type_type">
@@ -976,9 +976,9 @@
                                     </div>
                                 </div>
                                 <div class="__th no-drop-down __service_th_type_mode">Provider</div>
-                                <div class="__th no-drop-down __service_th_type">Rate</div>
+                                <div class="__th no-drop-down __service_th_type_rate">Rate</div>
                                 <div class="__th no-drop-down __service_th_type">Min</div>
-                                <div class="__th no-drop-down __service_th_type">Max</div>
+                                <div class="__th no-drop-down __service_th_type_max">Max</div>
                                 <div class="__th __service_th_type">
                                     <div class="dropdown __dropdown_buttons">
                                         <button class="btn btn-default dropdown-toggle" type="button"
@@ -992,7 +992,7 @@
 
                                     </div>
                                 </div>
-                                <div class="__th no-drop-down __service_th_type" style="text-align:right;padding-right:4px; grid-column: span 3">
+                                <div class="__th no-drop-down __service_th_type" style="text-align:right;padding-right:4px; grid-column: span 4">
                                     <div style="cursor: pointer" onclick="toggleAllcategory()">
                                         <i class="fas fa-expand-arrows-alt" id="expand" style="display: none"></i>
                                         <i class="fas fa-compress" id="compress" ></i>
@@ -1040,7 +1040,7 @@
                                         </div>
                                         <div class="service_rows">
                                             <div class="__service_row serviceRow" id="sortable" v-for='(service, index) in cate_item.services'>
-                                                <div class="__service_td drag-handler-container" style="padding: 0">
+                                                <div class="__service_td drag-handler-container" style="padding: 0; grid-column: span 2">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="service-handle" viewBox="0 0 20 20"><title>Drag-Handle</title>
                                                         <path
                                                             d="M7 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm6-8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm0 6c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2z"></path>
@@ -1069,7 +1069,7 @@
                                                     </span>
                                                     <span v-else>@{{service.mode}}</span>
                                                 </div>
-                                                <div class="__service_td __service_td_span" id="sPrice">
+                                                <div class="__service_td __service_td_price" id="sPrice">
                                                     <span class="d-block">$@{{Number(service.price)}}</span>
                                                     <span class="d-block sub-price"> 
                                                         <span v-if="service.provider!==null">
@@ -1081,7 +1081,7 @@
                                                     <span class="d-block"> @{{service.min_quantity}}  </span>
                                                     <span class="d-block sub-price"> @{{service.provider?service.provider.min:null}} </span>
                                                 </div>
-                                                <div class="__service_td __service_td_span" id="sMaxQty">
+                                                <div class="__service_td __service_td_max" id="sMaxQty">
                                                     <span class="d-block">  @{{service.max_quantity}} </span>
                                                     <span class="d-block sub-price"> @{{service.provider?service.provider.max:null}} </span>
                                                 </div>
@@ -1089,7 +1089,7 @@
                                                     <span v-if="service.status === 'Deactivated'">Disabled</span>
                                                     <span v-if="service.status === 'Active'">Enabled</span>
                                                 </div>
-                                                <div class="__service_td __service_td_span" style="grid-column: span 3 / auto;padding: 0;text-align: right;">
+                                                <div class="__service_td __service_td_span" style="grid-column: span 4 / auto;padding: 0;text-align: right;">
                                                     <div class="dropdown __dropdown_buttons">
                                                         <button class="btn btn-default dropdown-toggle" type="button"
                                                                 id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
@@ -1105,8 +1105,8 @@
                                                             @endcan
                                                             @can('change service status')
                                                             <a class="dropdown-item type-dropdown-item"  @click="serviceEnableDisable(service.id)">
-                                                                <span v-show="service.status=='Active'">Inactive</span> 
-                                                                <span v-show="service.status=='Deactivated'"> Active</span> service
+                                                                <span v-show="service.status=='Active'">Disabled</span> 
+                                                                <span v-show="service.status=='Deactivated'">Enabled</span> service
                                                             </a>
                                                             @endcan
                                                             @can('reset service custom rates')
@@ -1141,13 +1141,17 @@
     </script>
     <script src="{{ asset('panel-assets/libs/jquery-ui.min.js') }}"></script>
     <script src="https://unpkg.com/vue-select@3.10.3/dist/vue-select.js"></script>
-    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.12')}}"></script>
+    <script src="{{asset('/panel-assets/vue-scripts/service-vue.js?var=0.30')}}"></script>
     <script>
         $('#serviceAddModal, #subscriptionModal, #exampleModalCenter').on('hidden.bs.modal', function () {
             ServiceApp.formReset();
             ServiceApp.errors.services = [];
             ServiceApp.errors.common =  null;
             ServiceApp.errors.category =  [];
+            ServiceApp.subscription_modal = false;
+        });
+        $("#subscriptionModal").on('shown.bs.modal', function() {
+            ServiceApp.subscription_modal = true;
         });
     </script>
 @endsection
