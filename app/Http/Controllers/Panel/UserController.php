@@ -335,6 +335,7 @@ class UserController extends Controller
     
     public function exportUsers(Request $request)
     {
+        dd($request->all());
         if (Auth::user()->can('export user')) {
         // Validate form data
             $request->validate([

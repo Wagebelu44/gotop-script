@@ -259,3 +259,41 @@ body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important}
 .deactive {
     color: #c1c1c1;
 }
+
+/* start CUSTOM DROp down menu style */
+.custom-drop-down{
+    color: #000;
+ }
+ .custom-drop-down .dropdown-menu{
+    width: 100%;
+ }
+ .custom-drop-down-button {
+    width: 100%;
+    background: transparent !important;
+    color: #000 !important; 
+    overflow: hidden;
+    height: 30px;
+    position: relative;
+ }
+ .custom-drop-down-button .button-text-holder{
+    position: absolute;
+    left: 6px;
+    top: 4px;
+ }
+ .custom-drop-down .dropdown-item{
+    padding: 2px 1rem !important;
+    display: flex;
+    justify-content: space-between;
+ }
+ .custom-drop-down .dropdown-item .check-mark{
+    display: none;
+ }
+ .custom-drop-down .dropdown-item .show{
+    display: inline-block !important;
+ }
+ .custom-drop-down-button::after {
+    position: absolute;
+    right: 6px;
+    top: 10px;
+ }
+/* end CUSTOM DROp down menu style */

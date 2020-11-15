@@ -17,7 +17,7 @@
             </div>
             <div class="material-card card">
                <div class="card-body">
-                  <form class="form-material" id="users-export-form" method="post" action="{{ url('admin/exportedUser') }}" novalidate>
+                  <form  id="users-export-form" method="post" action="{{ url('admin/exportedUser') }}" novalidate>
                     @csrf
                      <div class="modal bs-example-modal-lg" id="customizeColumns" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
@@ -111,7 +111,6 @@
                         </div>
                         <!-- /.modal-dialog -->
                      </div>
-                     @csrf
                      <div class="row">
                         <div class="col">
                            <div class="form-group">
@@ -140,12 +139,23 @@
                         <div class="col">
                            <div class="form-group">
                               <div class="controls">
-                                 <select name="status[]" class="form-control select2 @error('status') is-invalid @enderror" required data-validation-required-message="This field is required" multiple>
+                                  <div class="dropdown custom-drop-down" input-name="status">
+                                    <button class="btn custom-drop-down-button btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"  aria-haspopup="true" aria-expanded="false">
+                                       <span class="button-text-holder">Status (<span class="count">0</span>)</span>
+                                    </button>
+                                    <div class="dropdown-menu"  aria-labelledby="dropdownMenuButton">
+                                      <a class="dropdown-item"  onclick="itemAction('active', this)"><span>active</span>  <span class="check-mark"><i class="fas fa-check"></i></span> </a>
+                                      <a class="dropdown-item"  onclick="itemAction('inactive', this)"><span>inactive</span> <span class="check-mark"><i class="fas fa-check"></i></span> </a>
+                                      <a class="dropdown-item"  onclick="itemAction('pending', this)"><span>pending</span>  <span class="check-mark"><i class="fas fa-check"></i></span> </a>
+                                    </div>
+                                  </div>
+                                 {{-- <select name="status[]" class="form-control select2 @error('status') is-invalid @enderror" required data-validation-required-message="This field is required" multiple>
                                     <option value="all" selected>All statuses</option>
                                     <option {{ old('status') == 'active' ? 'selected' : '' }} value="active">Active</option>
                                     <option {{ old('status') == 'inactive' ? 'selected' : '' }} value="inactive">Suspended</option>
                                     <option {{ old('status') == 'pending' ? 'selected' : '' }} value="pending">Unconfirmed</option>
-                                 </select>
+                                 </select> --}}
+                                
                                  @error('status')
                                  <span class="invalid-feedback" role="alert">
                                  <strong>{{ $message }}</strong>
@@ -227,8 +237,38 @@
         $('.datepicker').datepicker();
     });
    
+    $(".custom-drop-down-button").click(function(e){
+       $(".custom-drop-down > .dropdown-menu").toggleClass('show');
+    })
+
+    function itemAction(status, obj) {
+         $(obj).find('.check-mark').toggleClass('show');
+         let coun = $(".custom-drop-down").find('.count').text();
+         let total_length = $(".custom-drop-down > .dropdown-menu > a").length;
+         let parent_name_attribute = $(obj).closest('.custom-drop-down').attr('input-name')
+         if (typeof parent_name_attribute !== undefined && parent_name_attribute !== false) {
+            $(".custom-drop-down").append(`<input type="hidden" name="${parent_name_attribute}[]" value="${status}">`);
+         }
+
+         if ($(obj).find('.check-mark').hasClass('show')) {
+            let increament = parseInt(coun) + 1;
+            if (increament === total_length) {
+               $(".custom-drop-down").find('.button-text-holder').text(`All ${parent_name_attribute}`);
+            } else {
+               $(".custom-drop-down").find('.button-text-holder').html(`Status (<span class="count">0</span>)`);
+               $(".custom-drop-down").find('.count').text(increament);
+            }
+         } else {
+            let dec = parseInt(coun) - 1;
+            console.log(dec, (total_length - 1), coun);
+            if ((total_length - 1) === dec) {
+               $(".custom-drop-down").find('.button-text-holder').html(`Status (<span class="count">0</span>)`);
+            }
+            $(".custom-drop-down").find('.count').text(dec);
+         }
+    }
+
     let $select2 = $(".select2");
-   
     $select2.select2({
         width: '100%',
         allowClear: true,
