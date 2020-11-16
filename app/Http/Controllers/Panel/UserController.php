@@ -118,11 +118,6 @@ class UserController extends Controller
         return User::with('paymentMethods')->where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
     }
 
-    public function edit($id)
-    {
-        //
-    }
-
     public function suspend(Request $request)
     {
         if (Auth::user()->can('change user status')) {
@@ -323,9 +318,9 @@ class UserController extends Controller
                 foreach ($serviceLists as $index => $value)
                 {
                     $price = isset($value->update_price)?$value->update_price:$value->price;
-                $user->servicesList()->attach($value->service_id, ['price' => $price, 'panel_id'=>$panel_id]);
+                    $user->servicesList()->attach($value->service_id, ['price' => $price, 'panel_id'=>$panel_id]);
                 }
-                return response()->json(['status' => true, 'data'=> $user->servicesList()->get()], 200);
+                return response()->json(['status' => true, 'data'=> ''], 200);
             } catch (\Exception $e) {
                 return response()->json(['status' => false, 'data'=> $e->getMessage()], 401);
             }

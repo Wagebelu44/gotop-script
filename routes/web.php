@@ -38,7 +38,6 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::get('make-order-seen', 'Panel\OrderController@makeOrderUnseen')->name('order-seen');
 
             //Users
-            Route::post('updatePassword', 'Panel\UserController@updatePassword');
             Route::post('suspendUser', 'Panel\UserController@suspend');
             Route::get('getusers', 'Panel\UserController@getUsers');
             Route::resource('users', 'Panel\UserController');

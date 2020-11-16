@@ -58,7 +58,7 @@ const userModule = new Vue({
     methods: {
         getCategoryServices() {
             this.loader = true;
-            fetch(base_url+'/admin/category-services/')
+            fetch(base_url+'/admin/category-services')
             .then(res => res.json())
             .then(res => {
                 this.loader = false;
@@ -587,7 +587,7 @@ const userModule = new Vue({
                     },
                     credentials: "same-origin",
                     method: "POST",
-                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'active'}),
+                    body: JSON.stringify({user_ids: this.selectedUsers, status: 'Active'}),
                 }).then(res => {
                     if (!res.ok) {
                         throw res;

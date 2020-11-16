@@ -55,15 +55,14 @@ class LoginController extends Controller
             $request->session()->put('currency_format', $setting->currency_format);
             $request->session()->put('timezone', $setting->timezone);
             $request->session()->put('rates_rounding', $setting->rates_rounding);
-            Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember);
+            Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password, 'panel_id' => session('panel'), 'status'=>'Active'], $request->remember);
         } else {
             $panelId = session('panel');
             $setting = SettingGeneral::where('panel_id', $panelId)->first();
             $request->session()->put('currency_format', $setting->currency_format);
             $request->session()->put('timezone', $setting->timezone);
             $request->session()->put('rates_rounding', $setting->rates_rounding);
-            
-            Auth::guard('web')->attempt(['username' => $request->email, 'password' => $request->password, 'panel_id' => session('panel')], $request->remember);
+            Auth::guard('web')->attempt(['username' => $request->email, 'password' => $request->password, 'panel_id' => session('panel'), 'status'=>'Active'], $request->remember);
         }
 
         if ( Auth::check() ) {
