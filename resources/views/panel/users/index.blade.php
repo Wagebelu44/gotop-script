@@ -125,11 +125,12 @@
                                                 @endcan
                                                 <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="resetPassword(user.id)">Set password</a>
                                                   <a class="dropdown-item type-dropdown-item" @click="copyCustomRate(user.id)" href="javascript:void(0)">Copy rates</a>
-                                                  <a class="dropdown-item type-dropdown-item" href="javascript:void(0)">Sign-in History</a>
+                                                  <a class="dropdown-item type-dropdown-item" @click="userLoginLog(user.id)" href="javascript:void(0)">Sign-in History</a>
                                                 @can('change user status')  
                                                 <a class="dropdown-item type-dropdown-item" href="javascript:void(0)" @click="suspendUser(user.id)"> 
                                                     <span v-show="user.status==='Deactivated'">Active</span> 
                                                     <span v-show="user.status==='Active'">Suspend</span> 
+                                                    <span v-show="user.status==='Pending'">Active</span> 
                                                     User
                                                 </a>
                                                 @endcan
@@ -389,6 +390,49 @@
                         </div>
                         <!-- /.modal-dialog -->
                     </div>
+                    <div class="modal bs-example-modal-lg" id="user_login_log" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog __modal_dialog_custom">
+                            <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" >Copy custom rates (ID: @{{ current_user !== null? current_user.id:null }}) </h4>
+                                        <button type="button" class="close"  data-dismiss="modal" aria-hidden="true">×</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{-- <div class="form-group">
+                                            <input type="search" class="form-control" placeholder="Search By IP" />
+                                        </div> --}}
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th><strong>Date, Time</strong></th>
+                                                        <th><strong>IP</strong></th>
+                                                        <th><strong>Location</strong></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody v-if="user_login_logs.length>0">
+                                                    <tr v-for="l in user_login_logs">
+                                                        <td>@{{ l.created_at }}</td>
+                                                        <td>@{{ l.ip }}</td>
+                                                        <td>@{{ l.location }}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody v-else>
+                                                    <tr>
+                                                        <td colspan="3">No Records Founds</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default custom-button"  data-dismiss="modal">Close</button>
+                                    </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
                     {{-- currently not used --}}
                     <div class="modal bs-example-modal-lg" id="customRateUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                         <div class="modal-dialog __modal_dialog_custom">
@@ -484,7 +528,7 @@
 </script>
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/user-vue.js?var=0.30')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/user-vue.js?var=0.10')}}"></script>
 <script>
     $('#userModal').on('hidden.bs.modal', function () {
         userModule.edit_user_id = null;
@@ -493,9 +537,9 @@
     $('#passwordUpdateModal').on('hidden.bs.modal', function () {
         userModule.edit_user_id = null;
     });
-    $('#customRateAddModal').on('hidden.bs.modal', function () {
+    $('#customRateAddModal, #user_login_log').on('hidden.bs.modal', function () {
         userModule.current_user_id = null;
-        userModule.current_user_id = null;
+        userModule.current_user = null;
     });
     $('#copyCustomRateModal').on('hidden.bs.modal', function () {
         userModule.current_user = null;

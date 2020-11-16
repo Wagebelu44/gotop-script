@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\UserLoginLog;
 use Illuminate\Http\Request;
 use App\Models\SettingGeneral;
 use App\Http\Controllers\Controller;
@@ -66,6 +67,11 @@ class LoginController extends Controller
         }
 
         if ( Auth::check() ) {
+            UserLoginLog::create([
+                'panel_id' => $panelId,
+                'user_id' => auth::user()->id,
+                'ip' => request()->ip(),
+            ]);
             return redirect('/new-order');
         } else {
             return redirect()->back()->with('Input', $request->only('email', 'remember'))->with('error', 'Invalid credencial!');

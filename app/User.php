@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Service;
+use App\Models\UserLoginLog;
 use App\Models\PaymentMethod;
 use App\Models\UserPaymentMethod;
 use Illuminate\Notifications\Notifiable;
@@ -97,5 +98,10 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new UserResetPasswordNotification($token));
+    }
+
+    public function loginLog()
+    {
+        return $this->hasMany(UserLoginLog::class, 'user_id');
     }
 }

@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Support\Str;
 use App\Exports\UsersExport;
 use App\Models\ExportedUser;
+use App\Models\UserLoginLog;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
 use App\Models\ServiceCategory;
@@ -28,6 +29,10 @@ class UserController extends Controller
         (SELECT COUNT(id) FROM users WHERE status = 'Active') AS active_count,
         (SELECT COUNT(id) FROM users WHERE status = 'Deactivated') AS deactive_count");
         return view('panel.users.index', compact('counts'));
+    }
+
+    public function getUserLoginLog($user_id) {
+        return UserLoginLog::where('user_id', $user_id)->where('panel_id', auth()->user()->panel_id)->get();
     }
 
     public function getUsers(Request $request)
@@ -175,9 +180,13 @@ class UserController extends Controller
                 if ($request->password) {
                     $data['password'] = Hash::make($request->password);
                 }
-                
 
                 $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
+
+                if ($request->status == 'Pending') {
+                    $user->sendEmailVerificationNotification();
+                }
+                
                 $user->update($data);
                 if ($user) {
                     UserPaymentMethod::where('user_id', $id)->delete();

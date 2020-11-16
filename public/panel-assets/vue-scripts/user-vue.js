@@ -31,6 +31,7 @@ const userModule = new Vue({
         isEdit: false,
         current_user: null,
         custom_rated_users: [],
+        user_login_logs: [],
     },  
     mixins: [mixin],
     created () {
@@ -299,6 +300,18 @@ const userModule = new Vue({
                 $('#customRateAddModal').modal('show');
             });
         },
+        userLoginLog(user_id) {
+            this.current_user_id = user_id;
+            this.current_user = this.users.find(u => u.id == user_id);
+            this.loader = true;
+            $("#user_login_log").modal('show');
+            fetch(base_url+'/admin/get-user-login-log/'+this.current_user_id)
+            .then(res=>res.json())
+            .then(res=>{
+                this.user_login_logs = res;
+                this.loader = false;
+            })
+        },
         copyCustomRate(user_id) {
             this.current_user_id = user_id;
             this.current_user = this.users.find(u => u.id == user_id);
@@ -416,7 +429,7 @@ const userModule = new Vue({
                 rateObj.panel_id = obj.panel_id;
                 rateObj.user_id = obj.user_id;
                 rateObj.price =  obj.price;
-                rateObj.original_price =  obj.original_price;
+                rateObj.original_price =  obj.price;
                 rateObj.provider_price =  provider_service!==null?provider_service.rate: null;
                 rateObj.back_end =  false;
                 this.userServices.unshift(rateObj);
