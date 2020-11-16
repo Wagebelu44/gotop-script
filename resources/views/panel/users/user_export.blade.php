@@ -4,11 +4,6 @@
 <!-- Start Page Content -->
 <!-- ============================================================== -->
 <!-- basic table -->
-<style>
-   table th, td{
-      background: #fff !important;
-   }
-</style>
 <div class="container-fluid all-mt-30">
    <div class="row">
       <div class="col-12">

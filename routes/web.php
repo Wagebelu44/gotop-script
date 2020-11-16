@@ -54,6 +54,8 @@ Route::group(['middleware' => 'checkPanel'], function () {
             Route::post('store-service', 'Panel\UserController@serviceUpdate');
             Route::DELETE('delete-user-service', 'Panel\UserController@deleteUsersService');
             Route::post('bulk-status-update', 'Panel\UserController@bulkUserUpdate');
+            Route::get('get-custom-rated-users-only', 'Panel\UserController@getCustomRatedUsers')->name('custom.rated.users.only');
+            Route::post('copy-custom-rates-users', 'Panel\UserController@copyCustomRatedUsers')->name('copy.custom.rates.users');
             Route::resource('users', 'Panel\UserController');
 
             #Orders...

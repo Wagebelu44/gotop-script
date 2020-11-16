@@ -29,6 +29,8 @@ const userModule = new Vue({
         selectedUsers: [],
         checkAlluser: false,
         isEdit: false,
+        current_user: null,
+        custom_rated_users: [],
     },  
     mixins: [mixin],
     created () {
@@ -251,12 +253,9 @@ const userModule = new Vue({
                 })
                 .then(res => {
                     this.loader = false;
-                    this.users = this.users.map(item => {
-                        if (item.id === res.data.id) {
-                            return res.data;
-                        }
-                        return item;
-                    });
+                    if (res.status) {
+                       this.getUsers();
+                    }
                 })
                 .catch(res => {
                     console.log(res);
@@ -294,6 +293,55 @@ const userModule = new Vue({
                 }
 
                 $('#customRateAddModal').modal('show');
+            });
+        },
+        copyCustomRate(user_id) {
+            this.current_user_id = user_id;
+            this.current_user = this.users.find(u => u.id == user_id);
+            fetch(customRateduserUrl)
+            .then(res=>res.json())
+            .then(res=>{
+                this.custom_rated_users = res;
+            });
+            $("#copyCustomRateModal").modal('show');
+            setTimeout(() => {
+                $('#select2-payment-user').select2();
+                $('#select2-payment-user').val(this.users).trigger('change');                      
+            }, 100);
+        },
+        copyRatesSubmit() {
+            let formD = new FormData(document.getElementById('copy-custom-rate-form'));
+            fetch(copyratestouser, {
+                headers: {
+                    "Accept": "application/json",
+                    "X-CSRF-TOKEN": CSRF_TOKEN,
+                },
+                credentials: "same-origin",
+                method: "POST",
+                body: formD
+            }).then(res => {
+                if (!res.ok) {
+                    throw res;
+                }
+                return res.json();
+            })
+            .then(res=>{
+                if (res.status) {
+                    $("#copyCustomRateModal").modal('hide');
+                    this.getUsers();
+                }
+            })
+            .catch(res => {
+                this.loader = false;
+                res.text().then(err => {
+                    let errMsgs = Object.entries(JSON.parse(err).errors);
+                    for (let i = 0; i < errMsgs.length; i++) {
+                        let obj = {};
+                        obj.name = errMsgs[i][0];
+                        obj.desc = errMsgs[i][1][0];
+                        this.validationErros.push(obj);
+                    }
+                });
             });
         },
         resetPassword(user_id) {
@@ -404,6 +452,7 @@ const userModule = new Vue({
                 let user_data = {};
                 user_data.user_id =  this.current_user_id;
                 user_data.services = JSON.stringify(this.userServices);
+                this.loader = true;
                 fetch(base_url+'/admin/store-service', {
                     headers: {
                         "X-CSRF-TOKEN": CSRF_TOKEN,
@@ -420,7 +469,9 @@ const userModule = new Vue({
                 })
                 .then(res => {
                     if (res.status) {
+                        this.loader = false;
                         $("#customRateAddModal").modal('hide');
+                        this.getUsers();
                     }
                 })
                 .catch(res => {
@@ -452,6 +503,7 @@ const userModule = new Vue({
             }
             else
             {
+                this.loader = true;
                 fetch(base_url+'/admin/delete-user-service', {
                     headers: {
                         "X-CSRF-TOKEN": CSRF_TOKEN,
@@ -468,7 +520,9 @@ const userModule = new Vue({
                 })
                 .then(res => {
                     if (res.status) {
+                        this.loader = false;
                         $("#customRateAddModal").modal('hide');
+                        this.getUsers();
                     }
                 })
                 .catch(res => {

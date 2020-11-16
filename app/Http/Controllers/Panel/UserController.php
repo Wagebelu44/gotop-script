@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Panel;
 
 use App\User;
+use Illuminate\Support\Str;
 use App\Exports\UsersExport;
 use App\Models\ExportedUser;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
-use Illuminate\Support\Str;
 use App\Models\ServiceCategory;
+use App\Models\ServicePriceUser;
 use App\Models\UserPaymentMethod;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('panel.users.index');
+        $counts = \DB::select("SELECT
+        (SELECT COUNT(id) FROM users)  AS all_count,
+        (SELECT COUNT(id) FROM users WHERE status = 'Pending') AS pending_count,
+        (SELECT COUNT(id) FROM users WHERE status = 'Active') AS active_count,
+        (SELECT COUNT(id) FROM users WHERE status = 'Deactivated') AS deactive_count");
+        return view('panel.users.index', compact('counts'));
     }
 
     public function getUsers(Request $request)
@@ -245,6 +251,47 @@ class UserController extends Controller
         return $user->servicesList()->get();
     }
 
+    public function getCustomRatedUsers(Request $request) {
+        return User::select('users.id', 'users.username')->with('servicesList')
+        ->join('service_price_user', 'users.id', '=', 'service_price_user.user_id')
+        ->distinct('users.id')
+        ->where('users.panel_id', auth()->user()->panel_id)->get();
+    }
+    public function copyCustomRatedUsers(Request $request) {
+        $credentials = $request->all();
+        $rules = [
+            'from_user'    => 'required|integer|exists:users,id',
+            'to_user'       => 'required|integer|exists:users,id',
+        ];
+        $validator = Validator::make($credentials, $rules);
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'errors'=> $validator->messages()], 422);
+        }
+        try {
+            $assingedService = ServicePriceUser::where('user_id', $credentials['from_user'])->get();
+            if (count($assingedService) > 0) {
+                foreach ($assingedService as $value)
+                {
+                    $s = ServicePriceUser::where('user_id', $credentials['to_user'])
+                    ->where('service_id', $value->service_id)
+                    ->where('panel_id', $value->panel_id)->first();
+                    if ($s) {
+                        $replicated = $s;
+                    } else {
+                        $replicated = new ServicePriceUser;
+                    }
+                    $replicated->panel_id = $value->panel_id;
+                    $replicated->service_id = $value->service_id;
+                    $replicated->price = $value->price;
+                    $replicated->user_id = $credentials['to_user'];
+                    $replicated->save();
+                }
+            }
+            return response()->json(['status' => true, 'data'=> ''], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'data'=> $e->getMessage()], 401);
+        }
+    }
     public function serviceUpdate(Request $request)
     {
 
