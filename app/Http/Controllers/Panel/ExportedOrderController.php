@@ -10,6 +10,7 @@ use App\Exports\OrdersExport;
 use App\Models\ExportedOrder;
 use Spatie\ArrayToXml\ArrayToXml;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 
