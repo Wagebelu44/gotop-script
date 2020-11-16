@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/b-datepicker/css/bootstrap-datepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.15') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.30') }}">
     @yield('styles')
 </head>
 
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div id="main-wrapper">
+    <div id="main-wrapper" style="background: #fff">
         <header class="topbar d-block d-md-none">
             <nav class="navbar top-navbar navbar-expand-md navbar-dark">
                 <div class="navbar-header">
@@ -162,7 +162,7 @@
             </div>
         </aside>
 
-        <div class="page-wrapper">
+        <div class="page-wrapper" style="background: #fff">
             <div class="page-content container-fluid">
                 @yield('content')
             </div>
