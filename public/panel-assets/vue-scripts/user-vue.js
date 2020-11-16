@@ -286,6 +286,7 @@ const userModule = new Vue({
                         let rateObj = {};
                         rateObj.service_id = item.id;
                         rateObj.name = item.name;
+                        rateObj.original_price =  item.price;
                         rateObj.price =  item.pivot.price;
                         rateObj.panel_id = item.pivot.panel_id;
                         rateObj.user_id = item.pivot.user_id;
@@ -415,6 +416,7 @@ const userModule = new Vue({
                 rateObj.panel_id = obj.panel_id;
                 rateObj.user_id = obj.user_id;
                 rateObj.price =  obj.price;
+                rateObj.original_price =  obj.original_price;
                 rateObj.provider_price =  provider_service!==null?provider_service.rate: null;
                 rateObj.back_end =  false;
                 this.userServices.unshift(rateObj);

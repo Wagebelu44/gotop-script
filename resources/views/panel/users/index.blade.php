@@ -158,19 +158,24 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
+                                            <label for=""> <strong>Email</strong> </label>
                                             <input type="email" name="email" v-model="formUser.email" class="form-control custom-form-control" placeholder="Email"  required />
                                         </div>
                                         <div class="form-group">
+                                            <label for=""> <strong>Username</strong> </label>
                                             <input type="text" name="username" v-model="formUser.username" class="form-control custom-form-control" placeholder="Username" />
                                         </div>
                                         <div class="form-group">
+                                            <label for=""> <strong>Skype Name</strong> </label>
                                             <input type="text" name="skype_name" v-model="formUser.skype_name" class="form-control custom-form-control" placeholder="Skype" />
                                         </div>
                                         <div class="form-group" >
+                                            <label for=""> <strong>Password</strong> </label>
                                             <input type="password" name="password" v-model="formUser.password" class="form-control custom-form-control" placeholder="Password">
                                         </div>
                                         <div class="form-group">
                                             <div class="controls">
+                                                <label for=""> <strong>Confirm Password</strong> </label>
                                                 <input type="password" name="password_confirmation" v-model="formUser.password_confirmation" class="form-control custom-form-control " placeholder="Confirm Password">
                                             </div>
                                         </div>
@@ -184,7 +189,7 @@
                                         <div class="form-group">
                                             <div class="custom-control custom-radio custom-control-inline mt-1">
                                                 <input type="radio" name="status" class="custom-control-input" id="customControlValidation1" v-model="formUser.status"  value="Pending" required="" />
-                                                <label class="custom-control-label" for="customControlValidation1">Pending</label>
+                                                <label class="custom-control-label" for="customControlValidation1">Unconfirmed</label>
                                             </div>
                                             <div class="custom-control custom-radio custom-control-inline mt-1">
                                                 <input type="radio" name="status" class="custom-control-input" id="customControlValidation2"  v-model="formUser.status"  value="Active" required="" />
@@ -192,7 +197,7 @@
                                             </div>
                                             <div class="custom-control custom-radio custom-control-inline">
                                                 <input type="radio" name="status" class="custom-control-input" id="customControlValidation3"  v-model="formUser.status"  value="Deactivated" required="" />
-                                                <label class="custom-control-label" for="customControlValidation3">Deactivated</label>
+                                                <label class="custom-control-label" for="customControlValidation3">Suspended</label>
                                             </div>
                                         </div>
                                         <div v-if="validationErros.length>0" v-for="err in validationErros" class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -303,7 +308,7 @@
                                                             <tr v-for="(ser, ind) in userServices">
                                                                 <td >@{{ser.service_id}}</td>
                                                                 <td style="width: 30%">@{{ser.name}}</td>
-                                                                <td >@{{ser.price}}</td>
+                                                                <td >@{{ser.original_price}}</td>
                                                                 <td style="width: 30%">
                                                                     <div class="input-group">
                                                                         <input step="any"

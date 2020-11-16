@@ -175,6 +175,7 @@ class UserController extends Controller
                 if ($request->password) {
                     $data['password'] = Hash::make($request->password);
                 }
+                
 
                 $user = User::where('panel_id', Auth::user()->panel_id)->where('id', $id)->first();
                 $user->update($data);
