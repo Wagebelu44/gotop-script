@@ -128,14 +128,14 @@
                   <div class="col">
                      <div class="form-group">
                            <label for=""> <strong>Status</strong> </label>
-                              <div class="dropdown custom-drop-down" input-name="status">
+                              <div class="dropdown custom-drop-down" input-name="status" initial="all">
                               <button class="btn custom-input custom-drop-down-button btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"  aria-haspopup="true" aria-expanded="false">
                                  <span class="button-text-holder">Status (<span class="count">0</span>)</span>
                               </button>
-                              <div class="dropdown-menu"  aria-labelledby="dropdownMenuButton">
-                                 <a class="dropdown-item"  onclick="itemAction('active', this)"><span>active</span>  <span class="check-mark"><i class="fas fa-check"></i></span> </a>
-                                 <a class="dropdown-item"  onclick="itemAction('inactive', this)"><span>inactive</span> <span class="check-mark"><i class="fas fa-check"></i></span> </a>
-                                 <a class="dropdown-item"  onclick="itemAction('pending', this)"><span>pending</span>  <span class="check-mark"><i class="fas fa-check"></i></span> </a>
+                              <div class="dropdown-menu"   aria-labelledby="dropdownMenuButton">
+                                 <a class="dropdown-item"  onclick="itemAction('active', this)"><span>Active</span>  <span class="check-mark"><i class="fas fa-check"></i></span> </a>
+                                 <a class="dropdown-item"  onclick="itemAction('inactive', this)"><span>Suspended</span> <span class="check-mark"><i class="fas fa-check"></i></span> </a>
+                                 <a class="dropdown-item"  onclick="itemAction('pending', this)"><span>Unconfirmed</span>  <span class="check-mark"><i class="fas fa-check"></i></span> </a>
                               </div>
                               </div>
                            @error('status')
@@ -185,7 +185,19 @@
                      <tr>
                         <td>{{ $item->from }}</td>
                         <td>{{ $item->to }}</td>
-                        <td>{{ rtrim(implode(', ', array_map(function ($value) { return ucfirst($value); }, unserialize($item->status)))) }}</td>
+                        <td>
+                           @php
+                               $da = array_map(function ($value) {
+                              if ( strtolower($value) == 'pending') {
+                                 $value = 'Unconfirmed';
+                              } else if (strtolower($value) == 'deactivated') {
+                                 $value = 'Suspended';
+                              }
+                              return ucfirst($value); 
+                            }, unserialize($item->status));
+                           @endphp
+                           {{ rtrim(implode(', ', $da)) }}
+                        </td>
                         <td>{{ strtoupper($item->format) }}</td>
                         <td>
                            <form method="post" action="{{ route('admin.users.exported_user.download', $item->id) }}">
@@ -209,14 +221,36 @@
         $('.datepicker').datepicker();
     });
    
-    $(".custom-drop-down-button").click(function(e){
-       $(".custom-drop-down > .dropdown-menu").toggleClass('show');
-    })
+      let initial_data = $(".custom-drop-down").attr('initial');
+      let parent_name_attribute = $(".custom-drop-down").attr('input-name')
+      if (typeof initial_data !== undefined && initial_data !== false) {
+         if (initial_data == 'all') {
+            $(".custom-drop-down").find('.button-text-holder').text(`All ${parent_name_attribute}`);
+            $('.custom-drop-down .dropdown-item').each((i, v) =>{
+               let it = $(v).find('span:eq(0)').text();
+               $(v).find('span:eq(1)').addClass('show');
+               $(".custom-drop-down").append(`<input type="hidden" name="${parent_name_attribute}[]" value="${it}">`);
+            });
+         } else {
+            $('.custom-drop-down .dropdown-item').each((i, v) =>{
+               let it = $(v).find('span:eq(0)').text();
+               if (it === initial_data) {
+                  $(v).find('span:eq(1)').addClass('show');
+                  $(".custom-drop-down").append(`<input type="hidden" name="${parent_name_attribute}[]" value="${it}">`);
+               }
+            });
+         }
+      }
+
+      $(".custom-drop-down-button").click(function(e){
+         $(".custom-drop-down > .dropdown-menu").toggleClass('show');
+      })
 
     function itemAction(status, obj) {
          $(obj).find('.check-mark').toggleClass('show');
-         let coun = $(".custom-drop-down").find('.count').text();
+         let initial_data = $(".custom-drop-down").attr('initial');
          let total_length = $(".custom-drop-down > .dropdown-menu > a").length;
+         let coun = $(".custom-drop-down").find('.count').text();
          let parent_name_attribute = $(obj).closest('.custom-drop-down').attr('input-name')
          if (typeof parent_name_attribute !== undefined && parent_name_attribute !== false) {
             if ($(`.custom-drop-down > input[value=${status}]`).length === 0) {
@@ -238,7 +272,11 @@
                $(".custom-drop-down").find('.button-text-holder').html(`Status (<span class="count">${total_length - 1}</span>)`);
             } else {
                let dec = parseInt(coun) - 1;
-               $(".custom-drop-down").find('.count').text(dec);
+               if (coun == total_length) {
+                  $(".custom-drop-down").find('.button-text-holder').html(`Status (<span class="count">${total_length - 1}</span>)`);
+               } else {
+                  $(".custom-drop-down").find('.count').text(dec);
+               }
             }
          }
     }

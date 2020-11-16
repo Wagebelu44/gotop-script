@@ -273,6 +273,7 @@ const userModule = new Vue({
         },
         customeRate(user_id) {
             this.current_user_id = user_id;
+            this.current_user = this.users.find(u => u.id == user_id);
             this.loader = true;
             fetch(base_url+'/admin/users-services/'+ user_id)
             .then(res => res.json())
@@ -281,14 +282,16 @@ const userModule = new Vue({
                 this.userServices = [];
                 if (res.length>0) {
                     res.forEach(item=>{
-                        let provider_service = null; //provider_rate(item.id);
+                        let provider_service = null;
                         let rateObj = {};
                         rateObj.service_id = item.id;
                         rateObj.name = item.name;
                         rateObj.price =  item.pivot.price;
+                        rateObj.panel_id = item.pivot.panel_id;
+                        rateObj.user_id = item.pivot.user_id;
                         rateObj.provider_price = provider_service!==null?provider_service.rate: null;
                         rateObj.back_end =  true;
-                        this.userServices.unshift(rateObj);
+                        this.userServices.push(rateObj);
                     });
                 }
 
@@ -409,6 +412,8 @@ const userModule = new Vue({
                 let rateObj = {};
                 rateObj.service_id = obj.id;
                 rateObj.name = obj.name;
+                rateObj.panel_id = obj.panel_id;
+                rateObj.user_id = obj.user_id;
                 rateObj.price =  obj.price;
                 rateObj.provider_price =  provider_service!==null?provider_service.rate: null;
                 rateObj.back_end =  false;
@@ -430,8 +435,26 @@ const userModule = new Vue({
                     if (item.service_id == service_id) {
                         if (item.back_end)
                         {
-                           /*  $('#deleteCustomRate').attr('action', originUrl + 'reseller/users/' + current_user_id + '/services/' + service_id);
-                            $('#deleteCustomRate').submit(); */
+                            console.log(item, 'servic');
+                            fetch(deleteSingleService, {
+                                headers: {
+                                    "X-CSRF-TOKEN": CSRF_TOKEN,
+                                    "Content-Type": "application/json",
+                                },
+                                credentials: "same-origin",
+                                method: "DELETE",
+                                body: JSON.stringify(item),
+                            }).then(res => {
+                                if (!res.ok) {
+                                    throw res;
+                                }
+                                return res.json();
+                            })
+                            .then(res=>{
+                                if (res.status) {
+                                    this.userServices.splice(this.userServices.indexOf(item), 1); 
+                                }
+                            })
                         }
                         else
                         {

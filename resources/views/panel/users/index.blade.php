@@ -254,7 +254,7 @@
                                 <form id="custom-rate-add-form" method="post" enctype="multipart/form-data">
                                     @csrf
                                     <div class="modal-header">
-                                        <h4 class="modal-title" id="myLargeModalLabel">Edit custom rates</h4>
+                                        <h4 class="modal-title" id="myLargeModalLabel">Edit custom rates(ID: @{{ current_user !== null? current_user.id:null }})</h4>
                                         <button type="button" class="close"  data-dismiss="modal" aria-hidden="true">×</button>
                                     </div>
                                     <div class="modal-body">
@@ -315,7 +315,6 @@
                                                                             <span class="input-group-text" style="cursor: pointer">$</span>
                                                                         </div>
                                                                     </div>
-                                                                    <small class="mt-0 pt-0 d-block sub-price">$14</small>
                                                                 </td>
                                                                 <td>
                                                                     <button type="button" @click="removeCustomRate(ser.service_id)"
@@ -476,10 +475,11 @@
 <script>
     let customRateduserUrl ="{{ route('admin.custom.rated.users.only') }}";
     let copyratestouser ="{{ route('admin.copy.custom.rates.users') }}";
+    let deleteSingleService ="{{ route('admin.delete.user.single.service') }}";
 </script>
 <script src="{{asset('/panel-assets/vue-scripts/common/pagination.js')}}"></script>
 <script src="{{asset('/panel-assets/vue-scripts/common/helper-mixin.js')}}"></script>
-<script src="{{asset('/panel-assets/vue-scripts/user-vue.js?var=0.20')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/user-vue.js?var=0.30')}}"></script>
 <script>
     $('#userModal').on('hidden.bs.modal', function () {
         userModule.edit_user_id = null;
@@ -489,6 +489,7 @@
         userModule.edit_user_id = null;
     });
     $('#customRateAddModal').on('hidden.bs.modal', function () {
+        userModule.current_user_id = null;
         userModule.current_user_id = null;
     });
     $('#copyCustomRateModal').on('hidden.bs.modal', function () {

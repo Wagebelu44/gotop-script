@@ -324,6 +324,23 @@ class UserController extends Controller
         }
     }
 
+    public function deleteUsersSingleService(Request $request)
+    {
+        if (Auth::user()->can('edit user custom rates')) {
+            $request->validate([
+                'user_id' => 'required|numeric',
+                'panel_id' => 'required|numeric',
+                'service_id' => 'required|numeric',
+            ]);
+            ServicePriceUser::where('user_id', $request->user_id)
+            ->where('service_id', $request->service_id)
+            ->where('panel_id', $request->panel_id)
+            ->delete();
+            return response()->json(['status' => true, 'data'=> 'user services reset'], 200);
+        } else {
+            return response()->json(['status' => false, 'errors'=> 'permission denied!'], 200);
+        }
+    }
     public function deleteUsersService(Request $request)
     {
         if (Auth::user()->can('edit user custom rates')) {
@@ -387,7 +404,7 @@ class UserController extends Controller
             $request->validate([
                 'from' => 'required|date',
                 'to' => 'required|date|after_or_equal:from',
-                'status' => 'required|array|in:all,pending,active,inactive',
+                'status' => 'required|array|in:all,Unconfirmed,Active,Suspended',
                 'format' => 'required|in:xml,json,csv',
                 'include_columns' => 'required|array|in:id,username,email,name,skype_name,balance,spent,status,created_at,last_login_at',
             ]);
@@ -395,7 +412,15 @@ class UserController extends Controller
             try {
                 $data = $request->except('_token');
                 $data['include_columns'] = serialize($request->include_columns);
-                $data['status'] = serialize($request->status);
+                $statuses = array_map(function($val){
+                    if ($val == 'Unconfirmed') {
+                        $val = 'Pending';
+                    } else if ($val == 'Suspended') {
+                        $val = 'Deactivated';
+                    }
+                  return $val;
+                }, $request->status);
+                $data['status'] = serialize($statuses);
                 $data['panel_id'] = auth()->user()->panel_id;
                 $data['from'] = date('Y-m-d H:i:s',  strtotime($request->from));
                 $data['to'] = date('Y-m-d H:i:s',  strtotime($request->to));
@@ -422,7 +447,6 @@ class UserController extends Controller
                     ->leftJoin(\DB::raw("(SELECT sum(charges) as spent, user_id from orders where 
                     status!='cancelled' AND  status!='Canceled' AND  status!='Refunded' group by user_id) as A"), 'users.id', '=', 'A.user_id')
                     ->get(unserialize($exportedUser->include_columns));
-
                 if ($exportedUser->format == 'json') {
                     $filename = "public/exportedData/users.json";
                     Storage::disk('local')->put($filename, $users->toJson(JSON_PRETTY_PRINT));
