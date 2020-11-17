@@ -116,16 +116,16 @@ class OrderController extends Controller
                         'transaction_detail' => json_encode(['order_id'=> $order->id, 'quantity_history'=> [$order->quantity]]),
                         'payment_gateway_response' => null,
                         'global_payment_method_id' =>  null,
-                        'reseller_id' => 1,
+                        'panel_id' => auth()->user()->panel_id,
                     ]);
                     $order->update([
-                        'quantity' => $data['partial'],
+                        'remains' => $data['partial'],
                         'status'   => 'partial',
                         'charges'  => $now_b,
                     ]);
                 } else {
 
-                    if ($data['status'] == 'completed') {
+                    if (isset($data['status']) && $data['status'] == 'completed') {
                         $duration = null;
                         $completed_at = date('Y-m-d H:i:s');
                         $date_a = new \DateTime($order->created_at);

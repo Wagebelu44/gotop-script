@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.3.8/css/ajax-bootstrap-select.min.css">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/bootstrap-select.css?var=0.50') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.40') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.50') }}">
 
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />

@@ -30,7 +30,7 @@
              <th scope="col">ID</th>
              @can('see order user')
                <th>
-                  <div class="dropdown __dropdown_buttons">
+                  <div class="dropdown  __dropdown_buttons">
                      <button class="btn btn-default dropdown-toggle" type="button"
                         id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
@@ -108,7 +108,10 @@
                </td>
              @endcan
              @can('see order charge')
-               <td>@{{ o.charges }}</td>
+               <td> 
+                  <span v-show="o.status !== 'cancelled'">@{{ o.charges }}</span>  
+                  <span v-show="o.status === 'cancelled'">0</span>  
+               </td>
              @endcan
              <td>
                 @{{ o.link }}
@@ -146,10 +149,10 @@
              <td>@{{ o.start_counter }}</td>
              <td>@{{ o.quantity }}</td>
              <td>@{{ o.service_name }}</td>
-             <td class="status-value">@{{ o.status }}</td>
+             <td class="status-value text-capitalize" >@{{ o.status }}</td>
              <td>@{{ o.remains }}</td>
              <td>@{{ o.created_at }}</td>
-             <td>@{{ o.mode }}</td>
+             <td class="text-capitalize">@{{ o.mode }}</td>
              <td v-if="order_page == 'order'">
                 <div class="dropdown show goTopDropdown">
                    <a class="btn btn-secondary dropdown-toggle custom-dropdown-button" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -161,7 +164,7 @@
                            <li><a class="dropdown-item type-dropdown-item" @click="popModal('link', o.link, o.id)">Edit Link</a></li>
                          @endcan
                          @can('set start count order')
-                           <li><a class="dropdown-item type-dropdown-item" @click="popModal('start_count',o.start_counter, o.id)">Set Start Count</a></li>
+                         <li><a class="dropdown-item type-dropdown-item" @click="popModal('start_count', o.start_counter, o.id)">Set Start Count</a></li>
                          @endcan
                          @can('set remains order')
                            <li><a class="dropdown-item type-dropdown-item" @click="popModal('remain', o.remains, o.id)">Set Remain</a></li>
@@ -189,7 +192,7 @@
                                  <li><a class="dropdown-item type-dropdown-item" @click="resendOrder(o)">Resend Order</a></li>
                                @endcan
                                @can('edit order link')
-                                 <li><a class="dropdown-item type-dropdown-item" onclick="#">Edit Link</a></li>
+                                 <li><a class="dropdown-item type-dropdown-item" @click="popModal('link', o.link, o.id)">Edit Link</a></li>
                                @endcan
                             </div>
                             <div v-else>

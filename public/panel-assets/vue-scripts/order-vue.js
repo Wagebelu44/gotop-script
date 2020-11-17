@@ -224,48 +224,24 @@ const orderModule = new Vue({
         popModal(field, data, id) {
             if (field === 'link')
             {
-                $('#link_id').show();
-                $('#start_count_id').hide();
-                $('#remain_id').hide();
                  this.visiblelink = true;
-                 this.visibleStartCount = false;
-                 this.visiblePartical = false;
-                 this.visibleRemain = false;
-                $('#link_id').find('input').val(data);
+                 setTimeout(() => {
+                     $('#link_id').find('input').val(data);
+                 }, 1000);
             }
             else if (field === 'start_count')
             {
-                $('#link_id').hide();
-                $('#start_count_id').show();
-                $('#remain_id').hide();
-                this.visiblelink = false;
                 this.visibleStartCount = true;
-                this.visiblePartical = false;
-                this.visibleRemain = false;
                 $('#start_count_id').find('input').val(data);
             }
             else if (field === 'remain')
             {
-                $('#link_id').hide();
-                $('#start_count_id').hide();
-                $('#partial_id').hide();
-                $('#remain_id').show();
-                this.visiblelink = false;
-                this.visibleStartCount = false;
-                this.visiblePartical = false;
                 this.visibleRemain = true;
                 $('#remain_id').find('input').val(data);
             }
             else if (field === 'partial')
             {
-                $('#link_id').hide();
-                $('#start_count_id').hide();
-                $('#remain_id').hide();
-                $('#partial_id').show();
-                this.visiblelink = false;
-                this.visibleStartCount = false;
                 this.visiblePartical = true;
-                this.visibleRemain = false;
                 $('#partial_id').find('input').val(data);
             }
             this.editable_id = id;
@@ -273,7 +249,7 @@ const orderModule = new Vue({
         },
         update_service ()
         {
-            $('#loader-page').show();
+            this.loader = true;
             let statusForm = new FormData;
             if (this.visiblelink === true)
             {
@@ -308,8 +284,7 @@ const orderModule = new Vue({
                 .then(res=>{
                     if (res.status===200)
                     {
-                        $("#mi-modal").modal('hide');
-                        $('#loader-page').hide();
+                        this.loader = false;
                         this.updateOrderLists(res.data);
                         $('#orderEdit-modal').modal('hide');
                     }
