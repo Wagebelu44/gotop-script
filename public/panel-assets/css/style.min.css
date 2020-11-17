@@ -332,3 +332,12 @@ body{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif!important}
 .padding-less {
     padding: 0 !important;
 }
+
+.form-group .bootstrap-select.custom-drop-down-button {
+    width: 100%;
+    background: transparent !important;
+    color: #000 !important; 
+    overflow: hidden;
+    height: 35px !important;
+    border: 1px solid #000 !important;
+  }

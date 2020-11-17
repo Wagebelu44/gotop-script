@@ -31,6 +31,9 @@ class UserController extends Controller
         return view('panel.users.index', compact('counts'));
     }
 
+    public function getSearchedUsers(Request $request) {
+        return User::select('id', 'username')->where('panel_id', auth()->user()->panel_id)->where('username', 'LIKE', '%'.$request->q.'%')->get();
+    }
     public function getUserLoginLog($user_id) {
         return UserLoginLog::where('user_id', $user_id)->where('panel_id', auth()->user()->panel_id)->get();
     }

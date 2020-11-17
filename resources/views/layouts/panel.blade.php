@@ -16,7 +16,12 @@
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/libs/b-datepicker/css/bootstrap-datepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('panel-assets/css/animate.css.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.30') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.3.8/css/ajax-bootstrap-select.min.css">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/bootstrap-select.css?var=0.50') }}">
+    <link rel="stylesheet" href="{{ asset('panel-assets/css/style.min.css?var=0.40') }}">
+
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     @yield('styles')
 </head>
 
@@ -191,6 +196,10 @@
     <script src="{{ asset('panel-assets/libs/summernote/summernote.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/select2/js/select2.min.js') }}"></script>
     <script src="{{ asset('panel-assets/libs/b-datepicker/js/bootstrap-datepicker.js') }}"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ajax-bootstrap-select/1.3.8/js/ajax-bootstrap-select.min.js"></script>
+    <script src="{{ asset('panel-assets/js/bootstrap-select.js?var=0.40') }}"></script>
     <script src="{{ asset('panel-assets/js/custom.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
