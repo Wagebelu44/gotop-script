@@ -12,6 +12,14 @@
         left: 0;
         top: 10px;
     }
+    .dropdown-submenu.top-one a::after {
+        position: absolute;
+        right: 0px;
+        top: 15px;
+        width: 10px; 
+        height: 10px;
+        transform: translate(120px, -7px) rotate(-90deg);
+    }
 
     .dropdown-submenu .dropdown-menu {
         top: 0;
@@ -200,7 +208,7 @@
     let adminSeenRoute  = '{{ route("admin.order-seen") }}';
     let resendOrderRoute  = '{{ route("admin.resend.order") }}';
 </script>
-<script src="{{asset('/panel-assets/vue-scripts/order-vue.js?var=0.50')}}"></script>
+<script src="{{asset('/panel-assets/vue-scripts/order-vue.js?var=0.10')}}"></script>
 <script>
     setTimeout(function () {
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
@@ -218,7 +226,7 @@
 
        return false;
    });
-    }, 5000);
+    }, 2000);
 
     
 

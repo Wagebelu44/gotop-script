@@ -215,11 +215,11 @@ const orderModule = new Vue({
         },
         actionConditionalB(order)
         {
-            return ['completed', 'pending', 'in progress', 'processing', 'failed', 'partial', 'cancelled'].includes(order.status);
+            return ['completed', 'pending', 'in progress', 'inprogress', 'processing', 'failed', 'partial', 'cancelled'].includes(order.status);
         },
         actionConditionalC(order)
         {
-            return [ 'pending', 'in progress', 'processing', 'failed', 'cancelled'].includes(order.status);
+            return [ 'pending', 'in progress', 'inprogress', 'processing', 'failed', 'cancelled'].includes(order.status);
         },
         popModal(field, data, id) {
             if (field === 'link')

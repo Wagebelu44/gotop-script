@@ -1,8 +1,8 @@
 <div class="tab-content table-responsive-xl">
     <div class="d-flex top-caret-bar">
-       <div class="d-flex service-checkbox-action bg-danger" v-if="order_checkbox.length>0">
+       <div class="d-flex service-checkbox-action bg-default" style="border: 1px solid #ddd;border-radius: 5px;" v-if="order_checkbox.length>0">
           <div>
-             <span style="color:#fff; padding: 0px 5px">Order Selected <span> @{{order_checkbox.length}} </span> </span>
+             <span style="color:#000; padding: 0px 5px"> <span> @{{order_checkbox.length}} </span> Orders Selected  </span>
           </div>
           <div class="dropdown show">
              <a class="btn btn-sm dropdown-toggle" style="background: #fff; border: 1px solid #d4d4d4" href="#" role="button" id="dropdownMenuLink"
@@ -14,11 +14,17 @@
                 @can('resend order')
                   <li><a class="dropdown-item" @click="bulkStatusChange('failed_resend')">Resend Orders</a></li>
                 @endcan
+                <li class="dropdown-submenu top-one">
+                  <a class="dropdown-item dropdown-toggle type-dropdown-item" href="#">Change status</a>
+                  <ul class="dropdown-menu">
+                     <li><a class="dropdown-item type-dropdown-item" @click="bulkStatusChange('pending')">Pending</a></li>
+                     <li><a class="dropdown-item type-dropdown-item" @click="bulkStatusChange('inprogress')">In Progress</a></li>
+                     <li><a class="dropdown-item type-dropdown-item" @click="bulkStatusChange('processing')">Processing</a></li>
+                     <li><a class="dropdown-item type-dropdown-item" @click="bulkStatusChange('completed')">Completed</a></li>
+                  </ul>
+               </li>
                 <li><a class="dropdown-item" @click="bulkStatusChange('cancel_refund')">Cancal and refund</a></li>
-                <li><a class="dropdown-item" @click="bulkStatusChange('pending')">Pending</a></li>
-                <li><a class="dropdown-item" @click="bulkStatusChange('inprogress')">In Progress</a></li>
-                <li><a class="dropdown-item" @click="bulkStatusChange('processing')">Processing</a></li>
-                <li><a class="dropdown-item" @click="bulkStatusChange('completed')">Completed</a></li>
+          
              </ul>
           </div>
        </div>

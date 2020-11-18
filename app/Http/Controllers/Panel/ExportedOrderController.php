@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ExportedOrderController extends Controller
 {
@@ -36,26 +37,38 @@ class ExportedOrderController extends Controller
      */
     public function store(Request $request)
     {
+      
         if (Auth::user()->can('export order')) {
             // Validate form data
-            $request->validate([
+            $data = $request->except('_token');
+            $data['from'] = date('Y-m-d',  strtotime(current(explode('-', $request->daterange))));
+            $data['to'] = date('Y-m-d',  strtotime(explode('-', $request->daterange)[1]));
+            $data['user_ids'] = isset($request->user_ids)?$request->user_ids: ['All Users'];
+         
+            
+            $rules = [
                 'from' => 'required|date',
                 'to' => 'required|date|after_or_equal:from',
                 'user_ids' => 'required|array',
                 'service_ids' => 'required|array',
                 'provider_ids' => 'required|array',
-                'user_ids.*' => 'required',
                 'service_ids.*' => 'required',
                 'provider_ids.*' => 'required',
-                'status' => 'required|array|in:all,pending,waiting,hold,completed,failed,expired',
+                'status' => 'required|array|in:all,pending,inprogress,completed,partial,cancelled,processing,failed,error',
                 'mode' => 'required|in:all,auto,manual',
                 'format' => 'required|in:xml,json,csv',
                 'include_columns' => 'required|array|in:id,order_id,user_username,charges,cost,link,status,start_counter,quantity,service_id,service_name,created_at,remains,provider_domain,mode',
-            ]);
+            ];
 
-            
+            $validator = Validator::make($data, $rules);
+            if ($validator->fails()) {
+                return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+            }
+
             try {
-                $data = $request->except('_token');
+                //$data = $request->except('_token');
                 $data['include_columns'] = serialize($request->include_columns);
                 $data['user_ids'] = serialize($request->user_ids);
                 $data['service_ids'] = serialize($request->service_ids);

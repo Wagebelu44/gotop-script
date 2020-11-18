@@ -182,7 +182,8 @@
                             <div class="export-col">
                                 <div class="form-group">
                                     <label for=""><strong>Users</strong></label>
-                                        <select name="user_ids[]" 
+                                        <select 
+                                        name="user_ids[]" 
                                         id="user_ids" 
                                         class="form-control custom-input with-ajax @error('user_ids') is-invalid @enderror" 
                                         required data-validation-required-message="This field is required" 
@@ -333,7 +334,7 @@
                                         <option selected>Choose Format</option>
                                         <option {{ old('format') == 'xml' ? 'selected' : '' }} value="xml">XML</option>
                                         <option {{ old('format') == 'json' ? 'selected' : '' }} value="json">JSON</option>
-                                        <option {{ old('format') == 'csv' ? 'selected' : '' }} value="csv">CSV</option>
+                                        <option {{ old('format') == 'csv' ? 'selected' : 'selected' }} value="csv">CSV</option>
                                     </select>
                                     @error('format')
                                     <span class="invalid-feedback" role="alert">
@@ -370,8 +371,28 @@
                             <tr>
                                 <td>{{ $item->from }}</td>
                                 <td>{{ $item->to }}</td>
-                                <td>{{ rtrim(implode(', ', array_map(function ($value) { return ucfirst($value); }, unserialize($item->user_ids)))) }}</td>
-                                <td>{{ rtrim(implode(', ', array_map(function ($value) { return ucfirst($value); }, unserialize($item->service_ids)))) }}</td>
+                                <td>
+                                    @php
+                                        $users_unserialized = unserialize($item->user_ids);
+                                    @endphp
+                                    @if ($users_unserialized != null)
+                                        {{ rtrim(implode(', ', array_map(function ($value) { return ucfirst($value); }, unserialize($item->user_ids)))) }}
+                                    @else
+                                       All
+                                    @endif
+                                   
+                                </td>
+                                <td>
+                                    @php
+                                        $service_unserialized = unserialize($item->service_ids);
+                                    @endphp
+                                    @if ($service_unserialized!=null)
+                                        {{ rtrim(implode(', ', array_map(function ($value) { return ucfirst($value); },  $service_unserialized))) }}
+                                    @else
+                                        All
+                                    @endif
+                                    
+                                </td>
                                 <td>{{ rtrim(implode(', ', array_map(function ($value) { return ucfirst($value); }, unserialize($item->status)))) }}</td>
                                 <td>{{ rtrim(implode(', ', array_map(function ($value) { return ucfirst($value); }, unserialize($item->provider_ids)))) }}</td>
                                 <td>{{ ucfirst($item->mode) }}</td>
@@ -379,7 +400,7 @@
                                 <td>
                                     <form method="post" action="{{ route('admin.exported_orders.download', $item->id) }}">
                                         @csrf
-                                        <button type="submit" class="btn btn-success">Download</button>
+                                        <button type="submit" class="btn btn-success theme-color custom-button ">Download</button>
                                     </form>
                                 </td>
                             </tr>
@@ -470,13 +491,21 @@
                     function pickerChange(id, txt) {
                         var count = $(id+' option').length;
                         var selected = $(id+' option:selected').length;
+
                         if (selected === count) {
+                            // let input =   $('<input>', {
+                            //     name: id+'_name',
+                            //     type: 'hidden',
+                            //     value: 'All '+id,
+                            // });
+                            // $(id).after(input);
                             $(id).selectpicker({ countSelectedText: 'All Selected'});
                         } else {
                             $(id).selectpicker({ countSelectedText: txt+' ({0})'});
                         }
                         $(id).selectpicker('render');
                     }
+
         });
 
 
